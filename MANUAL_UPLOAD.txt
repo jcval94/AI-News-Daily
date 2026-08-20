@@ -1,0 +1,18 @@
+MANUAL UPLOAD
+
+This ZIP intentionally does NOT include a `news/` directory.
+Keep your existing `news/` folder and its .txt files unchanged.
+
+Upload/merge the contents of this ZIP into the repository root.
+
+Required GitHub Actions secret:
+  GEMINI_API_KEY
+
+Optional:
+  PEXELS_API_KEY
+
+Workflow:
+  .github/workflows/build-video-kit.yml
+
+It triggers on pushes that add/change:
+  news/*.txt
