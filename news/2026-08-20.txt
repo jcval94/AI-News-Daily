@@ -1,0 +1,70 @@
+NOTICIAS DE IA — 2026-08-20
+
+Ventana de selección: últimas 24 horas verificadas, desde 2026-08-19 10:21 ET hasta 2026-08-20 10:21 ET.
+Criterio: prioridad a anuncios originales/primarios con hora de publicación verificable y relevancia para modelos, agentes, investigación, empresas, regulación, hardware o producto.
+
+1) TIER IV y Renesas preparan una plataforma abierta y AI-native para vehículos definidos por software
+Fecha: 20/08/2026, 00:00 ET
+Fuente: TIER IV / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/tier-iv-collaborates-with-renesas-to-build-an-open-ai-native-computing-platform-for-sdvs-integrating-r-car-gen-5-automotive-socs-with-autoware-and-reference-ai-models-302855856.html
+Categoría: hardware / producto
+Resumen breve: TIER IV y Renesas anunciaron una colaboración para combinar Autoware, modelos de IA de referencia y los SoC automotrices R-Car Gen 5. El objetivo es crear una plataforma abierta de hardware y software que cubra desde asistencia avanzada L2+/L2++ hasta conducción autónoma L4.
+Por qué importa: Lleva el enfoque de plataforma abierta y AI-native directamente al stack automotriz y puede reducir la dependencia de arquitecturas cerradas para desarrollar vehículos autónomos y definidos por software.
+
+2) Harness lanza agentes de IA para responder a vulnerabilidades a velocidad de máquina
+Fecha: 19/08/2026, 11:00 ET
+Fuente: Harness / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/harness-launches-ai-agents-for-machine-speed-vulnerability-response-302855262.html
+Categoría: agentes
+Resumen breve: Harness presentó AI SAST, triage y remediación agentic, un Zero-Day Agent y virtual patching para automatizar la detección, priorización y corrección de vulnerabilidades dentro del ciclo de entrega de software.
+Por qué importa: La seguridad de software está entrando en una carrera de automatización entre atacantes y defensores. El valor ya no está solo en encontrar fallos con IA, sino en cerrar el ciclo hasta una corrección verificable con mínima latencia.
+
+3) SandboxAQ hace disponible AQCat en Claude Science mediante MCP
+Fecha: 19/08/2026, 12:40 ET
+Fuente: SandboxAQ / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/sandboxaq-makes-aqcat-generally-available-on-claude-for-high-throughput-catalyst-screening-302855491.html
+Categoría: investigación / agentes
+Resumen breve: SandboxAQ anunció la disponibilidad general de AQCat en Claude Science vía Model Context Protocol. AQCat usa un Large Quantitative Model para predecir propiedades físicas de materiales y priorizar catalizadores a partir de preguntas en lenguaje natural.
+Por qué importa: Es un ejemplo concreto de un agente conversacional conectado a un modelo científico especializado. La interfaz de lenguaje natural y MCP acercan capacidades avanzadas de simulación a investigadores sin exigirles construir pipelines específicos.
+
+4) SandboxAQ lanza AQPotency para cribado virtual de fármacos sin estructura proteica resuelta
+Fecha: 19/08/2026, 11:53 ET
+Fuente: SandboxAQ / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/sandboxaq-launches-aqpotency-bringing-ultrafast-virtual-screening-to-drug-discovery-without-a-solved-protein-structure-302855441.html
+Categoría: investigación / producto
+Resumen breve: AQPotency, ahora disponible en Claude vía MCP, permite puntuar grandes bibliotecas de moléculas para estimar su potencia frente a una diana incluso cuando no existe una estructura 3D resuelta de la proteína.
+Por qué importa: Si el rendimiento anunciado se sostiene en uso real, puede ampliar el espacio de targets abordables por cribado virtual y reducir experimentación temprana costosa en descubrimiento de fármacos.
+
+5) Apodex presenta TRACES, un benchmark para medir descubrimiento científico real por IA
+Fecha: 19/08/2026, 12:10 ET
+Fuente: Apodex / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/apodex-launches-traces-a-benchmark-for-scientific-discovery-302855461.html
+Categoría: investigación
+Resumen breve: TRACES busca evaluar sistemas de IA en problemas científicos donde no existe una respuesta conocida de antemano. El benchmark enfatiza búsqueda de evidencia, uso de herramientas, hipótesis competidoras, experimentación, aprendizaje a partir del fallo y verificación de resultados.
+Por qué importa: Ataca una limitación importante de muchos benchmarks actuales: medir reproducción de respuestas conocidas en lugar de capacidad para producir conocimiento nuevo y verificable.
+
+6) Natural consigue una línea de crédito de hasta 100 millones de dólares para pagos ejecutados por agentes de IA
+Fecha: 19/08/2026, 11:58 ET
+Fuente: Natural AI / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/natural-secures-100m-credit-facility-to-scale-payments-for-ai-agents-302855450.html
+Categoría: agentes / empresas
+Resumen breve: Natural anunció una línea de crédito de hasta US$100 millones de Upper90 para ampliar su infraestructura de pagos y crédito orientada a agentes de IA que realizan transacciones.
+Por qué importa: Los agentes autónomos empiezan a requerir infraestructura financiera propia: límites, crédito, liquidación, control de riesgo y trazabilidad. El financiamiento sugiere que el mercado se está moviendo de demos de agentes a operaciones económicas reales.
+
+7) GrowthLoop amplía su plataforma de commerce media con agentic AI e integraciones de adtech
+Fecha: 19/08/2026, 12:00 ET
+Fuente: GrowthLoop / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/growthloop-debuts-end-to-end-commerce-media-network-solution-featuring-integrations-with-adtech-partners-to-deliver-pre-integrated-cmn-tech-stack-302854654.html
+Categoría: agentes / producto
+Resumen breve: GrowthLoop anunció una solución end-to-end para commerce media que combina su capa de marketing impulsada por agentic AI con integraciones de The Trade Desk, Moloco y Audience Acuity para activación y medición de campañas.
+Por qué importa: Muestra cómo los agentes se están desplazando hacia sistemas empresariales que no solo recomiendan, sino que coordinan múltiples herramientas y etapas operativas dentro de un flujo comercial.
+
+8) AuraGxP amplía liderazgo y financiamiento para acelerar su hoja de ruta de Agentic AI en life sciences
+Fecha: 19/08/2026, 14:07 ET
+Fuente: AuraGxP / PR Newswire
+Enlace: https://www.prnewswire.com/news-releases/auragxp-expands-executive-leadership-and-secures-initial-funding-302855577.html
+Categoría: empresas / agentes
+Resumen breve: AuraGxP anunció nuevo CTO, liderazgo comercial y el cierre de su primera ronda semilla. La empresa desarrolla software AI-native para calidad, compras, gestión de proveedores y conciliación de gasto en life sciences, y señaló una hoja de ruta específica de Agentic AI.
+Por qué importa: El sector regulado de life sciences es uno de los terrenos donde los agentes deberán demostrar gobernanza, trazabilidad y control operacional, no solo capacidad generativa.
+
+FIN DEL INFORME
