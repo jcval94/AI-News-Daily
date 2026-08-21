@@ -94,38 +94,66 @@ def collect_available_news(news_dir: Path, target_date: date) -> tuple[str, list
 
 
 def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: int) -> str:
+    """Return the newest covered stories from approved episodes, never merely selected-but-unused items."""
     cutoff = target_date.fromordinal(target_date.toordinal() - max(1, lookback_days))
     items: list[dict[str, Any]] = []
     if not scripts_dir.exists():
         return "[]"
 
-    for selected_path in sorted(scripts_dir.glob("*/selected_news.json"), reverse=True):
+    episode_dirs = sorted((path for path in scripts_dir.iterdir() if path.is_dir()), reverse=True)
+    for episode_dir in episode_dirs:
         try:
-            episode_date = datetime.strptime(selected_path.parent.name, "%Y-%m-%d").date()
+            episode_date = datetime.strptime(episode_dir.name, "%Y-%m-%d").date()
         except ValueError:
             continue
         if episode_date >= target_date or episode_date < cutoff:
             continue
-        reviews_path = selected_path.parent / "reviews.json"
+
+        selected_path = episode_dir / "selected_news.json"
+        reviews_path = episode_dir / "reviews.json"
+        plan_path = episode_dir / "episode_plan.json"
         try:
             reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
             selected = json.loads(selected_path.read_text(encoding="utf-8"))
+            plan = json.loads(plan_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
+            # If an approved legacy episode has no plan, we cannot prove which selected items were narrated.
+            # Skipping is safer than incorrectly burning stories that may never have appeared.
             continue
         if not bool(reviews.get("approved_for_multimedia", False)):
             continue
-        for item in selected.get("items", []):
-            if isinstance(item, dict):
-                items.append(
-                    {
-                        "title": item.get("title", ""),
-                        "date": item.get("date", ""),
-                        "source": item.get("source", ""),
-                        "url": item.get("url", ""),
-                        "summary": item.get("summary", ""),
-                    }
-                )
-    return json.dumps(items[-40:], ensure_ascii=False)
+
+        selected_items = selected.get("items", []) if isinstance(selected, dict) else []
+        covered_indices: list[int] = []
+        for story in plan.get("stories", []) if isinstance(plan, dict) else []:
+            if not isinstance(story, dict):
+                continue
+            try:
+                index = int(story.get("selected_news_index", 0) or 0)
+            except (TypeError, ValueError):
+                continue
+            if index >= 1 and index not in covered_indices:
+                covered_indices.append(index)
+
+        for index in covered_indices:
+            if not (1 <= index <= len(selected_items)):
+                continue
+            item = selected_items[index - 1]
+            if not isinstance(item, dict):
+                continue
+            items.append(
+                {
+                    "title": item.get("title", ""),
+                    "date": item.get("date", ""),
+                    "source": item.get("source", ""),
+                    "url": item.get("url", ""),
+                    "summary": item.get("summary", ""),
+                }
+            )
+            if len(items) >= 40:
+                return json.dumps(items, ensure_ascii=False)
+
+    return json.dumps(items, ensure_ascii=False)
 
 
 def load_essay_history(

@@ -53,6 +53,22 @@ class StoryPlan(BaseModel):
     mini_conclusion: str = ""
 
 
+class NarrativeArc(BaseModel):
+    """Required dramaturgical movement; these labels are production metadata, never spoken headings."""
+
+    opening_belief: str = Field(min_length=5, max_length=400)
+    central_mystery: str = Field(min_length=5, max_length=400)
+    concrete_scene: str = Field(min_length=5, max_length=600)
+    first_reveal: str = Field(min_length=5, max_length=500)
+    complication: str = Field(min_length=5, max_length=500)
+    narrative_turn: str = Field(min_length=5, max_length=500)
+    second_reveal: str = Field(min_length=5, max_length=500)
+    evolved_thesis: str = Field(min_length=5, max_length=700)
+    recurring_motif: str = Field(min_length=1, max_length=160)
+    emotional_peak: str = Field(min_length=5, max_length=500)
+    final_payoff: str = Field(min_length=5, max_length=600)
+
+
 class EpisodePlan(BaseModel):
     topic_signature: str = Field(min_length=5, max_length=160)
     narrative_lens: str = Field(min_length=3, max_length=120)
@@ -63,7 +79,7 @@ class EpisodePlan(BaseModel):
     thesis: str
     hook: str
     target_duration_minutes: float = Field(ge=7, le=20)
-    narrative_arc: List[str] = Field(default_factory=list)
+    narrative_arc: NarrativeArc
     stories: List[StoryPlan] = Field(default_factory=list)
     final_synthesis: str
     closing_question: str
@@ -161,6 +177,23 @@ Your job is NOT to summarize the week and NOT to write the script. Design the th
 NON-NEGOTIABLE EDITORIAL HIERARCHY:
 HUMAN EXPERIENCE -> TENSION -> HISTORICAL MIRROR -> CENTRAL QUESTION -> PROVISIONAL THESIS -> CURRENT NEWS AS EVIDENCE.
 
+DRAMATURGY IS ALSO NON-NEGOTIABLE. Populate every narrative_arc field with a distinct job:
+- opening_belief: the plausible belief the viewer/narrator starts with;
+- central_mystery: an honest unresolved question that creates real intrigue;
+- concrete_scene: a vivid real, historical, or explicitly hypothetical scene that makes the tension tangible;
+- first_reveal: the first thing the evidence changes in the opening belief;
+- complication: evidence that makes the easy answer insufficient;
+- narrative_turn: the moment the essay discovers that the more interesting problem is different from the initial one;
+- second_reveal: what only becomes visible after that turn;
+- evolved_thesis: the richer conclusion reached after the investigation, not a paraphrase of thesis;
+- recurring_motif: a short phrase, image, object, or question that can return with changing meaning;
+- emotional_peak: the strongest concrete human consequence, without fake sentimentality;
+- final_payoff: a resolution that makes the opening feel different in retrospect.
+
+The opening may be extremely intriguing: an unexplained-but-honest scene, counterintuitive claim, strange verified
+history, difficult question, contradiction, or clearly labeled hypothetical. Never use empty clickbait. Intrigue
+must be paid off. If the exact conclusion is obvious after minute 2, the arc is too flat.
+
 NOVELTY IS A FIRST-CLASS REQUIREMENT:
 - previous_essays contains recent APPROVED essays with their topic signatures, questions, theses and lenses.
 - A new company, product, benchmark or model does NOT make an essay new if the underlying question and thesis are basically the same.
@@ -178,8 +211,10 @@ Build the plan in this order:
 2. Find one honest historical mirror from the curated references in discourse_profile when it genuinely sharpens that tension. Store the chosen connection in historical_mirror; leave it empty if none fits.
 3. Formulate the central question BEFORE deciding which selected stories will appear.
 4. Formulate a provisional thesis that can be complicated or revised during the essay.
-5. Compare that question and thesis against previous_essays and establish a real novelty_angle.
-6. Only then choose the current stories that help investigate the thesis.
+5. Design the full narrative_arc so the investigation contains mystery, scene, reveal, complication, a genuine
+   narrative turn, an evolved thesis, a recurring motif, a human peak, and a final payoff.
+6. Compare that question and thesis against previous_essays and establish a real novelty_angle.
+7. Only then choose the current stories that help investigate the thesis.
 
 News rules:
 - News is supporting evidence, never the product itself.
@@ -196,6 +231,10 @@ Narrative rules:
 - Choose a target duration between 7 and 20 minutes based on actual substance; never pad.
 - Use the low end when evidence is thin and the high end only when depth is earned.
 - Plan progressive revelation: the essay should discover and refine an idea rather than announce a conclusion and decorate it with headlines.
+- The narrative turn must genuinely reframe the problem; it cannot be a transition sentence.
+- narrative_arc.evolved_thesis must be materially richer than the provisional thesis.
+- The recurring motif should return only when natural and change meaning across the essay.
+- The final payoff should transform how the opening scene, question, or motif is understood.
 - Use curated historical references only; never invent a historical person, quote, date, book, event, or causal claim.
 - If no historical reference fits honestly, do not force one.
 - Additional historical parallels later are welcome only when they illuminate a different dimension.
@@ -238,7 +277,11 @@ At approximately {CONFIG.words_per_second:.1f} words/second, the absolute range 
 Follow episode_plan.target_duration_minutes as the intended target, but never pad.
 
 OPENING — ESSAY FIRST:
-- Begin from the human observation/tension in episode_plan.hook, not from a headline.
+- Begin from the human observation/tension in episode_plan.hook and narrative_arc.opening_belief / central_mystery, not from a headline.
+- The opening may be extremely intriguing, but it must be honest and eventually paid off. It may briefly withhold
+  explanation; it may not mislead about facts.
+- Use narrative_arc.concrete_scene when it makes the mystery tangible.
+- Do not reveal the exact evolved thesis in the first two minutes.
 - The opening should feel like a thoughtful person saying something recognizably true or uncomfortable:
   “no sé si te pasa algo parecido…”, “a ver, pensemos esto…”, or an equivalent natural observation.
   These are examples of energy, not phrases to repeat mechanically.
@@ -280,6 +323,13 @@ Accessibility requirements:
 
 Narrative requirements:
 - Use progressive revelation and genuine open loops, never cheap retention tricks.
+- Follow the movement encoded in episode_plan.narrative_arc: opening belief -> mystery -> first reveal ->
+  complication -> narrative turn -> second reveal -> evolved thesis -> emotional peak -> final payoff.
+- The narrative turn must change the viewer's model of the problem; it is not a transition.
+- The evolved thesis must feel earned and richer than episode_plan.thesis.
+- Recur to the motif 2-4 times only when natural, allowing its meaning to change.
+- The final payoff should make the opening feel different in retrospect.
+- Never expose internal labels such as “first reveal”, “narrative turn”, “evidence 1”, or “mini conclusion”.
 - Vary sentence length and section shape.
 - Historical parallels should illuminate the argument, not decorate it.
 - Do not repeat the same “question -> explanation -> mini conclusion” shape in every section.
@@ -374,10 +424,19 @@ Evaluate whether:
 - the central question becomes clear without requiring a headline dump;
 - current news arrives as evidence once the viewer understands why it matters;
 - the first minute makes the viewer want to investigate the idea, not merely hear the week's updates;
+- the central mystery creates a real reason to continue and is eventually paid off;
+- the exact final conclusion is not already obvious after minute 2;
+- the concrete scene makes an abstract issue tangible;
+- the first reveal changes or sharpens the opening belief;
+- the complication prevents the easy answer from ending the essay too early;
+- the narrative turn genuinely reframes the problem rather than acting as a transition;
+- the second reveal earns an evolved thesis richer than the provisional thesis;
+- the recurring motif, if used, changes meaning rather than merely repeating;
+- the emotional peak is concrete and human without manipulation;
+- the final payoff makes the opening feel different in retrospect;
 - open loops are genuinely paid off;
 - pacing has breathing room without dead zones;
 - evidence ordering creates discovery, contrast, or revision of the thesis;
-- the strongest idea arrives early enough;
 - the ending earns its reflective question and CTA.
 
 Penalize a structurally polished news roundup even if every individual transition is competent.
@@ -469,8 +528,14 @@ Priority order:
 6. SEO.
 
 If the draft feels like a news roundup, restructure it rather than polishing transitions.
-Preserve or restore this hierarchy:
+Preserve or restore BOTH contracts:
 HUMAN EXPERIENCE -> TENSION -> HISTORICAL MIRROR -> CENTRAL QUESTION -> THESIS -> NEWS AS EVIDENCE.
+OPENING BELIEF -> MYSTERY -> FIRST REVEAL -> COMPLICATION -> NARRATIVE TURN -> SECOND REVEAL -> EVOLVED THESIS -> PAYOFF.
+
+The narrative turn must genuinely reframe the problem. The evolved thesis must be richer than the provisional
+thesis. Reuse the recurring motif only when natural and let its meaning change. Make the payoff transform how the
+opening is understood. If the exact conclusion is obvious by minute 2, deepen the mystery/complication rather than
+adding filler. Never expose internal dramaturgical labels in narration.
 
 Do not open by default with a company, model, benchmark, product, paper, or “today's news”.
 The opening should establish a human observation and tension first. Current stories should enter only when
