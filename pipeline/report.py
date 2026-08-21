@@ -182,6 +182,7 @@ def build_report(
 
     selected = read_json(scripts_dir / "selected_news.json", {})
     episode_plan = read_json(scripts_dir / "episode_plan.json", {})
+    novelty_check = read_json(scripts_dir / "novelty_check.json", {})
     reviews = read_json(scripts_dir / "reviews.json", {})
     run_state = read_json(scripts_dir / "run_state.json", {})
     trace = read_json(scripts_dir / "execution_trace.json", {})
@@ -194,6 +195,14 @@ def build_report(
         selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
     )
     planned_stories = episode_plan.get("stories", []) if isinstance(episode_plan, dict) else []
+    novelty_attempts = (
+        novelty_check.get("attempts", []) if isinstance(novelty_check, dict) else []
+    )
+    final_novelty = (
+        novelty_attempts[-1]
+        if isinstance(novelty_attempts, list) and novelty_attempts
+        else {}
+    )
     segments = media_plan.get("segments", []) if isinstance(media_plan, dict) else []
     media_segments = [segment for segment in segments if segment.get("mode") == "media"]
     presenter_segments = [
@@ -232,6 +241,7 @@ def build_report(
         "execution_trace": artifact_record(scripts_dir / "execution_trace.json"),
         "selected_news": artifact_record(scripts_dir / "selected_news.json"),
         "episode_plan": artifact_record(scripts_dir / "episode_plan.json"),
+        "novelty_check": artifact_record(scripts_dir / "novelty_check.json"),
         "reviews": artifact_record(scripts_dir / "reviews.json"),
         "script": artifact_record(scripts_dir / "script.txt"),
         "multimedia_plan": artifact_record(multimedia_dir / "plan.json"),
@@ -241,7 +251,7 @@ def build_report(
     }
 
     return {
-        "schema_version": 4,
+        "schema_version": 5,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
@@ -260,6 +270,21 @@ def build_report(
             "discarded_duplicates": duplicates,
         },
         "editorial_direction": {
+            "topic_signature": episode_plan.get("topic_signature")
+            if isinstance(episode_plan, dict)
+            else None,
+            "narrative_lens": episode_plan.get("narrative_lens")
+            if isinstance(episode_plan, dict)
+            else None,
+            "novelty_angle": episode_plan.get("novelty_angle")
+            if isinstance(episode_plan, dict)
+            else None,
+            "historical_mirror": episode_plan.get("historical_mirror")
+            if isinstance(episode_plan, dict)
+            else None,
+            "evidence_strategy": episode_plan.get("evidence_strategy")
+            if isinstance(episode_plan, dict)
+            else None,
             "central_question": episode_plan.get("central_question")
             if isinstance(episode_plan, dict)
             else None,
@@ -275,6 +300,29 @@ def build_report(
             "planned_story_count": len(planned_stories),
             "closing_question": episode_plan.get("closing_question")
             if isinstance(episode_plan, dict)
+            else None,
+        },
+        "novelty": {
+            "history_days": novelty_check.get("history_days")
+            if isinstance(novelty_check, dict)
+            else None,
+            "previous_essay_count": novelty_check.get("previous_essay_count", 0)
+            if isinstance(novelty_check, dict)
+            else 0,
+            "threshold": novelty_check.get("threshold")
+            if isinstance(novelty_check, dict)
+            else None,
+            "planning_attempts": len(novelty_attempts)
+            if isinstance(novelty_attempts, list)
+            else 0,
+            "final_similarity": final_novelty.get("similarity")
+            if isinstance(final_novelty, dict)
+            else None,
+            "duplicate": final_novelty.get("duplicate")
+            if isinstance(final_novelty, dict)
+            else None,
+            "nearest_previous_essay": final_novelty.get("nearest_previous_essay")
+            if isinstance(final_novelty, dict)
             else None,
         },
         "script": {
