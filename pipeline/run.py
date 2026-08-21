@@ -15,15 +15,19 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 from app.agent import (
+    EpisodePlan,
     MasterJudgeResult,
     MultimediaPlan,
     ReviewResult,
     SelectionResult,
+    VoiceReviewResult,
+    editorial_director_agent,
     multimedia_editor_agent,
     refiner_agent,
     reviewer_agent,
     selector_agent,
     seo_master_agent,
+    voice_humanity_critic_agent,
     writer_agent,
     youtube_attention_master_agent,
 )
@@ -122,6 +126,32 @@ def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: 
     return json.dumps(items[-40:], ensure_ascii=False)
 
 
+def load_editorial_profiles(editorial_dir: Path) -> tuple[str, str]:
+    voice_path = editorial_dir / "voice_profile.md"
+    discourse_path = editorial_dir / "discourse_profile.md"
+    try:
+        voice_profile = voice_path.read_text(encoding="utf-8").strip()
+        discourse_profile = discourse_path.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        raise RuntimeError(f"Editorial profile could not be loaded: {exc}") from exc
+    if not voice_profile or not discourse_profile:
+        raise RuntimeError("Editorial voice/discourse profiles must not be empty")
+    return voice_profile, discourse_profile
+
+
+def validate_episode_plan(plan: dict[str, Any], selected_count: int) -> None:
+    stories = plan.get("stories", []) if isinstance(plan, dict) else []
+    if not stories:
+        raise ValueError("Editorial Director returned no stories in episode_plan")
+    indices = [int(story.get("selected_news_index", 0)) for story in stories if isinstance(story, dict)]
+    if len(indices) != len(stories):
+        raise ValueError("Every episode_plan story must be an object with selected_news_index")
+    if any(index < 1 or index > selected_count for index in indices):
+        raise ValueError("episode_plan references a selected_news_index outside selected news")
+    if len(indices) != len(set(indices)):
+        raise ValueError("episode_plan must not schedule the same selected story twice")
+
+
 def _usage_from_event(event: Any) -> dict[str, int]:
     meta = getattr(event, "usage_metadata", None)
     if not meta:
@@ -144,7 +174,9 @@ def _merge_usage(total: dict[str, int], addition: dict[str, int]) -> None:
         total[key] = total.get(key, 0) + value
 
 
-async def _run_agent_once(agent: Any, initial_state: dict[str, Any], prompt: str) -> tuple[dict[str, Any], dict[str, int]]:
+async def _run_agent_once(
+    agent: Any, initial_state: dict[str, Any], prompt: str
+) -> tuple[dict[str, Any], dict[str, int]]:
     service = InMemorySessionService()
     session_id = uuid.uuid4().hex
     await service.create_session(
@@ -224,7 +256,10 @@ async def run_agent(
             if not retryable or attempt >= CONFIG.agent_max_attempts:
                 raise
             delay = CONFIG.agent_retry_base_seconds * (2 ** (attempt - 1))
-            print(f"Transient failure in {step}; retrying in {delay:.1f}s: {type(exc).__name__}: {exc}")
+            print(
+                f"Transient failure in {step}; retrying in {delay:.1f}s: "
+                f"{type(exc).__name__}: {exc}"
+            )
             await asyncio.sleep(delay)
 
     assert last_error is not None
@@ -280,7 +315,15 @@ def normalize_multimedia_plan(
         if media:
             plan.append(media)
         else:
-            plan.append({**slot, "mode": "presenter", "visual_query": "", "on_screen_text": "", "reason": ""})
+            plan.append(
+                {
+                    **slot,
+                    "mode": "presenter",
+                    "visual_query": "",
+                    "on_screen_text": "",
+                    "reason": "",
+                }
+            )
     return plan, warnings
 
 
@@ -315,9 +358,10 @@ async def build(
     history_scripts_root: Path,
     max_media_downloads: int,
     download_multimedia: bool,
+    editorial_dir: Path = Path("editorial"),
 ) -> Path | None:
     if not os.getenv("OPENAI_API_KEY"):
-        raise RuntimeError("Set_OPENAI_API_KEY before running the pipeline")
+        raise RuntimeError("Set OPENAI_API_KEY before running the pipeline")
 
     started_at = utc_now()
     episode_scripts_dir = scripts_root / target_date.isoformat()
@@ -330,6 +374,7 @@ async def build(
     validation_warnings: list[str] = []
 
     try:
+        voice_profile, discourse_profile = load_editorial_profiles(editorial_dir)
         news_text, available_files, missing_dates = collect_available_news(news_dir, target_date)
         if not news_text:
             write_json(
@@ -349,11 +394,13 @@ async def build(
         selection_state = await run_agent(
             selector_agent,
             {"news_text": news_text, "previous_selected_news": previous_selected_news},
-            "Select the unique, high-value AI news for this episode.",
+            "Select the unique, high-value AI developments for this episode.",
             step="select_news",
             trace=agent_trace,
         )
-        selection = SelectionResult.model_validate(selection_state.get("selected_news", {})).model_dump()
+        selection = SelectionResult.model_validate(
+            selection_state.get("selected_news", {})
+        ).model_dump()
         write_json(episode_scripts_dir / "selected_news.json", selection)
         if not selection["items"]:
             write_json(
@@ -368,10 +415,35 @@ async def build(
             return episode_scripts_dir
 
         selected_json = json.dumps(selection, ensure_ascii=False)
+        director_state = await run_agent(
+            editorial_director_agent,
+            {
+                "news_text": news_text,
+                "selected_news": selected_json,
+                "voice_profile": voice_profile,
+                "discourse_profile": discourse_profile,
+            },
+            "Design the episode thesis, story roles, narrative beats, and target duration.",
+            step="plan_episode",
+            trace=agent_trace,
+        )
+        episode_plan = EpisodePlan.model_validate(
+            director_state.get("episode_plan", {})
+        ).model_dump()
+        validate_episode_plan(episode_plan, len(selection["items"]))
+        write_json(episode_scripts_dir / "episode_plan.json", episode_plan)
+        episode_plan_json = json.dumps(episode_plan, ensure_ascii=False)
+
         writer_state = await run_agent(
             writer_agent,
-            {"news_text": news_text, "selected_news": selected_json},
-            "Write the 7-12 minute Spanish narration from the selected evidence.",
+            {
+                "news_text": news_text,
+                "selected_news": selected_json,
+                "episode_plan": episode_plan_json,
+                "voice_profile": voice_profile,
+                "discourse_profile": discourse_profile,
+            },
+            "Write the finished 7-20 minute Spanish reflective AI essay.",
             step="write_script",
             trace=agent_trace,
         )
@@ -382,17 +454,22 @@ async def build(
         final_editorial: dict[str, Any] = {}
         final_seo: dict[str, Any] = {}
         final_attention: dict[str, Any] = {}
+        final_voice: dict[str, Any] = {}
         final_gate: dict[str, Any] = {}
+
         for iteration in range(1, CONFIG.max_refinement_iterations + 1):
             review_base = {
                 "draft_script": draft_script,
                 "selected_news": selected_json,
                 "news_text": news_text,
+                "episode_plan": episode_plan_json,
+                "voice_profile": voice_profile,
+                "discourse_profile": discourse_profile,
             }
             editorial_state = await run_agent(
                 reviewer_agent,
                 review_base,
-                "Evaluate factuality, clarity, pacing, and editorial quality.",
+                "Evaluate factuality, conceptual rigor, and editorial quality.",
                 step="editorial_judge",
                 trace=agent_trace,
                 iteration=iteration,
@@ -400,7 +477,7 @@ async def build(
             seo_state = await run_agent(
                 seo_master_agent,
                 review_base,
-                "Evaluate search discoverability and natural SEO.",
+                "Evaluate discoverability without sacrificing rigor or voice.",
                 step="seo_judge",
                 trace=agent_trace,
                 iteration=iteration,
@@ -408,17 +485,40 @@ async def build(
             attention_state = await run_agent(
                 youtube_attention_master_agent,
                 review_base,
-                "Evaluate the hook, retention, pacing, and CTA.",
+                "Evaluate earned attention, progressive revelation, pacing, and CTA.",
                 step="attention_judge",
                 trace=agent_trace,
                 iteration=iteration,
             )
+            voice_state = await run_agent(
+                voice_humanity_critic_agent,
+                review_base,
+                "Evaluate voice fidelity, intellectual depth, humanity, analogies, and AI smell.",
+                step="voice_judge",
+                trace=agent_trace,
+                iteration=iteration,
+            )
 
-            final_editorial = ReviewResult.model_validate(editorial_state.get("review", {})).model_dump()
-            final_seo = MasterJudgeResult.model_validate(seo_state.get("seo_review", {})).model_dump()
-            final_attention = MasterJudgeResult.model_validate(attention_state.get("attention_review", {})).model_dump()
+            final_editorial = ReviewResult.model_validate(
+                editorial_state.get("review", {})
+            ).model_dump()
+            final_seo = MasterJudgeResult.model_validate(
+                seo_state.get("seo_review", {})
+            ).model_dump()
+            final_attention = MasterJudgeResult.model_validate(
+                attention_state.get("attention_review", {})
+            ).model_dump()
+            final_voice = VoiceReviewResult.model_validate(
+                voice_state.get("voice_review", {})
+            ).model_dump()
+
             final_gate = evaluate_script_gate(
-                draft_script, final_editorial, final_seo, final_attention, CONFIG
+                draft_script,
+                final_editorial,
+                final_seo,
+                final_attention,
+                final_voice,
+                CONFIG,
             )
             iteration_trace.append(
                 {
@@ -429,6 +529,12 @@ async def build(
                     "editorial_score": final_editorial["score"],
                     "seo_score": final_seo["score"],
                     "attention_score": final_attention["score"],
+                    "voice_score": final_voice["score"],
+                    "voice_fidelity": final_voice["voice_fidelity"],
+                    "intellectual_depth": final_voice["intellectual_depth"],
+                    "human_relevance": final_voice["human_relevance"],
+                    "analogy_quality": final_voice["analogy_quality"],
+                    "ai_smell_risk": final_voice["ai_smell_risk"],
                     "factuality_risk": final_editorial["factuality_risk"],
                 }
             )
@@ -444,8 +550,9 @@ async def build(
                     "review": json.dumps(final_editorial, ensure_ascii=False),
                     "seo_review": json.dumps(final_seo, ensure_ascii=False),
                     "attention_review": json.dumps(final_attention, ensure_ascii=False),
+                    "voice_review": json.dumps(final_voice, ensure_ascii=False),
                 },
-                "Revise the script to address all judge feedback and deterministic duration requirements.",
+                "Revise the script while preserving factuality, voice, depth, and the episode plan.",
                 step="refine_script",
                 trace=agent_trace,
                 iteration=iteration,
@@ -455,7 +562,9 @@ async def build(
                 raise RuntimeError("Refiner did not produce draft_script")
             draft_script = refined
 
-        (episode_scripts_dir / "script.txt").write_text(draft_script + "\n", encoding="utf-8")
+        (episode_scripts_dir / "script.txt").write_text(
+            draft_script + "\n", encoding="utf-8"
+        )
         write_json(
             episode_scripts_dir / "reviews.json",
             {
@@ -465,6 +574,7 @@ async def build(
                 "editorial": final_editorial,
                 "seo_master": final_seo,
                 "youtube_attention_master": final_attention,
+                "voice_humanity": final_voice,
                 "source_files": [path.name for path in available_files],
                 "missing_dates": [item.isoformat() for item in missing_dates],
             },
@@ -476,7 +586,10 @@ async def build(
                 _run_state_payload(
                     target_date=target_date,
                     status=SCRIPT_NOT_APPROVED,
-                    reason="The script exhausted refinement without passing every deterministic gate",
+                    reason=(
+                        "The script exhausted refinement without passing every deterministic, "
+                        "factual, attention, SEO, and voice gate"
+                    ),
                     started_at=started_at,
                     refinement_iterations=len(iteration_trace),
                 ),
@@ -489,14 +602,17 @@ async def build(
             multimedia_editor_agent,
             {
                 "final_script": draft_script,
+                "episode_plan": episode_plan_json,
                 "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
                 "max_media_downloads": max(0, max_media_downloads),
             },
-            "Choose only the timeline slots where external media adds real value.",
+            "Choose only the timeline slots where external media adds real explanatory value.",
             step="plan_multimedia",
             trace=agent_trace,
         )
-        raw_plan = MultimediaPlan.model_validate(editor_state.get("multimedia_plan", {})).model_dump()
+        raw_plan = MultimediaPlan.model_validate(
+            editor_state.get("multimedia_plan", {})
+        ).model_dump()
         multimedia_plan, media_warnings = normalize_multimedia_plan(
             raw_plan, timeline_slots, max(0, max_media_downloads)
         )
@@ -539,7 +655,7 @@ async def build(
             _run_state_payload(
                 target_date=target_date,
                 status=APPROVED,
-                reason="All deterministic and agent quality gates passed",
+                reason="All deterministic, factual, narrative, voice, and quality gates passed",
                 started_at=started_at,
                 approved=True,
                 refinement_iterations=len(iteration_trace),
@@ -565,7 +681,7 @@ async def build(
         write_json(
             trace_path,
             {
-                "schema_version": 1,
+                "schema_version": 2,
                 "episode_date": target_date.isoformat(),
                 "agent_calls": agent_trace,
                 "refinement_iterations": iteration_trace,
@@ -576,15 +692,23 @@ async def build(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build the Tuesday/Friday AI-news production kit")
-    parser.add_argument("--target-date", default=None, help="YYYY-MM-DD; must be Tuesday or Friday")
+    parser = argparse.ArgumentParser(
+        description="Build the Tuesday/Friday AI-news production kit"
+    )
+    parser.add_argument(
+        "--target-date", default=None, help="YYYY-MM-DD; must be Tuesday or Friday"
+    )
     parser.add_argument("--news-dir", default="news")
     parser.add_argument("--scripts-dir", default="scripts")
     parser.add_argument("--multimedia-dir", default="multimedia")
     parser.add_argument("--history-scripts-dir", default="scripts")
-    parser.add_argument("--max-media-downloads", type=int, default=CONFIG.max_media_downloads)
+    parser.add_argument("--editorial-dir", default="editorial")
+    parser.add_argument(
+        "--max-media-downloads", type=int, default=CONFIG.max_media_downloads
+    )
     parser.add_argument("--no-download-multimedia", action="store_true")
     return parser.parse_args()
+
 
 def main() -> None:
     args = parse_args()
@@ -597,6 +721,7 @@ def main() -> None:
             history_scripts_root=Path(args.history_scripts_dir),
             max_media_downloads=args.max_media_downloads,
             download_multimedia=DOWNLOAD_MULTIMEDIA and not args.no_download_multimedia,
+            editorial_dir=Path(args.editorial_dir),
         )
     )
 

@@ -12,9 +12,10 @@ class PipelineConfig:
     openai_model: str = "gpt-5.4-nano"
     words_per_second: float = 2.5
     target_min_seconds: int = 420
-    target_max_seconds: int = 720
+    target_max_seconds: int = 1200
     script_quality_threshold: float = 8.7
     judge_threshold: float = 8.5
+    voice_threshold: float = 8.7
     max_refinement_iterations: int = 5
     max_selected_news: int = 8
     max_media_downloads: int = 12
@@ -30,9 +31,10 @@ class PipelineConfig:
             openai_model=os.getenv("OPENAI_MODEL", "gpt-5.4-nano"),
             words_per_second=float(os.getenv("WORDS_PER_SECOND", "2.5")),
             target_min_seconds=int(os.getenv("TARGET_MIN_SECONDS", "420")),
-            target_max_seconds=int(os.getenv("TARGET_MAX_SECONDS", "720")),
+            target_max_seconds=int(os.getenv("TARGET_MAX_SECONDS", "1200")),
             script_quality_threshold=float(os.getenv("SCRIPT_QUALITY_THRESHOLD", "8.7")),
             judge_threshold=float(os.getenv("JUDGE_THRESHOLD", "8.5")),
+            voice_threshold=float(os.getenv("VOICE_THRESHOLD", "8.7")),
             max_refinement_iterations=int(os.getenv("MAX_REFINEMENT_ITERATIONS", "5")),
             max_selected_news=int(os.getenv("MAX_SELECTED_NEWS", "8")),
             max_media_downloads=int(os.getenv("MAX_MEDIA_DOWNLOADS", "12")),
@@ -50,6 +52,8 @@ class PipelineConfig:
             raise ValueError("SCRIPT_QUALITY_THRESHOLD must be between 0 and 10")
         if not (0 <= self.judge_threshold <= 10):
             raise ValueError("JUDGE_THRESHOLD must be between 0 and 10")
+        if not (0 <= self.voice_threshold <= 10):
+            raise ValueError("VOICE_THRESHOLD must be between 0 and 10")
         if self.max_refinement_iterations < 1:
             raise ValueError("MAX_REFINEMENT_ITERATIONS must be >= 1")
         if not (1 <= self.max_selected_news <= 8):
@@ -146,6 +150,7 @@ def evaluate_script_gate(
     editorial: dict[str, Any],
     seo: dict[str, Any],
     attention: dict[str, Any],
+    voice: dict[str, Any],
     config: PipelineConfig,
 ) -> dict[str, Any]:
     duration_seconds = estimate_spoken_duration_seconds(script, config) if script else 0
@@ -162,6 +167,9 @@ def evaluate_script_gate(
         "attention_approved": bool(attention.get("approved", False)),
         "attention_score_ok": float(attention.get("score", 0) or 0)
         >= config.judge_threshold,
+        "voice_approved": bool(voice.get("approved", False)),
+        "voice_score_ok": float(voice.get("score", 0) or 0) >= config.voice_threshold,
+        "ai_smell_low": str(voice.get("ai_smell_risk", "")).lower() == "low",
     }
     return {
         "approved": all(checks.values()),

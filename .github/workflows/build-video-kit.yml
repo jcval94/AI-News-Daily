@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build-video-kit:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
@@ -89,13 +89,14 @@ jobs:
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
           SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
           JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
           DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
-          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '720' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
           WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
@@ -107,6 +108,7 @@ jobs:
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia" \
             --history-scripts-dir scripts \
+            --editorial-dir editorial \
             --max-media-downloads "$MAX_MEDIA_DOWNLOADS"
 
       - name: Determine episode outcome
@@ -139,13 +141,14 @@ jobs:
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
           SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
           JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
           DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
-          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '720' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
           WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
@@ -155,7 +158,8 @@ jobs:
             --target-date "${{ steps.script_date.outputs.target_date }}" \
             --build-outcome "${{ steps.episode_outcome.outputs.status }}" \
             --scripts-dir "$RUN_ROOT/scripts" \
-            --multimedia-dir "$RUN_ROOT/multimedia"
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --editorial-dir editorial
 
       - name: Refresh branch before promotion
         if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
