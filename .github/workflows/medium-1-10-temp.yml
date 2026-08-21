@@ -1,0 +1,81 @@
+name: Temporary Medium 1-10 Hardening
+
+on:
+  push:
+    branches:
+      - fix/medium-1-10-quality-hardening
+    paths:
+      - tools/apply_medium_1_10.py
+      - .github/workflows/medium-1-10-temp.yml
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  apply-validate-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: fix/medium-1-10-quality-hardening
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Restore real editorial regression fixtures
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf /tmp/e2e-v1 /tmp/e2e-v2 /tmp/e2e-v3
+          mkdir -p /tmp/e2e-v1 /tmp/e2e-v2 /tmp/e2e-v3
+          gh run download 32511147349 -n e2e-editorial-2026-08-21-32511147349 -D /tmp/e2e-v1
+          gh run download 32515116649 -n e2e-editorial-v2-2026-08-21-32515116649 -D /tmp/e2e-v2
+          gh run download 32519429503 -n e2e-essay-novelty-2026-08-21-32519429503 -D /tmp/e2e-v3
+          mkdir -p evals/editorial/runs/e2e-v1 evals/editorial/runs/e2e-v2 evals/editorial/runs/e2e-v3
+          cp /tmp/e2e-v1/scripts/2026-08-21/script.txt evals/editorial/runs/e2e-v1/script.txt
+          cp /tmp/e2e-v1/scripts/2026-08-21/reviews.json evals/editorial/runs/e2e-v1/reviews.json
+          cp /tmp/e2e-v2/scripts/2026-08-21/script.txt evals/editorial/runs/e2e-v2/script.txt
+          cp /tmp/e2e-v2/scripts/2026-08-21/reviews.json evals/editorial/runs/e2e-v2/reviews.json
+          cp /tmp/e2e-v3/scripts/2026-08-21/script.txt evals/editorial/runs/e2e-v3/script.txt
+          cp /tmp/e2e-v3/scripts/2026-08-21/reviews.json evals/editorial/runs/e2e-v3/reviews.json
+
+      - name: Apply scoped medium-priority fixes
+        run: python tools/apply_medium_1_10.py
+
+      - name: Generate reproducible runtime lock
+        run: |
+          python -m pip install 'pip-tools>=7.4,<8'
+          python -m piptools compile pyproject.toml --output-file requirements.lock --resolver backtracking --strip-extras
+
+      - name: Validate locked install and full suite
+        run: |
+          python -m pip install -c requirements.lock .
+          python -m compileall app pipeline
+          python -c "import app.agent, pipeline.run, pipeline.media, pipeline.credits, pipeline.editorial_calibration; print('runtime imports ok')"
+          python -m unittest discover -s tests -v
+          python -m pipeline.editorial_calibration --cases evals/editorial/cases.json --output /tmp/editorial-calibration.json
+          cat /tmp/editorial-calibration.json
+
+      - name: Commit validated product changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            app/agent.py \
+            pipeline/core.py pipeline/media.py pipeline/licenses.py pipeline/credits.py pipeline/run.py pipeline/report.py pipeline/editorial_calibration.py \
+            .github/workflows/build-video-kit.yml .github/workflows/ci.yml \
+            requirements.lock \
+            docs/configuration.md docs/editorial_calibration.md \
+            evals/editorial \
+            scripts/2026-08-21/legacy.json \
+            tests/test_editorial_runtime_contract.py tests/test_editorial_calibration.py tests/test_e2e_failure_paths.py \
+            tests/test_media_relevance.py tests/test_credits.py tests/test_configuration_contract.py tests/test_dependency_lock.py tests/test_legacy_history.py tests/test_report.py
+          git diff --cached --check
+          git diff --cached --stat
+          git commit -m "fix: harden editorial calibration media and reproducibility"
+          git push origin HEAD:fix/medium-1-10-quality-hardening
