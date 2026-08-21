@@ -8,8 +8,6 @@ class EditorialLanguageContractTests(unittest.TestCase):
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
         agent = Path("app/agent.py").read_text(encoding="utf-8").lower()
 
-        # The words may appear only inside explicit anti-style rules in prompts/profiles.
-        # The positive voice definition must no longer describe the target as Rioplatense/voseo.
         self.assertNotIn("español rioplatense", voice)
         self.assertNotIn("voseo ligero", voice)
         self.assertNotIn("educated, natural rioplatense", agent)
@@ -19,9 +17,9 @@ class EditorialLanguageContractTests(unittest.TestCase):
         self.assertIn("ligera cercanía mexicana", voice)
         self.assertIn("curioso, pero no necesariamente técnico", discourse)
 
-    def test_historical_opening_is_curated_and_source_backed(self) -> None:
+    def test_historical_context_is_curated_and_source_backed(self) -> None:
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
-        self.assertIn("apertura: noticia → historia → pregunta", discourse)
+        self.assertIn("apertura: experiencia → tensión → historia → pregunta", discourse)
         self.assertIn("referentes históricos curados", discourse)
         self.assertIn("plato.stanford.edu", discourse)
         self.assertIn("smithsonianmag.com", discourse)
@@ -33,9 +31,30 @@ class EditorialLanguageContractTests(unittest.TestCase):
         agent = Path("app/agent.py").read_text(encoding="utf-8").lower()
         self.assertIn("curious 15-year-old", agent)
         self.assertIn("prefer common spanish over jargon", agent)
-        self.assertIn("current news → verified historical parallel → deeper question", agent)
         self.assertIn("fact, interpretation, hypothesis, and uncertainty", agent)
         self.assertIn("punzadura", agent)  # explicit negative example, not target vocabulary
+
+    def test_essay_is_primary_and_news_is_evidence(self) -> None:
+        voice = Path("editorial/voice_profile.md").read_text(encoding="utf-8").lower()
+        discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
+        agent = Path("app/agent.py").read_text(encoding="utf-8").lower()
+
+        self.assertIn("la noticia no es el producto", voice)
+        self.assertIn("la noticia es evidencia", voice)
+        self.assertIn("experiencia humana → tensión → espejo histórico → tesis → noticias como evidencia", discourse)
+        self.assertIn("news is supporting evidence, never the product itself", agent)
+        self.assertIn("the essay is the product. the news is evidence", agent)
+        self.assertIn("do not write a news recap", agent)
+        self.assertIn("human experience -> tension -> historical mirror", agent)
+
+    def test_opening_rejects_news_desk_default(self) -> None:
+        discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
+        agent = Path("app/agent.py").read_text(encoding="utf-8").lower()
+
+        self.assertIn("“hoy salió una noticia…” como apertura por defecto", discourse)
+        self.assertIn("do not default to “hoy salió una noticia”", agent)
+        self.assertIn("opening with “hoy salió una noticia”", agent)
+        self.assertIn("news-desk structure", agent)
 
 
 if __name__ == "__main__":
