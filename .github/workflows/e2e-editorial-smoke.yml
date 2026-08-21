@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - test/e2e-editorial-2026-08-21
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
