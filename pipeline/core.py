@@ -25,7 +25,7 @@ class PipelineConfig:
     selection_history_days: int = 30
     essay_history_days: int = 120
     max_recent_essays: int = 12
-    essay_duplicate_threshold: float = 0.72
+    essay_duplicate_threshold: float = 0.42
     max_novelty_replans: int = 2
     agent_max_attempts: int = 3
     agent_retry_base_seconds: float = 2.0
@@ -50,7 +50,7 @@ class PipelineConfig:
             selection_history_days=int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
             essay_history_days=int(os.getenv("ESSAY_HISTORY_DAYS", "120")),
             max_recent_essays=int(os.getenv("MAX_RECENT_ESSAYS", "12")),
-            essay_duplicate_threshold=float(os.getenv("ESSAY_DUPLICATE_THRESHOLD", "0.72")),
+            essay_duplicate_threshold=float(os.getenv("ESSAY_DUPLICATE_THRESHOLD", "0.42")),
             max_novelty_replans=int(os.getenv("MAX_NOVELTY_REPLANS", "2")),
             agent_max_attempts=int(os.getenv("AGENT_MAX_ATTEMPTS", "3")),
             agent_retry_base_seconds=float(os.getenv("AGENT_RETRY_BASE_SECONDS", "2.0")),
@@ -128,14 +128,29 @@ _TOPIC_STOPWORDS = {
     "el", "en", "entre", "es", "esta", "este", "esto", "la", "las", "lo", "los", "mas",
     "nos", "nuestra", "nuestro", "o", "para", "pero", "por", "que", "se", "sin", "sobre",
     "su", "sus", "un", "una", "y", "ya", "the", "of", "to", "and", "in", "is", "are",
+    "inteligencia", "artificial", "modelo", "modelos", "tecnologia", "tecnologias",
+    "herramienta", "herramientas", "sistema", "sistemas",
 }
 
 
-def normalize_topic_text(value: str) -> str:
+def _topic_tokens(value: str) -> list[str]:
     text = unicodedata.normalize("NFKD", str(value or ""))
     text = "".join(char for char in text if not unicodedata.combining(char)).lower()
     tokens = re.findall(r"[a-z0-9]+", text)
-    return " ".join(token for token in tokens if len(token) > 2 and token not in _TOPIC_STOPWORDS)
+    return [token for token in tokens if len(token) > 2 and token not in _TOPIC_STOPWORDS]
+
+
+def normalize_topic_text(value: str) -> str:
+    return " ".join(_topic_tokens(value))
+
+
+def _topic_roots(value: str) -> set[str]:
+    """Use short lexical roots to make Spanish inflections less brittle.
+
+    This is intentionally lightweight and deterministic; the LLM Director remains the
+    semantic novelty layer, while this guardrail catches obvious/rephrased overlaps.
+    """
+    return {token[:6] for token in _topic_tokens(value)}
 
 
 def topic_similarity(left: str, right: str) -> float:
@@ -143,12 +158,20 @@ def topic_similarity(left: str, right: str) -> float:
     b = normalize_topic_text(right)
     if not a or not b:
         return 0.0
-    a_tokens = set(a.split())
-    b_tokens = set(b.split())
-    union = a_tokens | b_tokens
-    jaccard = len(a_tokens & b_tokens) / len(union) if union else 0.0
-    sequence = SequenceMatcher(None, a, b).ratio()
-    return round((0.65 * jaccard) + (0.35 * sequence), 4)
+
+    a_roots = _topic_roots(left)
+    b_roots = _topic_roots(right)
+    if not a_roots or not b_roots:
+        return 0.0
+
+    intersection = len(a_roots & b_roots)
+    union = len(a_roots | b_roots)
+    containment = intersection / min(len(a_roots), len(b_roots))
+    jaccard = intersection / union if union else 0.0
+    sequence = SequenceMatcher(
+        None, " ".join(sorted(a_roots)), " ".join(sorted(b_roots))
+    ).ratio()
+    return round((0.55 * containment) + (0.30 * jaccard) + (0.15 * sequence), 4)
 
 
 def nearest_essay_similarity(
