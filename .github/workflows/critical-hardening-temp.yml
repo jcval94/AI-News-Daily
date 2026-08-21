@@ -28,6 +28,15 @@ jobs:
           python-version: "3.12"
           cache: "pip"
       - run: python -m pip install .
+      - name: Normalize exact YAML patch fixture
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("tools/apply_critical_hardening.py")
+          text = path.read_text(encoding="utf-8")
+          text = text.replace("== 'true' '''", "== 'true'" + "'''")
+          path.write_text(text, encoding="utf-8")
+          PY
       - name: Apply scoped hardening
         run: python tools/apply_critical_hardening.py
       - name: Validate
