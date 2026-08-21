@@ -27,12 +27,11 @@ class EssayFirstContractTests(unittest.TestCase):
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
         voice = Path("editorial/voice_profile.md").read_text(encoding="utf-8").lower()
 
-        self.assertIn("el ensayo es el producto", discourse)
-        self.assertIn("las noticias son evidencia", discourse)
-        self.assertIn("experiencia humana", discourse)
-        self.assertIn("tesis", discourse)
-        self.assertIn("40% información", voice)
-        self.assertIn("60% reflexión", voice)
+        self.assertIn("experiencia humana → tensión → espejo histórico → tesis → noticias como evidencia", discourse)
+        self.assertIn("la noticia no es el producto", voice)
+        self.assertIn("el ensayo es el producto", voice)
+        self.assertIn("40% información y 60% reflexión", voice)
+        self.assertIn("no organizar el episodio como “noticia 1, noticia 2, noticia 3”", voice)
 
     def test_follow_up_contract_document_exists(self) -> None:
         contract = Path("docs/essay_first_contract.md").read_text(encoding="utf-8").lower()
