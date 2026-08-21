@@ -45,9 +45,14 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                         "selection_notes": [],
                     }
                 }
-            if step == "plan_episode":
+            if step in {"plan_episode", "replan_episode_novelty"}:
                 return {
                     "episode_plan": {
+                        "topic_signature": "delegacion de criterio y aprendizaje con IA",
+                        "narrative_lens": "cognicion y educacion",
+                        "novelty_angle": "Explora el cambio de hábitos de verificación, no solo capacidad del modelo.",
+                        "historical_mirror": "La discusión histórica sobre herramientas que externalizan memoria.",
+                        "evidence_strategy": "Usar el caso actual como evidencia de cómo cambia el criterio humano.",
                         "central_question": "¿Qué cambia cuando delegamos parte de nuestro razonamiento?",
                         "thesis": "La herramienta importa menos que la forma en que reorganiza nuestro criterio.",
                         "hook": "¿Y si una herramienta que nos ayuda a pensar también cambia cómo pensamos?",
@@ -57,6 +62,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                             {
                                 "selected_news_index": 1,
                                 "role": "anchor",
+                                "argument_role": "evidence",
                                 "estimated_minutes": 5.5,
                                 "narrative_function": "plantear el problema",
                                 "beats": ["hecho", "contexto", "analogia", "impacto humano"],
@@ -154,6 +160,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             reviews = json.loads((result / "reviews.json").read_text(encoding="utf-8"))
             trace = json.loads((result / "execution_trace.json").read_text(encoding="utf-8"))
             episode_plan = json.loads((result / "episode_plan.json").read_text(encoding="utf-8"))
+            novelty = json.loads((result / "novelty_check.json").read_text(encoding="utf-8"))
             plan = json.loads((media / "2026-08-21" / "plan.json").read_text(encoding="utf-8"))
 
             self.assertEqual(state["status"], "approved")
@@ -161,6 +168,9 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(reviews["gate"]["approved"])
             self.assertEqual(reviews["voice_humanity"]["ai_smell_risk"], "low")
             self.assertTrue(episode_plan["central_question"])
+            self.assertTrue(episode_plan["topic_signature"])
+            self.assertEqual(novelty["previous_essay_count"], 0)
+            self.assertFalse(novelty["attempts"][-1]["duplicate"])
             self.assertGreaterEqual(plan["timeline_duration_seconds"], 420)
             self.assertEqual(plan["segments"][0]["start_seconds"], 0)
             self.assertEqual(plan["segments"][0]["end_seconds"], 3)
