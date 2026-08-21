@@ -36,17 +36,22 @@ class CoreTests(unittest.TestCase):
 
     def test_duration_bounds(self) -> None:
         self.assertTrue(duration_within_target("x " * 1050, self.config))
-        self.assertTrue(duration_within_target("x " * 1800, self.config))
+        self.assertTrue(duration_within_target("x " * 3000, self.config))
         self.assertFalse(duration_within_target("x " * 1000, self.config))
-        self.assertFalse(duration_within_target("x " * 1900, self.config))
+        self.assertFalse(duration_within_target("x " * 3100, self.config))
 
     def test_timeline_never_truncates_narration(self) -> None:
-        script = "x " * 1800
+        script = "x " * 3000
         duration = timeline_duration_seconds(script, self.config)
         self.assertGreaterEqual(duration, self.config.target_max_seconds)
         slots = build_timeline_slots(duration, self.config)
-        self.assertEqual([(s["start_seconds"], s["end_seconds"]) for s in slots[:5]], [(0, 3), (3, 6), (6, 9), (9, 12), (12, 15)])
-        self.assertEqual((slots[5]["start_seconds"], slots[5]["end_seconds"]), (15, 19))
+        self.assertEqual(
+            [(s["start_seconds"], s["end_seconds"]) for s in slots[:5]],
+            [(0, 3), (3, 6), (6, 9), (9, 12), (12, 15)],
+        )
+        self.assertEqual(
+            (slots[5]["start_seconds"], slots[5]["end_seconds"]), (15, 19)
+        )
         self.assertEqual(slots[-1]["end_seconds"], duration)
 
     def test_gate_is_deterministic(self) -> None:
@@ -54,9 +59,18 @@ class CoreTests(unittest.TestCase):
         editorial = {"approved": True, "score": 9.0, "factuality_risk": "low"}
         seo = {"approved": True, "score": 9.0}
         attention = {"approved": True, "score": 9.0}
-        self.assertTrue(evaluate_script_gate(script, editorial, seo, attention, self.config)["approved"])
-        editorial["factuality_risk"] = "medium"
-        self.assertFalse(evaluate_script_gate(script, editorial, seo, attention, self.config)["approved"])
+        voice = {"approved": True, "score": 9.1, "ai_smell_risk": "low"}
+        self.assertTrue(
+            evaluate_script_gate(
+                script, editorial, seo, attention, voice, self.config
+            )["approved"]
+        )
+        voice["ai_smell_risk"] = "medium"
+        self.assertFalse(
+            evaluate_script_gate(
+                script, editorial, seo, attention, voice, self.config
+            )["approved"]
+        )
 
     def test_retry_classification(self) -> None:
         self.assertTrue(is_retryable_exception(DummyRateLimitError("rate")))
