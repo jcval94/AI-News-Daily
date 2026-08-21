@@ -38,11 +38,37 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                                 "url": "https://example.com/story",
                                 "summary": "Resumen verificable",
                                 "why_it_matters": "Impacto claro",
-                                "category": "producto",
+                                "category": "educacion",
                             }
                         ],
                         "discarded_duplicates": [],
                         "selection_notes": [],
+                    }
+                }
+            if step == "plan_episode":
+                return {
+                    "episode_plan": {
+                        "central_question": "¿Qué cambia cuando delegamos parte de nuestro razonamiento?",
+                        "thesis": "La herramienta importa menos que la forma en que reorganiza nuestro criterio.",
+                        "hook": "¿Y si una herramienta que nos ayuda a pensar también cambia cómo pensamos?",
+                        "target_duration_minutes": 7.0,
+                        "narrative_arc": ["pregunta", "evidencia", "implicacion"],
+                        "stories": [
+                            {
+                                "selected_news_index": 1,
+                                "role": "anchor",
+                                "estimated_minutes": 5.5,
+                                "narrative_function": "plantear el problema",
+                                "beats": ["hecho", "contexto", "analogia", "impacto humano"],
+                                "analogy_goal": "comparar delegar criterio con usar una calculadora",
+                                "skepticism_angle": "separar capacidad real de marketing",
+                                "human_stakes": "aprendizaje y criterio",
+                                "open_loop": "la parte rara aparece cuando dejamos de verificar",
+                                "mini_conclusion": "la comodidad también cambia hábitos cognitivos",
+                            }
+                        ],
+                        "final_synthesis": "La pregunta no es solo qué puede hacer la IA, sino qué dejamos de hacer nosotros.",
+                        "closing_question": "¿Qué parte de tu criterio no delegarías?",
                     }
                 }
             if step == "write_script":
@@ -73,6 +99,21 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                     "attention_review": {
                         "score": 9.0,
                         "approved": True,
+                        "strengths": [],
+                        "problems": [],
+                        "improvements": [],
+                    }
+                }
+            if step == "voice_judge":
+                return {
+                    "voice_review": {
+                        "score": 9.1,
+                        "approved": True,
+                        "voice_fidelity": 9.2,
+                        "intellectual_depth": 9.0,
+                        "human_relevance": 9.3,
+                        "analogy_quality": 8.9,
+                        "ai_smell_risk": "low",
                         "strengths": [],
                         "problems": [],
                         "improvements": [],
@@ -112,15 +153,18 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             state = json.loads((result / "run_state.json").read_text(encoding="utf-8"))
             reviews = json.loads((result / "reviews.json").read_text(encoding="utf-8"))
             trace = json.loads((result / "execution_trace.json").read_text(encoding="utf-8"))
+            episode_plan = json.loads((result / "episode_plan.json").read_text(encoding="utf-8"))
             plan = json.loads((media / "2026-08-21" / "plan.json").read_text(encoding="utf-8"))
 
             self.assertEqual(state["status"], "approved")
             self.assertTrue(state["publishable"])
             self.assertTrue(reviews["gate"]["approved"])
+            self.assertEqual(reviews["voice_humanity"]["ai_smell_risk"], "low")
+            self.assertTrue(episode_plan["central_question"])
             self.assertGreaterEqual(plan["timeline_duration_seconds"], 420)
             self.assertEqual(plan["segments"][0]["start_seconds"], 0)
             self.assertEqual(plan["segments"][0]["end_seconds"], 3)
-            self.assertGreaterEqual(len(trace["agent_calls"]), 6)
+            self.assertGreaterEqual(len(trace["agent_calls"]), 8)
             self.assertEqual(trace["refinement_iterations"][0]["approved"], True)
 
 
