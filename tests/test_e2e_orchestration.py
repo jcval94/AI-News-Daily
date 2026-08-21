@@ -47,7 +47,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                 }
             if step == "write_script":
                 return {"draft_script": script}
-            if step == "judge_editorial":
+            if step == "editorial_judge":
                 return {
                     "review": {
                         "score": 9.2,
@@ -58,7 +58,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                         "improvements": [],
                     }
                 }
-            if step == "judge_seo":
+            if step == "seo_judge":
                 return {
                     "seo_review": {
                         "score": 9.0,
@@ -68,7 +68,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                         "improvements": [],
                     }
                 }
-            if step == "judge_attention":
+            if step == "attention_judge":
                 return {
                     "attention_review": {
                         "score": 9.0,
