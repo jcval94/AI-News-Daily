@@ -22,6 +22,8 @@ USER_ID = "github_actions"
 WORDS_PER_SECOND = float(os.getenv("WORDS_PER_SECOND", "2.5"))
 FIRST_15_SLOT_SECONDS = 3
 NORMAL_SLOT_SECONDS = 4
+TARGET_MIN_SECONDS = int(os.getenv("TARGET_MIN_SECONDS", "420"))
+TARGET_MAX_SECONDS = int(os.getenv("TARGET_MAX_SECONDS", "720"))
 MAX_MEDIA_DOWNLOADS = int(os.getenv("MAX_MEDIA_DOWNLOADS", "12"))
 DOWNLOAD_MULTIMEDIA = os.getenv("DOWNLOAD_MULTIMEDIA", "true").strip().lower() not in {"0", "false", "no"}
 SELECTION_HISTORY_DAYS = int(os.getenv("SELECTION_HISTORY_DAYS", "30"))
@@ -37,9 +39,9 @@ def parse_target_date(value: str | None) -> date:
 
 def expected_news_dates(target_date: date) -> list[date]:
     """Return the editorial input window for a Tuesday or Friday script."""
-    if target_date.weekday() == 1:  # Tuesday -> Friday, Saturday, Sunday, Monday
+    if target_date.weekday() == 1:
         offsets = (4, 3, 2, 1)
-    elif target_date.weekday() == 4:  # Friday -> Tuesday, Wednesday, Thursday
+    elif target_date.weekday() == 4:
         offsets = (3, 2, 1)
     else:
         raise ValueError(
@@ -72,21 +74,34 @@ def collect_available_news(news_dir: Path, target_date: date) -> tuple[str, list
 
 
 def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: int) -> str:
+    """Load only stories from previously approved episodes.
+
+    A failed/unapproved attempt must never make a story look already published.
+    """
     cutoff = target_date - timedelta(days=max(1, lookback_days))
     items: list[dict[str, Any]] = []
 
     if not scripts_dir.exists():
         return "[]"
 
-    for path in sorted(scripts_dir.glob("*/selected_news.json"), reverse=True):
+    for selected_path in sorted(scripts_dir.glob("*/selected_news.json"), reverse=True):
         try:
-            episode_date = datetime.strptime(path.parent.name, "%Y-%m-%d").date()
+            episode_date = datetime.strptime(selected_path.parent.name, "%Y-%m-%d").date()
         except ValueError:
             continue
         if episode_date >= target_date or episode_date < cutoff:
             continue
+
+        reviews_path = selected_path.parent / "reviews.json"
         try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
+            reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not bool(reviews.get("approved_for_multimedia", False)):
+            continue
+
+        try:
+            payload = json.loads(selected_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
         for item in payload.get("items", []):
@@ -131,10 +146,22 @@ async def run_agent(agent, initial_state: dict[str, Any], prompt: str) -> dict[s
     return dict(session.state)
 
 
-def estimate_duration_seconds(script: str) -> int:
+def estimate_spoken_duration_seconds(script: str) -> int:
     words = max(1, len(script.split()))
-    raw = max(60.0, min(100.0, words / WORDS_PER_SECOND))
-    return 15 + math.ceil(max(0.0, raw - 15) / NORMAL_SLOT_SECONDS) * NORMAL_SLOT_SECONDS
+    return max(1, math.ceil(words / WORDS_PER_SECOND))
+
+
+def timeline_duration_seconds(script: str) -> int:
+    """Round visual slots upward without truncating long narration."""
+    spoken = estimate_spoken_duration_seconds(script)
+    if spoken <= 15:
+        return 15
+    return 15 + math.ceil((spoken - 15) / NORMAL_SLOT_SECONDS) * NORMAL_SLOT_SECONDS
+
+
+def duration_within_target(script: str) -> bool:
+    spoken = estimate_spoken_duration_seconds(script)
+    return TARGET_MIN_SECONDS <= spoken <= TARGET_MAX_SECONDS
 
 
 def build_timeline_slots(duration_seconds: int) -> list[dict[str, Any]]:
@@ -210,8 +237,11 @@ def all_judges_approved(script_state: dict[str, Any]) -> bool:
     editorial = script_state.get("review") or {}
     seo = script_state.get("seo_review") or {}
     attention = script_state.get("attention_review") or {}
+    script = str(script_state.get("draft_script", "")).strip()
     return bool(
-        editorial.get("approved")
+        script
+        and duration_within_target(script)
+        and editorial.get("approved")
         and float(editorial.get("score", 0) or 0) >= QUALITY_THRESHOLD
         and str(editorial.get("factuality_risk", "")).lower() == "low"
         and seo.get("approved")
@@ -226,6 +256,7 @@ async def build(
     news_dir: Path,
     scripts_root: Path,
     multimedia_root: Path,
+    history_scripts_root: Path,
     max_media_downloads: int,
     download_multimedia: bool,
 ) -> Path | None:
@@ -253,7 +284,7 @@ async def build(
     episode_scripts_dir.mkdir(parents=True, exist_ok=True)
 
     previous_selected_news = load_selection_history(
-        scripts_root, target_date, SELECTION_HISTORY_DAYS
+        history_scripts_root, target_date, SELECTION_HISTORY_DAYS
     )
 
     script_state = await run_agent(
@@ -269,6 +300,9 @@ async def build(
     if not final_script:
         raise RuntimeError("ADK did not produce draft_script")
 
+    spoken_duration = estimate_spoken_duration_seconds(final_script)
+    within_duration = duration_within_target(final_script)
+
     (episode_scripts_dir / "script.txt").write_text(final_script + "\n", encoding="utf-8")
     write_json(episode_scripts_dir / "selected_news.json", script_state.get("selected_news", {}))
     approved = all_judges_approved(script_state)
@@ -276,6 +310,12 @@ async def build(
         episode_scripts_dir / "reviews.json",
         {
             "approved_for_multimedia": approved,
+            "duration": {
+                "estimated_spoken_seconds": spoken_duration,
+                "target_min_seconds": TARGET_MIN_SECONDS,
+                "target_max_seconds": TARGET_MAX_SECONDS,
+                "within_target": within_duration,
+            },
             "editorial": script_state.get("review", {}),
             "seo_master": script_state.get("seo_review", {}),
             "youtube_attention_master": script_state.get("attention_review", {}),
@@ -286,12 +326,13 @@ async def build(
 
     if not approved:
         print(
-            "The iteration cap was reached without unanimous judge approval. "
-            "Script/reviews were saved, but multimedia planning and downloading are skipped."
+            "The script did not pass every deterministic approval requirement "
+            f"(including {TARGET_MIN_SECONDS}-{TARGET_MAX_SECONDS}s duration). "
+            "Script/reviews were saved in the isolated run workspace, but multimedia is skipped."
         )
         return episode_scripts_dir
 
-    duration_seconds = estimate_duration_seconds(final_script)
+    duration_seconds = timeline_duration_seconds(final_script)
     timeline_slots = build_timeline_slots(duration_seconds)
     editor_state = await run_agent(
         multimedia_editor_agent,
@@ -312,7 +353,8 @@ async def build(
         episode_media_dir / "plan.json",
         {
             "script_date": target_date.isoformat(),
-            "duration_seconds": duration_seconds,
+            "spoken_duration_seconds": spoken_duration,
+            "timeline_duration_seconds": duration_seconds,
             "first_15_seconds_slot_size": FIRST_15_SLOT_SECONDS,
             "normal_slot_size": NORMAL_SLOT_SECONDS,
             "max_media_downloads": max(0, max_media_downloads),
@@ -354,6 +396,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--news-dir", default="news")
     parser.add_argument("--scripts-dir", default="scripts")
     parser.add_argument("--multimedia-dir", default="multimedia")
+    parser.add_argument(
+        "--history-scripts-dir",
+        default="scripts",
+        help="Canonical approved scripts used only for cross-episode deduplication history.",
+    )
     parser.add_argument("--max-media-downloads", type=int, default=MAX_MEDIA_DOWNLOADS)
     parser.add_argument(
         "--no-download-multimedia",
@@ -372,6 +419,7 @@ def main() -> None:
             news_dir=Path(args.news_dir),
             scripts_root=Path(args.scripts_dir),
             multimedia_root=Path(args.multimedia_dir),
+            history_scripts_root=Path(args.history_scripts_dir),
             max_media_downloads=args.max_media_downloads,
             download_multimedia=DOWNLOAD_MULTIMEDIA and not args.no_download_multimedia,
         )

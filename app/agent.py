@@ -14,6 +14,11 @@ QUALITY_THRESHOLD = float(os.getenv("SCRIPT_QUALITY_THRESHOLD", "8.7"))
 JUDGE_THRESHOLD = float(os.getenv("JUDGE_THRESHOLD", "8.5"))
 MAX_REFINEMENT_ITERATIONS = int(os.getenv("MAX_REFINEMENT_ITERATIONS", "5"))
 MAX_SELECTED_NEWS = int(os.getenv("MAX_SELECTED_NEWS", "8"))
+WORDS_PER_SECOND = float(os.getenv("WORDS_PER_SECOND", "2.5"))
+TARGET_MIN_SECONDS = int(os.getenv("TARGET_MIN_SECONDS", "420"))
+TARGET_MAX_SECONDS = int(os.getenv("TARGET_MAX_SECONDS", "720"))
+TARGET_MIN_WORDS = int(TARGET_MIN_SECONDS * WORDS_PER_SECOND)
+TARGET_MAX_WORDS = int(TARGET_MAX_SECONDS * WORDS_PER_SECOND)
 
 
 def model() -> LiteLlm:
@@ -82,7 +87,7 @@ selector_agent = Agent(
     instruction=f"""
 You are the editorial selection desk for a youth-oriented AI news video.
 Read all raw news in {{news_text}} and select ONLY the most relevant developments.
-Also inspect {{previous_selected_news}}, which contains stories already used in recent episodes.
+Also inspect {{previous_selected_news}}, which contains stories from recent APPROVED episodes only.
 
 Rules:
 - Return at most {MAX_SELECTED_NEWS} stories.
@@ -105,21 +110,32 @@ Rules:
 writer_agent = Agent(
     name="youth_script_writer",
     model=model(),
-    description="Writes a concise, energetic Spanish video script from selected verified AI news.",
-    instruction="""
-You write Spanish scripts for short-form videos aimed at people roughly 16-28 years old.
-Use ONLY {selected_news} as the editorial content and {news_text} as factual source material.
+    description="Writes an engaging 7-12 minute Spanish video script from selected verified AI news.",
+    instruction=f"""
+You write Spanish scripts for YouTube videos aimed at people roughly 16-28 years old.
+Use ONLY {{selected_news}} as editorial content and {{news_text}} as factual source material.
 Do not invent launches, dates, prices, quotes, benchmarks, people, companies, or capabilities.
 
-Goal:
-- 60-90 seconds when spoken naturally.
+The finished narration MUST be between 7 and 12 minutes when spoken naturally.
+At approximately {WORDS_PER_SECOND:.1f} words/second, the absolute range is about
+{TARGET_MIN_WORDS}-{TARGET_MAX_WORDS} words.
+Choose the duration according to the amount and depth of selected material rather than padding:
+- 1-2 substantive stories: aim near 7-8 minutes.
+- 3-4 substantive stories: aim near 8-9.5 minutes.
+- 5-6 substantive stories: aim near 9.5-10.5 minutes.
+- 7-8 substantive stories: aim near 10.5-12 minutes.
+Use the lower end when stories are shallow or closely related and the upper end only when the
+source material supports useful explanation. Never add filler to reach a duration.
+
+Editorial goals:
 - Open with a strong hook immediately.
 - Cover only the most important selected stories; do not force every story into the script.
 - Explain developments in plain Spanish and focus on what changed, who it affects and why it matters.
+- Give enough context, examples and implications to sustain a long-form 7-12 minute video.
 - Keep useful technical terms, but explain them briefly.
 - Use relevant names/keywords naturally so the topic is searchable, without keyword stuffing.
 - Maintain retention with concise transitions and curiosity, without fake urgency or clickbait.
-- End with a short closing question or CTA.
+- End with a concise closing question or CTA.
 
 Return ONLY the finished narration script. No notes, no score, no markdown table.
 """,
@@ -140,7 +156,12 @@ Be strict. Score 0-10 using these dimensions:
 - pacing and spoken naturalness: 15%
 - appeal to a young audience without sounding fake: 10%
 
-Set approved=true ONLY when score >= {QUALITY_THRESHOLD} AND factuality_risk is 'low'.
+The script must also stay inside the absolute duration range of 7-12 minutes,
+approximately {TARGET_MIN_WORDS}-{TARGET_MAX_WORDS} words at {WORDS_PER_SECOND:.1f} words/second.
+Treat a clearly shorter or longer script as NOT approved and request a length correction without filler.
+
+Set approved=true ONLY when score >= {QUALITY_THRESHOLD}, factuality_risk is 'low', and the script
+is plausibly inside the 7-12 minute duration range.
 List concrete problems and actionable improvements. Do not rewrite the script here.
 """,
     output_schema=ReviewResult,
@@ -183,7 +204,7 @@ Approve ONLY if score >= {JUDGE_THRESHOLD}.
 Evaluate whether:
 - the opening earns attention in the first 3 seconds;
 - the first 15 seconds create clear curiosity and value without false urgency;
-- pacing avoids long setup, repetition and dead zones;
+- pacing avoids long setup, repetition and dead zones across a 7-12 minute video;
 - transitions create forward momentum;
 - the strongest story appears early;
 - language sounds contemporary and human, not forced or cringe;
@@ -200,13 +221,15 @@ Do not rewrite the script.
 quality_gate_agent = Agent(
     name="quality_gate",
     model=model(),
-    description="Stops refinement only when all three judges approve the current script.",
+    description="Stops refinement only when all three judges and the duration requirement approve the current script.",
     instruction=f"""
-Read {{review}}, {{seo_review}} and {{attention_review}}.
+Read {{review}}, {{seo_review}}, {{attention_review}} and {{draft_script}}.
 Call exit_loop ONLY when ALL of the following are true:
 - review.approved is true, review.score >= {QUALITY_THRESHOLD}, review.factuality_risk is low;
 - seo_review.approved is true and seo_review.score >= {JUDGE_THRESHOLD};
-- attention_review.approved is true and attention_review.score >= {JUDGE_THRESHOLD}.
+- attention_review.approved is true and attention_review.score >= {JUDGE_THRESHOLD};
+- the current narration is plausibly between 7 and 12 minutes, approximately
+  {TARGET_MIN_WORDS}-{TARGET_MAX_WORDS} words at {WORDS_PER_SECOND:.1f} words/second.
 Otherwise do NOT call exit_loop and say only: CONTINUE.
 """,
     tools=[exit_loop],
@@ -217,11 +240,13 @@ refiner_agent = Agent(
     name="script_refiner",
     model=model(),
     description="Improves the script using feedback from all editorial judges.",
-    instruction="""
-Revise {draft_script} using every relevant item from {review}, {seo_review} and {attention_review}.
-Use {selected_news} and {news_text} as the only factual source of truth.
-Preserve correct facts, remove unsupported claims, improve the hook, retention, clarity and natural SEO,
-and keep the final spoken duration around 60-90 seconds.
+    instruction=f"""
+Revise {{draft_script}} using every relevant item from {{review}}, {{seo_review}} and {{attention_review}}.
+Use {{selected_news}} and {{news_text}} as the only factual source of truth.
+Preserve correct facts, remove unsupported claims, improve the hook, retention, clarity and natural SEO.
+The final spoken duration MUST stay between 7 and 12 minutes (roughly
+{TARGET_MIN_WORDS}-{TARGET_MAX_WORDS} words at {WORDS_PER_SECOND:.1f} words/second).
+Adjust depth and explanation rather than adding filler.
 Return ONLY the revised narration script.
 """,
     output_key="draft_script",
@@ -255,22 +280,18 @@ multimedia_editor_agent = Agent(
     instruction="""
 You are the Multimedia Editor Master for the approved narration in {final_script}.
 You receive the canonical timeline slots in {timeline_slots}.
-Return exactly one decision for every provided slot, preserving each slot_number/start_seconds/end_seconds.
-
-For each slot choose ONE mode:
-- presenter: a person should be on camera; no external multimedia should be downloaded.
-- media: external visual multimedia materially improves understanding or attention.
+Select ONLY the slots where external multimedia materially improves understanding or attention.
+Every timeline slot you omit is automatically treated as presenter/on-camera time.
 
 Rules:
-- Use at most {max_media_downloads} media slots. This is a hard cap.
+- Return at most {max_media_downloads} segments. This is a hard cap.
+- Every returned segment MUST use mode="media" and preserve a valid slot_number/start_seconds/end_seconds from the canonical timeline.
+- Do not return presenter segments; omitted slots are presenter by default.
 - Use media only when it adds real visual value; do not download filler.
-- Prefer presenter for transitions, opinions, connective narration and lines that benefit from human presence.
-- For media slots, visual_query must be a short ENGLISH query suitable for Pexels/Wikimedia Commons.
-- For presenter slots, visual_query must be empty.
+- visual_query must be a short ENGLISH query suitable for Pexels/Wikimedia Commons.
 - on_screen_text must be Spanish and at most 8 words.
 - Avoid copyrighted movie/TV footage and fabricated screenshots.
-- The first 15 seconds are split into 3-second slots to force a visible change every 3 seconds.
-  Honor those slots exactly; a visible change may be new media or a presenter shot/overlay decision.
+- The first 15 seconds are split into 3-second slots. The deterministic timeline preserves those visible changes even when a slot is presenter.
 """,
     output_schema=MultimediaPlan,
     output_key="multimedia_plan",

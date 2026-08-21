@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -10,8 +11,8 @@ from typing import Any
 WORDS_PER_SECOND = float(os.getenv("WORDS_PER_SECOND", "2.5"))
 FIRST_15_SLOT_SECONDS = 3
 NORMAL_SLOT_SECONDS = 4
-TARGET_MIN_SECONDS = 60
-TARGET_MAX_SECONDS = 90
+TARGET_MIN_SECONDS = int(os.getenv("TARGET_MIN_SECONDS", "420"))
+TARGET_MAX_SECONDS = int(os.getenv("TARGET_MAX_SECONDS", "720"))
 
 
 def parse_date(value: str) -> date:
@@ -19,9 +20,9 @@ def parse_date(value: str) -> date:
 
 
 def expected_news_dates(target_date: date) -> list[date]:
-    if target_date.weekday() == 1:  # Tuesday -> Friday, Saturday, Sunday, Monday
+    if target_date.weekday() == 1:
         offsets = (4, 3, 2, 1)
-    elif target_date.weekday() == 4:  # Friday -> Tuesday, Wednesday, Thursday
+    elif target_date.weekday() == 4:
         offsets = (3, 2, 1)
     else:
         raise ValueError(
@@ -49,10 +50,7 @@ def estimate_duration_seconds(script: str) -> int | None:
     if not script:
         return None
     words = max(1, len(script.split()))
-    raw = max(60.0, min(100.0, words / WORDS_PER_SECOND))
-    after_first_15 = max(0.0, raw - 15)
-    blocks = int((after_first_15 + NORMAL_SLOT_SECONDS - 1) // NORMAL_SLOT_SECONDS)
-    return 15 + blocks * NORMAL_SLOT_SECONDS
+    return max(1, math.ceil(words / WORDS_PER_SECOND))
 
 
 def meaningful_duplicates(values: list[Any]) -> list[str]:
@@ -104,10 +102,13 @@ def infer_status(
     approved_for_multimedia: bool,
     multimedia_plan_exists: bool,
 ) -> str:
-    if build_outcome.lower() not in {"success", "succeeded"}:
+    normalized = build_outcome.strip().lower()
+    if normalized in {"missing_openai_secret", "failure", "error"}:
         return "error"
-    if not sources["available_files"]:
+    if normalized == "no_source_news" or not sources["available_files"]:
         return "no_source_news"
+    if normalized == "script_not_approved":
+        return "script_not_approved"
     if script_exists and not approved_for_multimedia:
         return "script_not_approved"
     if approved_for_multimedia and multimedia_plan_exists:
@@ -135,9 +136,7 @@ def build_report(
     script = read_text(scripts_dir / "script.txt")
 
     selected_items = selected.get("items", []) if isinstance(selected, dict) else []
-    raw_duplicates = (
-        selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
-    )
+    raw_duplicates = selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
     duplicates = meaningful_duplicates(raw_duplicates)
     segments = media_plan.get("segments", []) if isinstance(media_plan, dict) else []
     media_segments = [s for s in segments if s.get("mode") == "media"]
@@ -148,10 +147,9 @@ def build_report(
 
     editorial = reviews.get("editorial", {}) if isinstance(reviews, dict) else {}
     seo = reviews.get("seo_master", {}) if isinstance(reviews, dict) else {}
-    attention = (
-        reviews.get("youtube_attention_master", {}) if isinstance(reviews, dict) else {}
-    )
+    attention = reviews.get("youtube_attention_master", {}) if isinstance(reviews, dict) else {}
     approved = bool(reviews.get("approved_for_multimedia", False)) if isinstance(reviews, dict) else False
+    duration_review = reviews.get("duration", {}) if isinstance(reviews, dict) else {}
     sources = source_window(news_dir, target_date)
     estimated_duration = estimate_duration_seconds(script)
 
@@ -164,8 +162,10 @@ def build_report(
     )
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "episode_date": episode,
+        "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
+        "git_sha": os.getenv("GITHUB_SHA"),
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "build_outcome": build_outcome,
@@ -180,6 +180,7 @@ def build_report(
             "download_multimedia": os.getenv("DOWNLOAD_MULTIMEDIA", "true").strip().lower()
             not in {"0", "false", "no"},
             "selection_history_days": int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
+            "words_per_second": WORDS_PER_SECOND,
             "first_15_seconds_slot_size": FIRST_15_SLOT_SECONDS,
             "normal_slot_size": NORMAL_SLOT_SECONDS,
             "target_duration_seconds": [TARGET_MIN_SECONDS, TARGET_MAX_SECONDS],
@@ -199,6 +200,7 @@ def build_report(
                 estimated_duration is not None
                 and TARGET_MIN_SECONDS <= estimated_duration <= TARGET_MAX_SECONDS
             ),
+            "runtime_duration_check": duration_review,
             "approved_for_multimedia": approved,
         },
         "judges": {

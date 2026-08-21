@@ -22,7 +22,7 @@ concurrency:
 jobs:
   build-video-kit:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
@@ -55,6 +55,17 @@ jobs:
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "Script target date: $TARGET_DATE"
 
+      - name: Prepare isolated run workspace
+        id: workspace
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+        run: |
+          RUN_ROOT=".pipeline-runs/$TARGET_DATE/$GITHUB_RUN_ID"
+          rm -rf "$RUN_ROOT"
+          mkdir -p "$RUN_ROOT/scripts" "$RUN_ROOT/multimedia"
+          echo "run_root=$RUN_ROOT" >> "$GITHUB_OUTPUT"
+          echo "Isolated run workspace: $RUN_ROOT"
+
       - name: Check OpenAI secret
         id: secret_check
         continue-on-error: true
@@ -67,7 +78,7 @@ jobs:
           fi
           echo "OPENAI_API_KEY is configured."
 
-      - name: Build approved script and required multimedia
+      - name: Build script in isolated workspace
         id: build
         if: steps.secret_check.outcome == 'success'
         continue-on-error: true
@@ -82,14 +93,45 @@ jobs:
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
           DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '720' }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           python -m pipeline.run \
             --target-date "${{ steps.script_date.outputs.target_date }}" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --history-scripts-dir scripts \
             --max-media-downloads "$MAX_MEDIA_DOWNLOADS"
 
-      - name: Create episode run report
+      - name: Determine episode outcome
+        id: episode_outcome
         if: always()
         env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          SECRET_OUTCOME: ${{ steps.secret_check.outcome }}
+          BUILD_STEP_OUTCOME: ${{ steps.build.outcome }}
+        run: |
+          if [ "$SECRET_OUTCOME" != "success" ]; then
+            STATUS="missing_openai_secret"
+          elif [ "$BUILD_STEP_OUTCOME" = "failure" ]; then
+            STATUS="failure"
+          elif [ ! -f "$RUN_ROOT/scripts/$TARGET_DATE/reviews.json" ]; then
+            STATUS="no_source_news"
+          elif jq -e '.approved_for_multimedia == true' "$RUN_ROOT/scripts/$TARGET_DATE/reviews.json" >/dev/null; then
+            STATUS="approved"
+          else
+            STATUS="script_not_approved"
+          fi
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "Episode outcome: $STATUS"
+
+      - name: Create isolated episode run report
+        id: report
+        if: always()
+        env:
+          EPISODE_RUN_ID: ${{ github.run_id }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
           SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
           JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
@@ -98,50 +140,76 @@ jobs:
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
           DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '720' }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          EPISODE_STATUS: ${{ steps.episode_outcome.outputs.status }}
         run: |
-          if [ "${{ steps.secret_check.outcome }}" != "success" ]; then
-            BUILD_OUTCOME="missing_openai_secret"
-          elif [ "${{ steps.build.outcome }}" = "failure" ]; then
-            BUILD_OUTCOME="failure"
-          else
-            BUILD_OUTCOME="success"
-          fi
+          case "$EPISODE_STATUS" in
+            approved) BUILD_OUTCOME="success" ;;
+            no_source_news) BUILD_OUTCOME="no_source_news" ;;
+            script_not_approved) BUILD_OUTCOME="script_not_approved" ;;
+            missing_openai_secret) BUILD_OUTCOME="missing_openai_secret" ;;
+            *) BUILD_OUTCOME="failure" ;;
+          esac
+
           python -m pipeline.report \
             --target-date "${{ steps.script_date.outputs.target_date }}" \
-            --build-outcome "$BUILD_OUTCOME"
+            --build-outcome "$BUILD_OUTCOME" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia"
 
-      - name: Commit generated editorial assets
-        if: always()
+      - name: Refresh branch before promotion
+        if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
+        run: git pull --rebase origin "$GITHUB_REF_NAME"
+
+      - name: Promote approved episode atomically
+        id: promote
+        if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          rm -rf "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          mkdir -p scripts multimedia
+          cp -R "$RUN_ROOT/scripts/$TARGET_DATE" "scripts/$TARGET_DATE"
+          cp -R "$RUN_ROOT/multimedia/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          echo "promoted=true" >> "$GITHUB_OUTPUT"
+          echo "Approved run promoted to canonical episode directories."
+
+      - name: Commit approved editorial assets
+        if: steps.promote.outputs.promoted == 'true'
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -- scripts multimedia videos
+          git add -- "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
           if git diff --cached --quiet; then
-            echo "No generated files to commit."
+            echo "No canonical episode changes to commit."
             exit 0
           fi
 
-          git commit -m "content: build AI news kit for $TARGET_DATE"
-          git pull --rebase origin "$GITHUB_REF_NAME"
+          git commit -m "content: publish approved AI news kit for $TARGET_DATE"
           git push origin "HEAD:$GITHUB_REF_NAME"
 
-      - name: Upload generated kit
+      - name: Upload isolated run artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ai-news-video-kit-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
-          path: |
-            scripts/${{ steps.script_date.outputs.target_date }}/
-            multimedia/${{ steps.script_date.outputs.target_date }}/
-            videos/
+          name: ai-news-run-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Propagate configuration/build failure
-        if: steps.secret_check.outcome != 'success' || steps.build.outcome == 'failure'
+      - name: Propagate non-publishable outcome
+        if: >-
+          steps.episode_outcome.outputs.status == 'missing_openai_secret' ||
+          steps.episode_outcome.outputs.status == 'failure' ||
+          steps.episode_outcome.outputs.status == 'script_not_approved' ||
+          steps.report.outcome == 'failure'
         run: |
-          echo "The pipeline did not complete successfully. run_report.json was generated before propagating the failure."
+          echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
+          echo "The isolated run report/artifact was preserved, but nothing was promoted to canonical episode folders."
           exit 1
