@@ -57,7 +57,19 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                         "thesis": "La herramienta importa menos que la forma en que reorganiza nuestro criterio.",
                         "hook": "¿Y si una herramienta que nos ayuda a pensar también cambia cómo pensamos?",
                         "target_duration_minutes": 7.0,
-                        "narrative_arc": ["pregunta", "evidencia", "implicacion"],
+                        "narrative_arc": {
+                            "opening_belief": "Delegar criterio parece una comodidad inocente.",
+                            "central_mystery": "¿Qué cambia en nosotros cuando dejamos de verificar?",
+                            "concrete_scene": "Imagina una decisión cotidiana que aceptamos sin revisar porque la IA suena segura.",
+                            "first_reveal": "La comodidad también modifica el hábito de comprobar.",
+                            "complication": "Verificar todo manualmente tampoco escala ni garantiza buen juicio.",
+                            "narrative_turn": "El problema deja de ser si la IA piensa y pasa a ser dónde ejercemos criterio.",
+                            "second_reveal": "El diseño del proceso decide qué parte del juicio permanece humana.",
+                            "evolved_thesis": "Automatizar no elimina el criterio: desplaza el lugar donde debemos ejercerlo conscientemente.",
+                            "recurring_motif": "¿Ya quedó?",
+                            "emotional_peak": "Una persona puede terminar asumiendo una decisión que nadie revisó realmente.",
+                            "final_payoff": "La pregunta ya no es si la herramienta resolvió algo, sino qué significa realmente decir que ya quedó.",
+                        },
                         "stories": [
                             {
                                 "selected_news_index": 1,

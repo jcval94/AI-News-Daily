@@ -18,7 +18,7 @@ class EssayFirstContractTests(unittest.TestCase):
         agent = Path("app/agent.py").read_text(encoding="utf-8")
 
         self.assertIn("The essay is the product. The news is evidence.", agent)
-        self.assertIn("Begin from the human observation/tension in episode_plan.hook, not from a headline", agent)
+        self.assertIn("Begin from the human observation/tension in episode_plan.hook and narrative_arc.opening_belief / central_mystery, not from a headline", agent)
         self.assertIn("Do NOT default to “hoy salió una noticia”", agent)
         self.assertIn("Never announce “la segunda noticia”", agent)
         self.assertIn("Connect evidence through ideas, not through artificial transitions between headlines", agent)
@@ -58,6 +58,15 @@ class EssayFirstContractTests(unittest.TestCase):
         self.assertIn("opening belief → mystery → evidence → first reveal", contract)
         self.assertIn("the exact conclusion is obvious after minute 2", contract)
         self.assertIn("recurring motif", contract)
+
+        agent = Path("app/agent.py").read_text(encoding="utf-8").lower()
+        self.assertIn("class narrativearc", agent)
+        self.assertIn("narrative_arc: narrativearc", agent)
+        self.assertIn("central_mystery", agent)
+        self.assertIn("narrative_turn", agent)
+        self.assertIn("evolved_thesis", agent)
+        self.assertIn("final_payoff", agent)
+        self.assertIn("if the exact conclusion is obvious after minute 2", agent)
 
 
 if __name__ == "__main__":
