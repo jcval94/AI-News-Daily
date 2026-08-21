@@ -42,15 +42,6 @@ jobs:
       - name: Validate Python sources
         run: python -m compileall app pipeline
 
-      - name: Check OpenAI secret
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY is not configured in repository Actions secrets."
-            exit 1
-          fi
-
       - name: Resolve script date
         id: script_date
         env:
@@ -64,7 +55,22 @@ jobs:
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "Script target date: $TARGET_DATE"
 
+      - name: Check OpenAI secret
+        id: secret_check
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured in repository Actions secrets."
+            exit 1
+          fi
+          echo "OPENAI_API_KEY is configured."
+
       - name: Build approved script and required multimedia
+        id: build
+        if: steps.secret_check.outcome == 'success'
+        continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -81,7 +87,31 @@ jobs:
             --target-date "${{ steps.script_date.outputs.target_date }}" \
             --max-media-downloads "$MAX_MEDIA_DOWNLOADS"
 
+      - name: Create episode run report
+        if: always()
+        env:
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+          MAX_SELECTED_NEWS: "8"
+          MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
+          DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+        run: |
+          if [ "${{ steps.secret_check.outcome }}" != "success" ]; then
+            BUILD_OUTCOME="missing_openai_secret"
+          elif [ "${{ steps.build.outcome }}" = "failure" ]; then
+            BUILD_OUTCOME="failure"
+          else
+            BUILD_OUTCOME="success"
+          fi
+          python -m pipeline.report \
+            --target-date "${{ steps.script_date.outputs.target_date }}" \
+            --build-outcome "$BUILD_OUTCOME"
+
       - name: Commit generated editorial assets
+        if: always()
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
         run: |
@@ -90,7 +120,7 @@ jobs:
 
           git add -- scripts multimedia videos
           if git diff --cached --quiet; then
-            echo "No generated files to commit. The pipeline may have skipped because no source news was available."
+            echo "No generated files to commit."
             exit 0
           fi
 
@@ -99,6 +129,7 @@ jobs:
           git push origin "HEAD:$GITHUB_REF_NAME"
 
       - name: Upload generated kit
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ai-news-video-kit-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
@@ -108,3 +139,9 @@ jobs:
             videos/
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Propagate configuration/build failure
+        if: steps.secret_check.outcome != 'success' || steps.build.outcome == 'failure'
+        run: |
+          echo "The pipeline did not complete successfully. run_report.json was generated before propagating the failure."
+          exit 1
