@@ -10,7 +10,9 @@ from pipeline.core import (
     evaluate_script_gate,
     expected_news_dates,
     is_retryable_exception,
+    nearest_essay_similarity,
     timeline_duration_seconds,
+    topic_similarity,
 )
 
 
@@ -75,6 +77,36 @@ class CoreTests(unittest.TestCase):
     def test_retry_classification(self) -> None:
         self.assertTrue(is_retryable_exception(DummyRateLimitError("rate")))
         self.assertFalse(is_retryable_exception(ValueError("bad input")))
+
+    def test_topic_similarity_detects_rephrased_same_angle(self) -> None:
+        left = "dependencia cognitiva: que dejamos de pensar cuando delegamos razonamiento a la IA"
+        right = "delegar razonamiento a inteligencia artificial y perder criterio o independencia cognitiva"
+        unrelated = "robots científicos para diseñar nuevos catalizadores en laboratorios físicos"
+        self.assertGreater(topic_similarity(left, right), topic_similarity(left, unrelated))
+        self.assertGreater(topic_similarity(left, right), 0.35)
+
+    def test_nearest_essay_similarity_returns_best_match(self) -> None:
+        previous = [
+            {
+                "episode_date": "2026-08-01",
+                "topic_signature": "dependencia cognitiva y delegación de razonamiento",
+                "central_question": "¿Qué dejamos de pensar cuando una IA piensa por nosotros?",
+                "thesis": "La comodidad puede cambiar hábitos cognitivos.",
+                "narrative_lens": "cognicion",
+            },
+            {
+                "episode_date": "2026-08-08",
+                "topic_signature": "IA científica en laboratorios físicos",
+                "central_question": "¿Puede una IA proponer experimentos útiles?",
+                "thesis": "La evidencia física cambia cómo medimos capacidad.",
+                "narrative_lens": "ciencia",
+            },
+        ]
+        nearest = nearest_essay_similarity(
+            "dependencia cognitiva delegar razonamiento perder criterio", previous
+        )
+        self.assertIsNotNone(nearest)
+        self.assertEqual(nearest["episode_date"], "2026-08-01")
 
 
 if __name__ == "__main__":
