@@ -115,7 +115,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             plan = json.loads((media / "2026-08-21" / "plan.json").read_text(encoding="utf-8"))
 
             self.assertEqual(state["status"], "approved")
-            self.assertTrue(state["approved_for_publication"])
+            self.assertTrue(state["publishable"])
             self.assertTrue(reviews["gate"]["approved"])
             self.assertGreaterEqual(plan["timeline_duration_seconds"], 420)
             self.assertEqual(plan["segments"][0]["start_seconds"], 0)
