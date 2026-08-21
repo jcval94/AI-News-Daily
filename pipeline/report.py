@@ -10,6 +10,8 @@ from typing import Any
 WORDS_PER_SECOND = float(os.getenv("WORDS_PER_SECOND", "2.5"))
 FIRST_15_SLOT_SECONDS = 3
 NORMAL_SLOT_SECONDS = 4
+TARGET_MIN_SECONDS = 60
+TARGET_MAX_SECONDS = 90
 
 
 def parse_date(value: str) -> date:
@@ -51,6 +53,20 @@ def estimate_duration_seconds(script: str) -> int | None:
     after_first_15 = max(0.0, raw - 15)
     blocks = int((after_first_15 + NORMAL_SLOT_SECONDS - 1) // NORMAL_SLOT_SECONDS)
     return 15 + blocks * NORMAL_SLOT_SECONDS
+
+
+def meaningful_duplicates(values: list[Any]) -> list[str]:
+    """Ignore model placeholders such as 'Ninguna...' that mean zero duplicates."""
+    result: list[str] = []
+    for value in values:
+        text = str(value or "").strip()
+        if not text:
+            continue
+        normalized = text.lower()
+        if normalized.startswith(("ninguna", "ninguno", "none", "no duplicate", "sin duplic")):
+            continue
+        result.append(text)
+    return result
 
 
 def source_window(news_dir: Path, target_date: date) -> dict[str, Any]:
@@ -119,9 +135,10 @@ def build_report(
     script = read_text(scripts_dir / "script.txt")
 
     selected_items = selected.get("items", []) if isinstance(selected, dict) else []
-    duplicates = (
+    raw_duplicates = (
         selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
     )
+    duplicates = meaningful_duplicates(raw_duplicates)
     segments = media_plan.get("segments", []) if isinstance(media_plan, dict) else []
     media_segments = [s for s in segments if s.get("mode") == "media"]
     presenter_segments = [s for s in segments if s.get("mode") == "presenter"]
@@ -136,6 +153,7 @@ def build_report(
     )
     approved = bool(reviews.get("approved_for_multimedia", False)) if isinstance(reviews, dict) else False
     sources = source_window(news_dir, target_date)
+    estimated_duration = estimate_duration_seconds(script)
 
     status = infer_status(
         build_outcome=build_outcome,
@@ -164,6 +182,7 @@ def build_report(
             "selection_history_days": int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
             "first_15_seconds_slot_size": FIRST_15_SLOT_SECONDS,
             "normal_slot_size": NORMAL_SLOT_SECONDS,
+            "target_duration_seconds": [TARGET_MIN_SECONDS, TARGET_MAX_SECONDS],
         },
         "selection": {
             "selected_count": len(selected_items),
@@ -175,7 +194,11 @@ def build_report(
             "exists": bool(script),
             "path": str(scripts_dir / "script.txt"),
             "word_count": len(script.split()) if script else 0,
-            "estimated_duration_seconds": estimate_duration_seconds(script),
+            "estimated_duration_seconds": estimated_duration,
+            "within_target_duration": (
+                estimated_duration is not None
+                and TARGET_MIN_SECONDS <= estimated_duration <= TARGET_MAX_SECONDS
+            ),
             "approved_for_multimedia": approved,
         },
         "judges": {
