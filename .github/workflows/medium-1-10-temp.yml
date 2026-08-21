@@ -7,6 +7,9 @@ on:
     paths:
       - tools/apply_medium_1_10.py
       - .github/workflows/medium-1-10-temp.yml
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -78,4 +81,5 @@ jobs:
           git diff --cached --check
           git diff --cached --stat
           git commit -m "fix: harden editorial calibration media and reproducibility"
+          git pull --rebase origin fix/medium-1-10-quality-hardening
           git push origin HEAD:fix/medium-1-10-quality-hardening
