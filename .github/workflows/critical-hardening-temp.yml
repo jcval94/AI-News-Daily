@@ -66,6 +66,18 @@ jobs:
           PY
       - name: Apply scoped hardening
         run: python tools/apply_critical_hardening.py
+      - name: Align writer contract regression assertion
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("tests/test_essay_first_contract.py")
+          text = path.read_text(encoding="utf-8")
+          old = 'Begin from the human observation/tension in episode_plan.hook, not from a headline'
+          new = 'Begin from the human observation/tension in episode_plan.hook and narrative_arc.opening_belief / central_mystery, not from a headline'
+          if text.count(old) != 1:
+              raise RuntimeError(f"Expected one stale writer assertion, found {text.count(old)}")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          PY
       - name: Validate
         run: |
           python -m compileall app pipeline
