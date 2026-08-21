@@ -2,11 +2,19 @@
 
 ## Producto editorial
 
-AI News Daily no es un resumen rápido de noticias. Usa noticias recientes como punto de partida para construir pequeños ensayos audiovisuales sobre IA, tecnología y personas.
+AI News Daily no es un canal de noticias con reflexión añadida. Es un canal de **video ensayos sobre inteligencia artificial que utiliza noticias recientes como materia prima**.
+
+La unidad editorial principal no es “la noticia”. Es una pregunta humana, una tensión, una contradicción o una idea que merece ser pensada durante varios minutos.
 
 Pregunta guía del canal:
 
 > ¿Qué nos está haciendo la inteligencia artificial al mismo tiempo que nosotros intentamos entender qué puede hacer la inteligencia artificial?
+
+Regla central:
+
+> Experiencia humana → tensión → espejo histórico → tesis → noticias como evidencia.
+
+Las noticias pueden apoyar, contradecir, complicar o volver concreta la tesis. Nunca deben dominar el episodio solo porque son recientes.
 
 ## Audiencia
 
@@ -24,52 +32,85 @@ Reglas:
 
 El episodio puede durar entre 7 y 20 minutos. La duración es una consecuencia de cuánto vale la pena decir, nunca una meta que deba rellenarse.
 
-Guía aproximada:
+Como guía editorial:
 
-- 1–2 historias sustantivas: 7–10 minutos.
-- 3–4 historias: 10–14 minutos.
-- 5–6 historias: 14–17 minutos.
-- 7–8 historias: 17–20 minutos.
+- una tesis con 1–2 casos fuertes puede sostener 7–10 minutos;
+- una tesis con 2–4 casos realmente distintos puede sostener 10–15 minutos;
+- solo usar más casos cuando cada uno añade una dimensión nueva.
 
-No todas las noticias seleccionadas deben aparecer. Una historia puede recibir varios minutos y otra apenas una mención breve si la relevancia lo justifica.
+No existe obligación de utilizar todas las noticias seleccionadas. Es preferible construir un gran ensayo con tres piezas de evidencia que mencionar ocho noticias de forma superficial.
 
-## Gramática narrativa
+## Gramática principal del episodio
 
-Para una historia principal, los movimientos disponibles son:
+La estructura preferida es:
 
-1. Hecho actual: qué noticia concreta acaba de ocurrir.
-2. Paralelo histórico inesperado: un momento anterior que ayude a ver el presente de otra manera.
-3. Pregunta o tensión: qué problema más profundo revela la comparación.
-4. Contexto: cómo llegamos hasta aquí.
-5. Explicación: bajar la complejidad a una experiencia humana.
-6. Giro: la pieza menos evidente.
-7. Escepticismo: qué es evidencia, qué es hype y qué no sabemos.
-8. Impacto humano: educación, trabajo, cognición, ética o sociedad.
-9. Lectura personal: qué significa esto desde la voz del narrador.
-10. Consecuencia o duda que permita avanzar.
+1. **Observación humana.** Una sensación, contradicción o experiencia reconocible que pueda existir aunque el espectador no conozca las noticias de la semana.
+2. **Tensión.** La parte que no termina de cuadrar: qué nos fascina, preocupa o resulta paradójico.
+3. **Espejo histórico.** Un precedente real que permita ver el presente con más perspectiva.
+4. **Pregunta de fondo.** La pregunta que vale el episodio.
+5. **Tesis provisional.** Una lectura inicial, no una conclusión cerrada.
+6. **Evidencia actual.** Una noticia entra porque ayuda a investigar la tesis.
+7. **Explicación y analogía.** Bajar la complejidad a una experiencia humana.
+8. **Contraste o segunda evidencia.** Otra noticia puede reforzar, complicar o contradecir la lectura inicial.
+9. **Nuevos espejos históricos o consecuencias humanas.** Solo cuando aportan una dimensión distinta.
+10. **Síntesis.** Qué patrón apareció al juntar presente, historia y experiencia humana.
+11. **Pregunta final.** Dejar una tensión genuina abierta.
 
-No es una plantilla obligatoria. La variación estructural es deseable y cada bloque debe sentirse distinto.
+Esto es una gramática, no una plantilla. Los episodios deben variar su recorrido.
 
-## Apertura: noticia → historia → pregunta
+## Apertura: experiencia → tensión → historia → pregunta
 
-La apertura ideal tiene tres movimientos claros:
+La apertura NO debe comportarse como una introducción de noticias.
 
-1. **La noticia de hoy.** En los primeros segundos debe aparecer el hecho concreto que justifica el episodio.
-2. **Un referente histórico inesperado pero real.** Puede ser de hace décadas, siglos o incluso milenios si ilumina la misma tensión humana.
-3. **La pregunta de fondo.** La comparación abre una pregunta que el resto del episodio intenta entender.
+La secuencia ideal es:
 
-Ejemplo conceptual:
+1. **Algo humano y reconocible.** Una observación que invite a pensar juntos.
+2. **Una incomodidad o paradoja.** Algo de la situación actual que no encaja del todo.
+3. **Un referente histórico inesperado pero real.** Debe iluminar la tensión, no adornarla.
+4. **La pregunta del ensayo.** Solo entonces queda claro qué vamos a investigar.
 
-> Hoy una empresa acaba de presentar una IA que puede hacer X. Lo curioso es que esta discusión no empezó con la IA. Hace más de dos mil años, en el *Fedro* de Platón, ya aparecía el temor de que una tecnología para guardar conocimiento debilitara nuestra memoria. Entonces la pregunta no es solo qué puede hacer este modelo. Es qué dejamos de hacer nosotros cuando una herramienta empieza a recordar por nosotros.
+La noticia puede aparecer después, como evidencia. No existe obligación de mencionar una empresa, modelo, paper o producto en los primeros segundos.
 
-El ejemplo muestra la estructura, no una plantilla literal.
+Ejemplo de energía, no de texto literal:
+
+> No sé si te pasa algo parecido, pero últimamente cada anuncio de inteligencia artificial me deja una sensación rara. No porque no me emocione. Al contrario. El problema es que cada vez cuesta más distinguir entre una herramienta que realmente amplía nuestra capacidad y una que simplemente empieza a hacer el trabajo mental por nosotros. Esa preocupación suena muy moderna, pero hace más de dos mil años Platón ya registraba una discusión extrañamente parecida sobre la escritura y la memoria. Entonces quizá la pregunta importante no sea qué puede hacer el modelo nuevo de esta semana. Quizá sea qué dejamos de hacer nosotros cuando una herramienta empieza a hacerlo por nosotros.
+
+Después de establecer esa tesis, una noticia reciente puede entrar como caso concreto.
 
 Evitar:
 
-- empezar con filosofía abstracta y tardar demasiado en contar la noticia;
+- “Hoy salió una noticia…” como apertura por defecto;
+- empezar por una marca, producto o benchmark antes de explicar por qué debería importarnos;
+- convertir el primer minuto en resumen de titulares;
+- fingir una experiencia personal para crear cercanía;
 - usar una referencia histórica solo porque suena culta;
 - inventar citas, fechas, libros, autores o anécdotas;
 - afirmar que “la gente decía exactamente lo mismo” si la evidencia solo muestra una preocupación parecida.
+
+## Cómo usar las noticias
+
+Cada noticia debe recibir una **función argumental** antes de entrar al guion.
+
+Funciones válidas:
+
+- **evidencia:** vuelve concreta una idea abstracta;
+- **contraejemplo:** muestra que la tesis inicial necesita matices;
+- **caso límite:** permite explorar hasta dónde llega una tendencia;
+- **consecuencia:** enseña qué ocurre cuando una idea sale del laboratorio;
+- **síntoma:** revela una transformación más grande;
+- **puente:** conecta una dimensión técnica con una humana.
+
+Si no puede explicar qué función cumple una noticia, se elimina del episodio.
+
+Los nombres propios son secundarios. Primero debe entenderse la idea; después puede aparecer el nombre del sistema, empresa o investigación.
+
+Ejemplo:
+
+> “Un grupo intentó medir algo bastante difícil: si una IA puede producir conocimiento nuevo y mostrar evidencia de cómo llegó ahí. La prueba se llama TRACES.”
+
+Es preferible a:
+
+> “Apodex presentó TRACES, un benchmark…”
 
 ## Referentes históricos curados
 
@@ -93,7 +134,7 @@ Estos ejemplos pueden usarse como **fuente factual editorial adicional**. El Wri
 
 - Periodo: 1890–1940.
 - Hecho seguro: investigaciones históricas encuentran que la electrificación de la manufactura estuvo acompañada por aumentos de productividad, nuevas inversiones y cambios en la organización del trabajo; el efecto no fue simplemente “cambiar una máquina por otra”.
-- Útil para: por qué una tecnología general tarda en transformar empresas, agentes que requieren rediseñar procesos y no solo añadir un chatbot.
+- Útil para: por qué una tecnología general tarda en transformar empresas y por qué automatizar exige rediseñar procesos.
 - Fuente: NBER — https://www.nber.org/papers/w28076
 
 ### 4. Antes de las computadoras electrónicas había personas llamadas “computers”
@@ -126,28 +167,40 @@ Estos ejemplos pueden usarse como **fuente factual editorial adicional**. El Wri
 
 ## Uso de historia durante el episodio
 
-- Incluir **un paralelo histórico fuerte en la apertura** cuando exista una conexión honesta.
-- Incluir normalmente **uno a tres paralelos adicionales** durante el desarrollo si ayudan a explicar una idea diferente.
+- Usar un paralelo histórico fuerte cerca de la apertura cuando exista una conexión honesta.
+- Incluir normalmente uno o dos paralelos adicionales durante el desarrollo si ayudan a explicar una dimensión diferente.
 - No convertir el guion en clase de historia.
 - Una referencia histórica debe hacer al menos una de estas cosas: mostrar que una preocupación es antigua, revelar que el resultado histórico fue contraintuitivo, mostrar cómo una tecnología cambió instituciones o permitir una analogía humana.
 - Si la relación es débil, no usarla.
 - Nunca inventar una cita para darle dramatismo.
 
-## Pregunta de fondo
+## Pregunta de fondo y tesis
 
-Cada episodio debe buscar una pregunta central que conecte honestamente las historias. Si las noticias no admiten una tesis fuerte, no forzar una falsa cohesión: usar una pregunta más amplia o agrupar las historias por contraste.
+El Editorial Director debe formular la pregunta **antes de decidir qué noticias utilizará**.
+
+Una buena pregunta:
+
+- existe aunque desaparezcan los titulares de esta semana;
+- tiene una dimensión humana;
+- admite incertidumbre y contradicción;
+- permite utilizar noticias como evidencia sin depender de ellas.
 
 Ejemplos:
 
-- ¿Estamos haciendo modelos más inteligentes o simplemente dándoles mejores herramientas?
-- ¿Qué significa aprender cuando una IA puede explicar casi cualquier concepto instantáneamente?
-- ¿La automatización nos libera del trabajo cognitivo o nos vuelve dependientes de ella?
+- ¿Qué dejamos de practicar cuando una máquina empieza a pensar con nosotros?
+- ¿Estamos usando la IA para ampliar nuestro criterio o para evitar ejercerlo?
+- ¿Qué significa aprender cuando obtener una explicación cuesta casi cero?
+- ¿Automatizar una tarea elimina una profesión o cambia aquello por lo que esa profesión tiene valor?
+
+La tesis es provisional. El episodio puede terminar más matizado que como empezó.
 
 ## Revelación progresiva
 
-Preferir descubrimiento sobre exposición. La audiencia no siempre recibe la conclusión primero: puede acompañar al narrador a descubrir el problema.
+Preferir descubrimiento sobre exposición. La audiencia acompaña al narrador a investigar una idea.
 
-Los open loops son válidos solo si existe una recompensa real. Una frase como “pero falta una pieza más extraña” sirve únicamente cuando después aparece una pieza genuinamente más interesante.
+Las noticias deben aparecer cuando el ensayo necesita evidencia, no cuando toca “cubrir” el siguiente titular.
+
+Los open loops son válidos solo si existe una recompensa real. Una frase como “pero hay una parte más extraña” sirve únicamente cuando después aparece una idea genuinamente más interesante.
 
 ## Analogías
 
@@ -164,29 +217,22 @@ Una buena analogía:
 - permite volver después a la precisión técnica;
 - reconoce sus límites cuando pudiera inducir una interpretación falsa.
 
-## Contexto histórico
-
-El “por qué llegamos hasta aquí” puede ser tan importante como el “qué pasó hoy”. El contexto histórico se usa para descubrir patrones, no para rellenar minutos ni presumir cultura general.
-
 ## Ritmo
 
 - Evitar ritmo de ametralladora.
 - Dejar respiraciones, ejemplos, preguntas y comentarios personales.
-- Variar duración y profundidad entre historias.
+- Variar duración y profundidad entre casos.
 - Las transiciones pueden ser imperfectas y conversacionales.
 - No repetir siempre “pregunta incómoda → explicación → mini conclusión”.
+- No anunciar “ahora la segunda noticia”. El ensayo debe fluir por ideas.
 
-## Cierre de historias
-
-Una historia importante debería dejar algo: una consecuencia, una duda, una lectura o una conexión con la pregunta de fondo. No es obligatorio cerrar cada bloque con una moraleja explícita.
-
-## Cierre del episodio
+## Cierre
 
 El episodio termina idealmente con:
 
-1. síntesis del patrón que emergió;
-2. pregunta reflexiva sin respuesta definitiva;
-3. CTA elegante y natural, por ejemplo: “si esta charla te sirvió, suscríbete”.
+1. una síntesis de lo que cambió en nuestra lectura inicial;
+2. una pregunta reflexiva sin respuesta definitiva;
+3. un CTA elegante y natural, por ejemplo: “si esta charla te sirvió, suscríbete”.
 
 ## Prioridades editoriales
 
