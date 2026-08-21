@@ -34,6 +34,7 @@ from app.agent import (
 from pipeline.core import (
     APPROVED,
     FAILURE,
+    NO_NOVEL_ESSAY_ANGLE,
     NO_RELEVANT_NEWS,
     NO_SOURCE_NEWS,
     SCRIPT_NOT_APPROVED,
@@ -42,6 +43,7 @@ from pipeline.core import (
     evaluate_script_gate,
     expected_news_dates,
     is_retryable_exception,
+    nearest_essay_similarity,
     timeline_duration_seconds,
 )
 from pipeline.media import download_shot_asset
@@ -124,6 +126,76 @@ def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: 
                     }
                 )
     return json.dumps(items[-40:], ensure_ascii=False)
+
+
+def load_essay_history(
+    scripts_dir: Path,
+    target_date: date,
+    lookback_days: int,
+    max_items: int,
+) -> list[dict[str, Any]]:
+    """Load recent approved essay identities, including same-day canonical reruns.
+
+    Modern episodes use episode_plan.json. Older approved episodes without a plan fall
+    back to a short script excerpt so the Director can still avoid reproducing the same
+    conceptual territory during migration.
+    """
+    cutoff = target_date.fromordinal(target_date.toordinal() - max(1, lookback_days))
+    essays: list[dict[str, Any]] = []
+    if not scripts_dir.exists():
+        return essays
+
+    for episode_dir in sorted(
+        (path for path in scripts_dir.iterdir() if path.is_dir()), reverse=True
+    ):
+        try:
+            episode_date = datetime.strptime(episode_dir.name, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if episode_date > target_date or episode_date < cutoff:
+            continue
+
+        reviews_path = episode_dir / "reviews.json"
+        try:
+            reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not bool(reviews.get("approved_for_multimedia", False)):
+            continue
+
+        plan: dict[str, Any] = {}
+        plan_path = episode_dir / "episode_plan.json"
+        if plan_path.exists():
+            try:
+                raw_plan = json.loads(plan_path.read_text(encoding="utf-8"))
+                if isinstance(raw_plan, dict):
+                    plan = raw_plan
+            except (OSError, json.JSONDecodeError):
+                plan = {}
+
+        script_excerpt = ""
+        script_path = episode_dir / "script.txt"
+        if script_path.exists():
+            try:
+                script_excerpt = script_path.read_text(encoding="utf-8").strip()[:1600]
+            except OSError:
+                script_excerpt = ""
+
+        fallback_signature = " ".join(script_excerpt.split()[:80])
+        essays.append(
+            {
+                "episode_date": episode_date.isoformat(),
+                "topic_signature": str(plan.get("topic_signature") or fallback_signature),
+                "central_question": str(plan.get("central_question") or ""),
+                "thesis": str(plan.get("thesis") or ""),
+                "narrative_lens": str(plan.get("narrative_lens") or "legacy_episode"),
+                "hook": str(plan.get("hook") or ""),
+                "script_excerpt": script_excerpt,
+            }
+        )
+        if len(essays) >= max_items:
+            break
+    return essays
 
 
 def load_editorial_profiles(editorial_dir: Path) -> tuple[str, str]:
@@ -391,6 +463,14 @@ async def build(
         previous_selected_news = load_selection_history(
             history_scripts_root, target_date, CONFIG.selection_history_days
         )
+        previous_essays = load_essay_history(
+            history_scripts_root,
+            target_date,
+            CONFIG.essay_history_days,
+            CONFIG.max_recent_essays,
+        )
+        previous_essays_json = json.dumps(previous_essays, ensure_ascii=False)
+
         selection_state = await run_agent(
             selector_agent,
             {"news_text": news_text, "previous_selected_news": previous_selected_news},
@@ -415,22 +495,105 @@ async def build(
             return episode_scripts_dir
 
         selected_json = json.dumps(selection, ensure_ascii=False)
-        director_state = await run_agent(
-            editorial_director_agent,
+        novelty_attempts: list[dict[str, Any]] = []
+        novelty_feedback = ""
+        episode_plan: dict[str, Any] | None = None
+
+        for novelty_attempt in range(1, CONFIG.max_novelty_replans + 2):
+            director_state = await run_agent(
+                editorial_director_agent,
+                {
+                    "news_text": news_text,
+                    "selected_news": selected_json,
+                    "voice_profile": voice_profile,
+                    "discourse_profile": discourse_profile,
+                    "previous_essays": previous_essays_json,
+                    "novelty_feedback": novelty_feedback,
+                },
+                (
+                    "Design a novel episode thesis, evidence strategy, narrative beats, and target duration. "
+                    "Do not repeat a recent essay merely with new headlines."
+                ),
+                step="plan_episode" if novelty_attempt == 1 else "replan_episode_novelty",
+                trace=agent_trace,
+                iteration=novelty_attempt,
+            )
+            candidate_plan = EpisodePlan.model_validate(
+                director_state.get("episode_plan", {})
+            ).model_dump()
+            validate_episode_plan(candidate_plan, len(selection["items"]))
+            candidate_topic = " ".join(
+                str(candidate_plan.get(key, "") or "")
+                for key in ("topic_signature", "central_question", "thesis", "narrative_lens")
+            )
+            nearest = nearest_essay_similarity(candidate_topic, previous_essays)
+            similarity = float(nearest.get("similarity", 0)) if nearest else 0.0
+            duplicate = bool(nearest and similarity >= CONFIG.essay_duplicate_threshold)
+            novelty_attempts.append(
+                {
+                    "attempt": novelty_attempt,
+                    "topic_signature": candidate_plan.get("topic_signature"),
+                    "narrative_lens": candidate_plan.get("narrative_lens"),
+                    "novelty_angle": candidate_plan.get("novelty_angle"),
+                    "nearest_previous_essay": nearest,
+                    "similarity": similarity,
+                    "threshold": CONFIG.essay_duplicate_threshold,
+                    "duplicate": duplicate,
+                }
+            )
+            episode_plan = candidate_plan
+            if not duplicate:
+                break
+            if novelty_attempt > CONFIG.max_novelty_replans:
+                break
+            novelty_feedback = json.dumps(
+                {
+                    "problem": "The proposed essay is too similar to a recent approved essay.",
+                    "nearest_previous_essay": nearest,
+                    "similarity": similarity,
+                    "threshold": CONFIG.essay_duplicate_threshold,
+                    "instruction": (
+                        "Change the underlying question, mechanism, human stakes, historical mirror, or "
+                        "narrative lens. Do not merely rephrase the current thesis."
+                    ),
+                },
+                ensure_ascii=False,
+            )
+
+        if episode_plan is None:
+            raise RuntimeError("Editorial Director did not produce an episode plan")
+
+        write_json(
+            episode_scripts_dir / "novelty_check.json",
             {
-                "news_text": news_text,
-                "selected_news": selected_json,
-                "voice_profile": voice_profile,
-                "discourse_profile": discourse_profile,
+                "history_days": CONFIG.essay_history_days,
+                "previous_essay_count": len(previous_essays),
+                "threshold": CONFIG.essay_duplicate_threshold,
+                "max_novelty_replans": CONFIG.max_novelty_replans,
+                "attempts": novelty_attempts,
             },
-            "Design the episode thesis, story roles, narrative beats, and target duration.",
-            step="plan_episode",
-            trace=agent_trace,
         )
-        episode_plan = EpisodePlan.model_validate(
-            director_state.get("episode_plan", {})
-        ).model_dump()
-        validate_episode_plan(episode_plan, len(selection["items"]))
+        final_novelty = novelty_attempts[-1]
+        if final_novelty.get("duplicate"):
+            write_json(episode_scripts_dir / "episode_plan.json", episode_plan)
+            validation_warnings.append(
+                "Editorial plan remained too similar to a recent approved essay after bounded replanning"
+            )
+            write_json(
+                state_path,
+                _run_state_payload(
+                    target_date=target_date,
+                    status=NO_NOVEL_ESSAY_ANGLE,
+                    reason=(
+                        "No sufficiently novel essay angle was found after bounded replanning; "
+                        f"nearest similarity={final_novelty.get('similarity')}"
+                    ),
+                    started_at=started_at,
+                    validation_warnings=validation_warnings,
+                ),
+            )
+            return episode_scripts_dir
+
         write_json(episode_scripts_dir / "episode_plan.json", episode_plan)
         episode_plan_json = json.dumps(episode_plan, ensure_ascii=False)
 
@@ -655,7 +818,7 @@ async def build(
             _run_state_payload(
                 target_date=target_date,
                 status=APPROVED,
-                reason="All deterministic, factual, narrative, voice, and quality gates passed",
+                reason="All deterministic, factual, narrative, voice, novelty, and quality gates passed",
                 started_at=started_at,
                 approved=True,
                 refinement_iterations=len(iteration_trace),
