@@ -1,0 +1,76 @@
+{
+  "approved_for_multimedia": true,
+  "duration": {
+    "estimated_spoken_seconds": 458,
+    "target_min_seconds": 420,
+    "target_max_seconds": 720,
+    "within_target": true
+  },
+  "editorial": {
+    "score": 9.1,
+    "approved": true,
+    "factuality_risk": "low",
+    "strengths": [
+      "Se ajusta al requisito de 3 historias/blocks (coche / seguridad / ciencia unificada AQCat+AQPotency+TRACES).",
+      "Mejora clara en riesgo factual: predominan encuadres como “según el anuncio / según lo que presenta” y “en su planteamiento”.",
+      "Incluye explícitamente la verificación operativa solicitada por el juez: rango de duración y nota de palabras/duración estimada (~1450–1650 palabras; 9–11 min).",
+      "Estructura, claridad y ritmo por timestamps y subsecciones 3A/3B/3C facilitan locución y edición.",
+      "Cierre incluye una señal concreta de verificación con bullets implícitos (aunque no enumerados) antes de la pregunta final; además hay un remate de decisión entre las 3 señales. ",
+      "Aun con alguna frase conclusiva, está razonablemente moderada por el encuadre “según estas noticias/anuncios”."
+    ],
+    "problems": [
+      "Queda 1–2 frases con tono generalizable (“En esta narrativa, el conjunto encaja así…”) que podrían empujar a un juez a pedir atribución todavía más explícita, aunque el riesgo es bajo.",
+      "En el cierre hay dos preguntas seguidas (una larga antes del remate y otra para decidir). No es un fallo, pero puede afectar ritmo si el editor busca máxima retención."
+    ],
+    "improvements": [
+      "Podrías eliminar o acortar una de las dos preguntas del cierre (por ejemplo, dejar solo la de decisión final) para mejorar pacing y asegurar margen de duración.",
+      "Para máxima seguridad factual, ajustar 1 frase del tipo “aparece un patrón común” a “los anuncios construyen el mismo patrón” (micro-atribución) si el juez fuera particularmente estricto."
+    ]
+  },
+  "seo_master": {
+    "score": 9.0,
+    "approved": true,
+    "strengths": [
+      "Se respeta el encargo de 3 historias/blocks (TIER IV+Renesas / Harness / Ciencia unificada AQCat+AQPotency+TRACES).",
+      "Se preservan los nombres/entidades más relevantes para búsqueda y editorialmente (TIER IV, Renesas R-Car Gen 5, Autoware; Harness; MCP, Claude Science, SandboxAQ, AQCat, AQPotency, Apodex, TRACES).",
+      "Riesgo de factualidad bajo: la redacción usa encuadres como “según el anuncio / según lo que presenta / en su planteamiento / según estas noticias”.",
+      "El requisito operativo del judge queda cubierto: se incluye estimación de longitud (~1450–1650 palabras) y duración (9–11 min) en la nota final.",
+      "Estructura lista para locución con timestamps y subbloques 3A/3B/3C; buen pacing general.",
+      "Cierre con criterios de verificación y además una pregunta de decisión final que refuerza engagement, sin clickbait."
+    ],
+    "problems": [
+      "Aparecen una o dos formulaciones “de síntesis” que podrían pedir atribución aún más explícita si el juez es muy estricto (p. ej., frases tipo “aparece un patrón común” y “en el conjunto encaja así”).",
+      "Hay dos preguntas en el cierre (una antes del remate y otra para decidir). No es un fallo, pero puede afectar ritmo si el editor prioriza máxima retención y compresión."
+    ],
+    "improvements": [
+      "Micro-ajuste de 1–2 frases de síntesis para atribución directa: cambiar “aparece un patrón común” por “en estos anuncios se repite/ se plantea un patrón” y “encaja así” por “los anuncios lo presentan así”.",
+      "Eliminar o acortar una de las dos preguntas del cierre para dejar solo la de decisión final (mantener los bullets/criterios previos como CTA)."
+    ]
+  },
+  "youtube_attention_master": {
+    "score": 9.2,
+    "approved": true,
+    "strengths": [
+      "Cumple estrictamente el encargo de 3 historias/blocks (coche; seguridad; ciencia unificada con AQCat+AQPotency+TRACES).",
+      "Riesgo de factualidad bajo: predominan encuadres de atribución (“según el anuncio”, “según lo descrito”, “en su planteamiento”, “según estas noticias”).",
+      "Incluye el requisito operativo que antes bloqueaba: nota final con rango de palabras (~1450–1650) y duración estimada (9–11 min).",
+      "Estructura y legibilidad para locución: timestamps + subsecciones 3A/3B/3C; párrafos de una idea por bloque y mini-ejemplos cotidianos.",
+      "Cierre con criterios concretos de verificación (herramientas/benchmark/verificación) y pregunta de decisión para engagement."
+    ],
+    "problems": [
+      "Quedan 1–2 frases de síntesis que podrían pedir atribución aún más explícita si el juez es extremadamente estricto (p. ej., “aparece un patrón común / en el conjunto encaja así”).",
+      "En el cierre hay dos preguntas seguidas (una antes del remate y otra para decidir), lo que puede afectar pacing/retención si se quiere máxima compresión."
+    ],
+    "improvements": [
+      "Ajuste mínimo de atribución en 1–2 frases de síntesis: cambia “aparece un patrón común” por “en estos anuncios se repite/ se plantea un patrón” (y similares).",
+      "Reduce el cierre a una sola pregunta: conserva los criterios (verificación/evidencia) y deja solo la pregunta final de decisión."
+    ]
+  },
+  "source_files": [
+    "2026-08-20.txt"
+  ],
+  "missing_dates": [
+    "2026-08-18",
+    "2026-08-19"
+  ]
+}

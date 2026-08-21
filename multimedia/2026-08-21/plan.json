@@ -1,0 +1,1170 @@
+{
+  "script_date": "2026-08-21",
+  "spoken_duration_seconds": 458,
+  "timeline_duration_seconds": 459,
+  "first_15_seconds_slot_size": 3,
+  "normal_slot_size": 4,
+  "max_media_downloads": 12,
+  "segments": [
+    {
+      "slot_number": 1,
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "duration_seconds": 3,
+      "mode": "media",
+      "visual_query": "autonomous car driving on road with sensors",
+      "on_screen_text": "IA que opera en el mundo",
+      "reason": "Abrir con una imagen que ancle el tema: IA aplicada a sistemas reales (coches y sensores)."
+    },
+    {
+      "slot_number": 2,
+      "start_seconds": 3,
+      "end_seconds": 6,
+      "duration_seconds": 3,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 3,
+      "start_seconds": 6,
+      "end_seconds": 9,
+      "duration_seconds": 3,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 4,
+      "start_seconds": 9,
+      "end_seconds": 12,
+      "duration_seconds": 3,
+      "mode": "media",
+      "visual_query": "software code on screen with network lines",
+      "on_screen_text": "Plataformas AI-native",
+      "reason": "Visualizar la idea de stack/software que define el vehículo, con estética de código/red."
+    },
+    {
+      "slot_number": 5,
+      "start_seconds": 12,
+      "end_seconds": 15,
+      "duration_seconds": 3,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 6,
+      "start_seconds": 15,
+      "end_seconds": 19,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "automotive electronic control unit ECU circuit board",
+      "on_screen_text": "Computo dentro del vehículo",
+      "reason": "Ayuda a entender “stack dentro de la arquitectura” con un visual de electrónica automotriz."
+    },
+    {
+      "slot_number": 7,
+      "start_seconds": 19,
+      "end_seconds": 23,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 8,
+      "start_seconds": 23,
+      "end_seconds": 27,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 9,
+      "start_seconds": 27,
+      "end_seconds": 31,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 10,
+      "start_seconds": 31,
+      "end_seconds": 35,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "cybersecurity dashboard alert with shield icon",
+      "on_screen_text": "Defensa a velocidad de máquina",
+      "reason": "Representa el enfoque de seguridad: pipeline/alertas y protección rápida."
+    },
+    {
+      "slot_number": 11,
+      "start_seconds": 35,
+      "end_seconds": 39,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "hacker typing on keyboard with lock symbol",
+      "on_screen_text": "Zero-day y mitigación",
+      "reason": "Aporta contexto visual de threat model y urgencia (zero-day) sin contenido específico."
+    },
+    {
+      "slot_number": 12,
+      "start_seconds": 39,
+      "end_seconds": 43,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 13,
+      "start_seconds": 43,
+      "end_seconds": 47,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 14,
+      "start_seconds": 47,
+      "end_seconds": 51,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "software patching workflow diagram",
+      "on_screen_text": "SAST → triage → remediación",
+      "reason": "Ilustrar el flujo de trabajo de seguridad (SAST, triage, remediación) con un diagrama/estilo infográfico."
+    },
+    {
+      "slot_number": 15,
+      "start_seconds": 51,
+      "end_seconds": 55,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 16,
+      "start_seconds": 55,
+      "end_seconds": 59,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 17,
+      "start_seconds": 59,
+      "end_seconds": 63,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 18,
+      "start_seconds": 63,
+      "end_seconds": 67,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "molecular model and lab chemistry background",
+      "on_screen_text": "Ciencia con herramientas",
+      "reason": "Visualizar el paso a discovery/fármacos con moléculas y laboratorio."
+    },
+    {
+      "slot_number": 19,
+      "start_seconds": 67,
+      "end_seconds": 71,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 20,
+      "start_seconds": 71,
+      "end_seconds": 75,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 21,
+      "start_seconds": 75,
+      "end_seconds": 79,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 22,
+      "start_seconds": 79,
+      "end_seconds": 83,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "chemical reaction schematic catalyst",
+      "on_screen_text": "AQCat: priorizar catalizadores",
+      "reason": "Representar catalizadores/predicciones cuantitativas en un visual de química."
+    },
+    {
+      "slot_number": 23,
+      "start_seconds": 83,
+      "end_seconds": 87,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 24,
+      "start_seconds": 87,
+      "end_seconds": 91,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 25,
+      "start_seconds": 91,
+      "end_seconds": 95,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 26,
+      "start_seconds": 95,
+      "end_seconds": 99,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 27,
+      "start_seconds": 99,
+      "end_seconds": 103,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "molecular docking simulation abstract visualization",
+      "on_screen_text": "AQPotency sin estructura 3D",
+      "reason": "Conectar el cribado virtual sin estructura 3D con una imagen estilo docking/simulación."
+    },
+    {
+      "slot_number": 28,
+      "start_seconds": 103,
+      "end_seconds": 107,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 29,
+      "start_seconds": 107,
+      "end_seconds": 111,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 30,
+      "start_seconds": 111,
+      "end_seconds": 115,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 31,
+      "start_seconds": 115,
+      "end_seconds": 119,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 32,
+      "start_seconds": 119,
+      "end_seconds": 123,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "scientific benchmark scoreboard abstract",
+      "on_screen_text": "TRACES: evidencia verificable",
+      "reason": "Acompañar la explicación del benchmark con una visual tipo métrica/evidencia."
+    },
+    {
+      "slot_number": 33,
+      "start_seconds": 123,
+      "end_seconds": 127,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 34,
+      "start_seconds": 127,
+      "end_seconds": 131,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 35,
+      "start_seconds": 131,
+      "end_seconds": 135,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 36,
+      "start_seconds": 135,
+      "end_seconds": 139,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 37,
+      "start_seconds": 139,
+      "end_seconds": 143,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 38,
+      "start_seconds": 143,
+      "end_seconds": 147,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 39,
+      "start_seconds": 147,
+      "end_seconds": 151,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 40,
+      "start_seconds": 151,
+      "end_seconds": 155,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 41,
+      "start_seconds": 155,
+      "end_seconds": 159,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 42,
+      "start_seconds": 159,
+      "end_seconds": 163,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "scientist using tablet with charts and data",
+      "on_screen_text": "Verificar resultados, no claims",
+      "reason": "Cierre temático: evidencia/validación con un visual de análisis científico en datos."
+    },
+    {
+      "slot_number": 43,
+      "start_seconds": 163,
+      "end_seconds": 167,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 44,
+      "start_seconds": 167,
+      "end_seconds": 171,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 45,
+      "start_seconds": 171,
+      "end_seconds": 175,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 46,
+      "start_seconds": 175,
+      "end_seconds": 179,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "checkmark and shield icon over research documents",
+      "on_screen_text": "Herramientas + ciclo + prueba",
+      "reason": "Final fuerte reforzando la triada: herramientas, ciclo, verificación (comprobabilidad)."
+    },
+    {
+      "slot_number": 47,
+      "start_seconds": 179,
+      "end_seconds": 183,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 48,
+      "start_seconds": 183,
+      "end_seconds": 187,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 49,
+      "start_seconds": 187,
+      "end_seconds": 191,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 50,
+      "start_seconds": 191,
+      "end_seconds": 195,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 51,
+      "start_seconds": 195,
+      "end_seconds": 199,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 52,
+      "start_seconds": 199,
+      "end_seconds": 203,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 53,
+      "start_seconds": 203,
+      "end_seconds": 207,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 54,
+      "start_seconds": 207,
+      "end_seconds": 211,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 55,
+      "start_seconds": 211,
+      "end_seconds": 215,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 56,
+      "start_seconds": 215,
+      "end_seconds": 219,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 57,
+      "start_seconds": 219,
+      "end_seconds": 223,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 58,
+      "start_seconds": 223,
+      "end_seconds": 227,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 59,
+      "start_seconds": 227,
+      "end_seconds": 231,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 60,
+      "start_seconds": 231,
+      "end_seconds": 235,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 61,
+      "start_seconds": 235,
+      "end_seconds": 239,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 62,
+      "start_seconds": 239,
+      "end_seconds": 243,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 63,
+      "start_seconds": 243,
+      "end_seconds": 247,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 64,
+      "start_seconds": 247,
+      "end_seconds": 251,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 65,
+      "start_seconds": 251,
+      "end_seconds": 255,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 66,
+      "start_seconds": 255,
+      "end_seconds": 259,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 67,
+      "start_seconds": 259,
+      "end_seconds": 263,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 68,
+      "start_seconds": 263,
+      "end_seconds": 267,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 69,
+      "start_seconds": 267,
+      "end_seconds": 271,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 70,
+      "start_seconds": 271,
+      "end_seconds": 275,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 71,
+      "start_seconds": 275,
+      "end_seconds": 279,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 72,
+      "start_seconds": 279,
+      "end_seconds": 283,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 73,
+      "start_seconds": 283,
+      "end_seconds": 287,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 74,
+      "start_seconds": 287,
+      "end_seconds": 291,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 75,
+      "start_seconds": 291,
+      "end_seconds": 295,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 76,
+      "start_seconds": 295,
+      "end_seconds": 299,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 77,
+      "start_seconds": 299,
+      "end_seconds": 303,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 78,
+      "start_seconds": 303,
+      "end_seconds": 307,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 79,
+      "start_seconds": 307,
+      "end_seconds": 311,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 80,
+      "start_seconds": 311,
+      "end_seconds": 315,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 81,
+      "start_seconds": 315,
+      "end_seconds": 319,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 82,
+      "start_seconds": 319,
+      "end_seconds": 323,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 83,
+      "start_seconds": 323,
+      "end_seconds": 327,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 84,
+      "start_seconds": 327,
+      "end_seconds": 331,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 85,
+      "start_seconds": 331,
+      "end_seconds": 335,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 86,
+      "start_seconds": 335,
+      "end_seconds": 339,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 87,
+      "start_seconds": 339,
+      "end_seconds": 343,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 88,
+      "start_seconds": 343,
+      "end_seconds": 347,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 89,
+      "start_seconds": 347,
+      "end_seconds": 351,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 90,
+      "start_seconds": 351,
+      "end_seconds": 355,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 91,
+      "start_seconds": 355,
+      "end_seconds": 359,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 92,
+      "start_seconds": 359,
+      "end_seconds": 363,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 93,
+      "start_seconds": 363,
+      "end_seconds": 367,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 94,
+      "start_seconds": 367,
+      "end_seconds": 371,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 95,
+      "start_seconds": 371,
+      "end_seconds": 375,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 96,
+      "start_seconds": 375,
+      "end_seconds": 379,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 97,
+      "start_seconds": 379,
+      "end_seconds": 383,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 98,
+      "start_seconds": 383,
+      "end_seconds": 387,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 99,
+      "start_seconds": 387,
+      "end_seconds": 391,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 100,
+      "start_seconds": 391,
+      "end_seconds": 395,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 101,
+      "start_seconds": 395,
+      "end_seconds": 399,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 102,
+      "start_seconds": 399,
+      "end_seconds": 403,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 103,
+      "start_seconds": 403,
+      "end_seconds": 407,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 104,
+      "start_seconds": 407,
+      "end_seconds": 411,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 105,
+      "start_seconds": 411,
+      "end_seconds": 415,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 106,
+      "start_seconds": 415,
+      "end_seconds": 419,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 107,
+      "start_seconds": 419,
+      "end_seconds": 423,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 108,
+      "start_seconds": 423,
+      "end_seconds": 427,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 109,
+      "start_seconds": 427,
+      "end_seconds": 431,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 110,
+      "start_seconds": 431,
+      "end_seconds": 435,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 111,
+      "start_seconds": 435,
+      "end_seconds": 439,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 112,
+      "start_seconds": 439,
+      "end_seconds": 443,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 113,
+      "start_seconds": 443,
+      "end_seconds": 447,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 114,
+      "start_seconds": 447,
+      "end_seconds": 451,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 115,
+      "start_seconds": 451,
+      "end_seconds": 455,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    },
+    {
+      "slot_number": 116,
+      "start_seconds": 455,
+      "end_seconds": 459,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "",
+      "reason": ""
+    }
+  ]
+}

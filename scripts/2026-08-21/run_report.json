@@ -1,0 +1,125 @@
+{
+  "schema_version": 2,
+  "episode_date": "2026-08-21",
+  "run_id": "32497237570",
+  "git_sha": "b6bb29cbc57563de30e0ffb4be499ba9d7c5b4af",
+  "generated_at_utc": "2026-08-21T15:26:13.949847+00:00",
+  "status": "complete",
+  "build_outcome": "success",
+  "source_window": {
+    "expected_dates": [
+      "2026-08-18",
+      "2026-08-19",
+      "2026-08-20"
+    ],
+    "available_files": [
+      "2026-08-20.txt"
+    ],
+    "missing_dates": [
+      "2026-08-18",
+      "2026-08-19"
+    ]
+  },
+  "configuration": {
+    "openai_model": "gpt-5.4-nano",
+    "script_quality_threshold": 8.7,
+    "judge_threshold": 8.5,
+    "max_refinement_iterations": 5,
+    "max_selected_news": 8,
+    "max_media_downloads": 12,
+    "download_multimedia": true,
+    "selection_history_days": 30,
+    "words_per_second": 2.5,
+    "first_15_seconds_slot_size": 3,
+    "normal_slot_size": 4,
+    "target_duration_seconds": [
+      420,
+      720
+    ]
+  },
+  "selection": {
+    "selected_count": 8,
+    "selected_titles": [
+      "TIER IV y Renesas preparan una plataforma abierta y AI-native para vehículos definidos por software",
+      "Harness lanza agentes de IA para responder a vulnerabilidades a velocidad de máquina",
+      "SandboxAQ hace disponible AQCat en Claude Science mediante MCP",
+      "Apodex presenta TRACES, un benchmark para medir descubrimiento científico real por IA",
+      "SandboxAQ lanza AQPotency para cribado virtual de fármacos sin estructura proteica resuelta",
+      "Natural consigue una línea de crédito de hasta 100 millones de dólares para pagos ejecutados por agentes de IA",
+      "GrowthLoop amplía su plataforma de commerce media con agentic AI e integraciones de adtech",
+      "AuraGxP amplía liderazgo y financiamiento para acelerar su hoja de ruta de Agentic AI en life sciences"
+    ],
+    "discarded_duplicates_count": 0,
+    "discarded_duplicates": []
+  },
+  "script": {
+    "exists": true,
+    "path": ".pipeline-runs/2026-08-21/32497237570/scripts/2026-08-21/script.txt",
+    "word_count": 1145,
+    "estimated_duration_seconds": 458,
+    "within_target_duration": true,
+    "runtime_duration_check": {
+      "estimated_spoken_seconds": 458,
+      "target_min_seconds": 420,
+      "target_max_seconds": 720,
+      "within_target": true
+    },
+    "approved_for_multimedia": true
+  },
+  "judges": {
+    "editorial": {
+      "approved": true,
+      "score": 9.1,
+      "problems": [
+        "Queda 1–2 frases con tono generalizable (“En esta narrativa, el conjunto encaja así…”) que podrían empujar a un juez a pedir atribución todavía más explícita, aunque el riesgo es bajo.",
+        "En el cierre hay dos preguntas seguidas (una larga antes del remate y otra para decidir). No es un fallo, pero puede afectar ritmo si el editor busca máxima retención."
+      ],
+      "improvements": [
+        "Podrías eliminar o acortar una de las dos preguntas del cierre (por ejemplo, dejar solo la de decisión final) para mejorar pacing y asegurar margen de duración.",
+        "Para máxima seguridad factual, ajustar 1 frase del tipo “aparece un patrón común” a “los anuncios construyen el mismo patrón” (micro-atribución) si el juez fuera particularmente estricto."
+      ],
+      "factuality_risk": "low"
+    },
+    "seo_master": {
+      "approved": true,
+      "score": 9.0,
+      "problems": [
+        "Aparecen una o dos formulaciones “de síntesis” que podrían pedir atribución aún más explícita si el juez es muy estricto (p. ej., frases tipo “aparece un patrón común” y “en el conjunto encaja así”).",
+        "Hay dos preguntas en el cierre (una antes del remate y otra para decidir). No es un fallo, pero puede afectar ritmo si el editor prioriza máxima retención y compresión."
+      ],
+      "improvements": [
+        "Micro-ajuste de 1–2 frases de síntesis para atribución directa: cambiar “aparece un patrón común” por “en estos anuncios se repite/ se plantea un patrón” y “encaja así” por “los anuncios lo presentan así”.",
+        "Eliminar o acortar una de las dos preguntas del cierre para dejar solo la de decisión final (mantener los bullets/criterios previos como CTA)."
+      ]
+    },
+    "youtube_attention_master": {
+      "approved": true,
+      "score": 9.2,
+      "problems": [
+        "Quedan 1–2 frases de síntesis que podrían pedir atribución aún más explícita si el juez es extremadamente estricto (p. ej., “aparece un patrón común / en el conjunto encaja así”).",
+        "En el cierre hay dos preguntas seguidas (una antes del remate y otra para decidir), lo que puede afectar pacing/retención si se quiere máxima compresión."
+      ],
+      "improvements": [
+        "Ajuste mínimo de atribución en 1–2 frases de síntesis: cambia “aparece un patrón común” por “en estos anuncios se repite/ se plantea un patrón” (y similares).",
+        "Reduce el cierre a una sola pregunta: conserva los criterios (verificación/evidencia) y deja solo la pregunta final de decisión."
+      ]
+    }
+  },
+  "multimedia": {
+    "plan_exists": true,
+    "total_slots": 116,
+    "media_slots": 12,
+    "presenter_slots": 104,
+    "downloaded_assets": 12,
+    "fallback_assets": 0,
+    "plan_path": ".pipeline-runs/2026-08-21/32497237570/multimedia/2026-08-21/plan.json",
+    "manifest_path": ".pipeline-runs/2026-08-21/32497237570/multimedia/2026-08-21/manifest.json"
+  },
+  "artifacts": {
+    "selected_news": ".pipeline-runs/2026-08-21/32497237570/scripts/2026-08-21/selected_news.json",
+    "reviews": ".pipeline-runs/2026-08-21/32497237570/scripts/2026-08-21/reviews.json",
+    "script": ".pipeline-runs/2026-08-21/32497237570/scripts/2026-08-21/script.txt",
+    "multimedia_plan": ".pipeline-runs/2026-08-21/32497237570/multimedia/2026-08-21/plan.json",
+    "multimedia_manifest": ".pipeline-runs/2026-08-21/32497237570/multimedia/2026-08-21/manifest.json"
+  }
+}

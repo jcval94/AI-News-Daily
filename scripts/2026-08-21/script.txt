@@ -1,0 +1,107 @@
+[00:00] Hoy no vengo con “IA que escribe bonito”. Vengo con IA que toca cosas reales: el coche que se mueve, el software que se defiende, los experimentos que se priorizan… y hasta la forma de medir si la ciencia es de verdad.
+
+El hilo común de estas noticias es uno: la IA está pasando del demo hacia sistemas que operan con herramientas, con gobernanza y con resultados que se pueden comprobar.
+
+Arrancamos.
+
+---
+
+[00:35] HISTORIA 1 — Coches definidos por software, con plataforma abierta “AI-native”
+La primera noticia es TIER IV y Renesas. Están preparando una plataforma abierta de hardware y software para vehículos definidos por software.
+
+El rango objetivo que mencionan va desde asistencia avanzada L2+/L2++ hasta conducción autónoma L4. Y aquí está la palabra clave: “AI-native”.
+
+Según el enfoque del anuncio, no es solo añadir un modelo al final: el cómputo y el stack de IA se ubican dentro de la arquitectura del vehículo, y se conectan con el software y con la validación del sistema.
+
+¿Con qué conectan esa plataforma?
+- Con Autoware, un ecosistema de software para vehículos autónomos.
+- Con modelos de IA de referencia, como base para probar capacidades.
+- Y con los SoC automotrices Renesas R-Car Gen 5, chips pensados para el entorno automotriz.
+
+¿Por qué lo cuentan como relevante?
+Según el anuncio, una plataforma abierta puede facilitar iterar y comparar componentes y configuraciones. Y, en su planteamiento, eso hace más manejable la verificación a medida que subes el nivel de autonomía.
+
+Mini-ejemplo cotidiano: tu coche recibe actualizaciones de software. Si cada vez “lo que hace” depende más de esa capa, que el stack sea componible y validable no es un detalle técnico menor: ayuda a evitar que un cambio rompa comportamiento.
+
+Y cuando el objetivo es L4, la exigencia sube: en el discurso del anuncio, el sistema no solo debe funcionar una vez, también tiene que poder construirse, integrarse y validarse de forma consistente.
+
+---
+
+[02:30] HISTORIA 2 — Agentes para seguridad: responder a vulnerabilidades “a velocidad de máquina”
+Segunda historia: Harness lanza agentes de IA orientados a seguridad en software.
+
+Aquí el enfoque no es “IA para encontrar bugs”. Harness habla de automatizaciones en el pipeline de seguridad, incluyendo SAST, triage y remediación.
+
+También mencionan componentes para casos urgentes, como un “Zero-Day Agent”, y prácticas como virtual patching: parches virtuales para mitigar mientras se prepara la corrección real.
+
+En seguridad, el tiempo es el enemigo. Por cómo lo presentan, la prioridad es detectar, priorizar y corregir vulnerabilidades dentro del ciclo de entrega de software. Y buscan cerrar el flujo hasta una corrección verificable con baja latencia.
+
+Traducción a vida real, sin magia:
+- El atacante intenta actuar rápido.
+- El equipo defensivo también necesita velocidad.
+- El agente funciona como coordinador: organiza desde el hallazgo hasta la acción y la remediación.
+
+Mini-ejemplo cotidiano: cuando aparece una CVE, no basta con saber que existe. En la práctica importa decidir a qué sistema afecta, qué parche aplicar y cuándo. Un pipeline que acorte el camino desde el aviso al parche se vuelve una diferencia práctica.
+
+Y conecta con la historia del coche: en ambos casos, no es solo un modelo. Es un sistema completo con herramientas, tiempos y validación. En automoción, para validar comportamientos. En seguridad, para verificar correcciones.
+
+---
+
+[04:55] HISTORIA 3 — Ciencia y fármacos: AQCat, AQPotency y TRACES como una sola narrativa de evidencia
+Tercera historia: ciencia aplicada y discovery. El tema común es que no se trata solo de “hablar de ciencia”, sino de usar interfaces y modelos especializados, y evaluarlos con criterios que obligan a demostrar resultados.
+
+Dentro de esta historia entran tres piezas que funcionan como un bloque: AQCat, AQPotency y TRACES.
+
+---
+
+[05:25] 3A) AQCat en Claude Science vía MCP
+SandboxAQ hace disponible AQCat en Claude Science mediante Model Context Protocol, MCP.
+
+MCP es una interfaz estándar para conectar herramientas y modelos. En términos simples, reduce fricción para integrar capacidades en un entorno de trabajo conversacional.
+
+AQCat, según lo descrito, es un Large Quantitative Model para predecir propiedades físicas de materiales y priorizar catalizadores a partir de preguntas en lenguaje natural.
+
+Catalizadores: aceleran reacciones químicas. Y el punto en el laboratorio es que probar todo a ciegas es caro. Por eso, si el sistema devuelve una predicción cuantitativa, ayuda a decidir qué experimentar primero.
+
+Ejemplo cotidiano: imagina pasar de “ideas generales” a una tabla con números para decidir el siguiente paso, en lugar de depender solo de intuición.
+
+---
+
+[06:20] 3B) AQPotency: cribado virtual sin estructura 3D resuelta
+SandboxAQ también lanza AQPotency para cribado virtual en discovery de fármacos, incluso cuando no hay una estructura 3D de la proteína resuelta.
+
+Según el anuncio, AQPotency puntúa bibliotecas grandes de moléculas para estimar potencia frente a un target, aun sin estructura 3D disponible.
+
+El argumento del anuncio es que, si falta esa parte, el flujo puede frenarse o encarecerse. Y que este enfoque puede ampliar el espacio de candidatos en etapas tempranas y reducir experimentación inicial costosa.
+
+---
+
+[07:55] 3C) TRACES: benchmark para medir descubrimiento científico real
+Y aquí llega Apodex con TRACES.
+
+TRACES, según lo que presenta, evalúa sistemas en problemas científicos donde no hay respuesta conocida previa. Y el benchmark pone peso en búsqueda de evidencia, uso de herramientas, hipótesis competidoras, experimentación, aprendizaje a partir del fallo y verificación de resultados.
+
+Este último punto —verificación— está diseñado, según su planteamiento, para evitar que los benchmarks premien solo reproducir o aproximar resultados conocidos. Buscan medir si el sistema genera conocimiento nuevo y verificable mediante el proceso.
+
+En estas noticias, la narrativa común queda así:
+AQCat y AQPotency empujan modelos cuantitativos para priorizar decisiones científicas; TRACES aporta el marco para exigir evidencia, herramientas y verificación.
+
+---
+
+[09:30] Cierre — Herramientas + ciclo + verificación
+Si juntas estas tres historias, los anuncios plantean el mismo patrón:
+
+1) En vehículos definidos por software: se busca una plataforma abierta y “AI-native” para integrar IA en el stack y sostener iteración y validación.  
+2) En seguridad: los agentes apuntan a cerrar el ciclo de SAST→triage→remediación, con mitigación en casos urgentes.  
+3) En ciencia y fármacos: se conectan modelos especializados y se evalúa con benchmarks orientados a evidencia y verificación.
+
+En otras palabras, según lo que muestran estos anuncios, la IA no se presenta como “solo responde”, sino como parte de sistemas donde importa el tiempo, la herramienta y la prueba.
+
+Antes de que te vayas, si solo miras una cosa, empieza por este filtro:
+- ¿Hay verificación con criterios concretos, o solo “claims”?
+- ¿Incluye herramientas y un flujo que permita comprobar resultados?
+- ¿Existe algún benchmark o proceso de evidencia, como TRACES?
+
+Y ahora sí, para rematar: ¿qué te parece más determinante para que la IA avance de verdad en el mundo—que sea más abierta como en el stack del coche, más accionable como en seguridad, o más verificable como en benchmarks de ciencia?
+
+---
