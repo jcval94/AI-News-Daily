@@ -2,7 +2,7 @@
 
 A twice-weekly AI production pipeline designed as a small, understandable agentic system.
 
-The product is **not a rapid news recap**. It uses recent AI news as evidence for reflective audiovisual essays about technology, cognition, education, work, ethics, reasoning, and human consequences.
+The product is **not a news recap**. It produces reflective video essays about AI, cognition, education, work, ethics, reasoning, and human consequences. Recent news is evidence for the essay, not the organizing structure.
 
 ## Architecture principle
 
@@ -18,19 +18,45 @@ editorial/
 └── discourse_profile.md
 ```
 
-This lets prompts/models evolve without redefining what the channel is supposed to sound like.
+This lets prompts and models evolve without redefining the channel's identity.
+
+## Editorial principle
+
+The core hierarchy is now:
+
+```text
+human experience
+   ↓
+tension / discomfort / paradox
+   ↓
+verified historical mirror
+   ↓
+central question
+   ↓
+provisional thesis
+   ↓
+current news as evidence
+   ↓
+reflection / contrast / synthesis
+```
+
+The key rule is:
+
+> **The essay is the product. The news is evidence.**
+
+A company announcement, model launch, paper, benchmark, or product should not normally be the hook. The viewer should first understand the human question; names and technical labels arrive only when they become useful.
 
 ## Agent roles
 
-1. `news_relevance_selector` — selects at most 8 unique stories with real editorial/human value.
-2. `editorial_director` — creates the episode's central question, thesis, target duration, story roles, narrative beats, analogy goals, skepticism, human stakes, and historical framing.
-3. `essay_script_writer` — writes the first 7–20 minute reflective Spanish narration from evidence + plan + editorial profiles.
-4. `script_critic` — factuality and intellectual-rigor judge.
-5. `seo_master` — discoverability judge without clickbait or keyword stuffing.
-6. `youtube_attention_master` — earned-attention and retention judge.
-7. `voice_humanity_critic` — rejects scripts that are correct but generic, shallow, plastic, inaccessible, or recognizably AI-written.
-8. `script_refiner` — revises using all judge feedback while preserving facts, plan, and voice.
-9. `multimedia_editor_master` — chooses only slots where external visuals add explanatory/contextual value.
+1. `news_relevance_selector` — selects at most 8 developments that could serve as evidence for a meaningful essay.
+2. `editorial_director` — starts from a human tension, formulates the central question and provisional thesis, then chooses only the current stories that help investigate it.
+3. `essay_script_writer` — writes the 7–20 minute reflective Spanish video essay.
+4. `script_critic` — factuality, clarity, rigor, and FACT/INTERPRETATION/HYPOTHESIS/UNCERTAINTY judge.
+5. `seo_master` — discoverability judge without forcing keywords or entities into the opening.
+6. `youtube_attention_master` — earned-attention judge for a video essay, not a news roundup.
+7. `voice_humanity_critic` — rejects scripts that are correct but generic, news-like, inaccessible, plastic, or recognizably AI-written.
+8. `script_refiner` — revises using all judge feedback while preserving essay-first structure.
+9. `multimedia_editor_master` — chooses only slots where visuals add explanatory, historical, or contextual value.
 
 There is **no LLM quality-gate agent**. Python evaluates the final gate deterministically.
 
@@ -39,23 +65,19 @@ There is **no LLM quality-gate agent**. Python evaluates the final gate determin
 ```text
 raw news
    ↓
-selector
+Selector: possible evidence
    ↓
 selected_news.json
    ↓
 Editorial Director
+   ├── human observation / hook
+   ├── historical mirror
+   ├── central question
+   ├── provisional thesis
+   ├── target duration
+   └── 2–4 preferred evidence stories
    ↓
 episode_plan.json
-   ├── current-news opening
-   ├── verified historical parallel
-   ├── central question
-   ├── thesis
-   ├── target duration
-   ├── story roles
-   ├── beats
-   ├── analogy goals
-   ├── skepticism
-   └── human stakes
    ↓
 Writer
    ↓
@@ -68,141 +90,175 @@ refine     approved
     └──── multimedia
 ```
 
-The episode plan may omit selected stories. Selection means “worth considering”; it does not mean every story must appear.
+Selection means “worth considering as evidence”; it does not mean every story appears.
 
-## Voice and discourse
+## How news should be used
 
-The narrator is a reflective, experienced AI communicator: analytically curious, provocative, humanist, fascinated by the technology but skeptical of hype.
+Every included story needs an argumentative function before it enters the script:
+
+- `evidence` — makes an abstract idea concrete;
+- `counterexample` — complicates the initial thesis;
+- `symptom` — reveals a broader transformation;
+- `consequence` — shows what happens when an idea leaves the lab;
+- `limit case` — tests how far a trend can go;
+- `bridge` — connects a technical change with a human consequence.
+
+If a story has no distinct function, the Director should omit it.
+
+Prefer three strong pieces of evidence to eight shallow headlines.
+
+## Opening contract
+
+The preferred opening is:
+
+```text
+recognizable human observation
+   ↓
+unease / contradiction
+   ↓
+verified historical mirror
+   ↓
+central question
+   ↓
+provisional thesis
+```
+
+Only after that does current news normally enter.
+
+Good energy:
+
+> “No sé si te pasa algo parecido, pero últimamente cada anuncio de inteligencia artificial me deja una sensación rara…”
+
+This is an example of tone, not a line to copy mechanically.
+
+Avoid default openings such as:
+
+- “Hoy salió una noticia…”
+- “Esta semana X anunció…”
+- a company/model/product name before the viewer understands why it matters;
+- a first minute that sounds like a list of headlines.
+
+## Voice and language
+
+The narrator is a reflective, experienced AI communicator: analytically curious, provocative, humanist, fascinated by technology but skeptical of hype.
 
 Core principles:
 
 - roughly 40% information / 60% reflection, context, interpretation, and human impact;
-- **neutral Latin American Spanish with slight Mexican familiarity**, avoiding strong regionalisms and voseo;
-- the target audience is curious but not necessarily technical;
+- **neutral Latin American Spanish with slight Mexican familiarity**;
+- avoid voseo and strong Rioplatense forms (`vos`, `mirá`, `pará`, `acá`, `pensá`, `suscribite`);
+- target audience is curious but not necessarily technical;
 - explain the idea in ordinary language before naming technical terms;
 - avoid unnecessary jargon and rare vocabulary when a simpler word exists;
 - analogies are central to explanation, not decoration;
-- historical parallels are used to reveal patterns, not to sound cultured;
 - uncertainty is stated honestly;
 - corporate hype can be challenged directly;
 - intellectual rigor outranks retention;
-- progressive revelation is preferred to headline dumping;
-- no plastic AI language, corporate neutrality, fake urgency, or dishonest clickbait.
+- no plastic AI language, fake urgency, or dishonest clickbait.
 
-The full source of truth lives in `editorial/voice_profile.md` and `editorial/discourse_profile.md`.
-
-### Historical framing
-
-The preferred opening pattern is:
-
-```text
-current news
-   ↓
-surprising verified historical parallel
-   ↓
-deeper question
-```
-
-The curated historical references live directly in `editorial/discourse_profile.md` and include source links. The Writer may use those references as factual historical context, but must not invent historical quotes, people, dates, books, or anecdotes.
-
-The profile currently includes examples around writing and memory, electrification, human “computers”, automated teaching, VisiCalc, and ATMs. One strong historical reference should normally appear near the opening when the connection is honest; one to three additional parallels may appear later if they genuinely clarify a different idea.
-
-### Technical accessibility
-
-A useful editorial test is:
+Useful clarity test:
 
 > If a curious 15-year-old would have to pause the video to decode the sentence, rewrite it.
 
-Terms such as `runtime`, `orchestration`, `inference`, `embedding`, `latency`, `benchmark` or `RAG` are not forbidden, but they should appear only after the underlying idea has been explained in common language.
+Terms such as `runtime`, `orchestration`, `inference`, `embedding`, `latency`, `benchmark` or `RAG` are not forbidden, but the underlying idea must be explained first.
+
+## Historical framing
+
+Historical references are used as mirrors for the present, not as decoration. The curated source-backed library lives inside `editorial/discourse_profile.md` and currently includes:
+
+- Platón, writing, and memory;
+- adoption and organizational impact of electricity;
+- human “computers” before electronic computers;
+- automated teaching in the 1950s–60s;
+- VisiCalc and spreadsheet automation;
+- ATMs and changing bank work.
+
+The Writer may paraphrase only the facts included there. It must not invent historical quotes, people, dates, books, or anecdotes.
+
+One strong historical mirror near the opening is useful when the connection is honest; one or two later parallels may appear if they illuminate different dimensions.
+
+## Facts vs reflection
+
+The editorial critic explicitly distinguishes:
+
+```text
+FACT            directly supported by current-news evidence or curated history
+INTERPRETATION  the narrator's clearly labeled reading
+HYPOTHESIS      a plausible possibility, not a reported result
+UNCERTAINTY     something we genuinely do not know
+```
+
+This protects the reflective component without allowing speculation to masquerade as fact.
 
 ## Duration
 
 The deterministic range is **7–20 minutes** (420–1200 seconds).
 
-The Editorial Director chooses the intended duration from available substance:
-
-- 1–2 substantive stories: ~7–10 min
-- 3–4: ~10–14 min
-- 5–6: ~14–17 min
-- 7–8: ~17–20 min
-
-These are editorial guidelines, not quotas. Never pad.
+Duration follows the depth of the thesis, not the number of news items. A strong essay with 2–4 cases is preferable to a 20-minute roundup padded with headlines.
 
 ## Source windows
 
-Scheduled production preserves the original editorial cadence:
+Scheduled production keeps the twice-weekly cadence:
 
-- **Tuesday:** use available Friday, Saturday, Sunday, Monday files.
-- **Friday:** use available Tuesday, Wednesday, Thursday files.
-- Missing daily files are non-fatal.
-- If no source exists: `no_source_news`.
-- If sources exist but nothing is worth publishing: `no_relevant_news`.
+- **Tuesday:** available Friday, Saturday, Sunday, Monday files.
+- **Friday:** available Tuesday, Wednesday, Thursday files.
+- missing daily files are non-fatal;
+- no source → `no_source_news`;
+- sources but nothing useful → `no_relevant_news`.
 
-Daily source inputs remain `news/YYYY-MM-DD.txt`.
-
-Manual production can instead use `recent_window`. In that mode, the episode may run on **any date** and considers the target day plus the preceding `NEWS_LOOKBACK_DAYS - 1` calendar days. Missing files are still ignored safely.
-
-For example, a manual run for `2026-08-21` with a 4-day recent window considers:
+Daily source inputs remain:
 
 ```text
-2026-08-18
-2026-08-19
-2026-08-20  ← available
-2026-08-21  ← available
+news/YYYY-MM-DD.txt
 ```
 
-This is useful for an early episode or an editorial experiment without changing the scheduled Tuesday/Friday contract.
+Manual production can use `recent_window`, which allows generation on any date using the target day plus the preceding `NEWS_LOOKBACK_DAYS - 1` calendar days.
 
 ## Manual / on-demand generation
-
-The content workflow is deliberately runnable by hand:
 
 **Actions → Build AI News Video Kit → Run workflow**
 
 Manual inputs:
 
 - `target_date` — episode date; blank means today in Mexico City.
-- `source_mode=recent_window` — useful when you want the newest available material now.
-- `source_mode=scheduled_window` — reproduces the production Tuesday/Friday source policy.
-- `lookback_days` — 1–14 calendar days for `recent_window`; default 4.
-- `download_multimedia` — turn off for a cheaper script/voice-only experiment.
-- `promote_approved` — when `false`, the run stays only as an Actions artifact even if approved; when `true`, an approved result becomes canonical.
+- `source_mode=recent_window` — use newest available material.
+- `source_mode=scheduled_window` — reproduce Tuesday/Friday policy.
+- `lookback_days` — 1–14 days for `recent_window`; default 4.
+- `download_multimedia` — disable for a cheaper script-only experiment.
+- `promote_approved` — `false` keeps the result only as an Actions artifact; `true` promotes an approved run to canonical outputs.
 
-Recommended modes:
+Recommended editorial experiment:
 
 ```text
-Editorial experiment
 source_mode=recent_window
 download_multimedia=false
 promote_approved=false
-
-Early publishable episode
-source_mode=recent_window
-download_multimedia=true
-promote_approved=true
 ```
 
-Scheduled Tuesday/Friday runs always use `scheduled_window` and promote only approved outputs.
+Scheduled Tuesday/Friday runs always use `scheduled_window` and only promote approved outputs.
 
 ## Real editorial evaluation
 
-For an editorial test, review these artifacts first:
+Review these artifacts together:
 
 ```text
 selected_news.json
 episode_plan.json
 script.txt
+reviews.json
 run_report.json
 ```
 
-The most important questions are not only whether the script passes. Check whether:
+Ask:
 
-- the current news appears early;
-- the historical parallel is real, surprising, and actually useful;
-- the script is understandable without an AI/ML background;
-- technical terms are translated into human ideas;
-- `episode_plan.json` contains a compelling central question and thesis;
-- the narration sounds reflective, human, skeptical of hype, and worth listening to.
+- Does the opening work even if I do not know this week's news?
+- Is there a real human tension before any headline appears?
+- Does the historical mirror sharpen the question?
+- Would the central question still be interesting next month?
+- Are current stories being used as evidence rather than as chapters of a roundup?
+- Are names and technical terms introduced only after their meaning is clear?
+- Does the final synthesis genuinely complicate or deepen the opening thesis?
+- Does this sound like a thoughtful human essay rather than a polished AI newsletter?
 
 ## Episode states
 
@@ -215,7 +271,7 @@ The most important questions are not only whether the script passes. Check wheth
 - `failure`
 - `missing_openai_secret`
 
-Only `approved` runs may replace canonical outputs, and manual runs additionally require `promote_approved=true` before promotion.
+Only `approved` runs may replace canonical outputs, and manual runs additionally require `promote_approved=true`.
 
 ## Deterministic quality gate
 
@@ -238,20 +294,7 @@ The Voice & Humanity judge separately tracks:
 - analogy quality;
 - AI-smell risk.
 
-A factual script can still fail because it has no voice or because it is inaccessible to the intended audience.
-
-## Facts vs reflection
-
-The editorial critic explicitly distinguishes:
-
-```text
-FACT            directly supported by current-news evidence or curated history
-INTERPRETATION  the narrator's clearly labeled reading
-HYPOTHESIS      a plausible possibility, not a reported result
-UNCERTAINTY     something we genuinely do not know
-```
-
-This prevents the 60% reflective component from being incorrectly treated as factual error while still rejecting speculation disguised as evidence.
+A factual script can fail because it has no voice, is too technical, or still feels like a news roundup.
 
 ## Retries
 
@@ -261,7 +304,7 @@ Media retries are independent. If Pexels/Wikimedia fail, the pipeline can fall b
 
 ## Isolation and outputs
 
-Each Actions attempt is built first under:
+Each Actions attempt is first built under:
 
 ```text
 .pipeline-runs/<episode-date>/<github-run-id>/
@@ -283,21 +326,19 @@ multimedia/YYYY-MM-DD/
 ├── plan.json
 ├── manifest.json
 └── assets/
-
-videos/  # future final rendering
 ```
 
-Failed/non-publishable attempts remain as Actions artifacts and never overwrite canonical episodes. Manual experiments with `promote_approved=false` behave the same way even when the script is approved.
+Failed/non-publishable attempts remain as Actions artifacts and never overwrite canonical episodes.
 
 ## Observability
 
 `execution_trace.json` records each model attempt, logical step, iteration, retry, timing, error class, and token usage when ADK exposes it.
 
-`run_report.json` v4 includes:
+`run_report.json` includes:
 
 - state/reason;
 - source hashes and effective source-window configuration;
-- effective model/quality configuration;
+- model/quality configuration;
 - selection and duplicates;
 - central question, thesis, hook, target duration, and story count;
 - deterministic gate;
@@ -306,14 +347,6 @@ Failed/non-publishable attempts remain as Actions artifacts and never overwrite 
 - retries and token usage;
 - multimedia/provider metrics;
 - hashes for outputs and editorial profiles.
-
-## Multimedia timing
-
-- First 15 seconds: deterministic 3-second slots.
-- After 15 seconds: 4-second slots.
-- Omitted editor slots = presenter/on-camera.
-- Returned slots = external media.
-- `MAX_MEDIA_DOWNLOADS` is a hard code-enforced cap.
 
 ## Configuration
 
@@ -350,8 +383,6 @@ NEWS_SOURCE_MODE=scheduled_window
 NEWS_LOOKBACK_DAYS=4
 ```
 
-The workflow overrides `NEWS_SOURCE_MODE` and `NEWS_LOOKBACK_DAYS` for manual runs; repository defaults remain production-safe.
-
 ## Validation
 
 Deterministic CI runs without API secrets:
@@ -366,4 +397,4 @@ A real model/media E2E is available through **Actions → Build AI News Video Ki
 
 ## Roadmap
 
-The detailed next steps live in [`ROADMAP.md`](ROADMAP.md). The next milestone is deliberately **not** video rendering. First, validate the editorial system with real news, then calibrate voice against reference scripts, then freeze a small regression set before adding TTS/rendering and publication automation.
+The detailed next steps live in [`ROADMAP.md`](ROADMAP.md). Editorial quality comes first: validate the essay architecture with real news, calibrate Voice DNA against reference scripts, freeze a small editorial regression set, and only then invest in TTS/rendering and publication automation.
