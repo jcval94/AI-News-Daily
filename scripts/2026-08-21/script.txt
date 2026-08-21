@@ -1,19 +1,11 @@
-¿Te imaginas agentes que no solo detectan, sino que también ejecutan la siguiente acción? En estos anuncios, el foco ya no es “solo IA”, sino automatizar seguridad, acelerar ciencia y habilitar operación empresarial.
+En estas últimas 24 horas (19 y 20 de agosto), me encontré tres señales claras de cómo la IA está pasando de “prometer” a “enchufarse” en productos reales.
 
-Primero, Harness. Lanzó AI SAST y agentes para triage y remediación de vulnerabilidades, además de un “Zero-Day Agent” y virtual patching dentro del ciclo de entrega de software. (Según Harness / PR Newswire)
+Primero: automoción. TIER IV y Renesas anunciaron una colaboración para crear una plataforma abierta hardware+software para vehículos definidos por software (SDVs). La idea es combinar Autoware con SoC automotrices R-Car Gen 5, y cubrir desde asistencia avanzada L2+/L2++ hasta conducción autónoma L4.
 
-En ciencia aplicada, SandboxAQ anunció AQCat en Claude Science a través de MCP: un agente que, desde lenguaje natural, usa un Large Quantitative Model para predecir propiedades de materiales y priorizar catalizadores. (Según SandboxAQ / PR Newswire)
+Segundo: seguridad. Harness presentó AI SAST: un agente para triage y remediación “agentic”, además de un Zero-Day Agent y virtual patching. En simple: automatiza la detección, priorización y corrección de vulnerabilidades dentro del ciclo de entrega de software.
 
-También en esa misma línea, AQPotency llega vía MCP en Claude para puntuar bibliotecas de moléculas y estimar potencia frente a un target aunque no exista estructura 3D resuelta de la proteína. (Según SandboxAQ / PR Newswire)
+Y tercero: ciencia. SandboxAQ trae dos integraciones en Claude Science vía MCP (Model Context Protocol): AQCat para priorizar catalizadores con un Large Quantitative Model a partir de lenguaje natural, y AQPotency para cribado virtual de fármacos estimando potencia incluso cuando no hay estructura 3D de la proteína.
 
-Para medir si eso realmente lleva a conocimiento nuevo, Apodex presentó TRACES: un benchmark para evaluar descubrimiento científico cuando no hay respuestas conocidas, priorizando búsqueda de evidencia, herramientas, hipótesis competidoras, experimentación, aprendizaje desde fallos y verificación. (Según Apodex / PR Newswire)
+SDVs = vehículos definidos por software; AI SAST = análisis estático de seguridad con soporte de agentes; virtual patching = parches sin cambiar el código, y MCP es la “conexión” entre Claude y herramientas.
 
-En operación empresarial, Natural obtuvo una línea de crédito de hasta 100 millones de dólares para escalar pagos ejecutados por agentes: límites, crédito, liquidación, control de riesgo y trazabilidad. (Según Natural / PR Newswire)
-
-GrowthLoop, por su parte, amplía su commerce media con agentic AI e integraciones de The Trade Desk, Moloco y Audience Acuity para activación y medición de campañas en un flujo end-to-end. (Según GrowthLoop / PR Newswire)
-
-Y en life sciences, AuraGxP anunció nuevo CTO y financiamiento semilla para software AI-native de calidad, compras, proveedores y conciliación de gasto, con hoja de ruta hacia Agentic AI en un entorno regulado. (Según AuraGxP / PR Newswire)
-
-Cerramos con hardware: TIER IV y Renesas apuntan a una plataforma abierta y AI-native para vehículos definidos por software, integrando Autoware y SoC R-Car Gen 5, con el stack que cubre desde L2+/L2++ hasta conducción L4. (Según TIER IV / PR Newswire)
-
-Pregunta rápida: si tuvieras que elegir, ¿qué te entusiasma más—A) seguridad con Harness, B) ciencia con TRACES + AQCat/AQPotency, o C) operación empresarial con Natural + GrowthLoop/AuraGxP?
+Ahora tu elección: ¿qué te parece más “cambio real” para el próximo año—la ruta hacia L4 en automoción, la velocidad de remediación en seguridad, o la aceleración del descubrimiento (materiales y fármacos) con MCP? Comenta cuál te afecta más y por qué, en una frase.

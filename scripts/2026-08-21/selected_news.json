@@ -5,8 +5,8 @@
       "date": "20/08/2026, 00:00 ET",
       "source": "TIER IV / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/tier-iv-collaborates-with-renesas-to-build-an-open-ai-native-computing-platform-for-sdvs-integrating-r-car-gen-5-automotive-socs-with-autoware-and-reference-ai-models-302855856.html",
-      "summary": "TIER IV y Renesas anuncian una colaboración para combinar Autoware, modelos de IA de referencia y los SoC automotrices R-Car Gen 5, con el objetivo de crear una plataforma abierta (hardware + software). El stack apunta desde asistencia avanzada L2+/L2++ hasta conducción autónoma L4, integrándose con Autoware y modelos de referencia.",
-      "why_it_matters": "Si el enfoque “abierto y AI-native” se consolida, puede acelerar el desarrollo de vehículos definidos por software y reducir la dependencia de arquitecturas cerradas en autonomía.",
+      "summary": "TIER IV y Renesas anunciaron una colaboración para combinar Autoware, modelos de IA de referencia y los SoC automotrices R-Car Gen 5. El objetivo es crear una plataforma abierta hardware+software para cubrir desde asistencia avanzada L2+/L2++ hasta conducción autónoma L4 en vehículos definidos por software (SDVs).",
+      "why_it_matters": "Unifica stack abierto, computación AI-native y herramientas de autonomía en el mundo real del automóvil, apuntando a reducir dependencias de arquitecturas cerradas y acelerando iteraciones de modelos a nivel de vehículo.",
       "category": "hardware / producto"
     },
     {
@@ -14,8 +14,8 @@
       "date": "19/08/2026, 11:00 ET",
       "source": "Harness / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/harness-launches-ai-agents-for-machine-speed-vulnerability-response-302855262.html",
-      "summary": "Harness presenta AI SAST, agentes para triage y remediación, un “Zero-Day Agent” y virtual patching. La propuesta es automatizar la detección, priorización y corrección de vulnerabilidades dentro del ciclo de entrega de software, buscando reducir latencia entre hallazgo y parche verificable.",
-      "why_it_matters": "La seguridad de software está pasando de “detectar con IA” a “cerrar el ciclo con acciones automáticas”, lo que cambia la velocidad y el modelo operativo de defensa.",
+      "summary": "Harness presentó AI SAST, un agente para triage y remediación (agentic), un Zero-Day Agent y virtual patching para automatizar detección, priorización y corrección de vulnerabilidades dentro del ciclo de entrega de software.",
+      "why_it_matters": "Mueve la seguridad desde “detectar con IA” hacia “cerrar el ciclo” con remediación verificable y baja latencia, clave en la carrera entre atacantes y defensores.",
       "category": "agentes"
     },
     {
@@ -23,35 +23,35 @@
       "date": "19/08/2026, 12:40 ET",
       "source": "SandboxAQ / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/sandboxaq-makes-aqcat-generally-available-on-claude-for-high-throughput-catalyst-screening-302855491.html",
-      "summary": "SandboxAQ anuncia disponibilidad general de AQCat en Claude Science a través de Model Context Protocol (MCP). AQCat usa un Large Quantitative Model para predecir propiedades físicas de materiales y priorizar catalizadores a partir de preguntas en lenguaje natural, conectando un agente conversacional con un modelo científico especializado.",
-      "why_it_matters": "Es un ejemplo claro de “agente + modelo científico + interfaz de lenguaje + MCP”, que puede bajar barreras para investigación de materiales sin montar pipelines complejos desde cero.",
+      "summary": "SandboxAQ anunció disponibilidad general de AQCat en Claude Science vía Model Context Protocol (MCP). AQCat usa un Large Quantitative Model para predecir propiedades físicas de materiales y priorizar catalizadores a partir de preguntas en lenguaje natural.",
+      "why_it_matters": "Es una integración concreta de “agente + modelo científico especializado” accesible desde lenguaje natural, acelerando cribado de alta capacidad con MCP como capa de conexión.",
       "category": "investigación / agentes"
-    },
-    {
-      "title": "Apodex presenta TRACES, un benchmark para medir descubrimiento científico real por IA",
-      "date": "19/08/2026, 12:10 ET",
-      "source": "Apodex / PR Newswire",
-      "url": "https://www.prnewswire.com/news-releases/apodex-launches-traces-a-benchmark-for-scientific-discovery-302855461.html",
-      "summary": "TRACES evalúa sistemas de IA en problemas científicos donde no hay respuestas conocidas de antemano. El benchmark prioriza búsqueda de evidencia, uso de herramientas, generación/competencia de hipótesis, experimentación, aprendizaje desde el fallo y verificación de resultados.",
-      "why_it_matters": "Ataca un problema típico de los benchmarks: medir repetición de respuestas conocidas en vez de capacidad de generar conocimiento nuevo y verificable.",
-      "category": "investigación"
     },
     {
       "title": "SandboxAQ lanza AQPotency para cribado virtual de fármacos sin estructura proteica resuelta",
       "date": "19/08/2026, 11:53 ET",
       "source": "SandboxAQ / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/sandboxaq-launches-aqpotency-bringing-ultrafast-virtual-screening-to-drug-discovery-without-a-solved-protein-structure-302855441.html",
-      "summary": "AQPotency (disponible en Claude vía MCP) puntúa bibliotecas grandes de moléculas para estimar potencia frente a un target aunque no exista una estructura 3D resuelta de la proteína. Se presenta como un salto en velocidad para cribado virtual ultrarrápido sin requerir estructuras proteicas ya resueltas.",
-      "why_it_matters": "Si se mantiene en uso real, amplía targets abordables en descubrimiento temprano de fármacos y podría reducir experimentación inicial costosa.",
+      "summary": "AQPotency, disponible en Claude vía MCP, puntúa bibliotecas grandes de moléculas para estimar potencia frente a una diana incluso cuando no existe una estructura 3D resuelta de la proteína objetivo.",
+      "why_it_matters": "Si escala en práctica, amplía targets abordables para cribado virtual y reduce experimentación temprana costosa en descubrimiento de fármacos.",
       "category": "investigación / producto"
+    },
+    {
+      "title": "Apodex presenta TRACES, un benchmark para medir descubrimiento científico real por IA",
+      "date": "19/08/2026, 12:10 ET",
+      "source": "Apodex / PR Newswire",
+      "url": "https://www.prnewswire.com/news-releases/apodex-launches-traces-a-benchmark-for-scientific-discovery-302855461.html",
+      "summary": "TRACES evalúa sistemas de IA en problemas científicos donde no hay respuesta conocida previa. El benchmark enfatiza búsqueda de evidencia, uso de herramientas, hipótesis competidoras, experimentación, aprendizaje del fallo y verificación de resultados.",
+      "why_it_matters": "Ataca el problema de muchos benchmarks: medir reproducción de respuestas conocidas en vez de capacidad para generar conocimiento nuevo y verificable.",
+      "category": "investigación"
     },
     {
       "title": "Natural consigue una línea de crédito de hasta 100 millones de dólares para pagos ejecutados por agentes de IA",
       "date": "19/08/2026, 11:58 ET",
       "source": "Natural AI / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/natural-secures-100m-credit-facility-to-scale-payments-for-ai-agents-302855450.html",
-      "summary": "Natural anuncia una línea de crédito de hasta 100 millones de dólares (Upper90) para escalar infraestructura de pagos y crédito orientada a agentes de IA que realizan transacciones. Se enfoca en capacidades como límites, crédito, liquidación, control de riesgo y trazabilidad para operaciones con agentes.",
-      "why_it_matters": "Marca un paso hacia “agentes operativos” en el mundo real: no solo demos, sino infraestructura financiera para ejecutar transacciones con gestión de riesgo.",
+      "summary": "Natural anunció una línea de crédito de hasta US$100 millones (Upper90) para escalar infraestructura de pagos y crédito orientada a agentes de IA que realizan transacciones.",
+      "why_it_matters": "Señala el paso de pilotos a operaciones económicas reales: los agentes autónomos necesitan límites, crédito, liquidación, control de riesgo y trazabilidad.",
       "category": "agentes / empresas"
     },
     {
@@ -59,8 +59,8 @@
       "date": "19/08/2026, 12:00 ET",
       "source": "GrowthLoop / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/growthloop-debuts-end-to-end-commerce-media-network-solution-featuring-integrations-with-adtech-partners-to-deliver-pre-integrated-cmn-tech-stack-302854654.html",
-      "summary": "GrowthLoop lanza una solución end-to-end para commerce media con una capa de marketing basada en agentic AI e integraciones con The Trade Desk, Moloco y Audience Acuity. La promesa es entregar un flujo pre-integrado para activación y medición de campañas dentro del sistema.",
-      "why_it_matters": "Muestra el movimiento de agentes desde “sugerir” hacia “coordinar herramientas y pasos operativos” en un flujo empresarial de punta a punta.",
+      "summary": "GrowthLoop presentó una solución end-to-end para commerce media que combina su capa de marketing impulsada por agentic AI con integraciones de The Trade Desk, Moloco y Audience Acuity para activación y medición.",
+      "why_it_matters": "Muestra “agentes que coordinan” herramientas y etapas de un flujo empresarial (no solo recomiendan), integrándose con el stack de adtech existente.",
       "category": "agentes / producto"
     },
     {
@@ -68,15 +68,13 @@
       "date": "19/08/2026, 14:07 ET",
       "source": "AuraGxP / PR Newswire",
       "url": "https://www.prnewswire.com/news-releases/auragxp-expands-executive-leadership-and-secures-initial-funding-302855577.html",
-      "summary": "AuraGxP anuncia nuevo CTO, liderazgo comercial y el cierre de su primera ronda semilla. Desarrolla software AI-native para calidad, compras, gestión de proveedores y conciliación de gasto en life sciences, con una hoja de ruta específica hacia Agentic AI en un entorno regulado.",
-      "why_it_matters": "En sectores regulados, la adopción de agentes depende de gobernanza y trazabilidad; esta apuesta puede indicar hacia dónde va la implementación “responsable” en operaciones críticas.",
+      "summary": "AuraGxP anunció nuevo CTO, refuerzo de liderazgo comercial y el cierre de su primera ronda semilla. Su software AI-native se enfoca en calidad, compras, gestión de proveedores y conciliación de gasto en life sciences, con una hoja de ruta específica de Agentic AI.",
+      "why_it_matters": "En un sector regulado, los agentes deben demostrar gobernanza y trazabilidad. Este movimiento sugiere tracción y foco en control operacional, no solo en capacidades generativas.",
       "category": "empresas / agentes"
     }
   ],
-  "discarded_duplicates": [
-    "Ninguna: no hay artículos duplicados del mismo evento subyacente dentro del archivo proporcionado; se seleccionaron historias diferentes."
-  ],
+  "discarded_duplicates": [],
   "selection_notes": [
-    "Se incluyeron 8 historias (máximo permitido) priorizando: plataforma/hardware para SDV (TIER IV + Renesas), seguridad con cierre del ciclo (Harness), investigación con agentes vía MCP (AQCat, AQPotency), evaluación de descubrimiento científico (TRACES) y señales de adopción operativa (finanzas para agentes en Natural; agentes en commerce media; consolidación de equipo/financiación en life sciences)."
+    "No hay duplicados evidentes dentro del archivo: aunque SandboxAQ tiene dos anuncios relacionados (AQCat vs AQPotency) sobre capacidades distintas (catalizadores vs fármacos), se mantienen ambos por valor y topicalidad diferenciada."
   ]
 }

@@ -1,68 +1,69 @@
 {
-  "approved_for_multimedia": true,
+  "approved_for_multimedia": false,
   "editorial": {
-    "score": 8.8,
-    "approved": true,
-    "factuality_risk": "low",
+    "score": 8.4,
+    "approved": false,
+    "factuality_risk": "medium",
     "strengths": [
-      "Incluye las 8 historias seleccionadas (Harness, AQCat, AQPotency, TRACES, Natural, GrowthLoop, AuraGxP y TIER IV + Renesas).",
-      "Claims en general formulados de forma atribuible al anuncio (usa “anunció”, “presentó”, “obtuvo”, “apuntan”), evitando prometer métricas no dadas.",
-      "Estructura clara con bloques temáticos: seguridad → ciencia → operación → hardware, coherente con el concepto “agentes que detectan y ejecutan”.",
-      "Pacing relativamente bueno: oraciones no excesivamente largas y con un tema principal por bloque.",
-      "CTA final está bien alineada con la pregunta A/B/C y menciona ejemplos concretos por eje (seguridad: Harness; ciencia: TRACES + AQCat/AQPotency; operación: Natural + GrowthLoop/AuraGxP).",
-      "Trazabilidad presente: “Según … / PR Newswire” en cada noticia.",
-      "MCP mencionado en el lugar correcto (AQCat y AQPotency vía MCP)."
+      "Mejoraste la ancla al texto base: la mayor parte de afirmaciones quedan como descripción del anuncio (plataforma abierta, Autoware + R-Car Gen 5, AI SAST con triage/remediación, Zero-Day Agent, virtual patching, AQCat/AQPotency con MCP).",
+      "Incluyes definiciones/alcances que bajan riesgo de malentendidos (SDVs, AI SAST, virtual patching, MCP).",
+      "Estructura clara y sin excesivas inferencias largas; el texto es compacto y con flujo lógico de automoción → seguridad → ciencia.",
+      "Pacing razonable (introducción corta + 3 bloques + cierre con pregunta).",
+      "El cierre pregunta “cuál te afecta más y por qué” en una frase, buena para audiencia joven y engagement."
     ],
     "problems": [
-      "No se menciona explícitamente “virtual patching dentro del ciclo” como capacidad concreta en una frase final separada (aunque ya está: “virtual patching dentro del ciclo de entrega de software” está bien). El único posible ajuste sería separar “ciclo de entrega” para escaneabilidad, pero no es un fallo crítico.",
-      "La formulación de TRACES (“cuando no hay respuestas conocidas”) y el resto del listado es correcta a nivel de resumen, pero sigue siendo un “resumen compuesto” en una sola oración larga (pacing); aun así, no parece romper el gate.",
-      "El prompt original pedía iterar “hasta que cada juez apruebe”; en esta interacción no se ve el proceso, pero el resultado final sí supera el umbral solicitado. (Esto cuenta como problema de “proceso” solo si el gate exigiera evidencia del ciclo, pero tu condición de aprobación depende del score+riesgo factual)."
+      "Aún hay formulaciones con inferencia/interpretación que no están literalmente en el anuncio o no se pueden verificar desde el resumen provisto: “pasando de ‘prometer’ a ‘enchufarse’”, “enchufarse en productos reales”, y “velocidad de remediación” (no necesariamente cuantificada/garantizada) y “ruta hacia L4” (el anuncio cubre hasta L4, pero el “próximo año” y la “ruta” es proyección).",
+      "“En simple: automatiza la detección, priorización y corrección…” es probable, pero sigue siendo una inferencia operativa; el resumen sí menciona automatiza detección/priorización/corrección, ok—pero la frase global sugiere alcance/efecto sin matiz (podría expresarse como “pretende/ busca automatizar”).",
+      "El cierre introduce “para el próximo año” y “más cambio real” sin criterios explícitos ni anclaje a datos; eso no es factualmente incorrecto, pero sí incrementa riesgo editorial percibido (y baja el score por “value/importance” y “factuality/traceability”).",
+      "Detalle de trazabilidad temporal: mencionas “19 y 20 de agosto”, pero no se explicita dentro del guion que corresponde a la ventana de anuncios (aunque es consistente con el contexto). Podría mejorar con una sola frase de anclaje: “En estos anuncios (19-20 de agosto)…”.",
+      "Acrónimo/jerga: aunque defines MCP/SDVs/AI SAST, “agentic” aparece entre comillas sin definición adicional (aunque “soporte de agentes” ya lo cubre). Podría eliminarse “agentic” o definirlo en el mismo micro-formato para consistencia."
     ],
     "improvements": [
-      "(Opcional) Para mayor escaneabilidad, partir TRACES en 2 oraciones cortas: (1) definición del benchmark; (2) lista de criterios (evidence/tools/hipotheses/experimentation/verificación).",
-      "(Opcional) Cortar una o dos frases largas para que el ritmo sea más “spoken”: por ejemplo, el bloque de TIER IV/Renesas podría separarse en “plataforma abierta AI-native” vs “stack L2+/L2++ hasta L4 con Autoware + R-Car Gen 5”."
+      "Cambiar 3-4 frases “marketing/proyección” a formulaciones condicionadas/atribuidas: p.ej. sustituir “pasando de ‘prometer’ a ‘enchufarse’ en productos reales” por “se ven avances hacia implementaciones” o “anuncios que apuntan a despliegue”.",
+      "En el cierre, eliminar o suavizar “para el próximo año” y “ruta” (o convertirlo en opción editorial explícita): “si tuvieses que apostar por cuál madurará primero…” en lugar de afirmación.",
+      "Agregar una sola línea de criterios, breve y no factual: “elige por: impacto en producción / velocidad de remediación / aceleración científica”.",
+      "Matizar micro-capturas de alcance: en seguridad, convertir “En simple…” a “En resumen, busca automatizar…” para mantener estricta atribución al anuncio.",
+      "Opcional (para bajar fricción): redefinir “agentic” en una mini-frase o quitarlo y referirte a “soporte de agentes” (ya lo defines)."
     ]
   },
   "seo_master": {
-    "score": 8.8,
+    "score": 8.9,
     "approved": true,
     "strengths": [
-      "Incluye las 8 historias únicas del set (Harness, SandboxAQ/AQCat, SandboxAQ/AQPotency, Apodex/TRACES, Natural, GrowthLoop, AuraGxP, TIER IV + Renesas).",
-      "Las claims están mayormente formuladas de manera atribuible a los anuncios (presentó/obtuvo/anunció/apuntan), reduciendo riesgo de afirmaciones no sustentadas.",
-      "Buena preservación de entidades y nombres clave: Harness, AI SAST, Zero-Day Agent, virtual patching, Claude Science, MCP, TRACES, Natural, GrowthLoop, AuraGxP, Autoware, R-Car Gen 5, L2+/L2++ y L4.",
-      "Trazabilidad sólida con “Según … / PR Newswire” en cada bloque.",
-      "Estructura coherente y escaneable: seguridad → ciencia → operación → hardware; CTA A/B/C alineada con el contenido y menciona ejemplos concretos por categoría.",
-      "Pacing razonable; pocas oraciones excesivamente largas, y el guion termina con pregunta clara sin clickbait."
+      "Los nombres y productos clave (TIER IV, Renesas, Autoware, R-Car Gen 5, Harness AI SAST/Zero-Day Agent/virtual patching, SandboxAQ AQCat/AQPotency, Claude Science, MCP) están preservados y aparecen naturalmente al inicio de cada bloque.",
+      "Se mantienen definiciones ultra-breves de términos (SDVs, AI SAST, virtual patching, MCP), reduciendo riesgo de confusión y mejorando discoverability sin keyword stuffing.",
+      "La estructura automoción → seguridad → ciencia es clara, con transiciones comprensibles y sin enumeraciones artificiales.",
+      "El cierre conserva el formato de participación (“comenta cuál… y por qué en una frase”), alineado con intención de búsqueda y engagement.",
+      "El texto general reduce inferencias largas y se apoya más en el contenido descrito por los anuncios que en afirmaciones de impacto cuantificado."
     ],
     "problems": [
-      "La interacción no muestra un ciclo explícito de iteración “con checks de jueces”, aunque el resultado final ya cumple el umbral del gate por score y riesgo factual.",
-      "TRACES se presenta en una sola oración compuesta; opcionalmente podría partirse para mejorar retención móvil (no es un problema crítico).",
-      "Mención de MCP: aparece correctamente para AQCat/AQPotency, pero no se explica su valor en una micro-línea independiente (tampoco es obligatorio para el gate)."
+      "Quedaron algunos giros interpretativos/editoriales que rozan proyección (“enchufarse en productos reales”, “velocidad de remediación”, “ruta hacia L4 / próximo año”); no son factualmente falsos, pero elevan el riesgo de lectura como afirmación en vez de framing.",
+      "“Agentic” aparece como jerga (aunque está entre comillas/implicada por “soporte de agentes”), lo que podría eliminarse para consistencia total con definiciones ultra-breves."
     ],
     "improvements": [
-      "(Opcional) Dividir TRACES en 2 oraciones: definición del benchmark + lista corta de criterios (evidence/tools/hipotheses/experimentation/verificación).",
-      "(Opcional) Separar el bloque TIER IV/Renesas en 2 frases para que “plataforma abierta AI-native” y “stack L2+/L2++ a L4 con Autoware + R-Car Gen 5” queden más digestibles.",
-      "(Opcional) Mantener MCP solo donde está (ya está bien), pero si deseas elevar aún más claridad, añade una mini frase tipo “vía MCP para integrarse con Claude Science” una sola vez (sin re-explicarlo luego)."
+      "Sustituir 2-3 frases de framing por atribución/condicional para bajar riesgo editorial (p.ej., “anuncios que apuntan a…”, “busca automatizar…” en lugar de “pasando de… a…” y “velocidad…”).",
+      "En el cierre, eliminar “próximo año” o convertirlo en pregunta editorial (“¿cuál apostarías…?”) para evitar que parezca una predicción afirmativa.",
+      "Eliminar “agentic” si ya dices “soporte de agentes” (o definirlo en la misma micro-frase) para dejar el glosario perfecto y consistente."
     ]
   },
   "youtube_attention_master": {
-    "score": 8.8,
+    "score": 8.9,
     "approved": true,
     "strengths": [
-      "Incluye las 8 historias únicas del set (Harness, AQCat, AQPotency, TRACES, Natural, GrowthLoop, AuraGxP, TIER IV+Renesas).",
-      "Estructura temática clara y coherente con el concepto “agentes que detectan y ejecutan”: seguridad → ciencia → operación → hardware.",
-      "Claims mayormente formulados de forma atribuible a los anuncios (presentó/lanza/anunció/obtuvo/apuntan), con baja promesa de impacto cuantitativo.",
-      "Trazabilidad sólida con “Según … / PR Newswire” en cada bloque.",
-      "Pacing y escaneabilidad razonables; pocas oraciones demasiado largas.",
-      "CTA final está alineada con A/B/C y ofrece ejemplos concretos por eje (seguridad Harness; ciencia TRACES + AQCat/AQPotency; operación Natural + GrowthLoop/AuraGxP)."
+      "Los nombres y productos clave (TIER IV, Renesas, Autoware, R-Car Gen 5, Harness AI SAST/Zero-Day Agent/virtual patching, SandboxAQ AQCat/AQPotency, Claude Science, MCP) están preservados y aparecen naturalmente al inicio de cada bloque.",
+      "Se mantienen definiciones ultra-breves de términos (SDVs, AI SAST, virtual patching, MCP), reduciendo riesgo de confusión y mejorando discoverability sin keyword stuffing.",
+      "La estructura automoción → seguridad → ciencia es clara, con transiciones comprensibles y sin enumeraciones artificiales.",
+      "El cierre conserva el formato de participación (“comenta cuál… y por qué en una frase”), alineado con intención de búsqueda y engagement.",
+      "El texto general reduce inferencias largas y se apoya más en el contenido descrito por los anuncios que en afirmaciones de impacto cuantificado."
     ],
     "problems": [
-      "No se muestra un proceso explícito de iteración “hasta que cada juez apruebe” (pero el resultado final ya cumple el umbral por score).",
-      "TRACES y algunos bloques pueden quedar en oraciones compuestas; es opcional optimizar para retención móvil (no crítico)."
+      "Aún quedan algunos giros interpretativos/editoriales que pueden leerse como afirmación (“enchufarse en productos reales”, “velocidad de remediación”, “ruta hacia L4 / próximo año”); no necesariamente falsos, pero suben el riesgo percibido.",
+      "“Agentic” aparece como jerga (aunque esté entre comillas o implícita por “soporte de agentes”); convendría eliminarlo o alinearlo con el glosario para consistencia."
     ],
     "improvements": [
-      "(Opcional) Dividir TRACES en 2 frases: definición del benchmark + lista corta de 4–6 criterios.",
-      "(Opcional) Separar el bloque TIER IV/Renesas en 2 frases para mejorar digestión (plataforma abierta AI-native vs stack L2+/L2++ → L4 con Autoware + R-Car Gen 5)."
+      "Sustituir 2-3 frases de framing por atribución/condicional para bajar riesgo editorial (p.ej., “anuncios que apuntan a…” y “busca automatizar…” en lugar de “pasando de… a…” y “velocidad…”).",
+      "En el cierre, eliminar “próximo año” o convertirlo en pregunta editorial (“¿cuál apostarías…?”) en lugar de predicción afirmativa.",
+      "Eliminar “agentic” si ya usas “soporte de agentes” (o definirlo en la misma micro-frase) para dejar el glosario perfectamente consistente."
     ]
   },
   "source_files": [
