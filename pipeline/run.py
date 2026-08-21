@@ -126,8 +126,8 @@ def render_preview(media_files: list[Path], destination: Path) -> bool:
 
 
 async def build(news_file: Path, output_root: Path) -> Path:
-    if not os.getenv("GEMINI_API_KEY") and not os.getenv("GOOGLE_API_KEY"):
-        raise RuntimeError("Set GEMINI_API_KEY (or GOOGLE_API_KEY) before running the pipeline")
+    if not os.getenv("OPENAI_API_KEY"):
+        raise RuntimeError("Set OPENAI_API_KEY before running the pipeline")
 
     news_text = news_file.read_text(encoding="utf-8").strip()
     if not news_text:
