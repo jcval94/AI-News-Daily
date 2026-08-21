@@ -1,14 +1,20 @@
 name: Build AI News Video Kit
 
 on:
-  push:
-    paths:
-      - "news/*.txt"
-      - "app/**"
-      - "pipeline/**"
-      - "pyproject.toml"
-      - ".github/workflows/build-video-kit.yml"
+  schedule:
+    # 09:00 America/Mexico_City (UTC-6): Tuesdays and Fridays.
+    - cron: "0 15 * * 2,5"
   workflow_dispatch:
+    inputs:
+      run_date:
+        description: "Optional YYYY-MM-DD override; use a Tuesday or Friday to reproduce that window"
+        required: false
+        type: string
+      max_media_downloads:
+        description: "Maximum number of external multimedia assets to download"
+        required: false
+        default: "12"
+        type: string
 
 permissions:
   contents: read
@@ -20,7 +26,7 @@ concurrency:
 jobs:
   build-video-kit:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -52,16 +58,30 @@ jobs:
             exit 1
           fi
 
-      - name: Build script, storyboard and media
+      - name: Build script first, then approved multimedia only
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_MODEL: gpt-5.4-nano
+          NEWS_TIMEZONE: America/Mexico_City
+          MAX_SELECTED_NEWS: "8"
           SCRIPT_QUALITY_THRESHOLD: "8.7"
+          JUDGE_THRESHOLD: "8.5"
           MAX_REFINEMENT_ITERATIONS: "5"
-        run: python -m pipeline.run --news latest --out outputs
+          HOOK_SECONDS: "15"
+          HOOK_SLOT_SECONDS: "3"
+          MEDIA_SLOT_SECONDS: "4"
+          MAX_MEDIA_DOWNLOADS: ${{ inputs.max_media_downloads || '12' }}
+          RUN_DATE_OVERRIDE: ${{ inputs.run_date || '' }}
+        shell: bash
+        run: |
+          args=(--news scheduled --out outputs)
+          if [ -n "$RUN_DATE_OVERRIDE" ]; then
+            args+=(--run-date "$RUN_DATE_OVERRIDE")
+          fi
+          python -m pipeline.run "${args[@]}"
 
-      - name: Upload daily video kit
+      - name: Upload video kit or diagnostic artifact
         uses: actions/upload-artifact@v4
         with:
           name: ai-news-video-kit-${{ github.run_id }}
