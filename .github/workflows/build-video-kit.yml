@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run, pipeline.production_script; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -189,6 +189,22 @@ jobs:
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           echo "Episode outcome: $STATUS"
 
+      - name: Create production script
+        id: production_script
+        if: always() && steps.secret_check.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          PRODUCTION_CTA_TEXT: ${{ vars.PRODUCTION_CTA_TEXT }}
+        run: |
+          python -m pipeline.production_script \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --words-per-second "$WORDS_PER_SECOND"
+
       - name: Create run report
         id: report
         if: always()
@@ -272,6 +288,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'missing_openai_secret' ||
           steps.episode_outcome.outputs.status == 'failure' ||
           steps.episode_outcome.outputs.status == 'script_not_approved' ||
+          steps.production_script.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
           echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"

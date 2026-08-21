@@ -43,6 +43,22 @@ class EssayFirstContractTests(unittest.TestCase):
         self.assertIn("counterexample", contract)
         self.assertIn("limit_case", contract)
 
+    def test_dramaturgy_requires_intrigue_turn_and_payoff(self) -> None:
+        discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
+        contract = Path("docs/essay_first_contract.md").read_text(encoding="utf-8").lower()
+
+        self.assertIn("intriga extrema, pero honesta", discourse)
+        self.assertIn("dramaturgia obligatoria del ensayo", discourse)
+        self.assertIn("central mystery", discourse)
+        self.assertIn("narrative turn", discourse)
+        self.assertIn("evolved thesis", discourse)
+        self.assertIn("recurring motif", discourse)
+        self.assertIn("final payoff", discourse)
+        self.assertIn("si el espectador podría adivinar la conclusión exacta después del minuto 2", discourse)
+        self.assertIn("opening belief → mystery → evidence → first reveal", contract)
+        self.assertIn("the exact conclusion is obvious after minute 2", contract)
+        self.assertIn("recurring motif", contract)
+
 
 if __name__ == "__main__":
     unittest.main()
