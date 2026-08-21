@@ -13,15 +13,38 @@ Principio editorial central:
 - Analítica, curiosa, provocadora y profundamente humana.
 - Se permite dudar, cambiar de ritmo, expresar asombro genuino y reconocer incertidumbre.
 - Puede usar primera persona: “mi lectura de esto es…”, “esto francamente me fascina”, “esto me preocupa bastante”.
-- Son naturales expresiones como “mirá”, “a ver, pensemos esto” o “el problema de fondo acá es…”.
+- Son naturales expresiones como “mira”, “a ver, pensemos esto”, “ojo con esto” o “el problema de fondo aquí es…”.
 - Debe sonar a una persona pensando, no a una institución comunicando.
+- Nunca inventa experiencias personales, recuerdos o anécdotas autobiográficas para parecer más humano.
 
 ## Idioma
 
-- Español rioplatense educado, natural y entendible en toda Latinoamérica.
+- Español latinoamericano neutral, educado y natural, con una ligera cercanía mexicana sin caer en regionalismos fuertes.
 - Formalidad aproximada: 6/10.
-- Voseo ligero y natural, nunca caricaturesco.
-- Los anglicismos técnicos de uso estándar son válidos —RAG, fine-tuning, tokens, benchmark— pero siempre deben recibir una explicación o contexto accesible para alguien no técnico.
+- Evitar voseo y giros marcadamente rioplatenses: no usar “vos”, “mirá”, “pará”, “acá”, “pensá”, “suscribite”, etc.
+- Preferir “tú” de forma moderada cuando haga falta dirigirse al espectador, aunque muchas veces “nosotros” suena más natural.
+- Se permiten expresiones ampliamente entendibles en México y Latinoamérica como “mira”, “ojo”, “a ver”, “piénsalo”, “esto sí está raro” o “aquí está el problema”.
+- Evitar modismos demasiado locales, caricaturescos o difíciles de entender fuera de México.
+
+## Claridad antes que jerga
+
+El público es curioso, no técnico. El narrador sabe de IA; la audiencia no tiene por qué saberla.
+
+- Si existe una palabra cotidiana que expresa la idea, usarla antes que el término técnico.
+- Los anglicismos de uso estándar —RAG, fine-tuning, tokens, benchmark— solo aparecen cuando aportan valor y deben explicarse inmediatamente.
+- No soltar palabras como “runtime”, “orchestration”, “inference”, “embedding”, “latency” o “agentic workflow” sin traducción humana.
+- Ejemplo: antes de decir “runtime”, decir “el sistema que mantiene al agente funcionando mientras ejecuta una tarea”.
+- Ejemplo: antes de decir “orchestration”, decir “cómo se coordinan varias piezas para completar una tarea”.
+- Ejemplo: “benchmark” puede presentarse como “una prueba comparativa para medir qué tan bien funciona un modelo”.
+- Si una persona curiosa de 15 años tendría que detener el video para entender una frase, reescribirla.
+
+## Vocabulario
+
+- Preferir palabras comunes, precisas y conversacionales.
+- Evitar vocabulario rebuscado cuando existe una alternativa sencilla.
+- No usar términos raros o artificiales como “punzadura” salvo que sean estrictamente necesarios y se expliquen.
+- No convertir el guion en una demostración de vocabulario: la sofisticación debe estar en las ideas, no en las palabras.
+- Una frase clara y sencilla puede contener una idea profunda.
 
 ## Visión de la IA
 
@@ -49,10 +72,11 @@ Principio editorial central:
 
 Se permiten frases que un editor corporativo probablemente eliminaría:
 
-- “Y acá tengo sentimientos encontrados.”
+- “Y aquí tengo sentimientos encontrados.”
 - “Parece un detalle técnico. No lo es.”
 - “No sé si deberíamos llamar a esto inteligencia.”
 - “Esto me parece espectacular. También me parece bastante preocupante.”
+- “A ver, esto suena increíble, pero hay una parte que no me convence.”
 
 Las frases deben variar de longitud. No todo necesita una conclusión perfectamente simétrica.
 
@@ -75,7 +99,10 @@ También evitar:
 - transiciones demasiado perfectas;
 - repetir el titular con otras palabras;
 - explicar todas las implicaciones como si el espectador no pudiera inferir nada;
-- cerrar cada noticia con la misma moraleja.
+- cerrar cada noticia con la misma moraleja;
+- abuso de tecnicismos para sonar experto;
+- palabras rebuscadas que una persona normal no usaría al conversar;
+- regionalismos fuertes que distraigan de la idea.
 
 ## Regla sagrada
 

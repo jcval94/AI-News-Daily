@@ -23,12 +23,12 @@ This lets prompts/models evolve without redefining what the channel is supposed 
 ## Agent roles
 
 1. `news_relevance_selector` — selects at most 8 unique stories with real editorial/human value.
-2. `editorial_director` — creates the episode's central question, thesis, target duration, story roles, narrative beats, analogy goals, skepticism, and human stakes.
+2. `editorial_director` — creates the episode's central question, thesis, target duration, story roles, narrative beats, analogy goals, skepticism, human stakes, and historical framing.
 3. `essay_script_writer` — writes the first 7–20 minute reflective Spanish narration from evidence + plan + editorial profiles.
 4. `script_critic` — factuality and intellectual-rigor judge.
 5. `seo_master` — discoverability judge without clickbait or keyword stuffing.
 6. `youtube_attention_master` — earned-attention and retention judge.
-7. `voice_humanity_critic` — rejects scripts that are correct but generic, shallow, plastic, or recognizably AI-written.
+7. `voice_humanity_critic` — rejects scripts that are correct but generic, shallow, plastic, inaccessible, or recognizably AI-written.
 8. `script_refiner` — revises using all judge feedback while preserving facts, plan, and voice.
 9. `multimedia_editor_master` — chooses only slots where external visuals add explanatory/contextual value.
 
@@ -46,6 +46,8 @@ selected_news.json
 Editorial Director
    ↓
 episode_plan.json
+   ├── current-news opening
+   ├── verified historical parallel
    ├── central question
    ├── thesis
    ├── target duration
@@ -75,8 +77,12 @@ The narrator is a reflective, experienced AI communicator: analytically curious,
 Core principles:
 
 - roughly 40% information / 60% reflection, context, interpretation, and human impact;
-- educated Rioplatense Spanish that remains accessible across Latin America;
+- **neutral Latin American Spanish with slight Mexican familiarity**, avoiding strong regionalisms and voseo;
+- the target audience is curious but not necessarily technical;
+- explain the idea in ordinary language before naming technical terms;
+- avoid unnecessary jargon and rare vocabulary when a simpler word exists;
 - analogies are central to explanation, not decoration;
+- historical parallels are used to reveal patterns, not to sound cultured;
 - uncertainty is stated honestly;
 - corporate hype can be challenged directly;
 - intellectual rigor outranks retention;
@@ -84,6 +90,30 @@ Core principles:
 - no plastic AI language, corporate neutrality, fake urgency, or dishonest clickbait.
 
 The full source of truth lives in `editorial/voice_profile.md` and `editorial/discourse_profile.md`.
+
+### Historical framing
+
+The preferred opening pattern is:
+
+```text
+current news
+   ↓
+surprising verified historical parallel
+   ↓
+deeper question
+```
+
+The curated historical references live directly in `editorial/discourse_profile.md` and include source links. The Writer may use those references as factual historical context, but must not invent historical quotes, people, dates, books, or anecdotes.
+
+The profile currently includes examples around writing and memory, electrification, human “computers”, automated teaching, VisiCalc, and ATMs. One strong historical reference should normally appear near the opening when the connection is honest; one to three additional parallels may appear later if they genuinely clarify a different idea.
+
+### Technical accessibility
+
+A useful editorial test is:
+
+> If a curious 15-year-old would have to pause the video to decode the sentence, rewrite it.
+
+Terms such as `runtime`, `orchestration`, `inference`, `embedding`, `latency`, `benchmark` or `RAG` are not forbidden, but they should appear only after the underlying idea has been explained in common language.
 
 ## Duration
 
@@ -154,21 +184,9 @@ promote_approved=true
 
 Scheduled Tuesday/Friday runs always use `scheduled_window` and promote only approved outputs.
 
-## First real editorial test
+## Real editorial evaluation
 
-The current repo contains `news/2026-08-20.txt` and `news/2026-08-21.txt`. The recommended first real test of the new voice architecture is:
-
-```text
-target_date=2026-08-21
-source_mode=recent_window
-lookback_days=4
-download_multimedia=false
-promote_approved=false
-```
-
-This intentionally tests **selection → Editorial Director → Writer → four judges → deterministic gate** using both latest news files while avoiding media costs and canonical publication.
-
-Review these four artifacts first:
+For an editorial test, review these artifacts first:
 
 ```text
 selected_news.json
@@ -177,7 +195,14 @@ script.txt
 run_report.json
 ```
 
-The most important question is not only whether the script passes. It is whether `episode_plan.json` contains a compelling central question and thesis, and whether `script.txt` actually feels reflective, human, skeptical of hype, and worth listening to.
+The most important questions are not only whether the script passes. Check whether:
+
+- the current news appears early;
+- the historical parallel is real, surprising, and actually useful;
+- the script is understandable without an AI/ML background;
+- technical terms are translated into human ideas;
+- `episode_plan.json` contains a compelling central question and thesis;
+- the narration sounds reflective, human, skeptical of hype, and worth listening to.
 
 ## Episode states
 
@@ -213,7 +238,20 @@ The Voice & Humanity judge separately tracks:
 - analogy quality;
 - AI-smell risk.
 
-A factual script can still fail because it has no voice.
+A factual script can still fail because it has no voice or because it is inaccessible to the intended audience.
+
+## Facts vs reflection
+
+The editorial critic explicitly distinguishes:
+
+```text
+FACT            directly supported by current-news evidence or curated history
+INTERPRETATION  the narrator's clearly labeled reading
+HYPOTHESIS      a plausible possibility, not a reported result
+UNCERTAINTY     something we genuinely do not know
+```
+
+This prevents the 60% reflective component from being incorrectly treated as factual error while still rejecting speculation disguised as evidence.
 
 ## Retries
 
