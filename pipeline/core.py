@@ -132,11 +132,32 @@ _TOPIC_STOPWORDS = {
     "herramienta", "herramientas", "sistema", "sistemas",
 }
 
+# Coarse, inspectable semantic families for the recurring themes of an AI essay channel.
+# They complement lexical roots; they are not meant to replace the Editorial Director's judgment.
+_TOPIC_CONCEPT_PATTERNS: dict[str, tuple[str, ...]] = {
+    "agency": ("agente", "agencia", "agentic", "operar", "operativ", "accion", "actuar", "automat"),
+    "verification": ("verific", "comprob", "audit", "trazab", "evidenc", "demostr", "validac"),
+    "governance": ("gobern", "institu", "responsab", "control", "supervis", "rendicion"),
+    "tools": ("herramient", "tool", "mcp", "api"),
+    "science": ("ciencia", "cientif", "experim", "descubrim", "laborator"),
+    "security": ("seguridad", "vulnerab", "ciber", "riesgo", "ataque", "defens"),
+    "cognition": ("cognit", "razon", "criterio", "memoria", "pensar", "juicio"),
+    "learning": ("aprend", "ensen", "educa", "tutor", "estudiant"),
+    "work": ("empleo", "trabajo", "productiv", "profesion", "tarea", "laboral"),
+    "trust": ("confian", "fiabil", "certeza", "credib"),
+    "power": ("poder", "control", "dependen", "soberan", "concentr"),
+    "privacy": ("privacidad", "datos", "vigil", "personal"),
+    "creativity": ("creativ", "arte", "autor", "contenido", "escrit"),
+}
+
+
+def _fold_text(value: str) -> str:
+    text = unicodedata.normalize("NFKD", str(value or ""))
+    return "".join(char for char in text if not unicodedata.combining(char)).lower()
+
 
 def _topic_tokens(value: str) -> list[str]:
-    text = unicodedata.normalize("NFKD", str(value or ""))
-    text = "".join(char for char in text if not unicodedata.combining(char)).lower()
-    tokens = re.findall(r"[a-z0-9]+", text)
+    tokens = re.findall(r"[a-z0-9]+", _fold_text(value))
     return [token for token in tokens if len(token) > 2 and token not in _TOPIC_STOPWORDS]
 
 
@@ -145,12 +166,27 @@ def normalize_topic_text(value: str) -> str:
 
 
 def _topic_roots(value: str) -> set[str]:
-    """Use short lexical roots to make Spanish inflections less brittle.
-
-    This is intentionally lightweight and deterministic; the LLM Director remains the
-    semantic novelty layer, while this guardrail catches obvious/rephrased overlaps.
-    """
+    """Use short lexical roots to make Spanish inflections less brittle."""
     return {token[:6] for token in _topic_tokens(value)}
+
+
+def topic_concepts(value: str) -> set[str]:
+    text = _fold_text(value)
+    return {
+        concept
+        for concept, patterns in _TOPIC_CONCEPT_PATTERNS.items()
+        if any(pattern in text for pattern in patterns)
+    }
+
+
+def _set_similarity(left: set[str], right: set[str]) -> float:
+    if not left or not right:
+        return 0.0
+    intersection = len(left & right)
+    union = len(left | right)
+    containment = intersection / min(len(left), len(right))
+    jaccard = intersection / union if union else 0.0
+    return (0.65 * containment) + (0.35 * jaccard)
 
 
 def topic_similarity(left: str, right: str) -> float:
@@ -164,14 +200,18 @@ def topic_similarity(left: str, right: str) -> float:
     if not a_roots or not b_roots:
         return 0.0
 
-    intersection = len(a_roots & b_roots)
-    union = len(a_roots | b_roots)
-    containment = intersection / min(len(a_roots), len(b_roots))
-    jaccard = intersection / union if union else 0.0
+    lexical_set_score = _set_similarity(a_roots, b_roots)
     sequence = SequenceMatcher(
         None, " ".join(sorted(a_roots)), " ".join(sorted(b_roots))
     ).ratio()
-    return round((0.55 * containment) + (0.30 * jaccard) + (0.15 * sequence), 4)
+    lexical_score = (0.85 * lexical_set_score) + (0.15 * sequence)
+
+    concept_score = _set_similarity(topic_concepts(left), topic_concepts(right))
+
+    # Concept overlap is especially valuable for legacy essays that lack a structured
+    # topic_signature and may describe the same thesis with very different wording.
+    # Use the stronger signal rather than averaging semantic overlap away.
+    return round(max(lexical_score, concept_score), 4)
 
 
 def nearest_essay_similarity(
@@ -183,7 +223,13 @@ def nearest_essay_similarity(
             continue
         comparison = " ".join(
             str(essay.get(key, "") or "")
-            for key in ("topic_signature", "central_question", "thesis", "narrative_lens")
+            for key in (
+                "topic_signature",
+                "central_question",
+                "thesis",
+                "narrative_lens",
+                "script_excerpt",
+            )
         ).strip()
         score = topic_similarity(candidate, comparison)
         if nearest is None or score > float(nearest.get("similarity", 0)):
@@ -194,6 +240,9 @@ def nearest_essay_similarity(
                 "central_question": essay.get("central_question"),
                 "thesis": essay.get("thesis"),
                 "narrative_lens": essay.get("narrative_lens"),
+                "matched_concepts": sorted(
+                    topic_concepts(candidate) & topic_concepts(comparison)
+                ),
             }
     return nearest
 
