@@ -5,20 +5,24 @@ from typing import List
 
 from google.adk.agents import Agent, LoopAgent, SequentialAgent
 from google.adk.apps import App
-from google.adk.models import Gemini
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import exit_loop
-from google.genai import types
 from pydantic import BaseModel, Field
 
-MODEL = os.getenv("GEMINI_MODEL", "gemini-3.7-flash")
+MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-nano")
 QUALITY_THRESHOLD = float(os.getenv("SCRIPT_QUALITY_THRESHOLD", "8.7"))
 MAX_REFINEMENT_ITERATIONS = int(os.getenv("MAX_REFINEMENT_ITERATIONS", "5"))
 
 
-def model() -> Gemini:
-    return Gemini(
-        model=MODEL,
-        retry_options=types.HttpRetryOptions(attempts=3),
+def model() -> LiteLlm:
+    """Return an OpenAI-backed model while keeping Google ADK as orchestrator."""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY is required")
+
+    return LiteLlm(
+        model=f"openai/{MODEL}",
+        api_key=api_key,
     )
 
 
