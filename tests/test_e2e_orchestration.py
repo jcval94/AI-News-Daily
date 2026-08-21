@@ -13,7 +13,7 @@ from pipeline import run as pipeline_run
 
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
     async def test_approved_episode_reaches_multimedia_without_external_calls(self) -> None:
-        script = " ".join(["noticia"] * 1050)
+        script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:story:1-->" + " ".join(["noticia"] * 600) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
 
         async def fake_run_agent(agent, initial_state, prompt, *, step, trace, iteration=None):
             trace.append(
@@ -32,13 +32,8 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                     "selected_news": {
                         "items": [
                             {
-                                "title": "Noticia importante",
-                                "date": "2026-08-20",
-                                "source": "Fuente primaria",
-                                "url": "https://example.com/story",
-                                "summary": "Resumen verificable",
-                                "why_it_matters": "Impacto claro",
-                                "category": "educacion",
+                                "news_id": "2026-08-20:1",
+                                "selection_reason": "Evidencia útil para el ensayo",
                             }
                         ],
                         "discarded_duplicates": [],
@@ -150,7 +145,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             news.mkdir()
             history.mkdir()
             (news / "2026-08-20.txt").write_text(
-                "Título: Noticia importante\nFuente: Fuente primaria\nEnlace: https://example.com/story\n",
+                "# Noticias\n\n## 1. Noticia importante\nFecha: 2026-08-20\nFuente: Fuente primaria\nEnlace: https://example.com/story\nCategoría: educacion\nResumen: Resumen verificable\nPor qué importa: Impacto claro\n",
                 encoding="utf-8",
             )
 
@@ -181,6 +176,10 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(reviews["voice_humanity"]["ai_smell_risk"], "low")
             self.assertTrue(episode_plan["central_question"])
             self.assertTrue(episode_plan["topic_signature"])
+            self.assertTrue((result / "script_sections.json").exists())
+            selected_payload = json.loads((result / "selected_news.json").read_text(encoding="utf-8"))
+            self.assertEqual(selected_payload["items"][0]["source_locator"], "2026-08-20.txt#item-1")
+            self.assertEqual(selected_payload["items"][0]["url"], "https://example.com/story")
             self.assertEqual(novelty["previous_essay_count"], 0)
             self.assertFalse(novelty["attempts"][-1]["duplicate"])
             self.assertGreaterEqual(plan["timeline_duration_seconds"], 420)

@@ -103,6 +103,17 @@ class CoreTests(unittest.TestCase):
         self.assertGreaterEqual(similar_score, self.config.essay_duplicate_threshold)
         self.assertGreater(similar_score, unrelated_score)
 
+
+    def test_topic_similarity_does_not_block_same_broad_work_concept(self) -> None:
+        left = "El futuro del trabajo cambia cuando asistentes de IA automatizan tareas administrativas."
+        right = "Los ilustradores discuten derechos de autor y estilos generados por IA en su trabajo creativo."
+        self.assertLess(topic_similarity(left, right), self.config.essay_duplicate_threshold)
+
+    def test_topic_similarity_does_not_block_same_broad_trust_word(self) -> None:
+        left = "¿Podemos confiar en un agente que modifica producción sin supervisión?"
+        right = "¿Qué significa la confianza emocional tras meses conversando con un compañero de IA?"
+        self.assertLess(topic_similarity(left, right), self.config.essay_duplicate_threshold)
+
     def test_nearest_essay_similarity_returns_best_match(self) -> None:
         previous = [
             {

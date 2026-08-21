@@ -188,5 +188,31 @@ class ProductionScriptTests(unittest.TestCase):
         self.assertEqual(format_time(3661), "01:01:01")
 
 
+    def test_writer_alignment_overrides_proportional_allocation(self) -> None:
+        from pipeline.production_script import build_production_payload
+
+        script = "Inicio corto. Caso muy concreto con varias palabras. Cierre final."
+        episode_plan = {
+            "hook": "hook",
+            "historical_mirror": "",
+            "stories": [{"selected_news_index": 1, "estimated_minutes": 4, "narrative_function": "Caso real", "argument_role": "evidence"}],
+            "final_synthesis": "síntesis",
+            "closing_question": "¿Qué cambia?",
+        }
+        selected = {"items": [{"title": "Fuente exacta"}]}
+        alignment = {"sections": [
+            {"section_key": "opening", "spoken_text": "Inicio corto."},
+            {"section_key": "story:1", "spoken_text": "Caso muy concreto con varias palabras."},
+            {"section_key": "synthesis", "spoken_text": "Cierre final."},
+        ]}
+        payload = build_production_payload(
+            target_date="2026-08-21", script=script, episode_plan=episode_plan, selected_news=selected,
+            media_plan={}, words_per_second=2.5, script_alignment=alignment
+        )
+        self.assertEqual(payload["alignment_mode"], "writer_markers")
+        self.assertEqual(payload["sections"][1]["spoken_text"], "Caso muy concreto con varias palabras.")
+        self.assertEqual(payload["sections"][1]["source_evidence"], "Fuente exacta")
+
+
 if __name__ == "__main__":
     unittest.main()

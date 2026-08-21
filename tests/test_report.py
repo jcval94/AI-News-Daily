@@ -82,6 +82,9 @@ class ReportTests(unittest.TestCase):
             )
             self.assertTrue(report["source_window"]["available_files"][0]["sha256"])
             self.assertTrue(report["artifacts"]["run_state"]["sha256"])
+            self.assertEqual(report["schema_version"], 6)
+            self.assertEqual(report["artifacts"]["run_state"]["path"], "scripts/2026-08-21/run_state.json")
+            self.assertNotIn(".pipeline-runs", report["artifacts"]["run_state"]["path"])
             self.assertEqual(
                 report["editorial_direction"]["target_duration_minutes"], 9.0
             )

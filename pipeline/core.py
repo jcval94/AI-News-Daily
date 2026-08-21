@@ -150,6 +150,22 @@ _TOPIC_CONCEPT_PATTERNS: dict[str, tuple[str, ...]] = {
     "creativity": ("creativ", "arte", "autor", "contenido", "escrit"),
 }
 
+_TOPIC_CONCEPT_WEIGHTS: dict[str, float] = {
+    "agency": 1.10,
+    "verification": 1.40,
+    "governance": 1.20,
+    "tools": 0.80,
+    "science": 1.00,
+    "security": 1.00,
+    "cognition": 0.80,
+    "learning": 0.65,
+    "work": 0.55,
+    "trust": 0.55,
+    "power": 0.80,
+    "privacy": 0.90,
+    "creativity": 0.70,
+}
+
 
 def _fold_text(value: str) -> str:
     text = unicodedata.normalize("NFKD", str(value or ""))
@@ -189,6 +205,22 @@ def _set_similarity(left: set[str], right: set[str]) -> float:
     return (0.65 * containment) + (0.35 * jaccard)
 
 
+def _weighted_concept_similarity(left: set[str], right: set[str]) -> float:
+    shared = left & right
+    if not shared:
+        return 0.0
+    shared_weight = sum(_TOPIC_CONCEPT_WEIGHTS.get(item, 1.0) for item in shared)
+    left_weight = sum(_TOPIC_CONCEPT_WEIGHTS.get(item, 1.0) for item in left)
+    right_weight = sum(_TOPIC_CONCEPT_WEIGHTS.get(item, 1.0) for item in right)
+    union_weight = sum(_TOPIC_CONCEPT_WEIGHTS.get(item, 1.0) for item in (left | right))
+    containment = shared_weight / min(left_weight, right_weight)
+    jaccard = shared_weight / union_weight if union_weight else 0.0
+    raw = (0.65 * containment) + (0.35 * jaccard)
+    # One broad concept such as work/trust/learning is context, not enough evidence of a duplicate.
+    evidence_factor = min(1.0, len(shared) / 2.0)
+    return raw * evidence_factor
+
+
 def topic_similarity(left: str, right: str) -> float:
     a = normalize_topic_text(left)
     b = normalize_topic_text(right)
@@ -206,12 +238,18 @@ def topic_similarity(left: str, right: str) -> float:
     ).ratio()
     lexical_score = (0.85 * lexical_set_score) + (0.15 * sequence)
 
-    concept_score = _set_similarity(topic_concepts(left), topic_concepts(right))
+    left_concepts = topic_concepts(left)
+    right_concepts = topic_concepts(right)
+    shared_concepts = left_concepts & right_concepts
+    concept_score = _weighted_concept_similarity(left_concepts, right_concepts)
 
-    # Concept overlap is especially valuable for legacy essays that lack a structured
-    # topic_signature and may describe the same thesis with very different wording.
-    # Use the stronger signal rather than averaging semantic overlap away.
-    return round(max(lexical_score, concept_score), 4)
+    # Semantic families become strong evidence only when at least two independent concepts agree.
+    # Otherwise lexical similarity carries most of the decision, reducing false positives.
+    if len(shared_concepts) >= 2:
+        score = (0.40 * lexical_score) + (0.60 * concept_score)
+    else:
+        score = (0.80 * lexical_score) + (0.20 * concept_score)
+    return round(score, 4)
 
 
 def nearest_essay_similarity(
