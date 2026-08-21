@@ -238,6 +238,7 @@ jobs:
       - name: Refresh branch before promotion
         if: >-
           steps.episode_outcome.outputs.status == 'approved' &&
+          steps.production_script.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           steps.runtime_options.outputs.promote_approved == 'true'
         run: git pull --rebase origin "$GITHUB_REF_NAME"
@@ -246,6 +247,7 @@ jobs:
         id: promote
         if: >-
           steps.episode_outcome.outputs.status == 'approved' &&
+          steps.production_script.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           steps.runtime_options.outputs.promote_approved == 'true'
         env:
