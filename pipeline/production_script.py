@@ -50,9 +50,7 @@ def word_count(text: str) -> int:
 
 def estimate_seconds(text: str, words_per_second: float) -> int:
     words = word_count(text)
-    if words <= 0:
-        return 0
-    return max(1, math.ceil(words / words_per_second))
+    return 0 if words <= 0 else max(1, math.ceil(words / words_per_second))
 
 
 def format_time(seconds: int | float) -> str:
@@ -73,10 +71,11 @@ def split_sentences(text: str) -> list[str]:
 
 
 def extract_or_build_cta(script: str, closing_question: str) -> tuple[str, str, bool]:
-    """Return body, CTA text and whether the CTA had to be injected.
+    """Separate a closing CTA or provide a channel-safe default.
 
-    Only the last three sentence units are inspected so words like "comentarios" in the
-    middle of an essay do not accidentally become a CTA boundary.
+    Only the final three sentence units are candidates. A marker must appear in the
+    candidate sentence itself; a later CTA cannot pull an earlier reflective sentence
+    into the CTA block.
     """
     units = split_sentences(script)
     if not units:
@@ -84,10 +83,10 @@ def extract_or_build_cta(script: str, closing_question: str) -> tuple[str, str, 
 
     start_floor = max(0, len(units) - 3)
     for index in range(start_floor, len(units)):
-        tail = " ".join(units[index:]).strip()
-        lowered = tail.lower()
-        if any(marker in lowered for marker in CTA_MARKERS):
+        lowered_sentence = units[index].lower()
+        if any(marker in lowered_sentence for marker in CTA_MARKERS):
             body = " ".join(units[:index]).strip()
+            tail = " ".join(units[index:]).strip()
             return body, tail, False
 
     configured = os.getenv("PRODUCTION_CTA_TEXT", "").strip()
@@ -112,9 +111,7 @@ def _clean_heading(value: str, fallback: str, limit: int = 78) -> str:
     text = re.sub(r"\s+", " ", str(value or "")).strip(" .:-")
     if not text:
         return fallback
-    if len(text) <= limit:
-        return text
-    return text[: limit - 1].rstrip() + "…"
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
 
 
 def build_section_specs(
@@ -122,18 +119,10 @@ def build_section_specs(
     selected_news: dict[str, Any],
     body_duration_seconds: int,
 ) -> list[dict[str, Any]]:
-    """Build macro production blocks from the editorial plan.
-
-    The exact boundaries remain approximate because the writer is free to vary paragraph
-    length. Python controls the time budget; the LLM remains responsible for narrative
-    meaning.
-    """
     body_minutes = max(body_duration_seconds / 60.0, 0.1)
     stories = episode_plan.get("stories", []) if isinstance(episode_plan, dict) else []
     stories = [story for story in stories if isinstance(story, dict)]
-    selected_items = (
-        selected_news.get("items", []) if isinstance(selected_news, dict) else []
-    )
+    selected_items = selected_news.get("items", []) if isinstance(selected_news, dict) else []
 
     opening_minutes = max(0.75, body_minutes * 0.12)
     synthesis_minutes = max(0.60, body_minutes * 0.10)
@@ -142,10 +131,10 @@ def build_section_specs(
         synthesis_minutes = body_minutes * 0.20
 
     remaining_minutes = max(0.1, body_minutes - opening_minutes - synthesis_minutes)
-    raw_story_weights = [
+    story_weights = [
         max(0.1, float(story.get("estimated_minutes", 1.0) or 1.0)) for story in stories
     ]
-    total_story_weight = sum(raw_story_weights) or 1.0
+    total_story_weight = sum(story_weights) or 1.0
 
     specs: list[dict[str, Any]] = [
         {
@@ -166,19 +155,16 @@ def build_section_specs(
             item = selected_items[selected_index - 1]
             if isinstance(item, dict):
                 selected_title = str(item.get("title", "") or "")
-        minutes = remaining_minutes * raw_story_weights[index] / total_story_weight
-        narrative_function = str(story.get("narrative_function", "") or "")
-        argument_role = str(story.get("argument_role", "") or "development")
+        minutes = remaining_minutes * story_weights[index] / total_story_weight
+        function = str(story.get("narrative_function", "") or "")
+        role = str(story.get("argument_role", "") or "development")
         specs.append(
             {
                 "kind": "development",
-                "title": _clean_heading(
-                    narrative_function,
-                    f"Desarrollo {index + 1} — {argument_role}",
-                ),
-                "purpose": narrative_function or "Desarrollar y tensionar la tesis.",
+                "title": _clean_heading(function, f"Desarrollo {index + 1} — {role}"),
+                "purpose": function or "Desarrollar y tensionar la tesis.",
                 "target_seconds": round(minutes * 60),
-                "argument_role": argument_role,
+                "argument_role": role,
                 "source_evidence": selected_title,
                 "human_stakes": str(story.get("human_stakes", "") or ""),
                 "skepticism_angle": str(story.get("skepticism_angle", "") or ""),
@@ -210,13 +196,13 @@ def allocate_narration(
     units = split_sentences(body_text)
     if not specs:
         return []
-    if not units:
-        return [{**spec, "spoken_text": "", "word_count": 0} for spec in specs]
 
     total_words = sum(word_count(unit) for unit in units)
     target_total = sum(max(1, int(spec.get("target_seconds", 1))) for spec in specs)
     targets = [
         max(1, round(total_words * max(1, int(spec.get("target_seconds", 1))) / target_total))
+        if total_words
+        else 0
         for spec in specs
     ]
 
@@ -224,28 +210,31 @@ def allocate_narration(
     cursor = 0
     cumulative_words = 0
     for section_index, spec in enumerate(specs):
-        if section_index == len(specs) - 1:
-            chosen = units[cursor:]
-            cursor = len(units)
-        else:
-            chosen: list[str] = []
-            chosen_words = 0
-            target_words = targets[section_index]
-            remaining_sections = len(specs) - section_index - 1
-            while cursor < len(units) - remaining_sections:
-                unit = units[cursor]
-                unit_words = word_count(unit)
-                chosen.append(unit)
-                chosen_words += unit_words
-                cursor += 1
-                if chosen_words >= target_words:
-                    break
+        chosen: list[str] = []
+        if units and cursor < len(units):
+            if section_index == len(specs) - 1:
+                chosen = units[cursor:]
+                cursor = len(units)
+            else:
+                chosen_words = 0
+                target_words = targets[section_index]
+                remaining_sections = len(specs) - section_index - 1
+                while cursor < len(units):
+                    units_left_after = len(units) - (cursor + 1)
+                    if chosen and units_left_after < remaining_sections:
+                        break
+                    unit = units[cursor]
+                    chosen.append(unit)
+                    chosen_words += word_count(unit)
+                    cursor += 1
+                    if chosen_words >= target_words:
+                        break
 
         spoken_text = " ".join(chosen).strip()
         section_words = word_count(spoken_text)
         start_seconds = math.ceil(cumulative_words / words_per_second) if cumulative_words else 0
         cumulative_words += section_words
-        end_seconds = math.ceil(cumulative_words / words_per_second)
+        end_seconds = math.ceil(cumulative_words / words_per_second) if cumulative_words else start_seconds
         sections.append(
             {
                 **spec,
@@ -313,7 +302,7 @@ def build_production_payload(
             int(section.get("end_seconds", 0)),
         )
 
-    cta_start = sections[-1]["end_seconds"] if sections else 0
+    cta_start = int(sections[-1].get("end_seconds", 0)) if sections else 0
     cta_duration = estimate_seconds(cta_text, words_per_second)
     cta_section = {
         "kind": "cta",
@@ -331,8 +320,6 @@ def build_production_payload(
     }
     sections.append(cta_section)
 
-    original_duration = estimate_seconds(script, words_per_second)
-    production_duration = cta_section["end_seconds"]
     media_seconds = sum(
         max(
             0.0,
@@ -347,8 +334,8 @@ def build_production_payload(
         "episode_date": target_date,
         "words_per_second": words_per_second,
         "original_script_word_count": word_count(script),
-        "original_spoken_duration_seconds": original_duration,
-        "production_duration_seconds": production_duration,
+        "original_spoken_duration_seconds": estimate_seconds(script, words_per_second),
+        "production_duration_seconds": cta_section["end_seconds"],
         "cta_injected": cta_injected,
         "cta_text": cta_text,
         "section_count": len(sections),
@@ -424,17 +411,15 @@ def render_markdown(payload: dict[str, Any]) -> str:
         cues = section.get("multimedia", []) if isinstance(section, dict) else []
         lines.extend(["", "### Multimedia / B-roll", ""])
         if not cues:
-            lines.append(
-                "- Presenter a cámara. Sin inserto multimedia específico en el plan actual."
-            )
+            lines.append("- Presenter a cámara. Sin inserto multimedia específico en el plan actual.")
         else:
             for cue in cues:
                 cue_start = format_time(cue.get("start_seconds", 0))
                 cue_end = format_time(cue.get("end_seconds", 0))
+                lines.append(f"- [{cue_start}–{cue_end}] MEDIA")
                 on_screen = str(cue.get("on_screen_text", "") or "").strip()
                 query = str(cue.get("visual_query", "") or "").strip()
                 reason = str(cue.get("reason", "") or "").strip()
-                lines.append(f"- [{cue_start}–{cue_end}] MEDIA")
                 if on_screen:
                     lines.append(f"  - Texto en pantalla: {on_screen}")
                 if query:
@@ -460,18 +445,13 @@ def create_production_script(
         print(f"Production script skipped: no script at {script_path}")
         return None
 
-    episode_plan = read_json(episode_scripts / "episode_plan.json", {})
-    selected_news = read_json(episode_scripts / "selected_news.json", {})
-    media_plan = read_json(multimedia_root / target_date / "plan.json", {})
-    wps = words_per_second or CONFIG.words_per_second
-
     payload = build_production_payload(
         target_date=target_date,
         script=script,
-        episode_plan=episode_plan,
-        selected_news=selected_news,
-        media_plan=media_plan,
-        words_per_second=wps,
+        episode_plan=read_json(episode_scripts / "episode_plan.json", {}),
+        selected_news=read_json(episode_scripts / "selected_news.json", {}),
+        media_plan=read_json(multimedia_root / target_date / "plan.json", {}),
+        words_per_second=words_per_second or CONFIG.words_per_second,
     )
 
     json_path = episode_scripts / "production_script.json"
