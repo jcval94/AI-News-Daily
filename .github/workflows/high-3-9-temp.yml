@@ -1,0 +1,101 @@
+name: Temporary High 3-9 Hardening
+
+on:
+  push:
+    branches:
+      - fix/high-3-9-production-hardening
+    paths:
+      - tools/apply_high_3_9.py
+      - .github/workflows/high-3-9-temp.yml
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install .
+      - name: Apply scoped high-priority hardening
+        run: python tools/apply_high_3_9.py
+      - name: Validate
+        run: |
+          python -m compileall app pipeline
+          python -c "import app.agent, pipeline.run, pipeline.production_script, pipeline.news, pipeline.script_sections; print('runtime imports ok')"
+          python -m unittest discover -s tests -v
+      - name: Commit validated code and tests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            app/agent.py \
+            pipeline/core.py \
+            pipeline/media.py \
+            pipeline/news.py \
+            pipeline/report.py \
+            pipeline/run.py \
+            pipeline/script_sections.py \
+            pipeline/production_script.py \
+            tests/test_core.py \
+            tests/test_e2e_orchestration.py \
+            tests/test_media_manifest.py \
+            tests/test_news_parser.py \
+            tests/test_production_script.py \
+            tests/test_report.py \
+            tests/test_script_sections.py
+          git diff --cached --check
+          git diff --cached --stat
+          if git diff --cached --quiet; then
+            echo "No product changes to commit"
+            exit 1
+          fi
+          git commit -m "fix: harden novelty provenance and production alignment"
+          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
+
+      - name: Attempt to protect main with CI + PR requirement
+        id: protect_main
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request, urllib.error
+          url = f"https://api.github.com/repos/{os.environ['REPO']}/branches/main/protection"
+          payload = json.dumps({
+              "required_status_checks": {"strict": True, "contexts": ["deterministic-tests"]},
+              "enforce_admins": False,
+              "required_pull_request_reviews": {
+                  "dismiss_stale_reviews": False,
+                  "require_code_owner_reviews": False,
+                  "required_approving_review_count": 0
+              },
+              "restrictions": None,
+              "allow_force_pushes": False,
+              "allow_deletions": False
+          }).encode()
+          req = urllib.request.Request(url, data=payload, method="PUT", headers={
+              "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "Content-Type": "application/json",
+          })
+          try:
+              with urllib.request.urlopen(req) as response:
+                  print(response.status, response.read().decode())
+          except urllib.error.HTTPError as exc:
+              print(f"branch protection failed: HTTP {exc.code}: {exc.read().decode()}")
+              raise SystemExit(1)
+          PY
