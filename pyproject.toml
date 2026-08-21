@@ -4,12 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-news-daily"
-version = "0.1.0"
-description = "Agentic AI-news script and multimedia pipeline with Google ADK"
+version = "0.2.0"
+description = "Agentic AI-news script and multimedia pipeline with Google ADK + OpenAI"
 requires-python = ">=3.11"
 dependencies = [
   "google-adk[gcp]>=2.0.0,<3.0.0",
   "google-genai>=1.0.0",
+  "litellm>=1.75.0",
+  "openai>=2.0.0",
   "pydantic>=2.8",
   "requests>=2.32",
   "Pillow>=10.4",
