@@ -1,0 +1,279 @@
+{
+  "script_date": "2026-08-21",
+  "duration_seconds": 103,
+  "first_15_seconds_slot_size": 3,
+  "normal_slot_size": 4,
+  "max_media_downloads": 12,
+  "segments": [
+    {
+      "slot_number": 1,
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "duration_seconds": 3,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Agentes que ejecutan, no solo detectan",
+      "reason": "Arranque con presencia humana y promesa clara del enfoque agentic/ejecución."
+    },
+    {
+      "slot_number": 2,
+      "start_seconds": 3,
+      "end_seconds": 6,
+      "duration_seconds": 3,
+      "mode": "media",
+      "visual_query": "cybersecurity analyst monitoring security dashboards",
+      "on_screen_text": "Seguridad automatizada con AI SAST",
+      "reason": "Apoya visualmente el tema de seguridad y triage/remediación."
+    },
+    {
+      "slot_number": 3,
+      "start_seconds": 6,
+      "end_seconds": 9,
+      "duration_seconds": 3,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Harness: triage y virtual patching",
+      "reason": "Transición a la marca y a la idea de ciclo de entrega de software."
+    },
+    {
+      "slot_number": 4,
+      "start_seconds": 9,
+      "end_seconds": 12,
+      "duration_seconds": 3,
+      "mode": "media",
+      "visual_query": "software delivery pipeline diagram on screen",
+      "on_screen_text": "Virtual patching en el ciclo",
+      "reason": "Un diagrama visual ayuda a entender el concepto de patching dentro de la entrega."
+    },
+    {
+      "slot_number": 5,
+      "start_seconds": 12,
+      "end_seconds": 15,
+      "duration_seconds": 3,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Zero-Day Agent reduce riesgo",
+      "reason": "Mantiene el ritmo con explicación breve y enfoque en prevención."
+    },
+    {
+      "slot_number": 6,
+      "start_seconds": 15,
+      "end_seconds": 19,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "research scientist working in a lab with holographic data",
+      "on_screen_text": "Ciencia aplicada, resultados medibles",
+      "reason": "Cambia de dominio a ciencia y da atención con una escena de laboratorio + datos."
+    },
+    {
+      "slot_number": 7,
+      "start_seconds": 19,
+      "end_seconds": 23,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "SandboxAQ con AQCat en Claude",
+      "reason": "Presenta el primer agente científico y su propósito de predicción/priorización."
+    },
+    {
+      "slot_number": 8,
+      "start_seconds": 23,
+      "end_seconds": 27,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "molecular model visualization on laptop screen",
+      "on_screen_text": "Prioriza catalizadores sin 3D completo",
+      "reason": "Visual de moléculas/modelos mejora comprensión del input sin estructura resuelta."
+    },
+    {
+      "slot_number": 9,
+      "start_seconds": 27,
+      "end_seconds": 31,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "AQPotency: potencia frente a un target",
+      "reason": "Conecta directamente con el segundo agente y su salida."
+    },
+    {
+      "slot_number": 10,
+      "start_seconds": 31,
+      "end_seconds": 35,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "chemical compound library and search interface concept",
+      "on_screen_text": "Puntúa bibliotecas de moléculas",
+      "reason": "Visualiza el concepto de bibliotecas y scoring para reforzar el mensaje."
+    },
+    {
+      "slot_number": 11,
+      "start_seconds": 35,
+      "end_seconds": 39,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Pero… ¿genera conocimiento nuevo?",
+      "reason": "Enganche crítico para introducir el benchmark y el rigor."
+    },
+    {
+      "slot_number": 12,
+      "start_seconds": 39,
+      "end_seconds": 43,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "scientific research evaluation checklist and metrics",
+      "on_screen_text": "TRACES: evidencia, hipótesis, verificación",
+      "reason": "Checklist/métricas visual refuerzan el enfoque en evidencia y verificación."
+    },
+    {
+      "slot_number": 13,
+      "start_seconds": 43,
+      "end_seconds": 47,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Aprender desde fallos, competir hipótesis",
+      "reason": "Narración explicativa; la presencia ayuda a mantener claridad."
+    },
+    {
+      "slot_number": 14,
+      "start_seconds": 47,
+      "end_seconds": 51,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Ahora: operación empresarial en agentes",
+      "reason": "Transición de ciencia a operación; mejor con rostro para continuidad."
+    },
+    {
+      "slot_number": 15,
+      "start_seconds": 51,
+      "end_seconds": 55,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "business payments workflow with secure transaction icons",
+      "on_screen_text": "Natural: límites y trazabilidad",
+      "reason": "Visual de transacciones/controles para aterrizar crédito y riesgo."
+    },
+    {
+      "slot_number": 16,
+      "start_seconds": 55,
+      "end_seconds": 59,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Pagos ejecutados con control de riesgo",
+      "reason": "Ajusta el mensaje a “ejecución” con límites, liquidación y trazabilidad."
+    },
+    {
+      "slot_number": 17,
+      "start_seconds": 59,
+      "end_seconds": 63,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "marketing campaign dashboard with attribution metrics",
+      "on_screen_text": "GrowthLoop: activación end-to-end",
+      "reason": "Las campañas y medición se entienden mejor con un panel visual."
+    },
+    {
+      "slot_number": 18,
+      "start_seconds": 63,
+      "end_seconds": 67,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Integraciones: Trade Desk y más",
+      "reason": "Presenta integraciones de forma concisa; mejor en cámara."
+    },
+    {
+      "slot_number": 19,
+      "start_seconds": 67,
+      "end_seconds": 71,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Life sciences: calidad en entorno regulado",
+      "reason": "Prepara el salto a AuraGxP con enfoque regulatorio."
+    },
+    {
+      "slot_number": 20,
+      "start_seconds": 71,
+      "end_seconds": 75,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "pharmaceutical compliance documents and quality assurance",
+      "on_screen_text": "AuraGxP: GxP + compras + conciliación",
+      "reason": "Visualiza cumplimiento y procesos típicos de calidad/QA."
+    },
+    {
+      "slot_number": 21,
+      "start_seconds": 75,
+      "end_seconds": 79,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Hoja de ruta hacia Agentic AI",
+      "reason": "Cierre narrativo del bloque de life sciences con tono de visión."
+    },
+    {
+      "slot_number": 22,
+      "start_seconds": 79,
+      "end_seconds": 83,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "self driving car computer hardware architecture",
+      "on_screen_text": "Hardware AI-native para vehículos",
+      "reason": "Cambia a hardware/automotive con un visual coherente."
+    },
+    {
+      "slot_number": 23,
+      "start_seconds": 83,
+      "end_seconds": 87,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "TIER IV + Renesas con Autoware",
+      "reason": "Marca y tecnología; mejor con presentador para conectar nombres."
+    },
+    {
+      "slot_number": 24,
+      "start_seconds": 87,
+      "end_seconds": 91,
+      "duration_seconds": 4,
+      "mode": "media",
+      "visual_query": "car cockpit display with navigation and autonomous driving icons",
+      "on_screen_text": "De L2+ a L4, stack completo",
+      "reason": "Visual de conducción/levels ayuda a entender el alcance del sistema."
+    },
+    {
+      "slot_number": 25,
+      "start_seconds": 91,
+      "end_seconds": 95,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "¿Qué te entusiasma más?",
+      "reason": "Transición a pregunta final; presencia humana aumenta participación."
+    },
+    {
+      "slot_number": 26,
+      "start_seconds": 95,
+      "end_seconds": 99,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "A) Harness  B) Ciencia  C) Operación",
+      "reason": "CTA con opciones; se entiende sin multimedia para mantener foco."
+    },
+    {
+      "slot_number": 27,
+      "start_seconds": 99,
+      "end_seconds": 103,
+      "duration_seconds": 4,
+      "mode": "presenter",
+      "visual_query": "",
+      "on_screen_text": "Elige una y te leemos",
+      "reason": "Cierre con interacción directa y gesto humano."
+    }
+  ]
+}
