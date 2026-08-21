@@ -1,28 +1,33 @@
-MANUAL UPLOAD
-
-This ZIP intentionally does NOT include a `news/` directory.
-Keep your existing `news/` folder and its .txt files unchanged.
-
-Upload/merge the contents of this ZIP into the repository root.
+MANUAL / REPOSITORY SETUP
 
 Required GitHub Actions secret:
   OPENAI_API_KEY
 
-Optional:
+Optional secret:
   PEXELS_API_KEY
 
 Default model:
   gpt-5.4-nano
 
-Optional model override:
-  OPENAI_MODEL=gpt-5.4-mini
-
-Workflow:
+Production workflow:
   .github/workflows/build-video-kit.yml
 
-It triggers on pushes that add/change:
-  news/*.txt
-  app/**
-  pipeline/**
-  pyproject.toml
-  .github/workflows/build-video-kit.yml
+Production cadence:
+  Tuesday 09:00 America/Mexico_City -> uses Friday, Saturday, Sunday and Monday news.
+  Friday 09:00 America/Mexico_City -> uses Tuesday, Wednesday and Thursday news.
+
+Missing daily news files are skipped; the process continues with what is available.
+
+Generated folders:
+  scripts/
+  multimedia/
+  videos/   (reserved for future final rendering)
+
+Useful optional repository variables:
+  OPENAI_MODEL
+  SCRIPT_QUALITY_THRESHOLD
+  JUDGE_THRESHOLD
+  MAX_REFINEMENT_ITERATIONS
+  MAX_MEDIA_DOWNLOADS
+  DOWNLOAD_MULTIMEDIA
+  SELECTION_HISTORY_DAYS

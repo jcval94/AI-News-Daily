@@ -1,17 +1,19 @@
 name: Build AI News Video Kit
 
 on:
-  push:
-    paths:
-      - "news/*.txt"
-      - "app/**"
-      - "pipeline/**"
-      - "pyproject.toml"
-      - ".github/workflows/build-video-kit.yml"
+  schedule:
+    # 09:00 America/Mexico_City (UTC-6): Tuesday and Friday.
+    - cron: "0 15 * * 2"
+    - cron: "0 15 * * 5"
   workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Script date (YYYY-MM-DD). Must be a Tuesday or Friday. Empty = today in Mexico City."
+        required: false
+        type: string
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ai-news-video-${{ github.ref }}
@@ -25,17 +27,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
-
-      - name: Install ffmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
 
       - name: Install project
         run: python -m pip install .
@@ -52,19 +51,60 @@ jobs:
             exit 1
           fi
 
-      - name: Build script, storyboard and media
+      - name: Resolve script date
+        id: script_date
+        env:
+          MANUAL_TARGET_DATE: ${{ inputs.target_date }}
+        run: |
+          if [ -n "$MANUAL_TARGET_DATE" ]; then
+            TARGET_DATE="$MANUAL_TARGET_DATE"
+          else
+            TARGET_DATE="$(TZ=America/Mexico_City date +%F)"
+          fi
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+          echo "Script target date: $TARGET_DATE"
+
+      - name: Build approved script and required multimedia
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          OPENAI_MODEL: gpt-5.4-nano
-          SCRIPT_QUALITY_THRESHOLD: "8.7"
-          MAX_REFINEMENT_ITERATIONS: "5"
-        run: python -m pipeline.run --news latest --out outputs
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+          MAX_SELECTED_NEWS: "8"
+          MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
+          DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+        run: |
+          python -m pipeline.run \
+            --target-date "${{ steps.script_date.outputs.target_date }}" \
+            --max-media-downloads "$MAX_MEDIA_DOWNLOADS"
 
-      - name: Upload daily video kit
+      - name: Commit generated editorial assets
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -- scripts multimedia videos
+          if git diff --cached --quiet; then
+            echo "No generated files to commit. The pipeline may have skipped because no source news was available."
+            exit 0
+          fi
+
+          git commit -m "content: build AI news kit for $TARGET_DATE"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Upload generated kit
         uses: actions/upload-artifact@v4
         with:
-          name: ai-news-video-kit-${{ github.run_id }}
-          path: outputs/
-          if-no-files-found: error
+          name: ai-news-video-kit-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
+          path: |
+            scripts/${{ steps.script_date.outputs.target_date }}/
+            multimedia/${{ steps.script_date.outputs.target_date }}/
+            videos/
+          if-no-files-found: warn
           retention-days: 30
