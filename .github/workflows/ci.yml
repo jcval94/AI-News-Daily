@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - "pipeline/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - ".github/workflows/**"
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "pipeline/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: python -m pip install .
+      - run: python -m compileall app pipeline
+      - run: python -c "import app.agent, pipeline.run; print('runtime imports ok')"
+      - run: python -m unittest discover -s tests -v

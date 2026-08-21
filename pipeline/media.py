@@ -4,6 +4,7 @@ import html
 import io
 import os
 import re
+import time
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,9 @@ import requests
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 USER_AGENT = "AI-News-Daily/1.0 (GitHub Actions; educational video pipeline)"
+MEDIA_HTTP_MAX_ATTEMPTS = int(os.getenv("MEDIA_HTTP_MAX_ATTEMPTS", "3"))
+MEDIA_HTTP_RETRY_BASE_SECONDS = float(os.getenv("MEDIA_HTTP_RETRY_BASE_SECONDS", "1.0"))
+RETRYABLE_HTTP_STATUS = {408, 409, 429, 500, 502, 503, 504}
 
 
 def _safe_text(value: Any) -> str:
@@ -18,13 +22,36 @@ def _safe_text(value: Any) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def _request(method: str, url: str, **kwargs: Any) -> requests.Response:
+    """Small bounded retry wrapper for external media APIs/downloads."""
+    last_error: Exception | None = None
+    for attempt in range(1, max(1, MEDIA_HTTP_MAX_ATTEMPTS) + 1):
+        try:
+            response = requests.request(method, url, timeout=30, **kwargs)
+            if response.status_code in RETRYABLE_HTTP_STATUS and attempt < MEDIA_HTTP_MAX_ATTEMPTS:
+                delay = MEDIA_HTTP_RETRY_BASE_SECONDS * (2 ** (attempt - 1))
+                time.sleep(delay)
+                continue
+            response.raise_for_status()
+            return response
+        except requests.RequestException as exc:
+            last_error = exc
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            retryable = status in RETRYABLE_HTTP_STATUS or status is None
+            if not retryable or attempt >= MEDIA_HTTP_MAX_ATTEMPTS:
+                raise
+            delay = MEDIA_HTTP_RETRY_BASE_SECONDS * (2 ** (attempt - 1))
+            time.sleep(delay)
+    assert last_error is not None
+    raise last_error
+
+
 def _download_bytes(url: str) -> bytes:
-    response = requests.get(url, timeout=30, headers={"User-Agent": USER_AGENT})
-    response.raise_for_status()
-    return response.content
+    return _request("GET", url, headers={"User-Agent": USER_AGENT}).content
 
 
 def _save_as_jpeg(data: bytes, destination: Path) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
     with Image.open(io.BytesIO(data)) as image:
         image = image.convert("RGB")
         image = ImageOps.fit(image, (1280, 720), method=Image.Resampling.LANCZOS)
@@ -35,13 +62,12 @@ def search_pexels(query: str) -> dict[str, Any] | None:
     api_key = os.getenv("PEXELS_API_KEY")
     if not api_key:
         return None
-    response = requests.get(
+    response = _request(
+        "GET",
         "https://api.pexels.com/v1/search",
         params={"query": query, "per_page": 5, "orientation": "landscape"},
         headers={"Authorization": api_key, "User-Agent": USER_AGENT},
-        timeout=30,
     )
-    response.raise_for_status()
     photos = response.json().get("photos", [])
     if not photos:
         return None
@@ -56,33 +82,30 @@ def search_pexels(query: str) -> dict[str, Any] | None:
 
 
 def search_wikimedia(query: str) -> dict[str, Any] | None:
-    params = {
-        "action": "query",
-        "generator": "search",
-        "gsrsearch": f"{query} filetype:bitmap",
-        "gsrnamespace": 6,
-        "gsrlimit": 8,
-        "prop": "imageinfo",
-        "iiprop": "url|mime|extmetadata",
-        "iiurlwidth": 1600,
-        "format": "json",
-        "formatversion": 2,
-    }
-    response = requests.get(
+    response = _request(
+        "GET",
         "https://commons.wikimedia.org/w/api.php",
-        params=params,
+        params={
+            "action": "query",
+            "generator": "search",
+            "gsrsearch": f"{query} filetype:bitmap",
+            "gsrnamespace": 6,
+            "gsrlimit": 8,
+            "prop": "imageinfo",
+            "iiprop": "url|mime|extmetadata",
+            "iiurlwidth": 1600,
+            "format": "json",
+            "formatversion": 2,
+        },
         headers={"User-Agent": USER_AGENT},
-        timeout=30,
     )
-    response.raise_for_status()
     pages = response.json().get("query", {}).get("pages", [])
     for page in pages:
         info_list = page.get("imageinfo") or []
         if not info_list:
             continue
         info = info_list[0]
-        mime = info.get("mime", "")
-        if mime not in {"image/jpeg", "image/png", "image/webp"}:
+        if info.get("mime", "") not in {"image/jpeg", "image/png", "image/webp"}:
             continue
         meta = info.get("extmetadata", {})
         return {
@@ -100,6 +123,7 @@ def search_wikimedia(query: str) -> dict[str, Any] | None:
 
 
 def make_fallback_card(text: str, destination: Path) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
     image = Image.new("RGB", (1280, 720), "#10131a")
     draw = ImageDraw.Draw(image)
     font = ImageFont.load_default(size=42)
@@ -134,11 +158,10 @@ def download_shot_asset(shot: dict[str, Any], destination: Path) -> dict[str, An
         try:
             record = provider(query)
             if record:
-                data = _download_bytes(record["download_url"])
-                _save_as_jpeg(data, destination)
+                _save_as_jpeg(_download_bytes(record["download_url"]), destination)
                 break
-        except Exception as exc:  # network/provider failures should not kill the whole kit
-            errors.append(f"{provider.__name__}: {exc}")
+        except Exception as exc:  # provider failure is isolated; fallback keeps episode build alive
+            errors.append(f"{provider.__name__}: {type(exc).__name__}: {exc}")
             record = None
 
     if not record:
