@@ -1,14 +1,6 @@
 name: Build AI News Video Kit
 
 on:
-  # Temporary E2E trigger for the isolated validation branch. It does not run on main pushes.
-  push:
-    branches:
-      - "feat/e2e-run-report"
-    paths:
-      - "app/**"
-      - "pipeline/**"
-      - ".github/workflows/build-video-kit.yml"
   schedule:
     # 09:00 America/Mexico_City (UTC-6): Tuesday and Friday.
     - cron: "0 15 * * 2"
@@ -50,15 +42,6 @@ jobs:
       - name: Validate Python sources
         run: python -m compileall app pipeline
 
-      - name: Check OpenAI secret
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY is not configured in repository Actions secrets."
-            exit 1
-          fi
-
       - name: Resolve script date
         id: script_date
         env:
@@ -66,27 +49,27 @@ jobs:
         run: |
           if [ -n "$MANUAL_TARGET_DATE" ]; then
             TARGET_DATE="$MANUAL_TARGET_DATE"
-          elif [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            # E2E validation: resolve the nearest upcoming Tuesday/Friday.
-            DOW="$(TZ=America/Mexico_City date +%u)"
-            case "$DOW" in
-              1) OFFSET=1 ;;
-              2) OFFSET=0 ;;
-              3) OFFSET=2 ;;
-              4) OFFSET=1 ;;
-              5) OFFSET=0 ;;
-              6) OFFSET=3 ;;
-              7) OFFSET=2 ;;
-            esac
-            TARGET_DATE="$(TZ=America/Mexico_City date -d "+$OFFSET day" +%F)"
           else
             TARGET_DATE="$(TZ=America/Mexico_City date +%F)"
           fi
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "Script target date: $TARGET_DATE"
 
+      - name: Check OpenAI secret
+        id: secret_check
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured in repository Actions secrets."
+            exit 1
+          fi
+          echo "OPENAI_API_KEY is configured."
+
       - name: Build approved script and required multimedia
         id: build
+        if: steps.secret_check.outcome == 'success'
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -116,9 +99,16 @@ jobs:
           DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
         run: |
+          if [ "${{ steps.secret_check.outcome }}" != "success" ]; then
+            BUILD_OUTCOME="missing_openai_secret"
+          elif [ "${{ steps.build.outcome }}" = "failure" ]; then
+            BUILD_OUTCOME="failure"
+          else
+            BUILD_OUTCOME="success"
+          fi
           python -m pipeline.report \
             --target-date "${{ steps.script_date.outputs.target_date }}" \
-            --build-outcome "${{ steps.build.outcome }}"
+            --build-outcome "$BUILD_OUTCOME"
 
       - name: Commit generated editorial assets
         if: always()
@@ -150,8 +140,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Propagate build failure
-        if: steps.build.outcome == 'failure'
+      - name: Propagate configuration/build failure
+        if: steps.secret_check.outcome != 'success' || steps.build.outcome == 'failure'
         run: |
-          echo "The E2E pipeline failed. run_report.json was generated before propagating the failure."
+          echo "The pipeline did not complete successfully. run_report.json was generated before propagating the failure."
           exit 1
