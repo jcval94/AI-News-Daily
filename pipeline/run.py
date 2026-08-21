@@ -46,6 +46,7 @@ from pipeline.core import (
     nearest_essay_similarity,
     timeline_duration_seconds,
 )
+from pipeline.credits import write_credits
 from pipeline.media import download_shot_asset
 from pipeline.news import NewsItem, parse_news_file
 from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script
@@ -192,11 +193,10 @@ def load_essay_history(
     lookback_days: int,
     max_items: int,
 ) -> list[dict[str, Any]]:
-    """Load recent approved essay identities, including same-day canonical reruns.
+    """Load recent approved MODERN essay identities, including same-day canonical reruns.
 
-    Modern episodes use episode_plan.json. Older approved episodes without a plan fall
-    back to a short script excerpt so the Director can still avoid reproducing the same
-    conceptual territory during migration.
+    Legacy generations are deliberately excluded from editorial memory and future Voice DNA.
+    A missing episode_plan.json is treated as legacy/incomplete rather than reconstructed from prose.
     """
     cutoff = target_date.fromordinal(target_date.toordinal() - max(1, lookback_days))
     essays: list[dict[str, Any]] = []
@@ -221,15 +221,25 @@ def load_essay_history(
         if not bool(reviews.get("approved_for_multimedia", False)):
             continue
 
-        plan: dict[str, Any] = {}
-        plan_path = episode_dir / "episode_plan.json"
-        if plan_path.exists():
+        legacy_path = episode_dir / "legacy.json"
+        if legacy_path.exists():
             try:
-                raw_plan = json.loads(plan_path.read_text(encoding="utf-8"))
-                if isinstance(raw_plan, dict):
-                    plan = raw_plan
+                legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
-                plan = {}
+                legacy = {"exclude_from_essay_history": True}
+            if bool(legacy.get("exclude_from_essay_history", True)):
+                continue
+
+        plan_path = episode_dir / "episode_plan.json"
+        if not plan_path.exists():
+            continue
+        try:
+            raw_plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(raw_plan, dict):
+            continue
+        plan: dict[str, Any] = raw_plan
 
         script_excerpt = ""
         script_path = episode_dir / "script.txt"
@@ -239,14 +249,13 @@ def load_essay_history(
             except OSError:
                 script_excerpt = ""
 
-        fallback_signature = " ".join(script_excerpt.split()[:80])
         essays.append(
             {
                 "episode_date": episode_date.isoformat(),
-                "topic_signature": str(plan.get("topic_signature") or fallback_signature),
+                "topic_signature": str(plan.get("topic_signature") or ""),
                 "central_question": str(plan.get("central_question") or ""),
                 "thesis": str(plan.get("thesis") or ""),
-                "narrative_lens": str(plan.get("narrative_lens") or "legacy_episode"),
+                "narrative_lens": str(plan.get("narrative_lens") or ""),
                 "hook": str(plan.get("hook") or ""),
                 "script_excerpt": script_excerpt,
             }
@@ -890,6 +899,7 @@ async def build(
                     )
                 )
         write_json(episode_media_dir / "manifest.json", manifest)
+        write_credits(manifest, episode_media_dir)
         write_json(
             state_path,
             _run_state_payload(

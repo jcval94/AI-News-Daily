@@ -59,7 +59,7 @@ jobs:
           cache: "pip"
 
       - name: Install project
-        run: python -m pip install .
+        run: python -m pip install -c requirements.lock .
 
       - name: Validate deterministic contracts
         run: |
@@ -149,12 +149,18 @@ jobs:
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
           DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
+          MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
+          ESSAY_DUPLICATE_THRESHOLD: ${{ vars.ESSAY_DUPLICATE_THRESHOLD || '0.42' }}
+          MAX_NOVELTY_REPLANS: ${{ vars.MAX_NOVELTY_REPLANS || '2' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
           TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
           WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.18' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
@@ -219,11 +225,18 @@ jobs:
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
           DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
+          MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
+          ESSAY_DUPLICATE_THRESHOLD: ${{ vars.ESSAY_DUPLICATE_THRESHOLD || '0.42' }}
+          MAX_NOVELTY_REPLANS: ${{ vars.MAX_NOVELTY_REPLANS || '2' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
           TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
           WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.18' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}

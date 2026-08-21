@@ -7,7 +7,9 @@ on:
       - "pipeline/**"
       - "editorial/**"
       - "docs/**"
+      - "evals/**"
       - "tests/**"
+      - "requirements.lock"
       - "pyproject.toml"
       - "README.md"
       - "ROADMAP.md"
@@ -20,7 +22,9 @@ on:
       - "pipeline/**"
       - "editorial/**"
       - "docs/**"
+      - "evals/**"
       - "tests/**"
+      - "requirements.lock"
       - "pyproject.toml"
       - "README.md"
       - "ROADMAP.md"
@@ -40,7 +44,8 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
-      - run: python -m pip install .
+      - run: python -m pip install -c requirements.lock .
       - run: python -m compileall app pipeline
       - run: python -c "import app.agent, pipeline.run; print('runtime imports ok')"
       - run: python -m unittest discover -s tests -v
+      - run: python -m pipeline.editorial_calibration --cases evals/editorial/cases.json --output /tmp/editorial-calibration.json

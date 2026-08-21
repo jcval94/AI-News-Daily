@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "provenance": "Real GitHub Actions E2E artifacts plus explicit human feedback from editorial review",
+  "cases": [
+    {
+      "case_id": "e2e-v1-2026-08-21",
+      "workflow_run_id": 32511147349,
+      "artifact_id": 9457165199,
+      "artifact_digest": "sha256:b0ed6c9e8420fa34f0d67c803049f903161cbe6c3aff322062e07c8fdb8ae5ea",
+      "model": "gpt-5.4-nano",
+      "script_path": "evals/editorial/runs/e2e-v1/script.txt",
+      "reviews_path": "evals/editorial/runs/e2e-v1/reviews.json",
+      "human": {
+        "publishable": false,
+        "positive_signals": [
+          "Opening was closer to the desired reflective video-essay energy"
+        ],
+        "rejection_reasons": [
+          "Strong Rioplatense wording",
+          "Over-structured/list-like essay",
+          "Not yet the target channel voice"
+        ]
+      }
+    },
+    {
+      "case_id": "e2e-v2-2026-08-21",
+      "workflow_run_id": 32515116649,
+      "artifact_id": 9458585677,
+      "artifact_digest": "sha256:80165f000274625803b3af55d9b2a4bcbd46d9c9bb93e1863823847ce7bb0da6",
+      "model": "gpt-5.4-nano",
+      "script_path": "evals/editorial/runs/e2e-v2/script.txt",
+      "reviews_path": "evals/editorial/runs/e2e-v2/reviews.json",
+      "human": {
+        "publishable": false,
+        "positive_signals": [
+          "Historical analogy and accessibility improved"
+        ],
+        "rejection_reasons": [
+          "Opening was too news-led",
+          "News became the subject instead of evidence",
+          "Drifted away from video essay"
+        ]
+      }
+    },
+    {
+      "case_id": "e2e-v3-2026-08-21",
+      "workflow_run_id": 32519429503,
+      "artifact_id": 9460110240,
+      "artifact_digest": "sha256:08fe8623f147448f5a90e767916e0b70d1c9638a9faa66bd930c08d33e711275",
+      "model": "gpt-5.4-nano",
+      "script_path": "evals/editorial/runs/e2e-v3/script.txt",
+      "reviews_path": "evals/editorial/runs/e2e-v3/reviews.json",
+      "human": {
+        "publishable": false,
+        "positive_signals": [
+          "Essay-first opening improved",
+          "Human tension was clearer"
+        ],
+        "rejection_reasons": [
+          "Still felt flat",
+          "Dramaturgical movement was insufficient",
+          "Needed a more intriguing opening and stronger payoff"
+        ]
+      }
+    }
+  ]
+}
