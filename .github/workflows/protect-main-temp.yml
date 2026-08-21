@@ -6,6 +6,9 @@ on:
       - fix/high-3-9-production-hardening
     paths:
       - .github/workflows/protect-main-temp.yml
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
