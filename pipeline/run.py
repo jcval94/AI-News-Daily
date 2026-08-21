@@ -47,6 +47,8 @@ from pipeline.core import (
     timeline_duration_seconds,
 )
 from pipeline.media import download_shot_asset
+from pipeline.news import NewsItem, parse_news_file
+from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script
 
 APP_NAME = "ai_news_daily_video"
 USER_ID = "github_actions"
@@ -73,24 +75,52 @@ def write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def collect_available_news(news_dir: Path, target_date: date) -> tuple[str, list[Path], list[date]]:
+def collect_available_news(
+    news_dir: Path, target_date: date
+) -> tuple[str, list[Path], list[date], list[NewsItem]]:
     available: list[Path] = []
     missing: list[date] = []
-    sections: list[str] = []
+    items: list[NewsItem] = []
     for news_date in expected_news_dates(target_date):
         path = news_dir / f"{news_date.isoformat()}.txt"
-        if not path.exists():
+        if not path.exists() or not path.read_text(encoding="utf-8").strip():
             missing.append(news_date)
             continue
-        text = path.read_text(encoding="utf-8").strip()
-        if not text:
-            missing.append(news_date)
-            continue
+        parsed = parse_news_file(path)
+        if not parsed:
+            raise ValueError(f"No structured news items parsed from {path}")
         available.append(path)
-        sections.append(
-            f"===== SOURCE NEWS FILE: {path.name} =====\n{text}\n===== END SOURCE: {path.name} ====="
-        )
-    return "\n\n".join(sections), available, missing
+        items.extend(parsed)
+    payload = {
+        "schema_version": 1,
+        "items": [item.model_dump() for item in items],
+    }
+    return json.dumps(payload, ensure_ascii=False), available, missing, items
+
+
+def materialize_selection(
+    decision: dict[str, Any], source_items: list[NewsItem]
+) -> dict[str, Any]:
+    catalog = {item.news_id: item for item in source_items}
+    selected: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for ref in decision.get("items", []) if isinstance(decision, dict) else []:
+        if not isinstance(ref, dict):
+            raise ValueError("Selector returned a non-object item reference")
+        news_id = str(ref.get("news_id", "") or "").strip()
+        if news_id not in catalog:
+            raise ValueError(f"Selector referenced unknown news_id={news_id!r}")
+        if news_id in seen:
+            raise ValueError(f"Selector referenced duplicate news_id={news_id!r}")
+        seen.add(news_id)
+        record = catalog[news_id].model_dump()
+        record["selection_reason"] = str(ref.get("selection_reason", "") or "").strip()
+        selected.append(record)
+    return {
+        "items": selected,
+        "discarded_duplicates": decision.get("discarded_duplicates", []),
+        "selection_notes": decision.get("selection_notes", []),
+    }
 
 
 def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: int) -> str:
@@ -475,8 +505,8 @@ async def build(
 
     try:
         voice_profile, discourse_profile = load_editorial_profiles(editorial_dir)
-        news_text, available_files, missing_dates = collect_available_news(news_dir, target_date)
-        if not news_text:
+        news_text, available_files, missing_dates, source_items = collect_available_news(news_dir, target_date)
+        if not source_items:
             write_json(
                 state_path,
                 _run_state_payload(
@@ -506,9 +536,10 @@ async def build(
             step="select_news",
             trace=agent_trace,
         )
-        selection = SelectionResult.model_validate(
+        selection_decision = SelectionResult.model_validate(
             selection_state.get("selected_news", {})
         ).model_dump()
+        selection = materialize_selection(selection_decision, source_items)
         write_json(episode_scripts_dir / "selected_news.json", selection)
         if not selection["items"]:
             write_json(
@@ -638,9 +669,15 @@ async def build(
             step="write_script",
             trace=agent_trace,
         )
-        draft_script = str(writer_state.get("draft_script", "")).strip()
-        if not draft_script:
+        sectioned_draft_script = str(writer_state.get("draft_script", "")).strip()
+        if not sectioned_draft_script:
             raise RuntimeError("Writer did not produce draft_script")
+        try:
+            draft_script, script_alignment = parse_sectioned_script(
+                sectioned_draft_script, episode_plan
+            )
+        except SectionAlignmentError as exc:
+            raise RuntimeError(f"Writer section alignment invalid: {exc}") from exc
 
         final_editorial: dict[str, Any] = {}
         final_seo: dict[str, Any] = {}
@@ -738,6 +775,7 @@ async def build(
                 refiner_agent,
                 {
                     **review_base,
+                    "sectioned_draft_script": sectioned_draft_script,
                     "review": json.dumps(final_editorial, ensure_ascii=False),
                     "seo_review": json.dumps(final_seo, ensure_ascii=False),
                     "attention_review": json.dumps(final_attention, ensure_ascii=False),
@@ -751,11 +789,21 @@ async def build(
             refined = str(refiner_state.get("draft_script", "")).strip()
             if not refined:
                 raise RuntimeError("Refiner did not produce draft_script")
-            draft_script = refined
+            try:
+                refined_script, refined_alignment = parse_sectioned_script(refined, episode_plan)
+            except SectionAlignmentError as exc:
+                validation_warnings.append(
+                    f"Refiner iteration {iteration} returned invalid section markers; kept previous valid draft: {exc}"
+                )
+                continue
+            sectioned_draft_script = refined
+            draft_script = refined_script
+            script_alignment = refined_alignment
 
         (episode_scripts_dir / "script.txt").write_text(
             draft_script + "\n", encoding="utf-8"
         )
+        write_json(episode_scripts_dir / "script_sections.json", script_alignment)
         write_json(
             episode_scripts_dir / "reviews.json",
             {
@@ -838,6 +886,7 @@ async def build(
                             "on_screen_text": segment["on_screen_text"],
                         },
                         destination,
+                        logical_file=f"assets/{destination.name}",
                     )
                 )
         write_json(episode_media_dir / "manifest.json", manifest)

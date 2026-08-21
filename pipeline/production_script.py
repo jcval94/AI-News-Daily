@@ -138,6 +138,7 @@ def build_section_specs(
 
     specs: list[dict[str, Any]] = [
         {
+            "section_key": "opening",
             "kind": "opening",
             "title": "Apertura — tensión humana y pregunta central",
             "purpose": str(episode_plan.get("hook", "") or "Plantear la tensión central del ensayo."),
@@ -160,6 +161,8 @@ def build_section_specs(
         role = str(story.get("argument_role", "") or "development")
         specs.append(
             {
+                "section_key": f"story:{selected_index}",
+                "selected_news_index": selected_index,
                 "kind": "development",
                 "title": _clean_heading(function, f"Desarrollo {index + 1} — {role}"),
                 "purpose": function or "Desarrollar y tensionar la tesis.",
@@ -173,6 +176,7 @@ def build_section_specs(
 
     specs.append(
         {
+            "section_key": "synthesis",
             "kind": "synthesis",
             "title": "Síntesis — qué cambia después de mirar la evidencia",
             "purpose": str(
@@ -248,6 +252,46 @@ def allocate_narration(
     return sections
 
 
+def allocate_aligned_narration(
+    body_text: str,
+    specs: list[dict[str, Any]],
+    alignment: dict[str, Any],
+    words_per_second: float,
+) -> list[dict[str, Any]]:
+    aligned = alignment.get("sections", []) if isinstance(alignment, dict) else []
+    if not aligned:
+        raise ValueError("script_sections.json has no sections")
+    spec_by_key = {str(spec.get("section_key", "")): spec for spec in specs}
+    keys = [str(item.get("section_key", "")) for item in aligned if isinstance(item, dict)]
+    if keys != list(spec_by_key):
+        raise ValueError(f"script section keys do not match episode plan: {keys} != {list(spec_by_key)}")
+    joined = " ".join(str(item.get("spoken_text", "") or "").strip() for item in aligned)
+    norm = lambda value: re.sub(r"\s+", " ", value.strip())
+    if norm(joined) != norm(body_text):
+        raise ValueError("script_sections.json text does not match script.txt")
+
+    sections: list[dict[str, Any]] = []
+    cumulative_words = 0
+    for item in aligned:
+        key = str(item.get("section_key", ""))
+        spoken_text = str(item.get("spoken_text", "") or "").strip()
+        section_words = word_count(spoken_text)
+        start_seconds = math.ceil(cumulative_words / words_per_second) if cumulative_words else 0
+        cumulative_words += section_words
+        end_seconds = math.ceil(cumulative_words / words_per_second) if cumulative_words else start_seconds
+        sections.append(
+            {
+                **spec_by_key[key],
+                "spoken_text": spoken_text,
+                "word_count": section_words,
+                "start_seconds": start_seconds,
+                "end_seconds": max(start_seconds, end_seconds),
+                "duration_seconds": max(0, end_seconds - start_seconds),
+            }
+        )
+    return sections
+
+
 def media_cues_for_section(
     media_segments: list[dict[str, Any]], start_seconds: int, end_seconds: int
 ) -> list[dict[str, Any]]:
@@ -282,12 +326,18 @@ def build_production_payload(
     selected_news: dict[str, Any],
     media_plan: dict[str, Any],
     words_per_second: float,
+    script_alignment: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     closing_question = str(episode_plan.get("closing_question", "") or "")
     body_text, cta_text, cta_injected = extract_or_build_cta(script, closing_question)
     body_duration = estimate_seconds(body_text, words_per_second)
     specs = build_section_specs(episode_plan, selected_news, body_duration)
-    sections = allocate_narration(body_text, specs, words_per_second)
+    if script_alignment and script_alignment.get("sections"):
+        sections = allocate_aligned_narration(body_text, specs, script_alignment, words_per_second)
+        alignment_mode = "writer_markers"
+    else:
+        sections = allocate_narration(body_text, specs, words_per_second)
+        alignment_mode = "proportional_fallback"
 
     raw_segments = media_plan.get("segments", []) if isinstance(media_plan, dict) else []
     media_segments = [
@@ -342,6 +392,7 @@ def build_production_payload(
         "media_insert_count": len(media_segments),
         "planned_media_seconds": round(media_seconds, 1),
         "multimedia_plan_available": bool(raw_segments),
+        "alignment_mode": alignment_mode,
         "sections": sections,
     }
 
@@ -445,14 +496,34 @@ def create_production_script(
         print(f"Production script skipped: no script at {script_path}")
         return None
 
-    payload = build_production_payload(
-        target_date=target_date,
-        script=script,
-        episode_plan=read_json(episode_scripts / "episode_plan.json", {}),
-        selected_news=read_json(episode_scripts / "selected_news.json", {}),
-        media_plan=read_json(multimedia_root / target_date / "plan.json", {}),
-        words_per_second=words_per_second or CONFIG.words_per_second,
-    )
+    run_state = read_json(episode_scripts / "run_state.json", {})
+    alignment = read_json(episode_scripts / "script_sections.json", {})
+    approved = str(run_state.get("status", "") or "") == "approved"
+    if approved and not (isinstance(alignment, dict) and alignment.get("sections")):
+        raise RuntimeError("Approved episode is missing script_sections.json alignment")
+    try:
+        payload = build_production_payload(
+            target_date=target_date,
+            script=script,
+            episode_plan=read_json(episode_scripts / "episode_plan.json", {}),
+            selected_news=read_json(episode_scripts / "selected_news.json", {}),
+            media_plan=read_json(multimedia_root / target_date / "plan.json", {}),
+            words_per_second=words_per_second or CONFIG.words_per_second,
+            script_alignment=alignment,
+        )
+    except ValueError as exc:
+        if approved:
+            raise RuntimeError(f"Approved episode has invalid script section alignment: {exc}") from exc
+        payload = build_production_payload(
+            target_date=target_date,
+            script=script,
+            episode_plan=read_json(episode_scripts / "episode_plan.json", {}),
+            selected_news=read_json(episode_scripts / "selected_news.json", {}),
+            media_plan=read_json(multimedia_root / target_date / "plan.json", {}),
+            words_per_second=words_per_second or CONFIG.words_per_second,
+            script_alignment=None,
+        )
+        payload["alignment_warning"] = str(exc)
 
     json_path = episode_scripts / "production_script.json"
     md_path = episode_scripts / "production_script.md"

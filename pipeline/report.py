@@ -101,9 +101,9 @@ def score_block(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def artifact_record(path: Path) -> dict[str, Any]:
+def artifact_record(path: Path, logical_path: str) -> dict[str, Any]:
     return {
-        "path": str(path),
+        "path": logical_path,
         "exists": path.exists(),
         "sha256": sha256_file(path),
         "bytes": path.stat().st_size if path.exists() and path.is_file() else None,
@@ -237,21 +237,24 @@ def build_report(
     status = infer_status(run_state, build_outcome, sources)
 
     artifacts = {
-        "run_state": artifact_record(scripts_dir / "run_state.json"),
-        "execution_trace": artifact_record(scripts_dir / "execution_trace.json"),
-        "selected_news": artifact_record(scripts_dir / "selected_news.json"),
-        "episode_plan": artifact_record(scripts_dir / "episode_plan.json"),
-        "novelty_check": artifact_record(scripts_dir / "novelty_check.json"),
-        "reviews": artifact_record(scripts_dir / "reviews.json"),
-        "script": artifact_record(scripts_dir / "script.txt"),
-        "multimedia_plan": artifact_record(multimedia_dir / "plan.json"),
-        "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json"),
-        "voice_profile": artifact_record(editorial_dir / "voice_profile.md"),
-        "discourse_profile": artifact_record(editorial_dir / "discourse_profile.md"),
+        "run_state": artifact_record(scripts_dir / "run_state.json", f"scripts/{episode}/run_state.json"),
+        "execution_trace": artifact_record(scripts_dir / "execution_trace.json", f"scripts/{episode}/execution_trace.json"),
+        "selected_news": artifact_record(scripts_dir / "selected_news.json", f"scripts/{episode}/selected_news.json"),
+        "episode_plan": artifact_record(scripts_dir / "episode_plan.json", f"scripts/{episode}/episode_plan.json"),
+        "novelty_check": artifact_record(scripts_dir / "novelty_check.json", f"scripts/{episode}/novelty_check.json"),
+        "reviews": artifact_record(scripts_dir / "reviews.json", f"scripts/{episode}/reviews.json"),
+        "script": artifact_record(scripts_dir / "script.txt", f"scripts/{episode}/script.txt"),
+        "script_sections": artifact_record(scripts_dir / "script_sections.json", f"scripts/{episode}/script_sections.json"),
+        "production_script_md": artifact_record(scripts_dir / "production_script.md", f"scripts/{episode}/production_script.md"),
+        "production_script_json": artifact_record(scripts_dir / "production_script.json", f"scripts/{episode}/production_script.json"),
+        "multimedia_plan": artifact_record(multimedia_dir / "plan.json", f"multimedia/{episode}/plan.json"),
+        "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
+        "voice_profile": artifact_record(editorial_dir / "voice_profile.md", "editorial/voice_profile.md"),
+        "discourse_profile": artifact_record(editorial_dir / "discourse_profile.md", "editorial/discourse_profile.md"),
     }
 
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
@@ -263,6 +266,12 @@ def build_report(
         "configuration": CONFIG.as_report_dict(),
         "selection": {
             "selected_count": len(selected_items),
+            "provenance": {
+                "article_urls": sum(1 for item in selected_items if isinstance(item, dict) and item.get("url_quality") == "article"),
+                "generic_urls": sum(1 for item in selected_items if isinstance(item, dict) and item.get("url_quality") == "generic"),
+                "missing_urls": sum(1 for item in selected_items if isinstance(item, dict) and item.get("url_quality") == "missing"),
+                "source_locators": [item.get("source_locator", "") for item in selected_items if isinstance(item, dict)],
+            },
             "selected_titles": [
                 item.get("title", "") for item in selected_items if isinstance(item, dict)
             ],

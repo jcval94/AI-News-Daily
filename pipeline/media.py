@@ -149,7 +149,9 @@ def make_fallback_card(text: str, destination: Path) -> None:
     image.save(destination, "JPEG", quality=90)
 
 
-def download_shot_asset(shot: dict[str, Any], destination: Path) -> dict[str, Any]:
+def download_shot_asset(
+    shot: dict[str, Any], destination: Path, *, logical_file: str | None = None
+) -> dict[str, Any]:
     query = shot["visual_query"]
     record: dict[str, Any] | None = None
     errors: list[str] = []
@@ -176,7 +178,7 @@ def download_shot_asset(shot: dict[str, Any], destination: Path) -> dict[str, An
     return {
         "shot_number": shot["shot_number"],
         "visual_query": query,
-        "file": str(destination),
+        "file": logical_file or destination.name,
         "provider": record.get("provider", ""),
         "source_url": record.get("source_url", ""),
         "creator": record.get("creator", ""),
