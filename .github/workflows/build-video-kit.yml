@@ -1,0 +1,70 @@
+name: Build AI News Video Kit
+
+on:
+  push:
+    paths:
+      - "news/*.txt"
+      - "app/**"
+      - "pipeline/**"
+      - "pyproject.toml"
+      - ".github/workflows/build-video-kit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-news-video-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-video-kit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install project
+        run: python -m pip install .
+
+      - name: Validate Python sources
+        run: python -m compileall app pipeline
+
+      - name: Check OpenAI secret
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured in repository Actions secrets."
+            exit 1
+          fi
+
+      - name: Build script, storyboard and media
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_MODEL: gpt-5.4-nano
+          SCRIPT_QUALITY_THRESHOLD: "8.7"
+          MAX_REFINEMENT_ITERATIONS: "5"
+        run: python -m pipeline.run --news latest --out outputs
+
+      - name: Upload daily video kit
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-news-video-kit-${{ github.run_id }}
+          path: outputs/
+          if-no-files-found: error
+          retention-days: 30
