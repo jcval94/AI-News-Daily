@@ -5,16 +5,26 @@ on:
     paths:
       - "app/**"
       - "pipeline/**"
+      - "editorial/**"
+      - "docs/**"
       - "tests/**"
       - "pyproject.toml"
+      - "README.md"
+      - "ROADMAP.md"
+      - "AGENTS.md"
       - ".github/workflows/**"
   push:
     branches: [main]
     paths:
       - "app/**"
       - "pipeline/**"
+      - "editorial/**"
+      - "docs/**"
       - "tests/**"
       - "pyproject.toml"
+      - "README.md"
+      - "ROADMAP.md"
+      - "AGENTS.md"
       - ".github/workflows/**"
 
 permissions:
