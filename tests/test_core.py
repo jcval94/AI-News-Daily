@@ -85,6 +85,24 @@ class CoreTests(unittest.TestCase):
         self.assertGreater(topic_similarity(left, right), topic_similarity(left, unrelated))
         self.assertGreater(topic_similarity(left, right), 0.35)
 
+    def test_topic_similarity_catches_auditability_theme_with_different_wording(self) -> None:
+        previous = (
+            "La IA ya toca cosas reales. El reto es pasar de demos a sistemas que operan con "
+            "herramientas, gobernanza y resultados que podamos comprobar antes de confiar en ellos."
+        )
+        candidate = (
+            "Agencia auditable: responsabilidad institucional, evidencia, trazabilidad y verificación "
+            "de acciones realizadas por agentes autónomos."
+        )
+        unrelated = (
+            "Qué pasa con el aprendizaje y la memoria cuando estudiantes delegan el razonamiento "
+            "cotidiano a tutores de inteligencia artificial."
+        )
+        similar_score = topic_similarity(previous, candidate)
+        unrelated_score = topic_similarity(previous, unrelated)
+        self.assertGreaterEqual(similar_score, self.config.essay_duplicate_threshold)
+        self.assertGreater(similar_score, unrelated_score)
+
     def test_nearest_essay_similarity_returns_best_match(self) -> None:
         previous = [
             {
