@@ -1,12 +1,12 @@
 # AI News Daily — Agentic Video Kit
 
-A daily AI-news pipeline built with **Google ADK + GitHub Actions**.
+A daily AI-news pipeline built with **Google ADK + OpenAI + GitHub Actions**.
 
 ## What happens
 
 1. A file lands in `news/YYYY-MM-DD.txt`.
 2. GitHub Actions starts automatically.
-3. A Google ADK writer creates a 60-90 second Spanish script for a young audience.
+3. Google ADK orchestrates an OpenAI-backed writer that creates a 60-90 second Spanish script for a young audience.
 4. A critic scores factuality, clarity, relevance, pacing, and tone.
 5. A `LoopAgent` repeats critic → quality gate → refiner until the script passes the threshold or reaches the safety iteration cap.
 6. A storyboard agent creates exactly one visual search instruction every **4 seconds**.
@@ -38,17 +38,23 @@ Every shot is exactly 4 seconds long in the storyboard and preview.
 
 Create this repository secret under **Settings → Secrets and variables → Actions**:
 
-- `GEMINI_API_KEY` — Gemini API key from Google AI Studio.
+- `OPENAI_API_KEY` — OpenAI API key used by the ADK agents through LiteLLM.
 
 Optional:
 
 - `PEXELS_API_KEY` — improves stock-photo coverage. Without it, Wikimedia Commons is used automatically.
 
-ADK also accepts `GOOGLE_API_KEY` locally, but the included workflow expects `GEMINI_API_KEY`.
-
 ## Model
 
-The workflow currently defaults to `gemini-3.7-flash`. Override it with the `GEMINI_MODEL` environment variable if needed.
+The cost-conscious default is:
+
+```text
+gpt-5.4-nano
+```
+
+Override it with the `OPENAI_MODEL` environment variable if you want a stronger model, for example `gpt-5.4-mini`.
+
+Google ADK remains the orchestration layer. OpenAI is connected through ADK's `LiteLlm` model wrapper.
 
 ## Run locally
 
@@ -56,8 +62,14 @@ The workflow currently defaults to `gemini-3.7-flash`. Override it with the `GEM
 python -m venv .venv
 source .venv/bin/activate
 pip install .
-export GEMINI_API_KEY="..."
+export OPENAI_API_KEY="..."
 python -m pipeline.run --news latest --out outputs
+```
+
+To select another OpenAI model:
+
+```bash
+export OPENAI_MODEL="gpt-5.4-mini"
 ```
 
 To optionally use Pexels:
@@ -65,6 +77,17 @@ To optionally use Pexels:
 ```bash
 export PEXELS_API_KEY="..."
 ```
+
+## GitHub Actions
+
+The workflow runs when:
+
+- a `news/*.txt` file changes,
+- the agent/pipeline code changes,
+- the workflow itself changes,
+- or it is started manually with `workflow_dispatch`.
+
+This broader trigger also makes the first deployment self-testing: adding or updating the workflow launches a build against the latest existing news file.
 
 ## Design notes
 
