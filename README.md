@@ -17,46 +17,68 @@ The scheduled workflow runs at **09:00 America/Mexico_City** on Tuesdays and Fri
 
 1. Combine the available daily news files for the target window.
 2. `news_relevance_selector` removes semantic duplicates and selects only the strongest stories, with a hard maximum of **8**.
-3. The selector also compares against recent `scripts/*/selected_news.json` history to avoid repeating a story in later episodes unless there is a materially new development.
-4. `youth_script_writer` creates the Spanish narration.
+3. Cross-episode deduplication uses only stories from previously **approved** episodes. Failed or rejected attempts do not burn a story.
+4. `youth_script_writer` creates a Spanish narration between **7 and 12 minutes**, choosing the target length according to the number and depth of selected stories.
 5. A Google ADK `LoopAgent` evaluates/refines the script with three judges:
    - factual/editorial critic,
    - **SEO Master**,
    - **YouTube Attention Master**.
-6. The loop exits when all three judges approve, or stops at the configured iteration cap. If unanimous approval was not reached, the script/reviews are saved and multimedia is skipped.
-7. Only an unanimously approved script proceeds to multimedia planning. The script is written to disk **before** any multimedia download starts.
-8. **Multimedia Editor Master** decides slot by slot whether the final edit should show:
-   - `presenter`: a person on camera, so no external stock asset is downloaded;
-   - `media`: an external visual materially helps, so one asset is downloaded.
-9. Pexels is preferred when `PEXELS_API_KEY` exists; Wikimedia Commons is the zero-key fallback.
+6. The script must pass all judge thresholds **and** a deterministic runtime duration gate of 420–720 seconds before multimedia is allowed.
+7. **Multimedia Editor Master** selects only the timeline slots that genuinely need external media. Every omitted slot defaults to `presenter`.
+8. Only the selected `media` slots download an asset. Pexels is preferred when `PEXELS_API_KEY` exists; Wikimedia Commons is the zero-key fallback.
 
-## Visual timing
+### Adaptive duration guide
 
-The edit timeline is deterministic:
+At the default estimate of 2.5 spoken words/second:
 
-- **00:00–00:15:** one slot every **3 seconds** (5 visible changes).
-- **After 00:15:** one slot every **4 seconds**.
+- 1–2 substantive stories: aim near **7–8 min**.
+- 3–4 substantive stories: aim near **8–9.5 min**.
+- 5–6 substantive stories: aim near **9.5–10.5 min**.
+- 7–8 substantive stories: aim near **10.5–12 min**.
 
-Only slots selected as `media` download an external asset. The maximum is controlled by `MAX_MEDIA_DOWNLOADS` (default `12`). Set `DOWNLOAD_MULTIMEDIA=false` to generate the script and edit plan without downloading assets.
+The hard runtime limit remains **7–12 minutes**; depth should come from useful explanation and context, never filler.
 
-## Repository folders
+## Run isolation and promotion
+
+Every GitHub Actions execution writes first to an isolated workspace:
 
 ```text
-news/                       # daily source digests
+.pipeline-runs/<episode-date>/<github-run-id>/
+├── scripts/<episode-date>/
+└── multimedia/<episode-date>/
+```
+
+That isolated run always gets its own `run_report.json` when reporting can execute. A run is copied into the canonical repository folders **only when the script is approved**. Rejected or failed attempts cannot overwrite or mix with the last good episode.
+
+Canonical approved outputs are:
+
+```text
 scripts/YYYY-MM-DD/
 ├── script.txt
 ├── selected_news.json
-└── reviews.json
+├── reviews.json
+└── run_report.json
 
 multimedia/YYYY-MM-DD/
 ├── plan.json
 ├── manifest.json
-└── assets/                 # only media slots selected by the editor
+└── assets/
 
-videos/                     # reserved for future final video generation
+videos/                     # reserved for future final rendering
 ```
 
-The scheduled GitHub Action commits generated `scripts/` and `multimedia/` outputs back to the branch and also uploads them as a workflow artifact.
+Failed/non-publishable isolated runs remain available as GitHub Actions artifacts for debugging and are not promoted to canonical folders.
+
+## Visual timing
+
+The edit timeline remains deterministic:
+
+- **00:00–00:15:** one slot every **3 seconds**.
+- **After 00:15:** one slot every **4 seconds**.
+
+The visual timeline is derived from the full spoken-duration estimate without the old 100-second truncation.
+
+Only slots selected as `media` download an external asset. The maximum is controlled by `MAX_MEDIA_DOWNLOADS` (default `12`). Set `DOWNLOAD_MULTIMEDIA=false` to generate the script and edit plan without downloading assets.
 
 ## Required GitHub secret
 
@@ -86,6 +108,8 @@ MAX_REFINEMENT_ITERATIONS=5
 MAX_MEDIA_DOWNLOADS=12
 DOWNLOAD_MULTIMEDIA=true
 SELECTION_HISTORY_DAYS=30
+TARGET_MIN_SECONDS=420
+TARGET_MAX_SECONDS=720
 ```
 
 ## Run locally
