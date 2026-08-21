@@ -51,7 +51,9 @@ class EditorialLanguageContractTests(unittest.TestCase):
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
         agent = Path("app/agent.py").read_text(encoding="utf-8").lower()
 
-        self.assertIn("“hoy salió una noticia…” como apertura por defecto", discourse)
+        self.assertIn("la apertura no debe comportarse como una introducción de noticias", discourse)
+        self.assertIn("intriga extrema, pero honesta", discourse)
+        self.assertIn("no empezar por nombres técnicos solo para sonar misterioso", discourse)
         self.assertIn("do not default to “hoy salió una noticia”", agent)
         self.assertIn("opening with “hoy salió una noticia”", agent)
         self.assertIn("news-desk structure", agent)
