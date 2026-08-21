@@ -46,6 +46,12 @@ jobs:
           cp /tmp/e2e-v2/scripts/2026-08-21/reviews.json evals/editorial/runs/e2e-v2/reviews.json
           cp /tmp/e2e-v3/scripts/2026-08-21/script.txt evals/editorial/runs/e2e-v3/script.txt
           cp /tmp/e2e-v3/scripts/2026-08-21/reviews.json evals/editorial/runs/e2e-v3/reviews.json
+          python - <<'PY'
+          from pathlib import Path
+          for path in Path("evals/editorial/runs").rglob("script.txt"):
+              lines = path.read_text(encoding="utf-8").splitlines()
+              path.write_text("\n".join(line.rstrip() for line in lines) + "\n", encoding="utf-8")
+          PY
 
       - name: Apply scoped medium-priority fixes
         run: python tools/apply_medium_1_10.py
@@ -71,7 +77,6 @@ jobs:
           git add -- \
             app/agent.py \
             pipeline/core.py pipeline/media.py pipeline/licenses.py pipeline/credits.py pipeline/run.py pipeline/report.py pipeline/editorial_calibration.py \
-            .github/workflows/build-video-kit.yml .github/workflows/ci.yml \
             requirements.lock \
             docs/configuration.md docs/editorial_calibration.md \
             evals/editorial \
