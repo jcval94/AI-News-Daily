@@ -1,6 +1,14 @@
 name: Build AI News Video Kit
 
 on:
+  # Temporary E2E trigger for the isolated validation branch. It does not run on main pushes.
+  push:
+    branches:
+      - "feat/e2e-run-report"
+    paths:
+      - "app/**"
+      - "pipeline/**"
+      - ".github/workflows/build-video-kit.yml"
   schedule:
     # 09:00 America/Mexico_City (UTC-6): Tuesday and Friday.
     - cron: "0 15 * * 2"
@@ -58,6 +66,19 @@ jobs:
         run: |
           if [ -n "$MANUAL_TARGET_DATE" ]; then
             TARGET_DATE="$MANUAL_TARGET_DATE"
+          elif [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            # E2E validation: resolve the nearest upcoming Tuesday/Friday.
+            DOW="$(TZ=America/Mexico_City date +%u)"
+            case "$DOW" in
+              1) OFFSET=1 ;;
+              2) OFFSET=0 ;;
+              3) OFFSET=2 ;;
+              4) OFFSET=1 ;;
+              5) OFFSET=0 ;;
+              6) OFFSET=3 ;;
+              7) OFFSET=2 ;;
+            esac
+            TARGET_DATE="$(TZ=America/Mexico_City date -d "+$OFFSET day" +%F)"
           else
             TARGET_DATE="$(TZ=America/Mexico_City date +%F)"
           fi
@@ -65,6 +86,8 @@ jobs:
           echo "Script target date: $TARGET_DATE"
 
       - name: Build approved script and required multimedia
+        id: build
+        continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -81,7 +104,24 @@ jobs:
             --target-date "${{ steps.script_date.outputs.target_date }}" \
             --max-media-downloads "$MAX_MEDIA_DOWNLOADS"
 
+      - name: Create episode run report
+        if: always()
+        env:
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+          MAX_SELECTED_NEWS: "8"
+          MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
+          DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+        run: |
+          python -m pipeline.report \
+            --target-date "${{ steps.script_date.outputs.target_date }}" \
+            --build-outcome "${{ steps.build.outcome }}"
+
       - name: Commit generated editorial assets
+        if: always()
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
         run: |
@@ -90,7 +130,7 @@ jobs:
 
           git add -- scripts multimedia videos
           if git diff --cached --quiet; then
-            echo "No generated files to commit. The pipeline may have skipped because no source news was available."
+            echo "No generated files to commit."
             exit 0
           fi
 
@@ -99,6 +139,7 @@ jobs:
           git push origin "HEAD:$GITHUB_REF_NAME"
 
       - name: Upload generated kit
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ai-news-video-kit-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
@@ -108,3 +149,9 @@ jobs:
             videos/
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Propagate build failure
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "The E2E pipeline failed. run_report.json was generated before propagating the failure."
+          exit 1
