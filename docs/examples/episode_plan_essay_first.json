@@ -1,0 +1,49 @@
+{
+  "central_question": "¿Qué dejamos de hacer nosotros cuando una herramienta empieza a pensar por nosotros?",
+  "thesis": "La discusión importante no es si la IA puede resolver más tareas, sino qué capacidades humanas dejamos de practicar cuando delegamos demasiado pronto.",
+  "hook": "No sé si te pasa algo parecido, pero cada vez que una IA hace algo que antes parecía exclusivamente humano, me entusiasma y al mismo tiempo me deja una pequeña incomodidad.",
+  "target_duration_minutes": 12.0,
+  "narrative_arc": [
+    "partir de una sensación humana reconocible",
+    "usar un espejo histórico sobre memoria y herramientas cognitivas",
+    "plantear la pregunta sobre delegación del razonamiento",
+    "introducir casos actuales solo cuando la tesis necesita evidencia",
+    "complicar la tesis con un contraejemplo",
+    "cerrar regresando a la capacidad humana que queremos conservar"
+  ],
+  "stories": [
+    {
+      "selected_news_index": 1,
+      "role": "anchor",
+      "estimated_minutes": 3.5,
+      "narrative_function": "evidence: vuelve concreto el intento de medir si un sistema puede producir conocimiento verificable",
+      "beats": [
+        "explicar primero la idea en lenguaje cotidiano",
+        "nombrar la prueba solo después de que el espectador entienda por qué importa",
+        "separar lo que demuestra de lo que todavía no sabemos"
+      ],
+      "analogy_goal": "comparar la verificación con mostrar el procedimiento de un problema, no solo la respuesta",
+      "skepticism_angle": "una prueba no demuestra automáticamente inteligencia general",
+      "human_stakes": "qué significa confiar en un sistema cuando ya no podemos revisar mentalmente cada paso",
+      "open_loop": "si podemos verificar el resultado, ¿seguimos necesitando entender el proceso?",
+      "mini_conclusion": ""
+    },
+    {
+      "selected_news_index": 2,
+      "role": "contrast",
+      "estimated_minutes": 2.5,
+      "narrative_function": "counterexample: muestra un caso donde automatizar una tarea puede ampliar la capacidad humana en lugar de sustituirla",
+      "beats": [
+        "presentar el caso como contraste a la tesis inicial",
+        "distinguir delegación de amplificación"
+      ],
+      "analogy_goal": "usar la calculadora como ejemplo de una herramienta que cambia qué parte del problema resolvemos nosotros",
+      "skepticism_angle": "evitar asumir que toda automatización reduce aprendizaje",
+      "human_stakes": "qué habilidades vale la pena seguir practicando",
+      "open_loop": "quizá la pregunta no sea cuánto delegamos, sino qué decidimos conservar",
+      "mini_conclusion": ""
+    }
+  ],
+  "final_synthesis": "La IA puede ampliar nuestra capacidad, pero esa ampliación depende de qué partes del pensamiento seguimos ejerciendo de forma deliberada.",
+  "closing_question": "Si una máquina puede hacer cada vez más del trabajo mental por nosotros, ¿qué parte de pensar queremos seguir haciendo aunque ya no sea estrictamente necesaria?"
+}
