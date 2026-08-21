@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "legacy": true,
+  "architecture_generation": "pre-essay-first",
+  "reason": "Canonical artifact predates EpisodePlan/novelty/production-script architecture and uses a news-section structure that is no longer editorially valid.",
+  "exclude_from_essay_history": true,
+  "exclude_from_voice_dna": true,
+  "allowed_uses": [
+    "negative_editorial_regression_fixture",
+    "historical_debugging"
+  ]
+}

@@ -10,6 +10,36 @@ from difflib import SequenceMatcher
 from typing import Any
 
 
+PIPELINE_ENV_DEFAULTS: dict[str, str] = {
+    "OPENAI_MODEL": "gpt-5.4-nano",
+    "WORDS_PER_SECOND": "2.5",
+    "TARGET_MIN_SECONDS": "420",
+    "TARGET_MAX_SECONDS": "1200",
+    "SCRIPT_QUALITY_THRESHOLD": "8.7",
+    "JUDGE_THRESHOLD": "8.5",
+    "VOICE_THRESHOLD": "8.7",
+    "MAX_REFINEMENT_ITERATIONS": "5",
+    "MAX_SELECTED_NEWS": "8",
+    "MAX_MEDIA_DOWNLOADS": "12",
+    "SELECTION_HISTORY_DAYS": "30",
+    "ESSAY_HISTORY_DAYS": "120",
+    "MAX_RECENT_ESSAYS": "12",
+    "ESSAY_DUPLICATE_THRESHOLD": "0.42",
+    "MAX_NOVELTY_REPLANS": "2",
+    "AGENT_MAX_ATTEMPTS": "3",
+    "AGENT_RETRY_BASE_SECONDS": "2.0",
+    "MEDIA_HTTP_MAX_ATTEMPTS": "3",
+    "MEDIA_HTTP_RETRY_BASE_SECONDS": "1.0",
+    "MEDIA_MIN_RELEVANCE_SCORE": "0.18",
+    "NEWS_SOURCE_MODE": "scheduled_window",
+    "NEWS_LOOKBACK_DAYS": "4",
+}
+
+
+def _config_env(name: str) -> str:
+    return os.getenv(name, PIPELINE_ENV_DEFAULTS[name])
+
+
 @dataclass(frozen=True)
 class PipelineConfig:
     openai_model: str = "gpt-5.4-nano"
@@ -29,6 +59,9 @@ class PipelineConfig:
     max_novelty_replans: int = 2
     agent_max_attempts: int = 3
     agent_retry_base_seconds: float = 2.0
+    media_http_max_attempts: int = 3
+    media_http_retry_base_seconds: float = 1.0
+    media_min_relevance_score: float = 0.18
     first_15_slot_seconds: int = 3
     normal_slot_seconds: int = 4
     news_source_mode: str = "scheduled_window"
@@ -37,25 +70,28 @@ class PipelineConfig:
     @classmethod
     def from_env(cls) -> "PipelineConfig":
         return cls(
-            openai_model=os.getenv("OPENAI_MODEL", "gpt-5.4-nano"),
-            words_per_second=float(os.getenv("WORDS_PER_SECOND", "2.5")),
-            target_min_seconds=int(os.getenv("TARGET_MIN_SECONDS", "420")),
-            target_max_seconds=int(os.getenv("TARGET_MAX_SECONDS", "1200")),
-            script_quality_threshold=float(os.getenv("SCRIPT_QUALITY_THRESHOLD", "8.7")),
-            judge_threshold=float(os.getenv("JUDGE_THRESHOLD", "8.5")),
-            voice_threshold=float(os.getenv("VOICE_THRESHOLD", "8.7")),
-            max_refinement_iterations=int(os.getenv("MAX_REFINEMENT_ITERATIONS", "5")),
-            max_selected_news=int(os.getenv("MAX_SELECTED_NEWS", "8")),
-            max_media_downloads=int(os.getenv("MAX_MEDIA_DOWNLOADS", "12")),
-            selection_history_days=int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
-            essay_history_days=int(os.getenv("ESSAY_HISTORY_DAYS", "120")),
-            max_recent_essays=int(os.getenv("MAX_RECENT_ESSAYS", "12")),
-            essay_duplicate_threshold=float(os.getenv("ESSAY_DUPLICATE_THRESHOLD", "0.42")),
-            max_novelty_replans=int(os.getenv("MAX_NOVELTY_REPLANS", "2")),
-            agent_max_attempts=int(os.getenv("AGENT_MAX_ATTEMPTS", "3")),
-            agent_retry_base_seconds=float(os.getenv("AGENT_RETRY_BASE_SECONDS", "2.0")),
-            news_source_mode=os.getenv("NEWS_SOURCE_MODE", "scheduled_window").strip().lower(),
-            news_lookback_days=int(os.getenv("NEWS_LOOKBACK_DAYS", "4")),
+            openai_model=_config_env("OPENAI_MODEL"),
+            words_per_second=float(_config_env("WORDS_PER_SECOND")),
+            target_min_seconds=int(_config_env("TARGET_MIN_SECONDS")),
+            target_max_seconds=int(_config_env("TARGET_MAX_SECONDS")),
+            script_quality_threshold=float(_config_env("SCRIPT_QUALITY_THRESHOLD")),
+            judge_threshold=float(_config_env("JUDGE_THRESHOLD")),
+            voice_threshold=float(_config_env("VOICE_THRESHOLD")),
+            max_refinement_iterations=int(_config_env("MAX_REFINEMENT_ITERATIONS")),
+            max_selected_news=int(_config_env("MAX_SELECTED_NEWS")),
+            max_media_downloads=int(_config_env("MAX_MEDIA_DOWNLOADS")),
+            selection_history_days=int(_config_env("SELECTION_HISTORY_DAYS")),
+            essay_history_days=int(_config_env("ESSAY_HISTORY_DAYS")),
+            max_recent_essays=int(_config_env("MAX_RECENT_ESSAYS")),
+            essay_duplicate_threshold=float(_config_env("ESSAY_DUPLICATE_THRESHOLD")),
+            max_novelty_replans=int(_config_env("MAX_NOVELTY_REPLANS")),
+            agent_max_attempts=int(_config_env("AGENT_MAX_ATTEMPTS")),
+            agent_retry_base_seconds=float(_config_env("AGENT_RETRY_BASE_SECONDS")),
+            media_http_max_attempts=int(_config_env("MEDIA_HTTP_MAX_ATTEMPTS")),
+            media_http_retry_base_seconds=float(_config_env("MEDIA_HTTP_RETRY_BASE_SECONDS")),
+            media_min_relevance_score=float(_config_env("MEDIA_MIN_RELEVANCE_SCORE")),
+            news_source_mode=_config_env("NEWS_SOURCE_MODE").strip().lower(),
+            news_lookback_days=int(_config_env("NEWS_LOOKBACK_DAYS")),
         ).validated()
 
     def validated(self) -> "PipelineConfig":
@@ -89,6 +125,12 @@ class PipelineConfig:
             raise ValueError("AGENT_MAX_ATTEMPTS must be >= 1")
         if self.agent_retry_base_seconds < 0:
             raise ValueError("AGENT_RETRY_BASE_SECONDS must be >= 0")
+        if self.media_http_max_attempts < 1:
+            raise ValueError("MEDIA_HTTP_MAX_ATTEMPTS must be >= 1")
+        if self.media_http_retry_base_seconds < 0:
+            raise ValueError("MEDIA_HTTP_RETRY_BASE_SECONDS must be >= 0")
+        if not (0 <= self.media_min_relevance_score <= 1):
+            raise ValueError("MEDIA_MIN_RELEVANCE_SCORE must be between 0 and 1")
         if self.news_source_mode not in {"scheduled_window", "recent_window"}:
             raise ValueError("NEWS_SOURCE_MODE must be scheduled_window or recent_window")
         if not (1 <= self.news_lookback_days <= 14):
@@ -382,6 +424,14 @@ def evaluate_script_gate(
         "approved": all(checks.values()),
         "duration_seconds": duration_seconds,
         "checks": checks,
+        "voice_dimension_observations": {
+            "voice_fidelity": float(voice.get("voice_fidelity", 0) or 0),
+            "intellectual_depth": float(voice.get("intellectual_depth", 0) or 0),
+            "human_relevance": float(voice.get("human_relevance", 0) or 0),
+            "analogy_quality": float(voice.get("analogy_quality", 0) or 0),
+            "enforced": False,
+            "reason": "Human calibration baseline is not yet balanced enough for deterministic dimension floors",
+        },
     }
 
 

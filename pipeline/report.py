@@ -188,6 +188,7 @@ def build_report(
     trace = read_json(scripts_dir / "execution_trace.json", {})
     media_plan = read_json(multimedia_dir / "plan.json", {})
     manifest = read_json(multimedia_dir / "manifest.json", [])
+    credits = read_json(multimedia_dir / "credits.json", {})
     script = read_text(scripts_dir / "script.txt")
 
     selected_items = selected.get("items", []) if isinstance(selected, dict) else []
@@ -249,12 +250,14 @@ def build_report(
         "production_script_json": artifact_record(scripts_dir / "production_script.json", f"scripts/{episode}/production_script.json"),
         "multimedia_plan": artifact_record(multimedia_dir / "plan.json", f"multimedia/{episode}/plan.json"),
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
+        "multimedia_credits_json": artifact_record(multimedia_dir / "credits.json", f"multimedia/{episode}/credits.json"),
+        "multimedia_credits_md": artifact_record(multimedia_dir / "credits.md", f"multimedia/{episode}/credits.md"),
         "voice_profile": artifact_record(editorial_dir / "voice_profile.md", "editorial/voice_profile.md"),
         "discourse_profile": artifact_record(editorial_dir / "discourse_profile.md", "editorial/discourse_profile.md"),
     }
 
     return {
-        "schema_version": 6,
+        "schema_version": 7,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
@@ -371,6 +374,9 @@ def build_report(
             "presenter_slots": len(presenter_segments),
             "downloaded_assets": len(manifest) if isinstance(manifest, list) else 0,
             "fallback_assets": len(fallback_assets),
+            "credits_generated": bool(credits),
+            "all_assets_license_valid": credits.get("all_assets_license_valid") if isinstance(credits, dict) else None,
+            "attribution_required_count": credits.get("attribution_required_count", 0) if isinstance(credits, dict) else 0,
             "provider_errors": (
                 sum(
                     len(item.get("errors", []))

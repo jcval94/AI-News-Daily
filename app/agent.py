@@ -4,7 +4,7 @@ from typing import List, Literal
 
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from pipeline.core import PipelineConfig
 
@@ -88,6 +88,15 @@ class EpisodePlan(BaseModel):
     stories: List[StoryPlan] = Field(default_factory=list)
     final_synthesis: str
     closing_question: str
+
+    @model_validator(mode="after")
+    def validate_dramaturgical_progression(self) -> "EpisodePlan":
+        normalize = lambda value: " ".join(str(value or "").lower().split())
+        if normalize(self.narrative_arc.evolved_thesis) == normalize(self.thesis):
+            raise ValueError("narrative_arc.evolved_thesis must materially move beyond thesis")
+        if normalize(self.narrative_arc.final_payoff) == normalize(self.hook):
+            raise ValueError("narrative_arc.final_payoff must transform, not repeat, the hook")
+        return self
 
 
 class ReviewResult(BaseModel):
@@ -304,6 +313,11 @@ INTERNAL SECTION ALIGNMENT — REQUIRED BUT NEVER SPOKEN:
 - Do not add any other SECTION markers. Do not wrap the result in a code fence.
 - These markers are metadata, not headings; narration must flow naturally across them.
 - Do NOT include a subscribe/comment CTA in the raw essay; the deterministic production layer appends the CTA after the reflective closing question.
+
+DRAMATURGICAL MOVEMENT — FOLLOW THE STRUCTURED ARC:
+- Treat opening_belief -> central_mystery -> concrete_scene -> first_reveal -> complication -> narrative_turn -> second_reveal -> evolved_thesis -> recurring_motif -> emotional_peak -> final_payoff as actual runtime beats, not decorative planning metadata.
+- The narration must make the provisional thesis evolve; do not merely restate it at the end.
+- Pay off the central mystery and recurring motif naturally without speaking these internal labels.
 
 HOW NEWS ENTERS:
 - Introduce a story because the argument now needs evidence: “esta semana apareció un caso que vuelve esto muy concreto…”, or equivalent natural language.

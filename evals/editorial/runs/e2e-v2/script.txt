@@ -1,0 +1,107 @@
+Hoy salió una noticia que, francamente, me da esperanza… y también me obliga a poner freno.
+
+Apodex presentó **TRACES**, una prueba comparativa para medir **descubrimiento científico real por IA**. Y el detalle que a mí me parece central no es que el sistema “suene inteligente”. Es que en los problemas que evalúa **no existe una respuesta conocida de antemano**.
+
+Eso cambia el tipo de reto.
+
+Porque en muchos benchmarks clásicos, aunque el examen se ponga muy técnico, el juego suele ser parecido: hay una respuesta esperada (o una “etiqueta correcta”), y el sistema compite por acertar. O compite por escribir algo que encaje con lo que suena razonable para un humano.
+
+Suena bien. Pero suena bien no es lo mismo que producir conocimiento.
+
+TRACES empuja hacia una lógica distinta: en esas tareas, para salir bien, el sistema tiene que mostrar algo más parecido a investigación. Según el anuncio, el benchmark enfatiza cosas como **búsqueda de evidencia**, **uso de herramientas**, **hipótesis competidoras**, **experimentación**, **aprender a partir del fallo** y **verificar resultados**.
+
+Y entonces, aquí es donde la mente se me va a un referente histórico inesperado… pero muy humano.
+
+En el *Fedro* de Platón aparece el mito de **Theuth y Thamus** sobre la escritura. La preocupación no era simplemente “la escritura es mala”. Era más fina: la escritura podía dar **una apariencia de saber** sin el trabajo activo que sostiene ese saber: recordar, practicar, comprender, contrastar.
+
+No es que TRACES sea “como escribir”. La analogía no pretende eso. Pretende algo más simple: **cuando una herramienta te entrega respuestas**, puede cambiar qué tipo de esfuerzo mental haces. A veces lo reemplaza. A veces lo desplaza. Y si no hay verificación real contra el mundo (o contra evidencia sólida), lo que obtienes puede parecer conocimiento… pero en realidad ser solo una historia bien armada.
+
+Así que la pregunta se vuelve concreta. Casi como un examen:
+
+**Si en la prueba no te dan el correcto en ningún lado, ¿cómo demuestras que aprendiste algo que resiste el contraste?**
+No basta con entregar un texto convincente. Tienes que enseñar tu proceso: de dónde sale lo que dices, qué intentaste cuando fallaste y cómo verificaste que no era solo una buena narrativa.
+
+Y ojo con esto, porque es fácil caer en el romanticismo. Solo porque un benchmark exige verificación, no significa que en la práctica todo el ecosistema haga verificación con la misma fuerza. Desde fuera no podemos garantizar cómo de robusta será esa “verificación” en cada caso, ni qué tan estrictos son los criterios. Lo único responsable que podemos decir es esto: **el diseño del reto está alineado con el ciclo real del conocimiento**, donde propones → pruebas → miras qué pasa → ajustas, y vuelves a verificar.
+
+Con eso en mente, ahora sí: ¿qué está pasando después con los agentes?
+
+Porque otra noticia conecta muy bien con la idea de “ciclo” y con una diferencia que vale oro: **priorizar** no es lo mismo que **verificar**.
+
+SandboxAQ hizo disponible **AQCat** en **Claude Science** vía **MCP**. MCP, en palabras humanas, es un estándar para que un agente se conecte con herramientas externas sin que todo se tenga que construir desde cero cada vez. Traducción: reduce fricción para usar capacidades especializadas cuando hace falta.
+
+AQCat, según el anuncio, usa un modelo cuantitativo especializado para **predecir propiedades físicas de materiales** y, a partir de preguntas en lenguaje natural, **priorizar catalizadores**.
+
+Eso suena útil, y lo es… pero “priorizar” es una etapa temprana. Es como ordenar la exploración para no mirar diez mil posibilidades al mismo tiempo. Ayuda a decidir qué vale la pena estudiar primero.
+
+La verificación, en cambio, es comprobar que lo que priorizaste realmente aguanta contraste: que lo que parecía prometedor no se cae cuando lo examinas con evidencia más real (o con más reglas del mundo).
+
+Aquí hay un matiz importante para no perder el freno: por más que el agente parezca “investigador”, muchas veces está operando más cerca de **criba virtual** o de **sugerencia priorizada** que de “confirmación científica final”. Y eso no es malo en sí. Solo cambia el tipo de promesa que puedes creer.
+
+Y la siguiente noticia de SandboxAQ justamente se mete a un terreno donde el riesgo de confundir “sugerir” con “descubrir” es mayor.
+
+Lanzaron **AQPotency**, también vía Claude/MCP, orientado a descubrimiento de fármacos **cuando no existe una estructura 3D resuelta** de la proteína objetivo.
+
+En términos cotidianos: muchas veces la estructura 3D te da anclajes físicos directos para entender interacciones con moléculas. Si esa información no está, el sistema tiene menos “agarres” claros basados en geometría real. Y ahí el modelo puede ser coherente… pero también puede irse por caminos que no corresponden a la realidad bioquímica con la misma fidelidad.
+
+Según el anuncio, AQPotency puntúa bibliotecas grandes de moléculas para estimar potencia frente a una diana incluso sin estructura 3D.
+
+Yo lo leo así: en vez de “resolver el rompecabezas completo”, está intentando hacer la parte donde aún no tienes toda la información disponible: **estimar y ordenar** qué explorar primero.
+
+De nuevo: eso no es lo mismo que verificar en laboratorio. Pero sí es parte de un ciclo más largo. Y entonces la pregunta vuelve a ser la misma de TRACES, solo que aplicada a otra fase del proceso:
+
+Cuando te falta información, el valor real del agente depende de cómo maneje la incertidumbre y de cómo conecte sus puntajes con acciones posteriores verificables. Si el sistema solo “puntúa y ya”, el ciclo se rompe. Si empuja a confirmar con evidencia externa como parte del flujo, el ciclo se mantiene vivo.
+
+Hasta aquí, ciencia y agentes. Pero el patrón aparece igual de claro en seguridad de software… y ahí el costo del error suele ser más inmediato.
+
+Harness lanzó agentes para responder a vulnerabilidades a velocidad de máquina: **triage**, **agentes para Zero-Day**, remediación agentic y **virtual patching**.
+
+La idea, según el anuncio, no es solo detectar fallos con IA. Es automatizar un circuito dentro del ciclo de entrega del software: **detección → priorización → corrección**, y con el objetivo de llegar con baja latencia a una corrección verificable.
+
+Traducción a lo cotidiano: no solo “hay una fuga en la casa”. También “identifico dónde es, decido qué arreglar primero, propongo el arreglo y luego lo valido”.
+
+Y esa frase —validar— es el punto donde toca poner más atención, porque en seguridad el “laboratorio” no es abstracto: es el sistema real de producción. El éxito no es que el reporte se lea bien. El éxito es que el riesgo baje y que el cambio no rompa otra cosa.
+
+Pero aquí sube el riesgo. Cuando automatizas correcciones, automatizas también la posibilidad de daño si el agente se equivoca.
+
+Así que la pregunta operativa no es solo “¿puede hacerlo?”
+Es: **¿en qué condiciones lo hace bien?**
+¿Y qué significa exactamente que quedó “corregido”?
+
+Porque “cerrar el loop” en seguridad no equivale mágicamente a confiabilidad automática. Puede significar rapidez. Puede significar más cambios por unidad de tiempo. Y si la verificación no está bien alineada con el objetivo real o si el sistema interpreta la evidencia de forma incompleta, el error se vuelve más frecuente… y más rápido.
+
+O sea: en ciencia, un error puede costar dinero y tiempo y la dirección de la investigación. En seguridad, además, puede costar incidentes.
+
+Y entonces entramos en la capa que hace que todo esto sea verdaderamente operacional: **la infraestructura** que permite que el agente haga cosas, no solo hable.
+
+Anthropic amplía Claude para construir **agentes de producción** con **computer use** y capacidades para integrar habilidades y archivos. En paralelo, Slack anunció **Slack Code** para llevar agentes de programación a canales de trabajo donde equipos pueden observar, orientar, revisar y coordinar.
+
+Aquí el punto no es la etiqueta “agente”. Es lo que implica en la práctica: entorno, herramientas, persistencia y trazas. Sin trazas y sin posibilidad de auditoría, cualquier “verificación” se vuelve palabra bonita.
+
+Y aun así, aquí viene mi pausa escéptica final de este episodio.
+
+Que un sistema pueda decir “verifiqué” no significa que la verificación sea la correcta.
+
+La trampa sutil suele ser esta: el proceso puede estar bien estructurado… pero estar verificando la pregunta equivocada, o usando evidencia incompleta, o interpretando con un lente que no coincide con el contexto real del problema.
+
+Entonces, el “cierre de circuito” del que tanto estamos hablando —evidencia y verificación— tiene la misma forma general en ciencia y en seguridad… pero **en seguridad el costo del error suele ser más inmediato**. Y en ambas áreas, lo que manda no es solo el modelo: manda el diseño del ciclo, el criterio humano, los límites y la responsabilidad.
+
+Y si tengo que cerrar el episodio con una sola idea que conecte todo, sería esta:
+
+El patrón común de estas noticias es que la IA está empezando a empujarse hacia sistemas evaluables como ciclo: no solo generan salida, sino que buscan evidencia, usan herramientas, compiten hipótesis y tratan de verificar.
+
+TRACES lo intenta medir como benchmark. AQCat y AQPotency lo aterrizan como fases tempranas de investigación con incertidumbre. Harness lo refleja como circuito de acción en seguridad, de detección a corrección.
+
+Pero el cuello de botella sigue siendo el mismo: **la verificación no es magia. Es diseño**. Y el diseño requiere criterio humano, políticas, trazabilidad y responsabilidad cuando el costo del error es real.
+
+Te dejo una escena mental para aterrizarlo.
+
+Imagina que tienes un agente en una planta, o en un pipeline de despliegue, o en un flujo de investigación donde “probar” cuesta dinero y tiempo. Si la verificación no está definida bien —qué cuenta como evidencia suficiente, cómo se interpreta y cómo se decide— el agente puede volverse rápido en equivocarse. Y en esos contextos, la velocidad del error puede ser una factura que llega más cara que antes.
+
+Entonces, cierro con la pregunta que realmente importa:
+
+**Si cada vez más sistemas “cierran el circuito” de evidencia y verificación, ¿qué parte del juicio queremos seguir conservando nosotros?**
+
+¿La parte humana de decidir qué cuenta como evidencia suficiente?
+¿O la parte humana de decidir qué acción es responsable cuando el sistema es rápido, convincente… y aparentemente verificable?
+
+Si esta charla te sirvió para ver el ciclo de conocimiento con otros ojos, compártela con alguien que le interese pensar tecnología… y también pensar qué parte del juicio no deberíamos delegar.
