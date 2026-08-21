@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+# Run 3 validates semantic concept-family deduplication against current main.
 permissions:
   contents: read
 
