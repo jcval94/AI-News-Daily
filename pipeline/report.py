@@ -1,34 +1,31 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
-import math
 import os
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
-WORDS_PER_SECOND = float(os.getenv("WORDS_PER_SECOND", "2.5"))
-FIRST_15_SLOT_SECONDS = 3
-NORMAL_SLOT_SECONDS = 4
-TARGET_MIN_SECONDS = int(os.getenv("TARGET_MIN_SECONDS", "420"))
-TARGET_MAX_SECONDS = int(os.getenv("TARGET_MAX_SECONDS", "720"))
+from pipeline.core import (
+    APPROVED,
+    FAILURE,
+    MISSING_OPENAI_SECRET,
+    NO_RELEVANT_NEWS,
+    NO_SOURCE_NEWS,
+    SCRIPT_NOT_APPROVED,
+    KNOWN_STATUSES,
+    PipelineConfig,
+    estimate_spoken_duration_seconds,
+    expected_news_dates,
+)
+
+CONFIG = PipelineConfig.from_env()
 
 
 def parse_date(value: str) -> date:
     return datetime.strptime(value, "%Y-%m-%d").date()
-
-
-def expected_news_dates(target_date: date) -> list[date]:
-    if target_date.weekday() == 1:
-        offsets = (4, 3, 2, 1)
-    elif target_date.weekday() == 4:
-        offsets = (3, 2, 1)
-    else:
-        raise ValueError(
-            f"Run reports are only defined for Tuesday/Friday episodes; got {target_date.isoformat()}"
-        )
-    return [target_date - timedelta(days=offset) for offset in offsets]
 
 
 def read_json(path: Path, default: Any) -> Any:
@@ -43,18 +40,50 @@ def read_json(path: Path, default: Any) -> Any:
 def read_text(path: Path) -> str:
     if not path.exists():
         return ""
-    return path.read_text(encoding="utf-8").strip()
+    try:
+        return path.read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
 
 
-def estimate_duration_seconds(script: str) -> int | None:
-    if not script:
+def sha256_file(path: Path) -> str | None:
+    if not path.exists() or not path.is_file():
         return None
-    words = max(1, len(script.split()))
-    return max(1, math.ceil(words / WORDS_PER_SECOND))
+    digest = hashlib.sha256()
+    try:
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+    except OSError:
+        return None
+    return digest.hexdigest()
+
+
+def source_window(news_dir: Path, target_date: date) -> dict[str, Any]:
+    expected = expected_news_dates(target_date)
+    files: list[dict[str, Any]] = []
+    missing: list[str] = []
+    for item_date in expected:
+        path = news_dir / f"{item_date.isoformat()}.txt"
+        text = read_text(path)
+        if text:
+            files.append(
+                {
+                    "name": path.name,
+                    "sha256": sha256_file(path),
+                    "bytes": path.stat().st_size if path.exists() else None,
+                }
+            )
+        else:
+            missing.append(item_date.isoformat())
+    return {
+        "expected_dates": [item.isoformat() for item in expected],
+        "available_files": files,
+        "missing_dates": missing,
+    }
 
 
 def meaningful_duplicates(values: list[Any]) -> list[str]:
-    """Ignore model placeholders such as 'Ninguna...' that mean zero duplicates."""
     result: list[str] = []
     for value in values:
         text = str(value or "").strip()
@@ -67,25 +96,6 @@ def meaningful_duplicates(values: list[Any]) -> list[str]:
     return result
 
 
-def source_window(news_dir: Path, target_date: date) -> dict[str, Any]:
-    expected = expected_news_dates(target_date)
-    available: list[str] = []
-    missing: list[str] = []
-
-    for item_date in expected:
-        path = news_dir / f"{item_date.isoformat()}.txt"
-        if path.exists() and path.read_text(encoding="utf-8").strip():
-            available.append(path.name)
-        else:
-            missing.append(item_date.isoformat())
-
-    return {
-        "expected_dates": [item.isoformat() for item in expected],
-        "available_files": available,
-        "missing_dates": missing,
-    }
-
-
 def score_block(payload: dict[str, Any]) -> dict[str, Any]:
     return {
         "approved": bool(payload.get("approved", False)),
@@ -95,27 +105,52 @@ def score_block(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def infer_status(
-    build_outcome: str,
-    sources: dict[str, Any],
-    script_exists: bool,
-    approved_for_multimedia: bool,
-    multimedia_plan_exists: bool,
-) -> str:
+def artifact_record(path: Path) -> dict[str, Any]:
+    return {
+        "path": str(path),
+        "exists": path.exists(),
+        "sha256": sha256_file(path),
+        "bytes": path.stat().st_size if path.exists() and path.is_file() else None,
+    }
+
+
+def summarize_trace(trace: dict[str, Any]) -> dict[str, Any]:
+    calls = trace.get("agent_calls", []) if isinstance(trace, dict) else []
+    iterations = trace.get("refinement_iterations", []) if isinstance(trace, dict) else []
+    total_usage = {"prompt_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0, "total_tokens": 0}
+    for call in calls:
+        if not isinstance(call, dict):
+            continue
+        usage = call.get("usage", {})
+        if isinstance(usage, dict):
+            for key in total_usage:
+                value = usage.get(key)
+                if isinstance(value, int):
+                    total_usage[key] += value
+    successful_calls = [c for c in calls if isinstance(c, dict) and c.get("status") == "success"]
+    retries = [c for c in calls if isinstance(c, dict) and int(c.get("attempt", 1) or 1) > 1]
+    failed_attempts = [c for c in calls if isinstance(c, dict) and c.get("status") == "error"]
+    return {
+        "agent_attempts": len(calls),
+        "successful_agent_calls": len(successful_calls),
+        "retry_attempts": len(retries),
+        "failed_attempts": len(failed_attempts),
+        "token_usage": total_usage,
+        "refinement_iterations": iterations,
+        "validation_warnings": trace.get("validation_warnings", []) if isinstance(trace, dict) else [],
+    }
+
+
+def infer_status(run_state: dict[str, Any], build_outcome: str, sources: dict[str, Any]) -> str:
+    state_status = str(run_state.get("status", "")).strip().lower() if isinstance(run_state, dict) else ""
+    if state_status in KNOWN_STATUSES:
+        return state_status
     normalized = build_outcome.strip().lower()
-    if normalized in {"missing_openai_secret", "failure", "error"}:
-        return "error"
-    if normalized == "no_source_news" or not sources["available_files"]:
-        return "no_source_news"
-    if normalized == "script_not_approved":
-        return "script_not_approved"
-    if script_exists and not approved_for_multimedia:
-        return "script_not_approved"
-    if approved_for_multimedia and multimedia_plan_exists:
-        return "complete"
-    if script_exists:
-        return "script_created"
-    return "incomplete"
+    if normalized in KNOWN_STATUSES:
+        return normalized
+    if not sources["available_files"]:
+        return NO_SOURCE_NEWS
+    return FAILURE
 
 
 def build_report(
@@ -131,86 +166,76 @@ def build_report(
 
     selected = read_json(scripts_dir / "selected_news.json", {})
     reviews = read_json(scripts_dir / "reviews.json", {})
+    run_state = read_json(scripts_dir / "run_state.json", {})
+    trace = read_json(scripts_dir / "execution_trace.json", {})
     media_plan = read_json(multimedia_dir / "plan.json", {})
     manifest = read_json(multimedia_dir / "manifest.json", [])
     script = read_text(scripts_dir / "script.txt")
 
     selected_items = selected.get("items", []) if isinstance(selected, dict) else []
-    raw_duplicates = selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
-    duplicates = meaningful_duplicates(raw_duplicates)
+    duplicates = meaningful_duplicates(
+        selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
+    )
     segments = media_plan.get("segments", []) if isinstance(media_plan, dict) else []
-    media_segments = [s for s in segments if s.get("mode") == "media"]
-    presenter_segments = [s for s in segments if s.get("mode") == "presenter"]
+    media_segments = [segment for segment in segments if segment.get("mode") == "media"]
+    presenter_segments = [segment for segment in segments if segment.get("mode") == "presenter"]
     fallback_assets = [
-        item for item in manifest if item.get("provider") == "generated_fallback"
+        item for item in manifest if isinstance(item, dict) and item.get("provider") == "generated_fallback"
     ] if isinstance(manifest, list) else []
 
     editorial = reviews.get("editorial", {}) if isinstance(reviews, dict) else {}
     seo = reviews.get("seo_master", {}) if isinstance(reviews, dict) else {}
     attention = reviews.get("youtube_attention_master", {}) if isinstance(reviews, dict) else {}
+    gate = reviews.get("gate", {}) if isinstance(reviews, dict) else {}
     approved = bool(reviews.get("approved_for_multimedia", False)) if isinstance(reviews, dict) else False
-    duration_review = reviews.get("duration", {}) if isinstance(reviews, dict) else {}
     sources = source_window(news_dir, target_date)
-    estimated_duration = estimate_duration_seconds(script)
+    estimated_duration = estimate_spoken_duration_seconds(script, CONFIG) if script else None
+    status = infer_status(run_state, build_outcome, sources)
 
-    status = infer_status(
-        build_outcome=build_outcome,
-        sources=sources,
-        script_exists=bool(script),
-        approved_for_multimedia=approved,
-        multimedia_plan_exists=bool(segments),
-    )
+    artifacts = {
+        "run_state": artifact_record(scripts_dir / "run_state.json"),
+        "execution_trace": artifact_record(scripts_dir / "execution_trace.json"),
+        "selected_news": artifact_record(scripts_dir / "selected_news.json"),
+        "reviews": artifact_record(scripts_dir / "reviews.json"),
+        "script": artifact_record(scripts_dir / "script.txt"),
+        "multimedia_plan": artifact_record(multimedia_dir / "plan.json"),
+        "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json"),
+    }
 
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "build_outcome": build_outcome,
+        "state": run_state,
         "source_window": sources,
-        "configuration": {
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-5.4-nano"),
-            "script_quality_threshold": float(os.getenv("SCRIPT_QUALITY_THRESHOLD", "8.7")),
-            "judge_threshold": float(os.getenv("JUDGE_THRESHOLD", "8.5")),
-            "max_refinement_iterations": int(os.getenv("MAX_REFINEMENT_ITERATIONS", "5")),
-            "max_selected_news": int(os.getenv("MAX_SELECTED_NEWS", "8")),
-            "max_media_downloads": int(os.getenv("MAX_MEDIA_DOWNLOADS", "12")),
-            "download_multimedia": os.getenv("DOWNLOAD_MULTIMEDIA", "true").strip().lower()
-            not in {"0", "false", "no"},
-            "selection_history_days": int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
-            "words_per_second": WORDS_PER_SECOND,
-            "first_15_seconds_slot_size": FIRST_15_SLOT_SECONDS,
-            "normal_slot_size": NORMAL_SLOT_SECONDS,
-            "target_duration_seconds": [TARGET_MIN_SECONDS, TARGET_MAX_SECONDS],
-        },
+        "configuration": CONFIG.as_report_dict(),
         "selection": {
             "selected_count": len(selected_items),
-            "selected_titles": [item.get("title", "") for item in selected_items],
+            "selected_titles": [item.get("title", "") for item in selected_items if isinstance(item, dict)],
             "discarded_duplicates_count": len(duplicates),
             "discarded_duplicates": duplicates,
         },
         "script": {
             "exists": bool(script),
-            "path": str(scripts_dir / "script.txt"),
             "word_count": len(script.split()) if script else 0,
             "estimated_duration_seconds": estimated_duration,
-            "within_target_duration": (
+            "within_target_duration": bool(
                 estimated_duration is not None
-                and TARGET_MIN_SECONDS <= estimated_duration <= TARGET_MAX_SECONDS
+                and CONFIG.target_min_seconds <= estimated_duration <= CONFIG.target_max_seconds
             ),
-            "runtime_duration_check": duration_review,
             "approved_for_multimedia": approved,
+            "gate": gate,
         },
         "judges": {
-            "editorial": {
-                **score_block(editorial),
-                "factuality_risk": editorial.get("factuality_risk"),
-            },
+            "editorial": {**score_block(editorial), "factuality_risk": editorial.get("factuality_risk")},
             "seo_master": score_block(seo),
             "youtube_attention_master": score_block(attention),
         },
+        "observability": summarize_trace(trace),
         "multimedia": {
             "plan_exists": bool(segments),
             "total_slots": len(segments),
@@ -218,22 +243,19 @@ def build_report(
             "presenter_slots": len(presenter_segments),
             "downloaded_assets": len(manifest) if isinstance(manifest, list) else 0,
             "fallback_assets": len(fallback_assets),
-            "plan_path": str(multimedia_dir / "plan.json"),
-            "manifest_path": str(multimedia_dir / "manifest.json"),
+            "provider_errors": sum(
+                len(item.get("errors", []))
+                for item in manifest
+                if isinstance(item, dict) and isinstance(item.get("errors", []), list)
+            ) if isinstance(manifest, list) else 0,
         },
-        "artifacts": {
-            "selected_news": str(scripts_dir / "selected_news.json"),
-            "reviews": str(scripts_dir / "reviews.json"),
-            "script": str(scripts_dir / "script.txt"),
-            "multimedia_plan": str(multimedia_dir / "plan.json"),
-            "multimedia_manifest": str(multimedia_dir / "manifest.json"),
-        },
+        "artifacts": artifacts,
     }
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Create an episode run_report.json")
-    parser.add_argument("--target-date", required=True, help="Episode date in YYYY-MM-DD")
+    parser.add_argument("--target-date", required=True)
     parser.add_argument("--build-outcome", default="success")
     parser.add_argument("--news-dir", default="news")
     parser.add_argument("--scripts-dir", default="scripts")
@@ -247,7 +269,6 @@ def main() -> None:
     scripts_root = Path(args.scripts_dir)
     output_dir = scripts_root / target_date.isoformat()
     output_dir.mkdir(parents=True, exist_ok=True)
-
     report = build_report(
         target_date=target_date,
         news_dir=Path(args.news_dir),
@@ -256,10 +277,7 @@ def main() -> None:
         build_outcome=args.build_outcome,
     )
     output_path = output_dir / "run_report.json"
-    output_path.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Run report created at {output_path}")
     print(json.dumps({"status": report["status"], "episode_date": report["episode_date"]}))
 

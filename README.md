@@ -1,104 +1,167 @@
-# AI News Daily — Agentic Video Kit
+# AI News Daily — Production Agentic Video Kit
 
-AI-news video pipeline built with **Google ADK + OpenAI + GitHub Actions**.
+A twice-weekly AI-news production pipeline built to be understandable as a small production agentic system.
+
+## Architecture principle
+
+**LLMs propose and judge; deterministic code controls the workflow.**
+
+Google ADK provides the agent runtime (`Agent`, `Runner`, session state). `pipeline/run.py` owns the production state machine: retries, validation, refinement iterations, duration gates, output promotion, and side effects. This avoids using an LLM as the final authority for business-critical control flow.
+
+### Agent roles
+
+1. `news_relevance_selector` — selects at most 8 unique, high-value stories.
+2. `youth_script_writer` — writes the first 7–12 minute Spanish narration.
+3. `script_critic` — factual/editorial judge.
+4. `seo_master` — YouTube SEO judge.
+5. `youtube_attention_master` — hook/retention judge.
+6. `script_refiner` — revises the script from judge feedback.
+7. `multimedia_editor_master` — selects only slots where external media adds value.
+
+There is **no LLM quality-gate agent**. Python evaluates the final gate deterministically.
 
 ## Production cadence
 
-Daily files remain under `news/YYYY-MM-DD.txt`, but script/video-kit production runs only twice per week:
+- **Tuesday:** use available Friday, Saturday, Sunday, Monday files.
+- **Friday:** use available Tuesday, Wednesday, Thursday files.
+- Missing daily files are non-fatal.
+- If no source exists, status is `no_source_news`.
+- If sources exist but nothing is worth publishing, status is `no_relevant_news`.
 
-- **Tuesday:** use whatever is available from **Friday, Saturday, Sunday and Monday**.
-- **Friday:** use whatever is available from **Tuesday, Wednesday and Thursday**.
+Daily source inputs remain `news/YYYY-MM-DD.txt`.
 
-Missing daily files are non-fatal. The pipeline logs the missing dates and continues with the files that exist. If the whole editorial window is empty, the workflow exits successfully without fabricating a script.
+## Episode states
 
-The scheduled workflow runs at **09:00 America/Mexico_City** on Tuesdays and Fridays. A manual `workflow_dispatch` can reproduce any Tuesday/Friday by supplying `target_date=YYYY-MM-DD`.
+`run_state.json` is the authoritative machine-readable state for an attempted episode:
 
-## Editorial pipeline
+- `approved` — publishable and eligible for canonical promotion.
+- `no_source_news` — clean skip; no source files.
+- `no_relevant_news` — clean skip; sources existed but selector chose nothing.
+- `script_not_approved` — refinement limit reached without passing every gate.
+- `failure` — unexpected runtime failure.
+- `missing_openai_secret` — workflow preflight failure.
 
-1. Combine the available daily news files for the target window.
-2. `news_relevance_selector` removes semantic duplicates and selects only the strongest stories, with a hard maximum of **8**.
-3. Cross-episode deduplication uses only stories from previously **approved** episodes. Failed or rejected attempts do not burn a story.
-4. `youth_script_writer` creates a Spanish narration between **7 and 12 minutes**, choosing the target length according to the number and depth of selected stories.
-5. A Google ADK `LoopAgent` evaluates/refines the script with three judges:
-   - factual/editorial critic,
-   - **SEO Master**,
-   - **YouTube Attention Master**.
-6. The script must pass all judge thresholds **and** a deterministic runtime duration gate of 420–720 seconds before multimedia is allowed.
-7. **Multimedia Editor Master** selects only the timeline slots that genuinely need external media. Every omitted slot defaults to `presenter`.
-8. Only the selected `media` slots download an asset. Pexels is preferred when `PEXELS_API_KEY` exists; Wikimedia Commons is the zero-key fallback.
+Only `approved` runs may replace canonical `scripts/<date>/` and `multimedia/<date>/` outputs.
 
-### Adaptive duration guide
+## Quality loop
 
-At the default estimate of 2.5 spoken words/second:
+The production loop is explicit Python orchestration:
 
-- 1–2 substantive stories: aim near **7–8 min**.
-- 3–4 substantive stories: aim near **8–9.5 min**.
-- 5–6 substantive stories: aim near **9.5–10.5 min**.
-- 7–8 substantive stories: aim near **10.5–12 min**.
+```text
+select → write → [editorial + SEO + attention judges]
+                    ↓
+             deterministic gate
+               ↙          ↘
+          refine          approved
+             ↖              ↓
+              └────── multimedia plan
+```
 
-The hard runtime limit remains **7–12 minutes**; depth should come from useful explanation and context, never filler.
+Default deterministic approval requires:
 
-## Run isolation and promotion
+- narration between **420 and 720 seconds** (7–12 minutes),
+- editorial score >= 8.7,
+- editorial `factuality_risk == low`,
+- SEO score >= 8.5,
+- Attention score >= 8.5,
+- all three judges explicitly approve.
 
-Every GitHub Actions execution writes first to an isolated workspace:
+The loop runs at most `MAX_REFINEMENT_ITERATIONS` times.
+
+## Retries
+
+Agent calls retry only likely transient failures (rate limits, timeouts, connection/service errors) with bounded exponential backoff. Invalid input/configuration errors are not retried.
+
+Defaults:
+
+```text
+AGENT_MAX_ATTEMPTS=3
+AGENT_RETRY_BASE_SECONDS=2.0
+MEDIA_HTTP_MAX_ATTEMPTS=3
+```
+
+Media API/download retries are independent from model retries. If both Pexels and Wikimedia fail, the pipeline creates a local fallback card instead of aborting the whole approved kit.
+
+## Isolation and outputs
+
+GitHub Actions builds each attempt under:
 
 ```text
 .pipeline-runs/<episode-date>/<github-run-id>/
-├── scripts/<episode-date>/
-└── multimedia/<episode-date>/
 ```
 
-That isolated run always gets its own `run_report.json` when reporting can execute. A run is copied into the canonical repository folders **only when the script is approved**. Rejected or failed attempts cannot overwrite or mix with the last good episode.
+This prevents stale files from previous attempts being mixed with a new script.
 
-Canonical approved outputs are:
+An approved run is promoted to:
 
 ```text
 scripts/YYYY-MM-DD/
-├── script.txt
+├── run_state.json
+├── execution_trace.json
+├── run_report.json
 ├── selected_news.json
-├── reviews.json
-└── run_report.json
+├── script.txt
+└── reviews.json
 
 multimedia/YYYY-MM-DD/
 ├── plan.json
 ├── manifest.json
 └── assets/
 
-videos/                     # reserved for future final rendering
+videos/  # reserved for future final rendering
 ```
 
-Failed/non-publishable isolated runs remain available as GitHub Actions artifacts for debugging and are not promoted to canonical folders.
+Failed/non-publishable attempts remain available as GitHub Actions artifacts but are not promoted.
 
-## Visual timing
+## Observability
 
-The edit timeline remains deterministic:
+`execution_trace.json` records each agent attempt:
 
-- **00:00–00:15:** one slot every **3 seconds**.
-- **After 00:15:** one slot every **4 seconds**.
+- logical step and agent,
+- refinement iteration,
+- attempt number,
+- success/error,
+- elapsed seconds,
+- retryability,
+- error class/message,
+- ADK token usage when `usage_metadata` is available.
 
-The visual timeline is derived from the full spoken-duration estimate without the old 100-second truncation.
+`run_report.json` derives a durable episode report from persisted artifacts and includes:
 
-Only slots selected as `media` download an external asset. The maximum is controlled by `MAX_MEDIA_DOWNLOADS` (default `12`). Set `DOWNLOAD_MULTIMEDIA=false` to generate the script and edit plan without downloading assets.
+- episode state and reason,
+- source window and SHA-256 source hashes,
+- effective configuration,
+- selected stories and duplicates,
+- final deterministic gate and judge scores,
+- retry/attempt counts and token usage,
+- multimedia/fallback/provider-error counts,
+- SHA-256 hashes for generated artifacts.
 
-## Required GitHub secret
+This makes a run auditable without depending on console logs.
 
-Create this repository secret under **Settings → Secrets and variables → Actions**:
+## Multimedia timing
 
-- `OPENAI_API_KEY` — used by Google ADK agents through LiteLLM.
+- First 15 seconds: deterministic 3-second slots.
+- After 15 seconds: 4-second slots.
+- Omitted editor slots = presenter/on-camera.
+- Returned editor slots = external media.
+- `MAX_MEDIA_DOWNLOADS` is a hard runtime cap.
 
-Optional:
+## Configuration
 
-- `PEXELS_API_KEY` — improves stock-photo coverage.
-
-## Model and parameters
-
-The cost-conscious default model is:
+Required secret:
 
 ```text
-gpt-5.4-nano
+OPENAI_API_KEY
 ```
 
-Useful repository variables (`Settings → Secrets and variables → Actions → Variables`):
+Optional secret:
+
+```text
+PEXELS_API_KEY
+```
+
+Useful repository variables:
 
 ```text
 OPENAI_MODEL=gpt-5.4-nano
@@ -110,32 +173,19 @@ DOWNLOAD_MULTIMEDIA=true
 SELECTION_HISTORY_DAYS=30
 TARGET_MIN_SECONDS=420
 TARGET_MAX_SECONDS=720
+WORDS_PER_SECOND=2.5
+AGENT_MAX_ATTEMPTS=3
+AGENT_RETRY_BASE_SECONDS=2.0
+MEDIA_HTTP_MAX_ATTEMPTS=3
 ```
 
-## Run locally
+## Validation
 
-Example for a Friday production window:
+Deterministic CI runs without API secrets:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install .
-export OPENAI_API_KEY="..."
-python -m pipeline.run --target-date 2026-08-21
+python -m compileall app pipeline
+python -m unittest discover -s tests -v
 ```
 
-Example for a Tuesday production window:
-
-```bash
-python -m pipeline.run --target-date 2026-08-25
-```
-
-To create the script/edit plan without external downloads:
-
-```bash
-python -m pipeline.run --target-date 2026-08-25 --no-download-multimedia
-```
-
-## Design note
-
-The current output is a **production kit**, not a finished narrated video. `videos/` is intentionally reserved for the later rendering stage. Downloaded asset source/creator/license metadata is kept in `multimedia/YYYY-MM-DD/manifest.json` for traceability.
+A real model/media E2E remains available through **Actions → Build AI News Video Kit → Run workflow**. Production also runs Tuesday/Friday at 09:00 America/Mexico_City.

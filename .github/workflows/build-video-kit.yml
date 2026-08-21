@@ -2,13 +2,12 @@ name: Build AI News Video Kit
 
 on:
   schedule:
-    # 09:00 America/Mexico_City (UTC-6): Tuesday and Friday.
-    - cron: "0 15 * * 2"
-    - cron: "0 15 * * 5"
+    - cron: "0 15 * * 2" # Tuesday 09:00 America/Mexico_City
+    - cron: "0 15 * * 5" # Friday 09:00 America/Mexico_City
   workflow_dispatch:
     inputs:
       target_date:
-        description: "Script date (YYYY-MM-DD). Must be a Tuesday or Friday. Empty = today in Mexico City."
+        description: "Script date (YYYY-MM-DD). Must be Tuesday or Friday. Empty = today in Mexico City."
         required: false
         type: string
 
@@ -22,7 +21,7 @@ concurrency:
 jobs:
   build-video-kit:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -39,8 +38,11 @@ jobs:
       - name: Install project
         run: python -m pip install .
 
-      - name: Validate Python sources
-        run: python -m compileall app pipeline
+      - name: Validate deterministic contracts
+        run: |
+          python -m compileall app pipeline
+          python -c "import app.agent, pipeline.run; print('runtime imports ok')"
+          python -m unittest discover -s tests -v
 
       - name: Resolve script date
         id: script_date
@@ -76,9 +78,8 @@ jobs:
             echo "OPENAI_API_KEY is not configured in repository Actions secrets."
             exit 1
           fi
-          echo "OPENAI_API_KEY is configured."
 
-      - name: Build script in isolated workspace
+      - name: Build isolated episode
         id: build
         if: steps.secret_check.outcome == 'success'
         continue-on-error: true
@@ -95,6 +96,10 @@ jobs:
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
           TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '720' }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
+          AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           python -m pipeline.run \
@@ -113,21 +118,20 @@ jobs:
           SECRET_OUTCOME: ${{ steps.secret_check.outcome }}
           BUILD_STEP_OUTCOME: ${{ steps.build.outcome }}
         run: |
+          STATE_FILE="$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
           if [ "$SECRET_OUTCOME" != "success" ]; then
             STATUS="missing_openai_secret"
+          elif [ -f "$STATE_FILE" ]; then
+            STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE_FILE")"
           elif [ "$BUILD_STEP_OUTCOME" = "failure" ]; then
             STATUS="failure"
-          elif [ ! -f "$RUN_ROOT/scripts/$TARGET_DATE/reviews.json" ]; then
-            STATUS="no_source_news"
-          elif jq -e '.approved_for_multimedia == true' "$RUN_ROOT/scripts/$TARGET_DATE/reviews.json" >/dev/null; then
-            STATUS="approved"
           else
-            STATUS="script_not_approved"
+            STATUS="failure"
           fi
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           echo "Episode outcome: $STATUS"
 
-      - name: Create isolated episode run report
+      - name: Create run report
         id: report
         if: always()
         env:
@@ -142,20 +146,14 @@ jobs:
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
           TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '720' }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
+          AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
-          EPISODE_STATUS: ${{ steps.episode_outcome.outputs.status }}
         run: |
-          case "$EPISODE_STATUS" in
-            approved) BUILD_OUTCOME="success" ;;
-            no_source_news) BUILD_OUTCOME="no_source_news" ;;
-            script_not_approved) BUILD_OUTCOME="script_not_approved" ;;
-            missing_openai_secret) BUILD_OUTCOME="missing_openai_secret" ;;
-            *) BUILD_OUTCOME="failure" ;;
-          esac
-
           python -m pipeline.report \
             --target-date "${{ steps.script_date.outputs.target_date }}" \
-            --build-outcome "$BUILD_OUTCOME" \
+            --build-outcome "${{ steps.episode_outcome.outputs.status }}" \
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia"
 
@@ -163,7 +161,7 @@ jobs:
         if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
         run: git pull --rebase origin "$GITHUB_REF_NAME"
 
-      - name: Promote approved episode atomically
+      - name: Promote approved episode
         id: promote
         if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
         env:
@@ -171,26 +169,24 @@ jobs:
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           rm -rf "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
-          mkdir -p scripts multimedia
           cp -R "$RUN_ROOT/scripts/$TARGET_DATE" "scripts/$TARGET_DATE"
-          cp -R "$RUN_ROOT/multimedia/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          if [ -d "$RUN_ROOT/multimedia/$TARGET_DATE" ]; then
+            cp -R "$RUN_ROOT/multimedia/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          fi
           echo "promoted=true" >> "$GITHUB_OUTPUT"
-          echo "Approved run promoted to canonical episode directories."
 
-      - name: Commit approved editorial assets
+      - name: Commit approved canonical artifacts
         if: steps.promote.outputs.promoted == 'true'
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add -- "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
           if git diff --cached --quiet; then
             echo "No canonical episode changes to commit."
             exit 0
           fi
-
           git commit -m "content: publish approved AI news kit for $TARGET_DATE"
           git push origin "HEAD:$GITHUB_REF_NAME"
 
@@ -211,5 +207,5 @@ jobs:
           steps.report.outcome == 'failure'
         run: |
           echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
-          echo "The isolated run report/artifact was preserved, but nothing was promoted to canonical episode folders."
+          echo "Run artifacts were preserved; nothing non-approved was promoted."
           exit 1

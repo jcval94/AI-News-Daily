@@ -3,10 +3,10 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
-import math
 import os
+import time
 import uuid
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -14,21 +14,42 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-from app.agent import multimedia_editor_agent, root_agent
+from app.agent import (
+    MasterJudgeResult,
+    MultimediaPlan,
+    ReviewResult,
+    SelectionResult,
+    multimedia_editor_agent,
+    refiner_agent,
+    reviewer_agent,
+    selector_agent,
+    seo_master_agent,
+    writer_agent,
+    youtube_attention_master_agent,
+)
+from pipeline.core import (
+    APPROVED,
+    FAILURE,
+    NO_RELEVANT_NEWS,
+    NO_SOURCE_NEWS,
+    SCRIPT_NOT_APPROVED,
+    PipelineConfig,
+    build_timeline_slots,
+    evaluate_script_gate,
+    expected_news_dates,
+    is_retryable_exception,
+    timeline_duration_seconds,
+)
 from pipeline.media import download_shot_asset
 
 APP_NAME = "ai_news_daily_video"
 USER_ID = "github_actions"
-WORDS_PER_SECOND = float(os.getenv("WORDS_PER_SECOND", "2.5"))
-FIRST_15_SLOT_SECONDS = 3
-NORMAL_SLOT_SECONDS = 4
-TARGET_MIN_SECONDS = int(os.getenv("TARGET_MIN_SECONDS", "420"))
-TARGET_MAX_SECONDS = int(os.getenv("TARGET_MAX_SECONDS", "720"))
-MAX_MEDIA_DOWNLOADS = int(os.getenv("MAX_MEDIA_DOWNLOADS", "12"))
-DOWNLOAD_MULTIMEDIA = os.getenv("DOWNLOAD_MULTIMEDIA", "true").strip().lower() not in {"0", "false", "no"}
-SELECTION_HISTORY_DAYS = int(os.getenv("SELECTION_HISTORY_DAYS", "30"))
-QUALITY_THRESHOLD = float(os.getenv("SCRIPT_QUALITY_THRESHOLD", "8.7"))
-JUDGE_THRESHOLD = float(os.getenv("JUDGE_THRESHOLD", "8.5"))
+CONFIG = PipelineConfig.from_env()
+DOWNLOAD_MULTIMEDIA = os.getenv("DOWNLOAD_MULTIMEDIA", "true").strip().lower() not in {
+    "0",
+    "false",
+    "no",
+}
 
 
 def parse_target_date(value: str | None) -> date:
@@ -37,26 +58,20 @@ def parse_target_date(value: str | None) -> date:
     return date.today()
 
 
-def expected_news_dates(target_date: date) -> list[date]:
-    """Return the editorial input window for a Tuesday or Friday script."""
-    if target_date.weekday() == 1:
-        offsets = (4, 3, 2, 1)
-    elif target_date.weekday() == 4:
-        offsets = (3, 2, 1)
-    else:
-        raise ValueError(
-            f"Script generation only runs on Tuesday or Friday; got {target_date.isoformat()}"
-        )
-    return [target_date - timedelta(days=offset) for offset in offsets]
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def collect_available_news(news_dir: Path, target_date: date) -> tuple[str, list[Path], list[date]]:
-    expected = expected_news_dates(target_date)
     available: list[Path] = []
     missing: list[date] = []
     sections: list[str] = []
-
-    for news_date in expected:
+    for news_date in expected_news_dates(target_date):
         path = news_dir / f"{news_date.isoformat()}.txt"
         if not path.exists():
             missing.append(news_date)
@@ -67,20 +82,14 @@ def collect_available_news(news_dir: Path, target_date: date) -> tuple[str, list
             continue
         available.append(path)
         sections.append(
-            f"\n===== SOURCE NEWS FILE: {path.name} =====\n{text}\n===== END SOURCE: {path.name} ====="
+            f"===== SOURCE NEWS FILE: {path.name} =====\n{text}\n===== END SOURCE: {path.name} ====="
         )
-
-    return "\n".join(sections).strip(), available, missing
+    return "\n\n".join(sections), available, missing
 
 
 def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: int) -> str:
-    """Load only stories from previously approved episodes.
-
-    A failed/unapproved attempt must never make a story look already published.
-    """
-    cutoff = target_date - timedelta(days=max(1, lookback_days))
+    cutoff = target_date.fromordinal(target_date.toordinal() - max(1, lookback_days))
     items: list[dict[str, Any]] = []
-
     if not scripts_dir.exists():
         return "[]"
 
@@ -91,20 +100,15 @@ def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: 
             continue
         if episode_date >= target_date or episode_date < cutoff:
             continue
-
         reviews_path = selected_path.parent / "reviews.json"
         try:
             reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
+            selected = json.loads(selected_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
         if not bool(reviews.get("approved_for_multimedia", False)):
             continue
-
-        try:
-            payload = json.loads(selected_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-        for item in payload.get("items", []):
+        for item in selected.get("items", []):
             if isinstance(item, dict):
                 items.append(
                     {
@@ -115,140 +119,192 @@ def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: 
                         "summary": item.get("summary", ""),
                     }
                 )
-
     return json.dumps(items[-40:], ensure_ascii=False)
 
 
-async def run_agent(agent, initial_state: dict[str, Any], prompt: str) -> dict[str, Any]:
-    session_service = InMemorySessionService()
+def _usage_from_event(event: Any) -> dict[str, int]:
+    meta = getattr(event, "usage_metadata", None)
+    if not meta:
+        return {}
+    result: dict[str, int] = {}
+    for source, target in (
+        ("prompt_token_count", "prompt_tokens"),
+        ("candidates_token_count", "output_tokens"),
+        ("thoughts_token_count", "reasoning_tokens"),
+        ("total_token_count", "total_tokens"),
+    ):
+        value = getattr(meta, source, None)
+        if isinstance(value, int):
+            result[target] = value
+    return result
+
+
+def _merge_usage(total: dict[str, int], addition: dict[str, int]) -> None:
+    for key, value in addition.items():
+        total[key] = total.get(key, 0) + value
+
+
+async def _run_agent_once(agent: Any, initial_state: dict[str, Any], prompt: str) -> tuple[dict[str, Any], dict[str, int]]:
+    service = InMemorySessionService()
     session_id = uuid.uuid4().hex
-    await session_service.create_session(
+    await service.create_session(
         app_name=APP_NAME,
         user_id=USER_ID,
         session_id=session_id,
         state=initial_state,
     )
-    runner = Runner(agent=agent, app_name=APP_NAME, session_service=session_service)
+    runner = Runner(agent=agent, app_name=APP_NAME, session_service=service)
     message = types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
-    async for _ in runner.run_async(
+    usage: dict[str, int] = {}
+    seen_usage_event_ids: set[str] = set()
+    async for event in runner.run_async(
         user_id=USER_ID,
         session_id=session_id,
         new_message=message,
     ):
-        pass
-    session = await session_service.get_session(
+        event_id = str(getattr(event, "id", ""))
+        event_usage = _usage_from_event(event)
+        if event_usage and event_id not in seen_usage_event_ids:
+            _merge_usage(usage, event_usage)
+            if event_id:
+                seen_usage_event_ids.add(event_id)
+
+    session = await service.get_session(
         app_name=APP_NAME,
         user_id=USER_ID,
         session_id=session_id,
     )
     if session is None:
         raise RuntimeError("ADK session disappeared unexpectedly")
-    return dict(session.state)
+    return dict(session.state), usage
 
 
-def estimate_spoken_duration_seconds(script: str) -> int:
-    words = max(1, len(script.split()))
-    return max(1, math.ceil(words / WORDS_PER_SECOND))
+async def run_agent(
+    agent: Any,
+    initial_state: dict[str, Any],
+    prompt: str,
+    *,
+    step: str,
+    trace: list[dict[str, Any]],
+    iteration: int | None = None,
+) -> dict[str, Any]:
+    last_error: Exception | None = None
+    for attempt in range(1, CONFIG.agent_max_attempts + 1):
+        started = time.monotonic()
+        try:
+            state, usage = await _run_agent_once(agent, initial_state, prompt)
+            trace.append(
+                {
+                    "step": step,
+                    "agent": getattr(agent, "name", type(agent).__name__),
+                    "iteration": iteration,
+                    "attempt": attempt,
+                    "status": "success",
+                    "elapsed_seconds": round(time.monotonic() - started, 3),
+                    "usage": usage,
+                }
+            )
+            return state
+        except Exception as exc:
+            last_error = exc
+            retryable = is_retryable_exception(exc)
+            trace.append(
+                {
+                    "step": step,
+                    "agent": getattr(agent, "name", type(agent).__name__),
+                    "iteration": iteration,
+                    "attempt": attempt,
+                    "status": "error",
+                    "elapsed_seconds": round(time.monotonic() - started, 3),
+                    "retryable": retryable,
+                    "error_type": type(exc).__name__,
+                    "error": str(exc)[:1000],
+                }
+            )
+            if not retryable or attempt >= CONFIG.agent_max_attempts:
+                raise
+            delay = CONFIG.agent_retry_base_seconds * (2 ** (attempt - 1))
+            print(f"Transient failure in {step}; retrying in {delay:.1f}s: {type(exc).__name__}: {exc}")
+            await asyncio.sleep(delay)
 
-
-def timeline_duration_seconds(script: str) -> int:
-    """Round visual slots upward without truncating long narration."""
-    spoken = estimate_spoken_duration_seconds(script)
-    if spoken <= 15:
-        return 15
-    return 15 + math.ceil((spoken - 15) / NORMAL_SLOT_SECONDS) * NORMAL_SLOT_SECONDS
-
-
-def duration_within_target(script: str) -> bool:
-    spoken = estimate_spoken_duration_seconds(script)
-    return TARGET_MIN_SECONDS <= spoken <= TARGET_MAX_SECONDS
-
-
-def build_timeline_slots(duration_seconds: int) -> list[dict[str, Any]]:
-    slots: list[dict[str, Any]] = []
-    cursor = 0
-    slot_number = 1
-
-    while cursor < duration_seconds:
-        step = FIRST_15_SLOT_SECONDS if cursor < 15 else NORMAL_SLOT_SECONDS
-        end = min(duration_seconds, cursor + step)
-        slots.append(
-            {
-                "slot_number": slot_number,
-                "start_seconds": cursor,
-                "end_seconds": end,
-                "duration_seconds": end - cursor,
-            }
-        )
-        cursor = end
-        slot_number += 1
-
-    return slots
+    assert last_error is not None
+    raise last_error
 
 
 def normalize_multimedia_plan(
     raw_plan: dict[str, Any],
     timeline_slots: list[dict[str, Any]],
     max_media_downloads: int,
-) -> list[dict[str, Any]]:
-    raw_segments = raw_plan.get("segments") or []
-    by_number = {
-        int(segment.get("slot_number", -1)): segment
-        for segment in raw_segments
-        if isinstance(segment, dict)
-    }
-    normalized: list[dict[str, Any]] = []
-    media_count = 0
+) -> tuple[list[dict[str, Any]], list[str]]:
+    valid_slots = {slot["slot_number"]: slot for slot in timeline_slots}
+    normalized_by_slot: dict[int, dict[str, Any]] = {}
+    warnings: list[str] = []
 
-    for slot in timeline_slots:
-        segment = by_number.get(slot["slot_number"], {})
-        requested_mode = str(segment.get("mode", "presenter")).lower()
-        query = str(segment.get("visual_query", "")).strip()
-        mode = "media" if requested_mode == "media" and query else "presenter"
+    for raw in raw_plan.get("segments", []) if isinstance(raw_plan, dict) else []:
+        if not isinstance(raw, dict):
+            warnings.append("Ignored a non-object multimedia segment")
+            continue
+        try:
+            number = int(raw.get("slot_number"))
+        except (TypeError, ValueError):
+            warnings.append("Ignored multimedia segment without a valid slot_number")
+            continue
+        if number not in valid_slots:
+            warnings.append(f"Ignored multimedia segment for unknown slot {number}")
+            continue
+        query = str(raw.get("visual_query", "")).strip()
+        if not query:
+            warnings.append(f"Ignored media slot {number} because visual_query was empty")
+            continue
+        if number in normalized_by_slot:
+            warnings.append(f"Duplicate media slot {number}; kept the last decision")
+        slot = valid_slots[number]
+        normalized_by_slot[number] = {
+            **slot,
+            "mode": "media",
+            "visual_query": query,
+            "on_screen_text": str(raw.get("on_screen_text", "")).strip()[:80],
+            "reason": str(raw.get("reason", "")).strip(),
+        }
 
-        if mode == "media":
-            if media_count >= max_media_downloads:
-                mode = "presenter"
-                query = ""
-            else:
-                media_count += 1
-        else:
-            query = ""
-
-        normalized.append(
-            {
-                **slot,
-                "mode": mode,
-                "visual_query": query,
-                "on_screen_text": str(segment.get("on_screen_text", "")).strip()[:80],
-                "reason": str(segment.get("reason", "")).strip(),
-            }
+    selected_numbers = sorted(normalized_by_slot)[: max(0, max_media_downloads)]
+    if len(normalized_by_slot) > len(selected_numbers):
+        warnings.append(
+            f"Media plan exceeded MAX_MEDIA_DOWNLOADS={max_media_downloads}; excess slots were dropped"
         )
 
-    return normalized
+    selected = {number: normalized_by_slot[number] for number in selected_numbers}
+    plan: list[dict[str, Any]] = []
+    for slot in timeline_slots:
+        media = selected.get(slot["slot_number"])
+        if media:
+            plan.append(media)
+        else:
+            plan.append({**slot, "mode": "presenter", "visual_query": "", "on_screen_text": "", "reason": ""})
+    return plan, warnings
 
 
-def write_json(path: Path, payload: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-
-
-def all_judges_approved(script_state: dict[str, Any]) -> bool:
-    editorial = script_state.get("review") or {}
-    seo = script_state.get("seo_review") or {}
-    attention = script_state.get("attention_review") or {}
-    script = str(script_state.get("draft_script", "")).strip()
-    return bool(
-        script
-        and duration_within_target(script)
-        and editorial.get("approved")
-        and float(editorial.get("score", 0) or 0) >= QUALITY_THRESHOLD
-        and str(editorial.get("factuality_risk", "")).lower() == "low"
-        and seo.get("approved")
-        and float(seo.get("score", 0) or 0) >= JUDGE_THRESHOLD
-        and attention.get("approved")
-        and float(attention.get("score", 0) or 0) >= JUDGE_THRESHOLD
-    )
+def _run_state_payload(
+    *,
+    target_date: date,
+    status: str,
+    reason: str,
+    started_at: str,
+    approved: bool = False,
+    refinement_iterations: int = 0,
+    validation_warnings: list[str] | None = None,
+) -> dict[str, Any]:
+    return {
+        "schema_version": 1,
+        "episode_date": target_date.isoformat(),
+        "status": status,
+        "publishable": approved,
+        "reason": reason,
+        "started_at_utc": started_at,
+        "finished_at_utc": utc_now(),
+        "refinement_iterations": refinement_iterations,
+        "validation_warnings": validation_warnings or [],
+    }
 
 
 async def build(
@@ -261,161 +317,280 @@ async def build(
     download_multimedia: bool,
 ) -> Path | None:
     if not os.getenv("OPENAI_API_KEY"):
-        raise RuntimeError("Set OPENAI_API_KEY before running the pipeline")
+        raise RuntimeError("Set_OPENAI_API_KEY before running the pipeline")
 
-    news_text, available_files, missing_dates = collect_available_news(news_dir, target_date)
-    expected_dates = expected_news_dates(target_date)
-
-    print("Target script date:", target_date.isoformat())
-    print("Expected news dates:", ", ".join(d.isoformat() for d in expected_dates))
-    print("Available news files:", ", ".join(p.name for p in available_files) or "none")
-    if missing_dates:
-        print(
-            "WARNING: missing/empty news dates (continuing with what is available):",
-            ", ".join(d.isoformat() for d in missing_dates),
-        )
-
-    if not news_text:
-        print("No usable news found in the editorial window. Nothing to build; exiting successfully.")
-        return None
-
+    started_at = utc_now()
     episode_scripts_dir = scripts_root / target_date.isoformat()
     episode_media_dir = multimedia_root / target_date.isoformat()
     episode_scripts_dir.mkdir(parents=True, exist_ok=True)
+    state_path = episode_scripts_dir / "run_state.json"
+    trace_path = episode_scripts_dir / "execution_trace.json"
+    agent_trace: list[dict[str, Any]] = []
+    iteration_trace: list[dict[str, Any]] = []
+    validation_warnings: list[str] = []
 
-    previous_selected_news = load_selection_history(
-        history_scripts_root, target_date, SELECTION_HISTORY_DAYS
-    )
+    try:
+        news_text, available_files, missing_dates = collect_available_news(news_dir, target_date)
+        if not news_text:
+            write_json(
+                state_path,
+                _run_state_payload(
+                    target_date=target_date,
+                    status=NO_SOURCE_NEWS,
+                    reason="No usable source news in the editorial window",
+                    started_at=started_at,
+                ),
+            )
+            return episode_scripts_dir
 
-    script_state = await run_agent(
-        root_agent,
-        {
-            "news_text": news_text,
-            "previous_selected_news": previous_selected_news,
-        },
-        "Select the unique high-value stories, create the Spanish AI-news script, and iterate until every judge approves it.",
-    )
+        previous_selected_news = load_selection_history(
+            history_scripts_root, target_date, CONFIG.selection_history_days
+        )
+        selection_state = await run_agent(
+            selector_agent,
+            {"news_text": news_text, "previous_selected_news": previous_selected_news},
+            "Select the unique, high-value AI news for this episode.",
+            step="select_news",
+            trace=agent_trace,
+        )
+        selection = SelectionResult.model_validate(selection_state.get("selected_news", {})).model_dump()
+        write_json(episode_scripts_dir / "selected_news.json", selection)
+        if not selection["items"]:
+            write_json(
+                state_path,
+                _run_state_payload(
+                    target_date=target_date,
+                    status=NO_RELEVANT_NEWS,
+                    reason="Selector returned zero publishable stories",
+                    started_at=started_at,
+                ),
+            )
+            return episode_scripts_dir
 
-    final_script = str(script_state.get("draft_script", "")).strip()
-    if not final_script:
-        raise RuntimeError("ADK did not produce draft_script")
+        selected_json = json.dumps(selection, ensure_ascii=False)
+        writer_state = await run_agent(
+            writer_agent,
+            {"news_text": news_text, "selected_news": selected_json},
+            "Write the 7-12 minute Spanish narration from the selected evidence.",
+            step="write_script",
+            trace=agent_trace,
+        )
+        draft_script = str(writer_state.get("draft_script", "")).strip()
+        if not draft_script:
+            raise RuntimeError("Writer did not produce draft_script")
 
-    spoken_duration = estimate_spoken_duration_seconds(final_script)
-    within_duration = duration_within_target(final_script)
+        final_editorial: dict[str, Any] = {}
+        final_seo: dict[str, Any] = {}
+        final_attention: dict[str, Any] = {}
+        final_gate: dict[str, Any] = {}
+        for iteration in range(1, CONFIG.max_refinement_iterations + 1):
+            review_base = {
+                "draft_script": draft_script,
+                "selected_news": selected_json,
+                "news_text": news_text,
+            }
+            editorial_state = await run_agent(
+                reviewer_agent,
+                review_base,
+                "Evaluate factuality, clarity, pacing, and editorial quality.",
+                step="editorial_judge",
+                trace=agent_trace,
+                iteration=iteration,
+            )
+            seo_state = await run_agent(
+                seo_master_agent,
+                review_base,
+                "Evaluate search discoverability and natural SEO.",
+                step="seo_judge",
+                trace=agent_trace,
+                iteration=iteration,
+            )
+            attention_state = await run_agent(
+                youtube_attention_master_agent,
+                review_base,
+                "Evaluate the hook, retention, pacing, and CTA.",
+                step="attention_judge",
+                trace=agent_trace,
+                iteration=iteration,
+            )
 
-    (episode_scripts_dir / "script.txt").write_text(final_script + "\n", encoding="utf-8")
-    write_json(episode_scripts_dir / "selected_news.json", script_state.get("selected_news", {}))
-    approved = all_judges_approved(script_state)
-    write_json(
-        episode_scripts_dir / "reviews.json",
-        {
-            "approved_for_multimedia": approved,
-            "duration": {
-                "estimated_spoken_seconds": spoken_duration,
-                "target_min_seconds": TARGET_MIN_SECONDS,
-                "target_max_seconds": TARGET_MAX_SECONDS,
-                "within_target": within_duration,
+            final_editorial = ReviewResult.model_validate(editorial_state.get("review", {})).model_dump()
+            final_seo = MasterJudgeResult.model_validate(seo_state.get("seo_review", {})).model_dump()
+            final_attention = MasterJudgeResult.model_validate(attention_state.get("attention_review", {})).model_dump()
+            final_gate = evaluate_script_gate(
+                draft_script, final_editorial, final_seo, final_attention, CONFIG
+            )
+            iteration_trace.append(
+                {
+                    "iteration": iteration,
+                    "duration_seconds": final_gate["duration_seconds"],
+                    "approved": final_gate["approved"],
+                    "checks": final_gate["checks"],
+                    "editorial_score": final_editorial["score"],
+                    "seo_score": final_seo["score"],
+                    "attention_score": final_attention["score"],
+                    "factuality_risk": final_editorial["factuality_risk"],
+                }
+            )
+            if final_gate["approved"]:
+                break
+            if iteration == CONFIG.max_refinement_iterations:
+                break
+
+            refiner_state = await run_agent(
+                refiner_agent,
+                {
+                    **review_base,
+                    "review": json.dumps(final_editorial, ensure_ascii=False),
+                    "seo_review": json.dumps(final_seo, ensure_ascii=False),
+                    "attention_review": json.dumps(final_attention, ensure_ascii=False),
+                },
+                "Revise the script to address all judge feedback and deterministic duration requirements.",
+                step="refine_script",
+                trace=agent_trace,
+                iteration=iteration,
+            )
+            refined = str(refiner_state.get("draft_script", "")).strip()
+            if not refined:
+                raise RuntimeError("Refiner did not produce draft_script")
+            draft_script = refined
+
+        (episode_scripts_dir / "script.txt").write_text(draft_script + "\n", encoding="utf-8")
+        write_json(
+            episode_scripts_dir / "reviews.json",
+            {
+                "approved_for_multimedia": bool(final_gate.get("approved", False)),
+                "gate": final_gate,
+                "refinement_iterations": iteration_trace,
+                "editorial": final_editorial,
+                "seo_master": final_seo,
+                "youtube_attention_master": final_attention,
+                "source_files": [path.name for path in available_files],
+                "missing_dates": [item.isoformat() for item in missing_dates],
             },
-            "editorial": script_state.get("review", {}),
-            "seo_master": script_state.get("seo_review", {}),
-            "youtube_attention_master": script_state.get("attention_review", {}),
-            "source_files": [path.name for path in available_files],
-            "missing_dates": [d.isoformat() for d in missing_dates],
-        },
-    )
+        )
 
-    if not approved:
-        print(
-            "The script did not pass every deterministic approval requirement "
-            f"(including {TARGET_MIN_SECONDS}-{TARGET_MAX_SECONDS}s duration). "
-            "Script/reviews were saved in the isolated run workspace, but multimedia is skipped."
+        if not final_gate.get("approved", False):
+            write_json(
+                state_path,
+                _run_state_payload(
+                    target_date=target_date,
+                    status=SCRIPT_NOT_APPROVED,
+                    reason="The script exhausted refinement without passing every deterministic gate",
+                    started_at=started_at,
+                    refinement_iterations=len(iteration_trace),
+                ),
+            )
+            return episode_scripts_dir
+
+        timeline_duration = timeline_duration_seconds(draft_script, CONFIG)
+        timeline_slots = build_timeline_slots(timeline_duration, CONFIG)
+        editor_state = await run_agent(
+            multimedia_editor_agent,
+            {
+                "final_script": draft_script,
+                "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
+                "max_media_downloads": max(0, max_media_downloads),
+            },
+            "Choose only the timeline slots where external media adds real value.",
+            step="plan_multimedia",
+            trace=agent_trace,
+        )
+        raw_plan = MultimediaPlan.model_validate(editor_state.get("multimedia_plan", {})).model_dump()
+        multimedia_plan, media_warnings = normalize_multimedia_plan(
+            raw_plan, timeline_slots, max(0, max_media_downloads)
+        )
+        validation_warnings.extend(media_warnings)
+        write_json(
+            episode_media_dir / "plan.json",
+            {
+                "script_date": target_date.isoformat(),
+                "spoken_duration_seconds": final_gate["duration_seconds"],
+                "timeline_duration_seconds": timeline_duration,
+                "first_15_seconds_slot_size": CONFIG.first_15_slot_seconds,
+                "normal_slot_size": CONFIG.normal_slot_seconds,
+                "max_media_downloads": max(0, max_media_downloads),
+                "validation_warnings": media_warnings,
+                "segments": multimedia_plan,
+            },
+        )
+
+        manifest: list[dict[str, Any]] = []
+        if download_multimedia:
+            assets_dir = episode_media_dir / "assets"
+            assets_dir.mkdir(parents=True, exist_ok=True)
+            for segment in multimedia_plan:
+                if segment["mode"] != "media":
+                    continue
+                destination = assets_dir / f"slot_{segment['slot_number']:03d}.jpg"
+                manifest.append(
+                    download_shot_asset(
+                        {
+                            "shot_number": segment["slot_number"],
+                            "visual_query": segment["visual_query"],
+                            "on_screen_text": segment["on_screen_text"],
+                        },
+                        destination,
+                    )
+                )
+        write_json(episode_media_dir / "manifest.json", manifest)
+        write_json(
+            state_path,
+            _run_state_payload(
+                target_date=target_date,
+                status=APPROVED,
+                reason="All deterministic and agent quality gates passed",
+                started_at=started_at,
+                approved=True,
+                refinement_iterations=len(iteration_trace),
+                validation_warnings=validation_warnings,
+            ),
         )
         return episode_scripts_dir
 
-    duration_seconds = timeline_duration_seconds(final_script)
-    timeline_slots = build_timeline_slots(duration_seconds)
-    editor_state = await run_agent(
-        multimedia_editor_agent,
-        {
-            "final_script": final_script,
-            "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
-            "max_media_downloads": max(0, max_media_downloads),
-        },
-        "Create the final multimedia/presenter edit plan using the canonical timeline slots.",
-    )
-    multimedia_plan = normalize_multimedia_plan(
-        editor_state.get("multimedia_plan", {}),
-        timeline_slots,
-        max(0, max_media_downloads),
-    )
-
-    write_json(
-        episode_media_dir / "plan.json",
-        {
-            "script_date": target_date.isoformat(),
-            "spoken_duration_seconds": spoken_duration,
-            "timeline_duration_seconds": duration_seconds,
-            "first_15_seconds_slot_size": FIRST_15_SLOT_SECONDS,
-            "normal_slot_size": NORMAL_SLOT_SECONDS,
-            "max_media_downloads": max(0, max_media_downloads),
-            "segments": multimedia_plan,
-        },
-    )
-
-    manifest: list[dict[str, Any]] = []
-    if download_multimedia:
-        assets_dir = episode_media_dir / "assets"
-        assets_dir.mkdir(parents=True, exist_ok=True)
-        for segment in multimedia_plan:
-            if segment["mode"] != "media":
-                continue
-            destination = assets_dir / f"slot_{segment['slot_number']:03d}.jpg"
-            manifest.append(
-                download_shot_asset(
-                    {
-                        "shot_number": segment["slot_number"],
-                        "visual_query": segment["visual_query"],
-                        "on_screen_text": segment["on_screen_text"],
-                    },
-                    destination,
-                )
-            )
-    else:
-        print("DOWNLOAD_MULTIMEDIA=false: edit plan created, external media download skipped.")
-
-    write_json(episode_media_dir / "manifest.json", manifest)
-    print(f"Approved script created at {episode_scripts_dir / 'script.txt'}")
-    print(f"Multimedia plan created at {episode_media_dir / 'plan.json'}")
-    print(f"Downloaded multimedia assets: {len(manifest)}")
-    return episode_scripts_dir
+    except Exception as exc:
+        write_json(
+            state_path,
+            _run_state_payload(
+                target_date=target_date,
+                status=FAILURE,
+                reason=f"{type(exc).__name__}: {str(exc)[:1000]}",
+                started_at=started_at,
+                refinement_iterations=len(iteration_trace),
+                validation_warnings=validation_warnings,
+            ),
+        )
+        raise
+    finally:
+        write_json(
+            trace_path,
+            {
+                "schema_version": 1,
+                "episode_date": target_date.isoformat(),
+                "agent_calls": agent_trace,
+                "refinement_iterations": iteration_trace,
+                "validation_warnings": validation_warnings,
+                "finished_at_utc": utc_now(),
+            },
+        )
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build the Tuesday/Friday AI-news video kit")
+    parser = argparse.ArgumentParser(description="Build the Tuesday/Friday AI-news production kit")
     parser.add_argument("--target-date", default=None, help="YYYY-MM-DD; must be Tuesday or Friday")
     parser.add_argument("--news-dir", default="news")
     parser.add_argument("--scripts-dir", default="scripts")
     parser.add_argument("--multimedia-dir", default="multimedia")
-    parser.add_argument(
-        "--history-scripts-dir",
-        default="scripts",
-        help="Canonical approved scripts used only for cross-episode deduplication history.",
-    )
-    parser.add_argument("--max-media-downloads", type=int, default=MAX_MEDIA_DOWNLOADS)
-    parser.add_argument(
-        "--no-download-multimedia",
-        action="store_true",
-        help="Create the edit plan but do not download external multimedia.",
-    )
+    parser.add_argument("--history-scripts-dir", default="scripts")
+    parser.add_argument("--max-media-downloads", type=int, default=CONFIG.max_media_downloads)
+    parser.add_argument("--no-download-multimedia", action="store_true")
     return parser.parse_args()
-
 
 def main() -> None:
     args = parse_args()
-    target_date = parse_target_date(args.target_date)
     asyncio.run(
         build(
-            target_date=target_date,
+            target_date=parse_target_date(args.target_date),
             news_dir=Path(args.news_dir),
             scripts_root=Path(args.scripts_dir),
             multimedia_root=Path(args.multimedia_dir),
