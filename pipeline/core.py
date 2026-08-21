@@ -24,6 +24,8 @@ class PipelineConfig:
     agent_retry_base_seconds: float = 2.0
     first_15_slot_seconds: int = 3
     normal_slot_seconds: int = 4
+    news_source_mode: str = "scheduled_window"
+    news_lookback_days: int = 4
 
     @classmethod
     def from_env(cls) -> "PipelineConfig":
@@ -41,6 +43,8 @@ class PipelineConfig:
             selection_history_days=int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
             agent_max_attempts=int(os.getenv("AGENT_MAX_ATTEMPTS", "3")),
             agent_retry_base_seconds=float(os.getenv("AGENT_RETRY_BASE_SECONDS", "2.0")),
+            news_source_mode=os.getenv("NEWS_SOURCE_MODE", "scheduled_window").strip().lower(),
+            news_lookback_days=int(os.getenv("NEWS_LOOKBACK_DAYS", "4")),
         ).validated()
 
     def validated(self) -> "PipelineConfig":
@@ -66,6 +70,10 @@ class PipelineConfig:
             raise ValueError("AGENT_MAX_ATTEMPTS must be >= 1")
         if self.agent_retry_base_seconds < 0:
             raise ValueError("AGENT_RETRY_BASE_SECONDS must be >= 0")
+        if self.news_source_mode not in {"scheduled_window", "recent_window"}:
+            raise ValueError("NEWS_SOURCE_MODE must be scheduled_window or recent_window")
+        if not (1 <= self.news_lookback_days <= 14):
+            raise ValueError("NEWS_LOOKBACK_DAYS must be between 1 and 14")
         return self
 
     @property
@@ -97,13 +105,31 @@ KNOWN_STATUSES = PUBLISHABLE_STATUSES | NON_FATAL_SKIP_STATUSES | {
 
 
 def expected_news_dates(target_date: date) -> list[date]:
+    """Resolve the deterministic source window for an episode.
+
+    Scheduled production keeps the Tuesday/Friday editorial windows. Manual runs may
+    set NEWS_SOURCE_MODE=recent_window to use the target date plus the preceding
+    NEWS_LOOKBACK_DAYS-1 calendar days. Missing files remain non-fatal downstream.
+    """
+    mode = os.getenv("NEWS_SOURCE_MODE", "scheduled_window").strip().lower()
+    if mode == "recent_window":
+        lookback_days = int(os.getenv("NEWS_LOOKBACK_DAYS", "4"))
+        if not (1 <= lookback_days <= 14):
+            raise ValueError("NEWS_LOOKBACK_DAYS must be between 1 and 14")
+        return [
+            target_date - timedelta(days=offset)
+            for offset in range(lookback_days - 1, -1, -1)
+        ]
+    if mode != "scheduled_window":
+        raise ValueError("NEWS_SOURCE_MODE must be scheduled_window or recent_window")
+
     if target_date.weekday() == 1:  # Tuesday -> Friday through Monday
         offsets = (4, 3, 2, 1)
     elif target_date.weekday() == 4:  # Friday -> Tuesday through Thursday
         offsets = (3, 2, 1)
     else:
         raise ValueError(
-            f"Script generation only runs on Tuesday or Friday; got {target_date.isoformat()}"
+            f"Scheduled script generation only runs on Tuesday or Friday; got {target_date.isoformat()}"
         )
     return [target_date - timedelta(days=offset) for offset in offsets]
 
