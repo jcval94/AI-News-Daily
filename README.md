@@ -1,94 +1,117 @@
 # AI News Daily — Agentic Video Kit
 
-A daily AI-news pipeline built with **Google ADK + OpenAI + GitHub Actions**.
+AI-news video pipeline built with **Google ADK + OpenAI + GitHub Actions**.
 
-## What happens
+## Production cadence
 
-1. A file lands in `news/YYYY-MM-DD.txt`.
-2. GitHub Actions starts automatically.
-3. Google ADK orchestrates an OpenAI-backed writer that creates a 60-90 second Spanish script for a young audience.
-4. A critic scores factuality, clarity, relevance, pacing, and tone.
-5. A `LoopAgent` repeats critic → quality gate → refiner until the script passes the threshold or reaches the safety iteration cap.
-6. A storyboard agent creates exactly one visual search instruction every **4 seconds**.
-7. The pipeline downloads one 1280×720 visual for every shot.
-   - Pexels is preferred if `PEXELS_API_KEY` exists.
-   - Wikimedia Commons is the zero-key fallback.
-   - A local fallback title card is generated if both providers fail.
-8. FFmpeg builds a silent visual preview (`preview.mp4`).
-9. GitHub Actions uploads the complete daily kit as an artifact for 30 days.
+Daily files remain under `news/YYYY-MM-DD.txt`, but script/video-kit production runs only twice per week:
 
-## Daily artifact
+- **Tuesday:** use whatever is available from **Friday, Saturday, Sunday and Monday**.
+- **Friday:** use whatever is available from **Tuesday, Wednesday and Thursday**.
+
+Missing daily files are non-fatal. The pipeline logs the missing dates and continues with the files that exist. If the whole editorial window is empty, the workflow exits successfully without fabricating a script.
+
+The scheduled workflow runs at **09:00 America/Mexico_City** on Tuesdays and Fridays. A manual `workflow_dispatch` can reproduce any Tuesday/Friday by supplying `target_date=YYYY-MM-DD`.
+
+## Editorial pipeline
+
+1. Combine the available daily news files for the target window.
+2. `news_relevance_selector` removes semantic duplicates and selects only the strongest stories, with a hard maximum of **8**.
+3. The selector also compares against recent `scripts/*/selected_news.json` history to avoid repeating a story in later episodes unless there is a materially new development.
+4. `youth_script_writer` creates the Spanish narration.
+5. A Google ADK `LoopAgent` evaluates/refines the script with three judges:
+   - factual/editorial critic,
+   - **SEO Master**,
+   - **YouTube Attention Master**.
+6. The loop exits when all three judges approve, or stops at the configured iteration cap. If unanimous approval was not reached, the script/reviews are saved and multimedia is skipped.
+7. Only an unanimously approved script proceeds to multimedia planning. The script is written to disk **before** any multimedia download starts.
+8. **Multimedia Editor Master** decides slot by slot whether the final edit should show:
+   - `presenter`: a person on camera, so no external stock asset is downloaded;
+   - `media`: an external visual materially helps, so one asset is downloaded.
+9. Pexels is preferred when `PEXELS_API_KEY` exists; Wikimedia Commons is the zero-key fallback.
+
+## Visual timing
+
+The edit timeline is deterministic:
+
+- **00:00–00:15:** one slot every **3 seconds** (5 visible changes).
+- **After 00:15:** one slot every **4 seconds**.
+
+Only slots selected as `media` download an external asset. The maximum is controlled by `MAX_MEDIA_DOWNLOADS` (default `12`). Set `DOWNLOAD_MULTIMEDIA=false` to generate the script and edit plan without downloading assets.
+
+## Repository folders
 
 ```text
-outputs/YYYY-MM-DD/
+news/                       # daily source digests
+scripts/YYYY-MM-DD/
 ├── script.txt
-├── review.json
-├── storyboard.json
-├── media_manifest.json
-├── preview.mp4
-└── media/
-    ├── shot_001.jpg
-    ├── shot_002.jpg
-    └── ...
+├── selected_news.json
+└── reviews.json
+
+multimedia/YYYY-MM-DD/
+├── plan.json
+├── manifest.json
+└── assets/                 # only media slots selected by the editor
+
+videos/                     # reserved for future final video generation
 ```
 
-Every shot is exactly 4 seconds long in the storyboard and preview.
+The scheduled GitHub Action commits generated `scripts/` and `multimedia/` outputs back to the branch and also uploads them as a workflow artifact.
 
 ## Required GitHub secret
 
 Create this repository secret under **Settings → Secrets and variables → Actions**:
 
-- `OPENAI_API_KEY` — OpenAI API key used by the ADK agents through LiteLLM.
+- `OPENAI_API_KEY` — used by Google ADK agents through LiteLLM.
 
 Optional:
 
-- `PEXELS_API_KEY` — improves stock-photo coverage. Without it, Wikimedia Commons is used automatically.
+- `PEXELS_API_KEY` — improves stock-photo coverage.
 
-## Model
+## Model and parameters
 
-The cost-conscious default is:
+The cost-conscious default model is:
 
 ```text
 gpt-5.4-nano
 ```
 
-Override it with the `OPENAI_MODEL` environment variable if you want a stronger model, for example `gpt-5.4-mini`.
+Useful repository variables (`Settings → Secrets and variables → Actions → Variables`):
 
-Google ADK remains the orchestration layer. OpenAI is connected through ADK's `LiteLlm` model wrapper.
+```text
+OPENAI_MODEL=gpt-5.4-nano
+SCRIPT_QUALITY_THRESHOLD=8.7
+JUDGE_THRESHOLD=8.5
+MAX_REFINEMENT_ITERATIONS=5
+MAX_MEDIA_DOWNLOADS=12
+DOWNLOAD_MULTIMEDIA=true
+SELECTION_HISTORY_DAYS=30
+```
 
 ## Run locally
+
+Example for a Friday production window:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install .
 export OPENAI_API_KEY="..."
-python -m pipeline.run --news latest --out outputs
+python -m pipeline.run --target-date 2026-08-21
 ```
 
-To select another OpenAI model:
+Example for a Tuesday production window:
 
 ```bash
-export OPENAI_MODEL="gpt-5.4-mini"
+python -m pipeline.run --target-date 2026-08-25
 ```
 
-To optionally use Pexels:
+To create the script/edit plan without external downloads:
 
 ```bash
-export PEXELS_API_KEY="..."
+python -m pipeline.run --target-date 2026-08-25 --no-download-multimedia
 ```
 
-## GitHub Actions
+## Design note
 
-The workflow runs when:
-
-- a `news/*.txt` file changes,
-- the agent/pipeline code changes,
-- the workflow itself changes,
-- or it is started manually with `workflow_dispatch`.
-
-This broader trigger also makes the first deployment self-testing: adding or updating the workflow launches a build against the latest existing news file.
-
-## Design notes
-
-The generated media is treated as a **video production kit**, not as a finished narrated video. The action creates a silent visual preview and preserves source/creator/license metadata in `media_manifest.json` so each downloaded asset remains traceable.
+The current output is a **production kit**, not a finished narrated video. `videos/` is intentionally reserved for the later rendering stage. Downloaded asset source/creator/license metadata is kept in `multimedia/YYYY-MM-DD/manifest.json` for traceability.
