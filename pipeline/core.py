@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import math
 import os
+import re
+import unicodedata
 from dataclasses import asdict, dataclass
 from datetime import date, timedelta
+from difflib import SequenceMatcher
 from typing import Any
 
 
@@ -20,6 +23,10 @@ class PipelineConfig:
     max_selected_news: int = 8
     max_media_downloads: int = 12
     selection_history_days: int = 30
+    essay_history_days: int = 120
+    max_recent_essays: int = 12
+    essay_duplicate_threshold: float = 0.72
+    max_novelty_replans: int = 2
     agent_max_attempts: int = 3
     agent_retry_base_seconds: float = 2.0
     first_15_slot_seconds: int = 3
@@ -41,6 +48,10 @@ class PipelineConfig:
             max_selected_news=int(os.getenv("MAX_SELECTED_NEWS", "8")),
             max_media_downloads=int(os.getenv("MAX_MEDIA_DOWNLOADS", "12")),
             selection_history_days=int(os.getenv("SELECTION_HISTORY_DAYS", "30")),
+            essay_history_days=int(os.getenv("ESSAY_HISTORY_DAYS", "120")),
+            max_recent_essays=int(os.getenv("MAX_RECENT_ESSAYS", "12")),
+            essay_duplicate_threshold=float(os.getenv("ESSAY_DUPLICATE_THRESHOLD", "0.72")),
+            max_novelty_replans=int(os.getenv("MAX_NOVELTY_REPLANS", "2")),
             agent_max_attempts=int(os.getenv("AGENT_MAX_ATTEMPTS", "3")),
             agent_retry_base_seconds=float(os.getenv("AGENT_RETRY_BASE_SECONDS", "2.0")),
             news_source_mode=os.getenv("NEWS_SOURCE_MODE", "scheduled_window").strip().lower(),
@@ -66,6 +77,14 @@ class PipelineConfig:
             raise ValueError("MAX_MEDIA_DOWNLOADS must be >= 0")
         if self.selection_history_days < 1:
             raise ValueError("SELECTION_HISTORY_DAYS must be >= 1")
+        if self.essay_history_days < 1:
+            raise ValueError("ESSAY_HISTORY_DAYS must be >= 1")
+        if self.max_recent_essays < 1:
+            raise ValueError("MAX_RECENT_ESSAYS must be >= 1")
+        if not (0 < self.essay_duplicate_threshold <= 1):
+            raise ValueError("ESSAY_DUPLICATE_THRESHOLD must be > 0 and <= 1")
+        if self.max_novelty_replans < 0:
+            raise ValueError("MAX_NOVELTY_REPLANS must be >= 0")
         if self.agent_max_attempts < 1:
             raise ValueError("AGENT_MAX_ATTEMPTS must be >= 1")
         if self.agent_retry_base_seconds < 0:
@@ -91,17 +110,69 @@ class PipelineConfig:
 APPROVED = "approved"
 NO_SOURCE_NEWS = "no_source_news"
 NO_RELEVANT_NEWS = "no_relevant_news"
+NO_NOVEL_ESSAY_ANGLE = "no_novel_essay_angle"
 SCRIPT_NOT_APPROVED = "script_not_approved"
 FAILURE = "failure"
 MISSING_OPENAI_SECRET = "missing_openai_secret"
 
 PUBLISHABLE_STATUSES = {APPROVED}
-NON_FATAL_SKIP_STATUSES = {NO_SOURCE_NEWS, NO_RELEVANT_NEWS}
+NON_FATAL_SKIP_STATUSES = {NO_SOURCE_NEWS, NO_RELEVANT_NEWS, NO_NOVEL_ESSAY_ANGLE}
 KNOWN_STATUSES = PUBLISHABLE_STATUSES | NON_FATAL_SKIP_STATUSES | {
     SCRIPT_NOT_APPROVED,
     FAILURE,
     MISSING_OPENAI_SECRET,
 }
+
+_TOPIC_STOPWORDS = {
+    "a", "al", "algo", "ante", "como", "con", "cuando", "de", "del", "desde", "donde",
+    "el", "en", "entre", "es", "esta", "este", "esto", "la", "las", "lo", "los", "mas",
+    "nos", "nuestra", "nuestro", "o", "para", "pero", "por", "que", "se", "sin", "sobre",
+    "su", "sus", "un", "una", "y", "ya", "the", "of", "to", "and", "in", "is", "are",
+}
+
+
+def normalize_topic_text(value: str) -> str:
+    text = unicodedata.normalize("NFKD", str(value or ""))
+    text = "".join(char for char in text if not unicodedata.combining(char)).lower()
+    tokens = re.findall(r"[a-z0-9]+", text)
+    return " ".join(token for token in tokens if len(token) > 2 and token not in _TOPIC_STOPWORDS)
+
+
+def topic_similarity(left: str, right: str) -> float:
+    a = normalize_topic_text(left)
+    b = normalize_topic_text(right)
+    if not a or not b:
+        return 0.0
+    a_tokens = set(a.split())
+    b_tokens = set(b.split())
+    union = a_tokens | b_tokens
+    jaccard = len(a_tokens & b_tokens) / len(union) if union else 0.0
+    sequence = SequenceMatcher(None, a, b).ratio()
+    return round((0.65 * jaccard) + (0.35 * sequence), 4)
+
+
+def nearest_essay_similarity(
+    candidate: str, previous_essays: list[dict[str, Any]]
+) -> dict[str, Any] | None:
+    nearest: dict[str, Any] | None = None
+    for essay in previous_essays:
+        if not isinstance(essay, dict):
+            continue
+        comparison = " ".join(
+            str(essay.get(key, "") or "")
+            for key in ("topic_signature", "central_question", "thesis", "narrative_lens")
+        ).strip()
+        score = topic_similarity(candidate, comparison)
+        if nearest is None or score > float(nearest.get("similarity", 0)):
+            nearest = {
+                "similarity": score,
+                "episode_date": essay.get("episode_date"),
+                "topic_signature": essay.get("topic_signature"),
+                "central_question": essay.get("central_question"),
+                "thesis": essay.get("thesis"),
+                "narrative_lens": essay.get("narrative_lens"),
+            }
+    return nearest
 
 
 def expected_news_dates(target_date: date) -> list[date]:
