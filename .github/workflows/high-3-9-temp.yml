@@ -62,6 +62,7 @@ jobs:
             exit 1
           fi
           git commit -m "fix: harden novelty provenance and production alignment"
+          git pull --rebase origin "${{ github.head_ref || github.ref_name }}"
           git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
 
       - name: Attempt to protect main with CI + PR requirement
