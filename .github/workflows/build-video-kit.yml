@@ -7,9 +7,32 @@ on:
   workflow_dispatch:
     inputs:
       target_date:
-        description: "Script date (YYYY-MM-DD). Must be Tuesday or Friday. Empty = today in Mexico City."
+        description: "Episode date (YYYY-MM-DD). Empty = today in Mexico City. Any date works with recent_window; scheduled_window requires Tuesday/Friday."
         required: false
         type: string
+      source_mode:
+        description: "Which news window should feed this manual episode?"
+        required: true
+        default: recent_window
+        type: choice
+        options:
+          - recent_window
+          - scheduled_window
+      lookback_days:
+        description: "Calendar days considered by recent_window (1-14). Missing daily files remain non-fatal."
+        required: true
+        default: "4"
+        type: string
+      download_multimedia:
+        description: "Download external media after the script is approved. Turn off for a cheaper script/voice test."
+        required: true
+        default: true
+        type: boolean
+      promote_approved:
+        description: "Promote an approved manual run into canonical scripts/ and multimedia/. Turn off for a safe experiment."
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -57,6 +80,37 @@ jobs:
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "Script target date: $TARGET_DATE"
 
+      - name: Resolve runtime options
+        id: runtime_options
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_SOURCE_MODE: ${{ inputs.source_mode }}
+          MANUAL_LOOKBACK_DAYS: ${{ inputs.lookback_days }}
+          MANUAL_DOWNLOAD_MULTIMEDIA: ${{ inputs.download_multimedia }}
+          MANUAL_PROMOTE_APPROVED: ${{ inputs.promote_approved }}
+          DEFAULT_DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            SOURCE_MODE="${MANUAL_SOURCE_MODE:-recent_window}"
+            LOOKBACK_DAYS="${MANUAL_LOOKBACK_DAYS:-4}"
+            DOWNLOAD_MULTIMEDIA="${MANUAL_DOWNLOAD_MULTIMEDIA:-true}"
+            PROMOTE_APPROVED="${MANUAL_PROMOTE_APPROVED:-false}"
+          else
+            SOURCE_MODE="scheduled_window"
+            LOOKBACK_DAYS="4"
+            DOWNLOAD_MULTIMEDIA="${DEFAULT_DOWNLOAD_MULTIMEDIA:-true}"
+            PROMOTE_APPROVED="true"
+          fi
+
+          echo "source_mode=$SOURCE_MODE" >> "$GITHUB_OUTPUT"
+          echo "lookback_days=$LOOKBACK_DAYS" >> "$GITHUB_OUTPUT"
+          echo "download_multimedia=$DOWNLOAD_MULTIMEDIA" >> "$GITHUB_OUTPUT"
+          echo "promote_approved=$PROMOTE_APPROVED" >> "$GITHUB_OUTPUT"
+          echo "Source mode: $SOURCE_MODE"
+          echo "Lookback days: $LOOKBACK_DAYS"
+          echo "Download multimedia: $DOWNLOAD_MULTIMEDIA"
+          echo "Promote approved: $PROMOTE_APPROVED"
+
       - name: Prepare isolated run workspace
         id: workspace
         env:
@@ -93,7 +147,7 @@ jobs:
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
-          DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
+          DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
           TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
@@ -101,6 +155,8 @@ jobs:
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
+          NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           python -m pipeline.run \
@@ -145,13 +201,15 @@ jobs:
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
-          DOWNLOAD_MULTIMEDIA: ${{ vars.DOWNLOAD_MULTIMEDIA || 'true' }}
+          DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
           TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
           WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
+          NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           python -m pipeline.report \
@@ -162,12 +220,18 @@ jobs:
             --editorial-dir editorial
 
       - name: Refresh branch before promotion
-        if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
+        if: >-
+          steps.episode_outcome.outputs.status == 'approved' &&
+          steps.report.outcome == 'success' &&
+          steps.runtime_options.outputs.promote_approved == 'true'
         run: git pull --rebase origin "$GITHUB_REF_NAME"
 
       - name: Promote approved episode
         id: promote
-        if: steps.episode_outcome.outputs.status == 'approved' && steps.report.outcome == 'success'
+        if: >-
+          steps.episode_outcome.outputs.status == 'approved' &&
+          steps.report.outcome == 'success' &&
+          steps.runtime_options.outputs.promote_approved == 'true'
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
