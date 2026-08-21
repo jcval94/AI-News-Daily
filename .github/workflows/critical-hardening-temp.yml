@@ -83,14 +83,13 @@ jobs:
           python -m compileall app pipeline
           python -c "import app.agent, pipeline.run, pipeline.production_script; print('runtime imports ok')"
           python -m unittest discover -s tests -v
-      - name: Commit validated changes
+      - name: Commit validated code and tests
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- \
             app/agent.py \
             pipeline/run.py \
-            .github/workflows/build-video-kit.yml \
             tests/test_e2e_orchestration.py \
             tests/test_essay_first_contract.py \
             tests/test_selection_history.py \
@@ -98,8 +97,8 @@ jobs:
           git diff --cached --check
           git diff --cached --stat
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No code/test changes to commit"
             exit 1
           fi
-          git commit -m "fix: harden dramaturgy promotion and covered-story history"
+          git commit -m "fix: harden dramaturgy and covered-story history"
           git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
