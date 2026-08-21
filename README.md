@@ -98,7 +98,9 @@ The Editorial Director chooses the intended duration from available substance:
 
 These are editorial guidelines, not quotas. Never pad.
 
-## Production cadence
+## Source windows
+
+Scheduled production preserves the original editorial cadence:
 
 - **Tuesday:** use available Friday, Saturday, Sunday, Monday files.
 - **Friday:** use available Tuesday, Wednesday, Thursday files.
@@ -107,6 +109,75 @@ These are editorial guidelines, not quotas. Never pad.
 - If sources exist but nothing is worth publishing: `no_relevant_news`.
 
 Daily source inputs remain `news/YYYY-MM-DD.txt`.
+
+Manual production can instead use `recent_window`. In that mode, the episode may run on **any date** and considers the target day plus the preceding `NEWS_LOOKBACK_DAYS - 1` calendar days. Missing files are still ignored safely.
+
+For example, a manual run for `2026-08-21` with a 4-day recent window considers:
+
+```text
+2026-08-18
+2026-08-19
+2026-08-20  ← available
+2026-08-21  ← available
+```
+
+This is useful for an early episode or an editorial experiment without changing the scheduled Tuesday/Friday contract.
+
+## Manual / on-demand generation
+
+The content workflow is deliberately runnable by hand:
+
+**Actions → Build AI News Video Kit → Run workflow**
+
+Manual inputs:
+
+- `target_date` — episode date; blank means today in Mexico City.
+- `source_mode=recent_window` — useful when you want the newest available material now.
+- `source_mode=scheduled_window` — reproduces the production Tuesday/Friday source policy.
+- `lookback_days` — 1–14 calendar days for `recent_window`; default 4.
+- `download_multimedia` — turn off for a cheaper script/voice-only experiment.
+- `promote_approved` — when `false`, the run stays only as an Actions artifact even if approved; when `true`, an approved result becomes canonical.
+
+Recommended modes:
+
+```text
+Editorial experiment
+source_mode=recent_window
+download_multimedia=false
+promote_approved=false
+
+Early publishable episode
+source_mode=recent_window
+download_multimedia=true
+promote_approved=true
+```
+
+Scheduled Tuesday/Friday runs always use `scheduled_window` and promote only approved outputs.
+
+## First real editorial test
+
+The current repo contains `news/2026-08-20.txt` and `news/2026-08-21.txt`. The recommended first real test of the new voice architecture is:
+
+```text
+target_date=2026-08-21
+source_mode=recent_window
+lookback_days=4
+download_multimedia=false
+promote_approved=false
+```
+
+This intentionally tests **selection → Editorial Director → Writer → four judges → deterministic gate** using both latest news files while avoiding media costs and canonical publication.
+
+Review these four artifacts first:
+
+```text
+selected_news.json
+episode_plan.json
+script.txt
+run_report.json
+```
+
+The most important question is not only whether the script passes. It is whether `episode_plan.json` contains a compelling central question and thesis, and whether `script.txt` actually feels reflective, human, skeptical of hype, and worth listening to.
 
 ## Episode states
 
@@ -119,7 +190,7 @@ Daily source inputs remain `news/YYYY-MM-DD.txt`.
 - `failure`
 - `missing_openai_secret`
 
-Only `approved` runs may replace canonical outputs.
+Only `approved` runs may replace canonical outputs, and manual runs additionally require `promote_approved=true` before promotion.
 
 ## Deterministic quality gate
 
@@ -178,7 +249,7 @@ multimedia/YYYY-MM-DD/
 videos/  # future final rendering
 ```
 
-Failed/non-publishable attempts remain as Actions artifacts and never overwrite canonical episodes.
+Failed/non-publishable attempts remain as Actions artifacts and never overwrite canonical episodes. Manual experiments with `promote_approved=false` behave the same way even when the script is approved.
 
 ## Observability
 
@@ -187,8 +258,8 @@ Failed/non-publishable attempts remain as Actions artifacts and never overwrite 
 `run_report.json` v4 includes:
 
 - state/reason;
-- source hashes;
-- effective configuration;
+- source hashes and effective source-window configuration;
+- effective model/quality configuration;
 - selection and duplicates;
 - central question, thesis, hook, target duration, and story count;
 - deterministic gate;
@@ -237,7 +308,11 @@ WORDS_PER_SECOND=2.5
 AGENT_MAX_ATTEMPTS=3
 AGENT_RETRY_BASE_SECONDS=2.0
 MEDIA_HTTP_MAX_ATTEMPTS=3
+NEWS_SOURCE_MODE=scheduled_window
+NEWS_LOOKBACK_DAYS=4
 ```
+
+The workflow overrides `NEWS_SOURCE_MODE` and `NEWS_LOOKBACK_DAYS` for manual runs; repository defaults remain production-safe.
 
 ## Validation
 
@@ -249,4 +324,8 @@ python -c "import app.agent, pipeline.run; print('runtime imports ok')"
 python -m unittest discover -s tests -v
 ```
 
-A real model/media E2E remains available through **Actions → Build AI News Video Kit → Run workflow**. Production runs Tuesday/Friday at 09:00 America/Mexico_City.
+A real model/media E2E is available through **Actions → Build AI News Video Kit → Run workflow**. Production remains scheduled Tuesday/Friday at 09:00 America/Mexico_City.
+
+## Roadmap
+
+The detailed next steps live in [`ROADMAP.md`](ROADMAP.md). The next milestone is deliberately **not** video rendering. First, validate the editorial system with real news, then calibrate voice against reference scripts, then freeze a small regression set before adding TTS/rendering and publication automation.
