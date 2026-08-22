@@ -25,11 +25,13 @@ on:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
+      - "pipeline/review_hub_v2.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
       - "tests/test_evidence_reconciliation.py"
       - "tests/test_review_hub.py"
+      - "tests/test_review_hub_search.py"
       - "tests/test_review_media_offline.py"
       - "evals/editorial/**"
   push:
@@ -39,9 +41,11 @@ on:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
+      - "pipeline/review_hub_v2.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
+      - "tests/test_review_hub_search.py"
       - "evals/editorial/**"
 
 permissions:
@@ -185,6 +189,8 @@ jobs:
             --run-id "$RUN_ID"
           test -s review-site/index.html
           test -s "review-site/downloads/$(basename "$ZIP")"
+          grep -q 'id="globalSearch"' review-site/index.html
+          grep -q 'details class="diagnostic"' review-site/index.html
 
       - name: Upload review hub + multimedia artifact
         uses: actions/upload-artifact@v4
