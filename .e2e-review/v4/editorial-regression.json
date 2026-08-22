@@ -1,0 +1,27 @@
+{
+  "episode_dir": ".e2e-v4-work/scripts/2026-08-21",
+  "status": "failure",
+  "structural_pass": false,
+  "structural_checks": {
+    "has_episode_plan": false,
+    "uses_idea_led_beats": false,
+    "has_evidence_catalog": false,
+    "section_keys_match_beats": false,
+    "no_news_numbered_headings": true,
+    "opening_not_news_desk": true,
+    "no_plastic_ai_phrases": true
+  },
+  "word_count": 0,
+  "beat_count": 0,
+  "evidence_count": 0,
+  "best_candidate": {},
+  "editorial_score": null,
+  "voice_score": null,
+  "voice_dimensions": {
+    "voice_fidelity": null,
+    "intellectual_depth": null,
+    "human_relevance": null,
+    "analogy_quality": null
+  },
+  "ai_smell_risk": null
+}
