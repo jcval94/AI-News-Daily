@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "review_status": "pending",
+  "validation_id": "2026-08-21-run-32541706631",
+  "workflow_run_id": 32541706631,
+  "artifact_id": 9467278070,
+  "artifact_digest": "sha256:e4e44b99341980174bc3660da43209e434f1730a7c8900aba51ec6b73b9bbe6c",
+  "model": "gpt-5.4-nano",
+  "pipeline_status": "script_not_approved",
+  "word_count": 1675,
+  "best_candidate_iteration": 5,
+  "judged_unique_script_count": 5,
+  "scores": {
+    "editorial": 7.1,
+    "seo": 8.9,
+    "attention": 7.6,
+    "voice": 8.1,
+    "voice_fidelity": 8.3,
+    "intellectual_depth": 8.6,
+    "human_relevance": 8.2,
+    "analogy_quality": 7.8,
+    "ai_smell_risk": "medium"
+  },
+  "structural_regression_pass": true,
+  "human": {
+    "publishable": null,
+    "positive_signals": [],
+    "rejection_reasons": [],
+    "notes": "Awaiting explicit human verdict in ChatGPT."
+  }
+}
