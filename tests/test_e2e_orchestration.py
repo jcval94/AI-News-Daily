@@ -13,7 +13,7 @@ from pipeline import run as pipeline_run
 
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
     async def test_approved_episode_reaches_multimedia_without_external_calls(self) -> None:
-        script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:story:1-->" + " ".join(["noticia"] * 600) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
+        script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:beat:evidence-->" + " ".join(["noticia"] * 500) + " <!--SECTION:beat:turn-->" + " ".join(["noticia"] * 100) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
 
         async def fake_run_agent(agent, initial_state, prompt, *, step, trace, iteration=None):
             trace.append(
@@ -65,20 +65,21 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                             "emotional_peak": "Una persona puede terminar asumiendo una decisión que nadie revisó realmente.",
                             "final_payoff": "La pregunta ya no es si la herramienta resolvió algo, sino qué significa realmente decir que ya quedó.",
                         },
-                        "stories": [
+                        "evidence": [
                             {
+                                "evidence_id": "case",
                                 "selected_news_index": 1,
                                 "role": "anchor",
                                 "argument_role": "evidence",
-                                "estimated_minutes": 5.5,
                                 "narrative_function": "plantear el problema",
-                                "beats": ["hecho", "contexto", "analogia", "impacto humano"],
                                 "analogy_goal": "comparar delegar criterio con usar una calculadora",
                                 "skepticism_angle": "separar capacidad real de marketing",
-                                "human_stakes": "aprendizaje y criterio",
-                                "open_loop": "la parte rara aparece cuando dejamos de verificar",
-                                "mini_conclusion": "la comodidad también cambia hábitos cognitivos",
+                                "human_stakes": "aprendizaje y criterio"
                             }
+                        ],
+                        "beats": [
+                            {"beat_id": "evidence", "kind": "evidence", "purpose": "Volver concreta la tensión con evidencia actual.", "estimated_minutes": 3.0, "evidence_ids": ["case"]},
+                            {"beat_id": "turn", "kind": "turn", "purpose": "Mover la pregunta desde capacidad hacia criterio.", "estimated_minutes": 2.5, "evidence_ids": []}
                         ],
                         "final_synthesis": "La pregunta no es solo qué puede hacer la IA, sino qué dejamos de hacer nosotros.",
                         "closing_question": "¿Qué parte de tu criterio no delegarías?",

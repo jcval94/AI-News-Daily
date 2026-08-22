@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import asyncio
 import json
 import os
@@ -156,15 +157,37 @@ def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: 
 
         selected_items = selected.get("items", []) if isinstance(selected, dict) else []
         covered_indices: list[int] = []
-        for story in plan.get("stories", []) if isinstance(plan, dict) else []:
-            if not isinstance(story, dict):
-                continue
-            try:
-                index = int(story.get("selected_news_index", 0) or 0)
-            except (TypeError, ValueError):
-                continue
-            if index >= 1 and index not in covered_indices:
-                covered_indices.append(index)
+        beats = plan.get("beats", []) if isinstance(plan, dict) else []
+        if beats:
+            evidence_lookup: dict[str, int] = {}
+            for evidence in plan.get("evidence", []) if isinstance(plan, dict) else []:
+                if not isinstance(evidence, dict):
+                    continue
+                evidence_id = str(evidence.get("evidence_id", "") or "").strip()
+                try:
+                    selected_index = int(evidence.get("selected_news_index", 0) or 0)
+                except (TypeError, ValueError):
+                    continue
+                if evidence_id and selected_index >= 1:
+                    evidence_lookup[evidence_id] = selected_index
+            for beat in beats:
+                if not isinstance(beat, dict):
+                    continue
+                for evidence_id in beat.get("evidence_ids", []):
+                    index = evidence_lookup.get(str(evidence_id), 0)
+                    if index >= 1 and index not in covered_indices:
+                        covered_indices.append(index)
+        else:
+            # Transitional compatibility for approved pre-beat plans. Legacy/incomplete plans are already skipped above.
+            for story in plan.get("stories", []) if isinstance(plan, dict) else []:
+                if not isinstance(story, dict):
+                    continue
+                try:
+                    index = int(story.get("selected_news_index", 0) or 0)
+                except (TypeError, ValueError):
+                    continue
+                if index >= 1 and index not in covered_indices:
+                    covered_indices.append(index)
 
         for index in covered_indices:
             if not (1 <= index <= len(selected_items)):
@@ -279,16 +302,89 @@ def load_editorial_profiles(editorial_dir: Path) -> tuple[str, str]:
 
 
 def validate_episode_plan(plan: dict[str, Any], selected_count: int) -> None:
-    stories = plan.get("stories", []) if isinstance(plan, dict) else []
-    if not stories:
-        raise ValueError("Editorial Director returned no stories in episode_plan")
-    indices = [int(story.get("selected_news_index", 0)) for story in stories if isinstance(story, dict)]
-    if len(indices) != len(stories):
-        raise ValueError("Every episode_plan story must be an object with selected_news_index")
-    if any(index < 1 or index > selected_count for index in indices):
-        raise ValueError("episode_plan references a selected_news_index outside selected news")
-    if len(indices) != len(set(indices)):
-        raise ValueError("episode_plan must not schedule the same selected story twice")
+    evidence = plan.get("evidence", []) if isinstance(plan, dict) else []
+    beats = plan.get("beats", []) if isinstance(plan, dict) else []
+    if not evidence:
+        raise ValueError("Editorial Director returned no evidence in episode_plan")
+    if not beats:
+        raise ValueError("Editorial Director returned no idea-led beats in episode_plan")
+
+    evidence_indices: list[int] = []
+    evidence_ids: list[str] = []
+    for item in evidence:
+        if not isinstance(item, dict):
+            raise ValueError("Every episode_plan evidence item must be an object")
+        index = int(item.get("selected_news_index", 0) or 0)
+        if index < 1 or index > selected_count:
+            raise ValueError("episode_plan evidence references selected news outside the catalog")
+        evidence_id = str(item.get("evidence_id", "") or "").strip()
+        if not evidence_id:
+            raise ValueError("Every episode_plan evidence item must have evidence_id")
+        evidence_indices.append(index)
+        evidence_ids.append(evidence_id)
+    if len(evidence_indices) != len(set(evidence_indices)):
+        raise ValueError("episode_plan.evidence must not duplicate selected news")
+    if len(evidence_ids) != len(set(evidence_ids)):
+        raise ValueError("episode_plan.evidence must use unique evidence_id values")
+
+    allowed = set(evidence_ids)
+    used: set[str] = set()
+    beat_ids: list[str] = []
+    for beat in beats:
+        if not isinstance(beat, dict):
+            raise ValueError("Every episode_plan beat must be an object")
+        beat_id = str(beat.get("beat_id", "") or "").strip()
+        if not beat_id:
+            raise ValueError("Every episode_plan beat must have beat_id")
+        beat_ids.append(beat_id)
+        refs = [str(value) for value in beat.get("evidence_ids", [])]
+        if len(refs) != len(set(refs)):
+            raise ValueError(f"Beat {beat_id} repeats an evidence_id")
+        if set(refs) - allowed:
+            raise ValueError(f"Beat {beat_id} references undeclared evidence_id values")
+        used.update(refs)
+    if len(beat_ids) != len(set(beat_ids)):
+        raise ValueError("episode_plan beat_id values must be unique")
+    if allowed - used:
+        raise ValueError("Every declared evidence item must serve at least one beat")
+
+
+def _script_sha256(script: str) -> str:
+    normalized = " ".join(str(script or "").split())
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def _candidate_rank(
+    gate: dict[str, Any],
+    editorial: dict[str, Any],
+    seo: dict[str, Any],
+    attention: dict[str, Any],
+    voice: dict[str, Any],
+) -> tuple[Any, ...]:
+    checks = gate.get("checks", {}) if isinstance(gate, dict) else {}
+    passed = sum(1 for value in checks.values() if bool(value))
+    scores = [
+        float(editorial.get("score", 0) or 0),
+        float(seo.get("score", 0) or 0),
+        float(attention.get("score", 0) or 0),
+        float(voice.get("score", 0) or 0),
+    ]
+    factuality = {"low": 2, "medium": 1, "high": 0}.get(
+        str(editorial.get("factuality_risk", "")).lower(), 0
+    )
+    ai_smell = {"low": 2, "medium": 1, "high": 0}.get(
+        str(voice.get("ai_smell_risk", "")).lower(), 0
+    )
+    return (
+        int(bool(gate.get("approved", False))),
+        factuality,
+        ai_smell,
+        passed,
+        min(scores),
+        round(sum(scores) / len(scores), 4),
+        float(voice.get("intellectual_depth", 0) or 0),
+        float(voice.get("human_relevance", 0) or 0),
+    )
 
 
 def _usage_from_event(event: Any) -> dict[str, int]:
@@ -693,8 +789,18 @@ async def build(
         final_attention: dict[str, Any] = {}
         final_voice: dict[str, Any] = {}
         final_gate: dict[str, Any] = {}
+        best_candidate: dict[str, Any] | None = None
+        judged_hashes: set[str] = set()
 
         for iteration in range(1, CONFIG.max_refinement_iterations + 1):
+            candidate_hash = _script_sha256(draft_script)
+            if candidate_hash in judged_hashes:
+                validation_warnings.append(
+                    f"Stopped refinement before iteration {iteration}: script hash {candidate_hash[:12]} was already judged"
+                )
+                break
+            judged_hashes.add(candidate_hash)
+
             review_base = {
                 "draft_script": draft_script,
                 "selected_news": selected_json,
@@ -704,80 +810,72 @@ async def build(
                 "discourse_profile": discourse_profile,
             }
             editorial_state = await run_agent(
-                reviewer_agent,
-                review_base,
+                reviewer_agent, review_base,
                 "Evaluate factuality, conceptual rigor, and editorial quality.",
-                step="editorial_judge",
-                trace=agent_trace,
-                iteration=iteration,
+                step="editorial_judge", trace=agent_trace, iteration=iteration,
             )
             seo_state = await run_agent(
-                seo_master_agent,
-                review_base,
+                seo_master_agent, review_base,
                 "Evaluate discoverability without sacrificing rigor or voice.",
-                step="seo_judge",
-                trace=agent_trace,
-                iteration=iteration,
+                step="seo_judge", trace=agent_trace, iteration=iteration,
             )
             attention_state = await run_agent(
-                youtube_attention_master_agent,
-                review_base,
+                youtube_attention_master_agent, review_base,
                 "Evaluate earned attention, progressive revelation, pacing, and CTA.",
-                step="attention_judge",
-                trace=agent_trace,
-                iteration=iteration,
+                step="attention_judge", trace=agent_trace, iteration=iteration,
             )
             voice_state = await run_agent(
-                voice_humanity_critic_agent,
-                review_base,
+                voice_humanity_critic_agent, review_base,
                 "Evaluate voice fidelity, intellectual depth, humanity, analogies, and AI smell.",
-                step="voice_judge",
-                trace=agent_trace,
-                iteration=iteration,
+                step="voice_judge", trace=agent_trace, iteration=iteration,
             )
 
-            final_editorial = ReviewResult.model_validate(
-                editorial_state.get("review", {})
-            ).model_dump()
-            final_seo = MasterJudgeResult.model_validate(
-                seo_state.get("seo_review", {})
-            ).model_dump()
-            final_attention = MasterJudgeResult.model_validate(
-                attention_state.get("attention_review", {})
-            ).model_dump()
-            final_voice = VoiceReviewResult.model_validate(
-                voice_state.get("voice_review", {})
-            ).model_dump()
-
-            final_gate = evaluate_script_gate(
-                draft_script,
-                final_editorial,
-                final_seo,
-                final_attention,
-                final_voice,
-                CONFIG,
+            editorial_result = ReviewResult.model_validate(editorial_state.get("review", {})).model_dump()
+            seo_result = MasterJudgeResult.model_validate(seo_state.get("seo_review", {})).model_dump()
+            attention_result = MasterJudgeResult.model_validate(attention_state.get("attention_review", {})).model_dump()
+            voice_result = VoiceReviewResult.model_validate(voice_state.get("voice_review", {})).model_dump()
+            gate_result = evaluate_script_gate(
+                draft_script, editorial_result, seo_result, attention_result, voice_result, CONFIG
             )
+            rank = _candidate_rank(gate_result, editorial_result, seo_result, attention_result, voice_result)
+            candidate = {
+                "iteration": iteration,
+                "script_sha256": candidate_hash,
+                "script": draft_script,
+                "sectioned_script": sectioned_draft_script,
+                "alignment": script_alignment,
+                "editorial": editorial_result,
+                "seo": seo_result,
+                "attention": attention_result,
+                "voice": voice_result,
+                "gate": gate_result,
+                "rank": rank,
+            }
+            became_best = best_candidate is None or rank > best_candidate["rank"]
+            if became_best:
+                best_candidate = candidate
+
             iteration_trace.append(
                 {
                     "iteration": iteration,
-                    "duration_seconds": final_gate["duration_seconds"],
-                    "approved": final_gate["approved"],
-                    "checks": final_gate["checks"],
-                    "editorial_score": final_editorial["score"],
-                    "seo_score": final_seo["score"],
-                    "attention_score": final_attention["score"],
-                    "voice_score": final_voice["score"],
-                    "voice_fidelity": final_voice["voice_fidelity"],
-                    "intellectual_depth": final_voice["intellectual_depth"],
-                    "human_relevance": final_voice["human_relevance"],
-                    "analogy_quality": final_voice["analogy_quality"],
-                    "ai_smell_risk": final_voice["ai_smell_risk"],
-                    "factuality_risk": final_editorial["factuality_risk"],
+                    "script_sha256": candidate_hash,
+                    "selected_as_best_so_far": became_best,
+                    "duration_seconds": gate_result["duration_seconds"],
+                    "approved": gate_result["approved"],
+                    "checks": gate_result["checks"],
+                    "editorial_score": editorial_result["score"],
+                    "seo_score": seo_result["score"],
+                    "attention_score": attention_result["score"],
+                    "voice_score": voice_result["score"],
+                    "voice_fidelity": voice_result["voice_fidelity"],
+                    "intellectual_depth": voice_result["intellectual_depth"],
+                    "human_relevance": voice_result["human_relevance"],
+                    "analogy_quality": voice_result["analogy_quality"],
+                    "ai_smell_risk": voice_result["ai_smell_risk"],
+                    "factuality_risk": editorial_result["factuality_risk"],
                 }
             )
-            if final_gate["approved"]:
-                break
-            if iteration == CONFIG.max_refinement_iterations:
+            if gate_result["approved"] or iteration == CONFIG.max_refinement_iterations:
                 break
 
             refiner_state = await run_agent(
@@ -785,15 +883,13 @@ async def build(
                 {
                     **review_base,
                     "sectioned_draft_script": sectioned_draft_script,
-                    "review": json.dumps(final_editorial, ensure_ascii=False),
-                    "seo_review": json.dumps(final_seo, ensure_ascii=False),
-                    "attention_review": json.dumps(final_attention, ensure_ascii=False),
-                    "voice_review": json.dumps(final_voice, ensure_ascii=False),
+                    "review": json.dumps(editorial_result, ensure_ascii=False),
+                    "seo_review": json.dumps(seo_result, ensure_ascii=False),
+                    "attention_review": json.dumps(attention_result, ensure_ascii=False),
+                    "voice_review": json.dumps(voice_result, ensure_ascii=False),
                 },
                 "Revise the script while preserving factuality, voice, depth, and the episode plan.",
-                step="refine_script",
-                trace=agent_trace,
-                iteration=iteration,
+                step="refine_script", trace=agent_trace, iteration=iteration,
             )
             refined = str(refiner_state.get("draft_script", "")).strip()
             if not refined:
@@ -802,12 +898,31 @@ async def build(
                 refined_script, refined_alignment = parse_sectioned_script(refined, episode_plan)
             except SectionAlignmentError as exc:
                 validation_warnings.append(
-                    f"Refiner iteration {iteration} returned invalid section markers; kept previous valid draft: {exc}"
+                    f"Stopped refinement after iteration {iteration}: refiner returned invalid section markers: {exc}"
                 )
-                continue
+                break
+            refined_hash = _script_sha256(refined_script)
+            if refined_hash in judged_hashes:
+                validation_warnings.append(
+                    f"Stopped refinement after iteration {iteration}: refiner produced an already-judged script hash {refined_hash[:12]}"
+                )
+                break
             sectioned_draft_script = refined
             draft_script = refined_script
             script_alignment = refined_alignment
+
+        if best_candidate is None:
+            raise RuntimeError("No judged script candidate was produced")
+        draft_script = best_candidate["script"]
+        sectioned_draft_script = best_candidate["sectioned_script"]
+        script_alignment = best_candidate["alignment"]
+        final_editorial = best_candidate["editorial"]
+        final_seo = best_candidate["seo"]
+        final_attention = best_candidate["attention"]
+        final_voice = best_candidate["voice"]
+        final_gate = best_candidate["gate"]
+        best_iteration = int(best_candidate["iteration"])
+        best_script_sha256 = str(best_candidate["script_sha256"])
 
         (episode_scripts_dir / "script.txt").write_text(
             draft_script + "\n", encoding="utf-8"
@@ -819,6 +934,11 @@ async def build(
                 "approved_for_multimedia": bool(final_gate.get("approved", False)),
                 "gate": final_gate,
                 "refinement_iterations": iteration_trace,
+                "best_candidate": {
+                    "iteration": best_iteration,
+                    "script_sha256": best_script_sha256,
+                    "judged_unique_script_count": len(judged_hashes),
+                },
                 "editorial": final_editorial,
                 "seo_master": final_seo,
                 "youtube_attention_master": final_attention,

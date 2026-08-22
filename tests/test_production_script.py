@@ -34,22 +34,20 @@ class ProductionScriptTests(unittest.TestCase):
             "historical_mirror": "Las calculadoras cambiaron qué operaciones hacemos mentalmente.",
             "final_synthesis": "Automatizar no elimina la necesidad de criterio; cambia dónde se ejerce.",
             "closing_question": "¿Qué parte de tu criterio no delegarías?",
-            "stories": [
+            "beats": [
                 {
-                    "selected_news_index": 1,
-                    "argument_role": "evidence",
+                    "beat_id": "first-reveal",
+                    "kind": "reveal",
                     "estimated_minutes": 3.0,
-                    "narrative_function": "Mostrar cuándo la automatización sí produce una ventaja verificable.",
-                    "human_stakes": "Decisiones más rápidas pueden desplazar la revisión humana.",
-                    "skepticism_angle": "Separar capacidad demostrada de promesa comercial.",
+                    "purpose": "Mostrar cuándo la automatización sí produce una ventaja verificable.",
+                    "evidence_ids": ["case"],
                 },
                 {
-                    "selected_news_index": 2,
-                    "argument_role": "counterexample",
+                    "beat_id": "complication",
+                    "kind": "complication",
                     "estimated_minutes": 2.0,
-                    "narrative_function": "Complicar la tesis con un caso donde equivocarse cuesta más.",
-                    "human_stakes": "El costo del error cambia el nivel de supervisión necesario.",
-                    "skepticism_angle": "No extrapolar un resultado de laboratorio a producción.",
+                    "purpose": "Complicar la tesis con un caso donde equivocarse cuesta más.",
+                    "evidence_ids": ["case-b"],
                 },
             ],
         }
@@ -195,14 +193,15 @@ class ProductionScriptTests(unittest.TestCase):
         episode_plan = {
             "hook": "hook",
             "historical_mirror": "",
-            "stories": [{"selected_news_index": 1, "estimated_minutes": 4, "narrative_function": "Caso real", "argument_role": "evidence"}],
+            "evidence": [{"evidence_id": "case", "selected_news_index": 1}],
+            "beats": [{"beat_id": "case", "kind": "evidence", "estimated_minutes": 4, "purpose": "Caso real", "evidence_ids": ["case"]}],
             "final_synthesis": "síntesis",
             "closing_question": "¿Qué cambia?",
         }
         selected = {"items": [{"title": "Fuente exacta"}]}
         alignment = {"sections": [
             {"section_key": "opening", "spoken_text": "Inicio corto."},
-            {"section_key": "story:1", "spoken_text": "Caso muy concreto con varias palabras."},
+            {"section_key": "beat:case", "spoken_text": "Caso muy concreto con varias palabras."},
             {"section_key": "synthesis", "spoken_text": "Cierre final."},
         ]}
         payload = build_production_payload(

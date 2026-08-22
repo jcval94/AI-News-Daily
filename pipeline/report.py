@@ -195,7 +195,8 @@ def build_report(
     duplicates = meaningful_duplicates(
         selected.get("discarded_duplicates", []) if isinstance(selected, dict) else []
     )
-    planned_stories = episode_plan.get("stories", []) if isinstance(episode_plan, dict) else []
+    planned_evidence = episode_plan.get("evidence", []) if isinstance(episode_plan, dict) else []
+    planned_beats = episode_plan.get("beats", []) if isinstance(episode_plan, dict) else []
     novelty_attempts = (
         novelty_check.get("attempts", []) if isinstance(novelty_check, dict) else []
     )
@@ -309,7 +310,8 @@ def build_report(
             "target_duration_minutes": episode_plan.get("target_duration_minutes")
             if isinstance(episode_plan, dict)
             else None,
-            "planned_story_count": len(planned_stories),
+            "planned_evidence_count": len(planned_evidence),
+            "planned_beat_count": len(planned_beats),
             "closing_question": episode_plan.get("closing_question")
             if isinstance(episode_plan, dict)
             else None,
@@ -339,6 +341,7 @@ def build_report(
         },
         "script": {
             "exists": bool(script),
+            "best_candidate": reviews.get("best_candidate", {}) if isinstance(reviews, dict) else {},
             "word_count": len(script.split()) if script else 0,
             "estimated_duration_seconds": estimated_duration,
             "within_target_duration": bool(

@@ -42,24 +42,31 @@ class SelectionResult(BaseModel):
     selection_notes: List[str] = Field(default_factory=list)
 
 
-class StoryPlan(BaseModel):
+class EvidencePlan(BaseModel):
+    evidence_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{0,31}$")
     selected_news_index: int = Field(ge=1)
     role: Literal["anchor", "support", "contrast", "brief"]
     argument_role: Literal[
         "evidence", "counterexample", "symptom", "consequence", "limit_case", "bridge"
     ]
-    estimated_minutes: float = Field(gt=0, le=8)
-    narrative_function: str
-    beats: List[str] = Field(default_factory=list)
+    narrative_function: str = Field(min_length=3, max_length=400)
     analogy_goal: str = ""
     skepticism_angle: str = ""
     human_stakes: str = ""
-    open_loop: str = ""
-    mini_conclusion: str = ""
+
+
+class EssayBeat(BaseModel):
+    beat_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{0,31}$")
+    kind: Literal[
+        "scene", "reveal", "complication", "turn", "reflection", "evidence", "human_stakes"
+    ]
+    purpose: str = Field(min_length=5, max_length=500)
+    estimated_minutes: float = Field(gt=0, le=6)
+    evidence_ids: List[str] = Field(default_factory=list, max_length=4)
 
 
 class NarrativeArc(BaseModel):
-    """Required dramaturgical movement; these labels are production metadata, never spoken headings."""
+    """Required dramaturgical movement; these labels are planning metadata, never spoken headings."""
 
     opening_belief: str = Field(min_length=5, max_length=400)
     central_mystery: str = Field(min_length=5, max_length=400)
@@ -85,7 +92,8 @@ class EpisodePlan(BaseModel):
     hook: str
     target_duration_minutes: float = Field(ge=7, le=20)
     narrative_arc: NarrativeArc
-    stories: List[StoryPlan] = Field(default_factory=list)
+    evidence: List[EvidencePlan] = Field(min_length=1, max_length=CONFIG.max_selected_news)
+    beats: List[EssayBeat] = Field(min_length=2, max_length=8)
     final_synthesis: str
     closing_question: str
 
@@ -96,6 +104,32 @@ class EpisodePlan(BaseModel):
             raise ValueError("narrative_arc.evolved_thesis must materially move beyond thesis")
         if normalize(self.narrative_arc.final_payoff) == normalize(self.hook):
             raise ValueError("narrative_arc.final_payoff must transform, not repeat, the hook")
+
+        evidence_indices = [item.selected_news_index for item in self.evidence]
+        if len(evidence_indices) != len(set(evidence_indices)):
+            raise ValueError("episode_plan.evidence must not duplicate selected news")
+        evidence_ids = [item.evidence_id for item in self.evidence]
+        if len(evidence_ids) != len(set(evidence_ids)):
+            raise ValueError("episode_plan.evidence must use unique evidence_id values")
+        beat_ids = [beat.beat_id for beat in self.beats]
+        if len(beat_ids) != len(set(beat_ids)):
+            raise ValueError("episode_plan.beats must use unique beat_id values")
+        planned = set(evidence_ids)
+        used: set[str] = set()
+        for beat in self.beats:
+            if len(beat.evidence_ids) != len(set(beat.evidence_ids)):
+                raise ValueError(f"beat {beat.beat_id} repeats an evidence_id")
+            unexpected = set(beat.evidence_ids) - planned
+            if unexpected:
+                raise ValueError(
+                    f"beat {beat.beat_id} references undeclared evidence_id values: {sorted(unexpected)}"
+                )
+            used.update(beat.evidence_ids)
+        if planned - used:
+            raise ValueError(
+                "Every episode_plan.evidence item must serve at least one narrative beat; "
+                f"unused evidence_id values={sorted(planned - used)}"
+            )
         return self
 
 
@@ -229,15 +263,19 @@ Build the plan in this order:
 5. Design the full narrative_arc so the investigation contains mystery, scene, reveal, complication, a genuine
    narrative turn, an evolved thesis, a recurring motif, a human peak, and a final payoff.
 6. Compare that question and thesis against previous_essays and establish a real novelty_angle.
-7. Only then choose the current stories that help investigate the thesis.
+7. Only then choose 2-4 current items as evidence and design the idea-led beats that investigate the thesis.
 
-News rules:
+EVIDENCE AND BEATS — KEEP THEM SEPARATE:
 - News is supporting evidence, never the product itself.
+- episode_plan.evidence is a catalog of current-news evidence, NOT the section structure. Give every evidence item a stable, semantic evidence_id such as `traces` or `aqpotency`; evidence_id is NOT a list position.
+- episode_plan.beats is the actual essay structure. Organize beats by discovery, complication, turn, reflection, or human stakes — never one beat per article by default.
+- A beat may use zero, one, or several evidence_ids.
+- The same evidence may reappear in a later beat only when its meaning/function genuinely changes after a reveal or narrative turn.
+- Every evidence item must serve at least one beat; otherwise omit it from evidence.
 - Prefer 2-4 strong pieces of evidence to 6-8 shallow mentions.
-- Every included story must have an argument_role: evidence, counterexample, symptom, consequence, limit_case, or bridge.
-- narrative_function explains precisely what that story does inside this essay.
-- If a story has no clear argumentative function, omit it.
-- Do not organize the episode as story 1 / story 2 / story 3.
+- Every evidence item must have an argument_role: evidence, counterexample, symptom, consequence, limit_case, or bridge.
+- narrative_function explains precisely what that evidence does inside the essay.
+- Do not create `beat 1 = news 1`, `beat 2 = news 2`, etc. That is a disguised roundup and is invalid.
 - Do not make a company, product, paper, benchmark, or model the hook by default.
 - Delay proper nouns until the viewer understands why the underlying idea matters.
 - Never force cohesion between unrelated stories.
@@ -246,6 +284,7 @@ Narrative rules:
 - Choose a target duration between 7 and 20 minutes based on actual substance; never pad.
 - Use the low end when evidence is thin and the high end only when depth is earned.
 - Plan progressive revelation: the essay should discover and refine an idea rather than announce a conclusion and decorate it with headlines.
+- beats must operationalize that discovery as idea-led sections. At least one beat should be able to exist without current-news evidence; at least one should combine or reinterpret evidence rather than merely present a headline.
 - The narrative turn must genuinely reframe the problem; it cannot be a transition sentence.
 - narrative_arc.evolved_thesis must be materially richer than the provisional thesis.
 - The recurring motif should return only when natural and change meaning across the essay.
@@ -261,8 +300,8 @@ Audience rule: the viewer is curious but nontechnical. Prefer the human idea ove
 If a term such as runtime, orchestration, inference, embedding, latency, benchmark, or RAG is necessary,
 plan how to explain the idea in ordinary language before naming the term.
 
-The selected_news_index field is 1-based and MUST refer to the corresponding item in selected_news.items.
-Do not invent new stories. Do not write polished narration.
+Evidence selected_news_index values are 1-based and MUST refer to selected_news.items. Each evidence item also owns a stable evidence_id. Beats reference evidence ONLY by those evidence_id strings; never use selected-news positions inside beats.
+Do not invent new evidence. Do not write polished narration.
 """,
     output_schema=EpisodePlan,
     output_key="episode_plan",
@@ -308,8 +347,9 @@ OPENING — ESSAY FIRST:
 
 INTERNAL SECTION ALIGNMENT — REQUIRED BUT NEVER SPOKEN:
 - Return the draft with HTML-comment markers that Python will remove before judges/TTS.
-- Exact order: <!--SECTION:opening-->, then one <!--SECTION:story:N--> for EACH episode_plan.stories item in plan order using its selected_news_index, then <!--SECTION:synthesis-->.
-- Put each marker immediately before the narration belonging to that block.
+- Exact order: <!--SECTION:opening-->, then one <!--SECTION:beat:BEAT_ID--> for EACH episode_plan.beats item in plan order using its beat_id, then <!--SECTION:synthesis-->.
+- Beats are IDEA sections, not news sections. A beat can contain no current-news item, one item, or several items according to evidence_ids.
+- Put each marker immediately before the narration belonging to that beat.
 - Do not add any other SECTION markers. Do not wrap the result in a code fence.
 - These markers are metadata, not headings; narration must flow naturally across them.
 - Do NOT include a subscribe/comment CTA in the raw essay; the deterministic production layer appends the CTA after the reflective closing question.
@@ -563,7 +603,7 @@ OPENING BELIEF -> MYSTERY -> FIRST REVEAL -> COMPLICATION -> NARRATIVE TURN -> S
 The narrative turn must genuinely reframe the problem. The evolved thesis must be richer than the provisional
 thesis. Reuse the recurring motif only when natural and let its meaning change. Make the payoff transform how the
 opening is understood. If the exact conclusion is obvious by minute 2, deepen the mystery/complication rather than
-adding filler. Never expose internal dramaturgical labels in narration. Preserve the exact hidden HTML markers <!--SECTION:opening-->, <!--SECTION:story:N-->, and <!--SECTION:synthesis--> in the same order; return them with the revised draft so Python can align production sections. Do not add a subscribe/comment CTA; production adds it downstream.
+adding filler. Never expose internal dramaturgical labels in narration. Preserve the exact hidden HTML markers <!--SECTION:opening-->, each <!--SECTION:beat:BEAT_ID--> from episode_plan.beats in the same order, and <!--SECTION:synthesis-->. Return them with the revised draft so Python can align production sections. Do not turn beats into one-news-per-section blocks. Do not add a subscribe/comment CTA; production adds it downstream.
 
 Do not open by default with a company, model, benchmark, product, paper, or “today's news”.
 The opening should establish a human observation and tension first. Current stories should enter only when

@@ -1,0 +1,144 @@
+name: Editorial Regression
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Frozen news window date"
+        required: true
+        default: "2026-08-21"
+        type: string
+      lookback_days:
+        description: "Recent-window lookback"
+        required: true
+        default: "4"
+        type: string
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/editorial-regression.yml"
+  push:
+    branches:
+      - fix/high-1-4-editorial-stabilization
+    paths:
+      - ".github/workflows/editorial-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  current-runtime-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+
+      - name: Resolve scenario
+        id: scenario
+        env:
+          INPUT_DATE: ${{ inputs.target_date }}
+          INPUT_LOOKBACK: ${{ inputs.lookback_days }}
+        run: |
+          echo "target_date=${INPUT_DATE:-2026-08-21}" >> "$GITHUB_OUTPUT"
+          echo "lookback_days=${INPUT_LOOKBACK:-4}" >> "$GITHUB_OUTPUT"
+          echo "run_root=.editorial-regression/$GITHUB_RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Require model secret
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required"; exit 1; }
+
+      - name: Run current agents on frozen news window
+        id: build
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+          MAX_SELECTED_NEWS: ${{ vars.MAX_SELECTED_NEWS || '8' }}
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
+          MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
+          ESSAY_DUPLICATE_THRESHOLD: ${{ vars.ESSAY_DUPLICATE_THRESHOLD || '0.42' }}
+          MAX_NOVELTY_REPLANS: ${{ vars.MAX_NOVELTY_REPLANS || '2' }}
+          TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
+          AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          NEWS_SOURCE_MODE: recent_window
+          NEWS_LOOKBACK_DAYS: ${{ steps.scenario.outputs.lookback_days }}
+          DOWNLOAD_MULTIMEDIA: "false"
+          TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
+          RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
+        run: |
+          mkdir -p "$RUN_ROOT/scripts" "$RUN_ROOT/multimedia"
+          python -m pipeline.run \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --history-scripts-dir scripts \
+            --editorial-dir editorial \
+            --max-media-downloads 0 \
+            --no-download-multimedia
+
+      - name: Evaluate current-runtime editorial structure
+        id: regression
+        if: always()
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
+          RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
+        run: |
+          python -m pipeline.editorial_regression \
+            --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
+            --output "$RUN_ROOT/editorial-regression.json"
+
+      - name: Print reviewable regression artifacts
+        if: always()
+        env:
+          TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
+          RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
+        run: |
+          for file in episode_plan.json script_sections.json reviews.json run_state.json script.txt; do
+            path="$RUN_ROOT/scripts/$TARGET_DATE/$file"
+            if [ -f "$path" ]; then
+              echo "===== $file ====="
+              cat "$path"
+              echo
+            fi
+          done
+          if [ -f "$RUN_ROOT/editorial-regression.json" ]; then
+            echo "===== editorial-regression.json ====="
+            cat "$RUN_ROOT/editorial-regression.json"
+          fi
+
+      - name: Upload regression artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-regression-${{ steps.scenario.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.scenario.outputs.run_root }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Fail only on runtime/structural regression
+        if: always()
+        env:
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          REGRESSION_OUTCOME: ${{ steps.regression.outcome }}
+        run: |
+          echo "Build outcome: $BUILD_OUTCOME"
+          echo "Regression outcome: $REGRESSION_OUTCOME"
+          test "$BUILD_OUTCOME" = "success" || exit 1
+          test "$REGRESSION_OUTCOME" = "success" || exit 1

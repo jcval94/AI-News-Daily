@@ -44,9 +44,9 @@ Do not reintroduce `LoopAgent`, `SequentialAgent`, or an LLM-based quality gate 
 
 ## Narrative planning contract
 
-`episode_plan.json` is created before the script and must contain a grounded plan over selected stories only. The Editorial Director may omit selected stories, but must not invent new ones or schedule the same selected story twice.
+`episode_plan.json` is created before the script and must contain a grounded plan over selected stories only. The Editorial Director may omit selected news, but must not invent evidence. `episode_plan.evidence` is only the evidence catalog; `episode_plan.beats` is the narrative structure. Beats are organized by ideas/revelations/turns, may use zero/one/multiple evidence items, and must never default to one section per news item.
 
-The plan should prefer one honest central question. If stories do not support a strong common thesis, do not force false cohesion.
+The plan should prefer one honest central question. If evidence does not support a strong common thesis, do not force false cohesion.
 
 ## State machine
 
@@ -55,6 +55,7 @@ Authoritative states are defined in `pipeline/core.py` and persisted in `run_sta
 - `approved`
 - `no_source_news`
 - `no_relevant_news`
+- `no_novel_essay_angle`
 - `script_not_approved`
 - `failure`
 - `missing_openai_secret`

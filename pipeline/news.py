@@ -47,23 +47,48 @@ def classify_url(url: str) -> Literal["article", "generic", "missing"]:
     return "article"
 
 
-def _field(block: str, label: str) -> str:
-    match = re.search(rf"(?mi)^{re.escape(label)}\s*:\s*(.+?)\s*$", block)
-    return match.group(1).strip() if match else ""
+def _field(block: str, *labels: str) -> str:
+    for label in labels:
+        match = re.search(rf"(?mi)^{re.escape(label)}\s*:\s*(.+?)\s*$", block)
+        if match:
+            return match.group(1).strip()
+    return ""
+
+
+def _item_matches(text: str) -> list[re.Match[str]]:
+    """Parse both the canonical Markdown contract and the repository's existing report format.
+
+    Supported headings:
+    - ``## 1. Title`` (canonical going forward)
+    - ``1) Title`` (existing 2026 source corpus)
+
+    Metadata remains deterministic in both cases; the LLM never reconstructs it.
+    """
+    pattern = re.compile(
+        r"(?m)^(?:##\s+)?(\d+)(?:\.|\))\s+(.+?)\s*$"
+    )
+    return list(pattern.finditer(text))
 
 
 def parse_news_file(path: Path) -> list[NewsItem]:
     text = path.read_text(encoding="utf-8").strip()
     if not text:
         return []
-    matches = list(re.finditer(r"(?m)^##\s+(\d+)\.\s+(.+?)\s*$", text))
+    matches = _item_matches(text)
     if not matches:
-        raise ValueError(f"No structured '## N. title' news items found in {path}")
+        raise ValueError(
+            f"No structured news items found in {path}; expected headings like '## 1. Title' or '1) Title'"
+        )
 
     file_date = path.stem if re.fullmatch(r"\d{4}-\d{2}-\d{2}", path.stem) else ""
     items: list[NewsItem] = []
+    seen_indices: set[int] = set()
     for position, match in enumerate(matches):
         item_index = int(match.group(1))
+        if item_index in seen_indices:
+            raise ValueError(f"Duplicate news item index {item_index} in {path}")
+        seen_indices.add(item_index)
+
         start = match.start()
         end = matches[position + 1].start() if position + 1 < len(matches) else len(text)
         block = text[start:end].strip()
@@ -86,7 +111,7 @@ def parse_news_file(path: Path) -> list[NewsItem]:
                 url=url,
                 url_quality=classify_url(url),
                 category=_field(block, "Categoría"),
-                summary=_field(block, "Resumen"),
+                summary=_field(block, "Resumen", "Resumen breve"),
                 why_it_matters=_field(block, "Por qué importa"),
                 raw_content=block,
             )
