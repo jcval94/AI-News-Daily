@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import io
+import os
 import re
 import time
 from pathlib import Path
@@ -108,8 +109,12 @@ def _save_as_jpeg(data: bytes, destination: Path) -> None:
         image.save(destination, "JPEG", quality=88, optimize=True)
 
 
+def _save_binary(data: bytes, destination: Path) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(data)
+
+
 def search_pexels(query: str) -> dict[str, Any] | None:
-    import os
     api_key = os.getenv("PEXELS_API_KEY")
     if not api_key:
         return None
@@ -133,8 +138,77 @@ def search_pexels(query: str) -> dict[str, Any] | None:
             "creator": photo.get("photographer", ""),
             "license": "Pexels License",
             "candidate_text": alt,
+            "asset_type": "image",
+            "mime_type": "image/jpeg",
         })
     return select_best_candidate(query, candidates)
+
+
+def _best_pexels_video_file(video: dict[str, Any]) -> dict[str, Any] | None:
+    files = [
+        item for item in (video.get("video_files") or [])
+        if isinstance(item, dict)
+        and item.get("file_type") == "video/mp4"
+        and item.get("link")
+        and int(item.get("width", 0) or 0) >= 640
+        and int(item.get("height", 0) or 0) >= 360
+    ]
+    if not files:
+        return None
+
+    def rank(item: dict[str, Any]) -> tuple[int, int, int]:
+        width = int(item.get("width", 0) or 0)
+        height = int(item.get("height", 0) or 0)
+        landscape_penalty = 0 if width >= height else 1
+        target_penalty = abs(width - 1280) + abs(height - 720)
+        oversize_penalty = max(0, width - 1920) + max(0, height - 1080)
+        return (landscape_penalty, oversize_penalty, target_penalty)
+
+    return min(files, key=rank)
+
+
+def search_pexels_video(query: str) -> dict[str, Any] | None:
+    """Return a practical landscape Pexels clip for motion-heavy review slots."""
+    api_key = os.getenv("PEXELS_API_KEY")
+    if not api_key:
+        return None
+    response = _request(
+        "GET",
+        "https://api.pexels.com/videos/search",
+        params={"query": query, "per_page": 8, "orientation": "landscape", "size": "medium"},
+        headers={"Authorization": api_key, "User-Agent": USER_AGENT},
+    )
+    videos = response.json().get("videos", [])
+    ranked: list[tuple[tuple[int, int, int], dict[str, Any]]] = []
+    for position, video in enumerate(videos):
+        if not isinstance(video, dict):
+            continue
+        file_info = _best_pexels_video_file(video)
+        if not file_info:
+            continue
+        duration = int(video.get("duration", 0) or 0)
+        duration_penalty = 0 if 4 <= duration <= 20 else min(abs(duration - 12), 50)
+        resolution_penalty = abs(int(file_info.get("width", 0) or 0) - 1280) + abs(
+            int(file_info.get("height", 0) or 0) - 720
+        )
+        record = {
+            "provider": "pexels",
+            "download_url": file_info["link"],
+            "source_url": video.get("url", ""),
+            "creator": (video.get("user") or {}).get("name", ""),
+            "license": "Pexels License",
+            "candidate_text": query,
+            "relevance_score": round(max(0.55, 0.95 - (position * 0.04)), 4),
+            "asset_type": "video",
+            "mime_type": "video/mp4",
+            "source_duration_seconds": duration,
+            "width": file_info.get("width"),
+            "height": file_info.get("height"),
+        }
+        ranked.append(((position, duration_penalty, resolution_penalty), record))
+    if not ranked:
+        return None
+    return min(ranked, key=lambda pair: pair[0])[1]
 
 
 def search_wikimedia(query: str) -> dict[str, Any] | None:
@@ -181,6 +255,8 @@ def search_wikimedia(query: str) -> dict[str, Any] | None:
             "creator": _safe_text(meta.get("Artist", {}).get("value", "")),
             "license": license_name,
             "candidate_text": " ".join(part for part in (title, object_name, description) if part),
+            "asset_type": "image",
+            "mime_type": info.get("mime", "image/jpeg"),
         })
     return select_best_candidate(query, candidates)
 
@@ -210,6 +286,46 @@ def make_fallback_card(text: str, destination: Path) -> None:
         y += 58
     draw.text((90, 620), "AI NEWS DAILY • fallback visual", fill="#b9c1d0", font=small)
     image.save(destination, "JPEG", quality=90)
+
+
+def download_video_shot_asset(
+    shot: dict[str, Any], destination: Path, *, logical_file: str | None = None
+) -> dict[str, Any] | None:
+    query = str(shot.get("visual_query", "") or "").strip()
+    if not query:
+        return None
+    errors: list[str] = []
+    try:
+        record = search_pexels_video(query)
+    except Exception as exc:
+        errors.append(f"search_pexels_video: {type(exc).__name__}: {exc}")
+        record = None
+    if not record:
+        return None
+    decision = assess_license(str(record.get("provider", "")), str(record.get("license", "")))
+    if not decision["allowed"]:
+        return None
+    try:
+        _save_binary(_download_bytes(record["download_url"]), destination)
+    except Exception:
+        return None
+    return {
+        "shot_number": shot["shot_number"],
+        "visual_query": query,
+        "file": logical_file or destination.name,
+        "provider": record.get("provider", ""),
+        "source_url": record.get("source_url", ""),
+        "creator": record.get("creator", ""),
+        "license": record.get("license", ""),
+        "license_valid": bool(decision["allowed"]),
+        "requires_attribution": bool(decision["requires_attribution"]),
+        "relevance_score": record.get("relevance_score"),
+        "candidate_text": record.get("candidate_text", ""),
+        "asset_type": "video",
+        "mime_type": "video/mp4",
+        "source_duration_seconds": record.get("source_duration_seconds"),
+        "errors": errors,
+    }
 
 
 def download_shot_asset(
@@ -252,6 +368,8 @@ def download_shot_asset(
             "license": "Generated locally",
             "candidate_text": shot.get("on_screen_text") or query,
             "relevance_score": None,
+            "asset_type": "image",
+            "mime_type": "image/jpeg",
         }
 
     decision = assess_license(str(record.get("provider", "")), str(record.get("license", "")))
@@ -267,5 +385,8 @@ def download_shot_asset(
         "requires_attribution": bool(decision["requires_attribution"]),
         "relevance_score": record.get("relevance_score"),
         "candidate_text": record.get("candidate_text", ""),
+        "asset_type": record.get("asset_type", "image"),
+        "mime_type": record.get("mime_type", "image/jpeg"),
+        "source_duration_seconds": record.get("source_duration_seconds"),
         "errors": errors,
     }
