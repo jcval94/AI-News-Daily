@@ -259,6 +259,38 @@ def enforce_opening_dense_media(
     return [by_slot[number] for number in sorted(by_slot)]
 
 
+def enforce_synthesis_media(
+    plan: list[dict[str, Any]],
+    candidate_slots: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Reserve one visual payoff in the synthesis so the visual arc reaches the ending."""
+    by_slot = {int(item.get("slot_number", 0) or 0): dict(item) for item in plan}
+    candidates = [
+        slot for slot in candidate_slots
+        if str(slot.get("section_key", "") or "") == "synthesis"
+    ]
+    if not candidates:
+        return [by_slot[number] for number in sorted(by_slot)]
+    synthesis_numbers = {int(slot.get("slot_number", 0) or 0) for slot in candidates}
+    if any(by_slot.get(number, {}).get("mode") == "media" for number in synthesis_numbers):
+        return [by_slot[number] for number in sorted(by_slot)]
+    slot = candidates[-1]
+    number = int(slot.get("slot_number", 0) or 0)
+    by_slot[number] = {
+        **by_slot[number],
+        "mode": "media",
+        "visual_query": "thoughtful final question, person reflecting over notes and evidence, cinematic documentary",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "reason": "Final visual payoff: preserve multimedia through the synthesis and closing question",
+        "slot_priority": "synthesis_payoff",
+        "preferred_asset_type": "image_or_video",
+        "motion_preference": "normal",
+        "start_seconds": slot.get("start_seconds"),
+        "end_seconds": slot.get("end_seconds"),
+    }
+    return [by_slot[number] for number in sorted(by_slot)]
+
+
 def _spread(items: list[dict[str, Any]], count: int) -> list[dict[str, Any]]:
     if count <= 0 or not items:
         return []
@@ -285,7 +317,7 @@ def _spread(items: list[dict[str, Any]], count: int) -> list[dict[str, Any]]:
 def select_spread_media_budget(
     plan: list[dict[str, Any]], *, max_media_downloads: int
 ) -> list[dict[str, Any]]:
-    """Keep the dense cold open, then distribute the remaining budget across the full essay."""
+    """Keep the dense cold open, reserve synthesis, then distribute the remaining budget across the essay."""
     media = sorted(
         (dict(item) for item in plan if item.get("mode") == "media"),
         key=lambda item: float(item.get("start_seconds", 0) or 0),
@@ -301,11 +333,15 @@ def select_spread_media_budget(
         int(item.get("slot_number", 0) or 0)
         for item in opening[:max_media_downloads]
     }
+    synthesis = [item for item in media if str(item.get("section_key", "") or "") == "synthesis"]
+    if synthesis and len(selected_numbers) < max_media_downloads:
+        selected_numbers.add(int(synthesis[-1].get("slot_number", 0) or 0))
     remaining = max(0, max_media_downloads - len(selected_numbers))
 
     late = [
         item for item in media
         if float(item.get("start_seconds", 0) or 0) >= OPENING_DENSE_MEDIA_SECONDS
+        and int(item.get("slot_number", 0) or 0) not in selected_numbers
     ]
     groups: dict[str, list[dict[str, Any]]] = {}
     order: list[str] = []
@@ -434,6 +470,7 @@ async def build_review_media(
         timeline_slots,
         max_media_downloads=max(0, max_media_downloads),
     )
+    normalized = enforce_synthesis_media(normalized, timeline_slots)
     normalized = select_spread_media_budget(
         normalized, max_media_downloads=max(0, max_media_downloads)
     )
