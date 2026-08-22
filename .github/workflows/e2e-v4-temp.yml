@@ -6,9 +6,14 @@ on:
       - fix/high-1-4-editorial-stabilization
     paths:
       - ".github/workflows/e2e-v4-temp.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/e2e-v4-temp.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   e2e-v4:
@@ -57,12 +62,12 @@ jobs:
           RUN_ROOT: .e2e-v4-work
         run: |
           rm -rf "$RUN_ROOT" .e2e-review/v4
-          mkdir -p "$RUN_ROOT/scripts" "$RUN_ROOT/multimedia"
+          mkdir -p "$RUN_ROOT/scripts" "$RUN_ROOT/multimedia" "$RUN_ROOT/history"
           python -m pipeline.run \
             --target-date 2026-08-21 \
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia" \
-            --history-scripts-dir scripts \
+            --history-scripts-dir "$RUN_ROOT/history" \
             --editorial-dir editorial \
             --max-media-downloads 0 \
             --no-download-multimedia
@@ -75,24 +80,24 @@ jobs:
           python -m pipeline.editorial_regression \
             --episode-dir .e2e-v4-work/scripts/2026-08-21 \
             --output .e2e-review/v4/editorial-regression.json || true
-          for file in selected_news.json episode_plan.json novelty_check.json script.txt script_sections.json reviews.json run_state.json; do
+          for file in selected_news.json episode_plan.json novelty_check.json script.txt script_sections.json reviews.json run_state.json execution_trace.json; do
             src=".e2e-v4-work/scripts/2026-08-21/$file"
             if [ -f "$src" ]; then cp "$src" ".e2e-review/v4/$file"; fi
           done
           printf '{"build_step_outcome":"%s","workflow_run_id":"%s","git_sha":"%s"}\n' \
             "${{ steps.build.outcome }}" "$GITHUB_RUN_ID" "$GITHUB_SHA" > .e2e-review/v4/workflow.json
 
-      - name: Commit review artifacts to branch
+      - name: Upload review artifact
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-e2e-v4-${{ github.run_id }}
+          path: .e2e-review/v4/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report runtime failure
+        if: always() && steps.build.outcome == 'failure'
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- .e2e-review/v4
-          git diff --cached --check
-          if git diff --cached --quiet; then
-            echo "No E2E review artifacts produced"
-            exit 1
-          fi
-          git commit -m "test: capture editorial E2E v4 for review"
-          git pull --rebase origin fix/high-1-4-editorial-stabilization
-          git push origin HEAD:fix/high-1-4-editorial-stabilization
+          echo "Pipeline runtime failed; artifact preserved for inspection."
+          exit 1
