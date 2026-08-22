@@ -168,7 +168,12 @@ def _best_pexels_video_file(video: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def search_pexels_video(query: str) -> dict[str, Any] | None:
-    """Return a practical landscape Pexels clip for motion-heavy review slots."""
+    """Return a practical landscape Pexels clip for a concrete visual query.
+
+    Pexels Video does not expose reliable descriptive text for semantic rescoring. Therefore the
+    manifest records the provider search rank instead of inventing a relevance score from the query
+    itself. The calling planner is responsible for issuing concrete, visually meaningful queries.
+    """
     api_key = os.getenv("PEXELS_API_KEY")
     if not api_key:
         return None
@@ -197,8 +202,10 @@ def search_pexels_video(query: str) -> dict[str, Any] | None:
             "source_url": video.get("url", ""),
             "creator": (video.get("user") or {}).get("name", ""),
             "license": "Pexels License",
-            "candidate_text": query,
-            "relevance_score": round(max(0.55, 0.95 - (position * 0.04)), 4),
+            "candidate_text": "",
+            "relevance_score": None,
+            "provider_search_rank": position + 1,
+            "search_query": query,
             "asset_type": "video",
             "mime_type": "video/mp4",
             "source_duration_seconds": duration,
@@ -319,8 +326,10 @@ def download_video_shot_asset(
         "license": record.get("license", ""),
         "license_valid": bool(decision["allowed"]),
         "requires_attribution": bool(decision["requires_attribution"]),
-        "relevance_score": record.get("relevance_score"),
-        "candidate_text": record.get("candidate_text", ""),
+        "relevance_score": None,
+        "provider_search_rank": record.get("provider_search_rank"),
+        "search_query": record.get("search_query", query),
+        "candidate_text": "",
         "asset_type": "video",
         "mime_type": "video/mp4",
         "source_duration_seconds": record.get("source_duration_seconds"),
