@@ -23,10 +23,12 @@ on:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
+      - "tests/test_evidence_reconciliation.py"
       - "tests/test_review_hub.py"
       - "tests/test_review_media_offline.py"
       - "evals/editorial/**"
@@ -35,6 +37,7 @@ on:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
@@ -104,6 +107,13 @@ jobs:
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
           echo "Using Editorial Regression run $RUN_ID / $TARGET_DATE"
+
+      - name: Reconcile high-confidence evidence/source references for review
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.evidence_reconciliation --episode-dir "$EPISODE_DIR" --write
 
       - name: Generate beat-labelled review multimedia
         env:
