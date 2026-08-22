@@ -25,8 +25,10 @@ on:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
+      - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
       - "tests/test_review_hub.py"
+      - "tests/test_review_media_offline.py"
       - "evals/editorial/**"
   push:
     branches:
@@ -35,6 +37,7 @@ on:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
+      - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
       - "evals/editorial/**"
 
@@ -116,16 +119,41 @@ jobs:
           RUN_ID: ${{ steps.source.outputs.run_id }}
         run: |
           set -euo pipefail
-          test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required to plan review multimedia"; exit 1; }
           MAX_MEDIA="${MAX_MEDIA:-18}"
           rm -rf review-media review-downloads
           mkdir -p review-media review-downloads
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
-          python -m pipeline.review_media \
-            --episode-dir "$EPISODE_DIR" \
-            --output-dir "review-media/$TARGET_DATE" \
-            --zip-out "$ZIP" \
-            --max-media-downloads "$MAX_MEDIA"
+
+          run_offline() {
+            rm -rf "review-media/$TARGET_DATE" "$ZIP"
+            python -m pipeline.review_media_offline \
+              --episode-dir "$EPISODE_DIR" \
+              --output-dir "review-media/$TARGET_DATE" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA"
+          }
+
+          if [ -z "${OPENAI_API_KEY:-}" ]; then
+            echo "::warning::OPENAI_API_KEY unavailable; using deterministic multimedia planner"
+            run_offline
+          else
+            set +e
+            python -m pipeline.review_media \
+              --episode-dir "$EPISODE_DIR" \
+              --output-dir "review-media/$TARGET_DATE" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/review-media.log
+            STATUS=${PIPESTATUS[0]}
+            set -e
+            if [ "$STATUS" -ne 0 ]; then
+              if grep -Eqi 'credit_balance_exhausted|insufficient_quota|no credits remaining' /tmp/review-media.log; then
+                echo "::warning::Model quota unavailable; rebuilding multimedia deterministically from beats/evidence"
+                run_offline
+              else
+                exit "$STATUS"
+              fi
+            fi
+          fi
 
       - name: Build static editorial review site
         env:
