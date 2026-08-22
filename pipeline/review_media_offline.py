@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -33,33 +35,67 @@ _OPENING_QUERIES = (
     "close-up hands sorting research notes printed articles dynamic b-roll",
 )
 
+# Deliberately short, concrete queries. Pexels descriptions rarely contain abstract essay language;
+# two or three visual nouns produce better semantic overlap than product/benchmark names.
 _KIND_QUERIES: dict[str, str] = {
-    "historical_mirror": "historical archive manuscript writing knowledge documentary",
-    "concrete_scene": "scientist researcher laboratory computer screen documentary",
-    "first_reveal": "research evidence documents analysis close-up documentary",
-    "complication": "complex decision evidence review computer documentary",
-    "turn": "person reviewing evidence documents decision making documentary",
-    "second_reveal": "research findings data evidence verification documentary",
-    "human_peak": "human auditor reviewing checklist computer decision documentary",
-    "evolved_thesis": "research evidence verification documents thoughtful analysis",
-    "payoff": "thoughtful person reviewing notes evidence final question documentary",
+    "scene": "person research notes",
+    "reflection": "researcher notes",
+    "evidence": "scientist laboratory",
+    "turn": "scientist data",
+    "complication": "researcher analysis",
+    "human_stakes": "auditor computer",
+    "reveal": "scientist data",
+    "historical_mirror": "historical manuscript",
+    "concrete_scene": "scientist laboratory",
+    "first_reveal": "research evidence",
+    "second_reveal": "research findings",
+    "human_peak": "auditor computer",
+    "evolved_thesis": "scientist data",
+    "payoff": "person thinking notes",
 }
 
 
-def _selected_title_for_evidence(
+def _fold(value: Any) -> str:
+    text = unicodedata.normalize("NFKD", str(value or "").lower())
+    return "".join(char for char in text if not unicodedata.combining(char))
+
+
+def _selected_item_for_evidence(
     evidence_id: str,
     evidence_by_id: dict[str, dict[str, Any]],
     selected_items: list[dict[str, Any]],
-) -> str:
+) -> dict[str, Any] | None:
     evidence = evidence_by_id.get(evidence_id, {})
     try:
         selected_index = int(evidence.get("selected_news_index", 0) or 0)
     except (TypeError, ValueError):
-        return ""
+        return None
     if not 1 <= selected_index <= len(selected_items):
-        return ""
+        return None
     item = selected_items[selected_index - 1]
-    return str(item.get("title", "") or "").strip() if isinstance(item, dict) else ""
+    return item if isinstance(item, dict) else None
+
+
+def _evidence_visual_query(item: dict[str, Any]) -> str:
+    text = _fold(
+        " ".join(
+            str(item.get(key, "") or "")
+            for key in ("title", "summary", "category")
+        )
+    )
+    if re.search(r"farmac|molecul|protein|potency|drug", text):
+        return "drug discovery laboratory"
+    if re.search(r"catal|material|chemistr|aqcat", text):
+        return "chemistry laboratory"
+    if re.search(r"traces|descubrimiento cient|benchmark|scientific", text):
+        return "scientist laboratory"
+    if re.search(r"vulnerab|seguridad|security|zero.day|sast", text):
+        return "cybersecurity analyst"
+    if re.search(r"codigo|programacion|code|software", text):
+        return "software developer computer"
+    if re.search(r"supercomput|infraestructura|hardware", text):
+        return "data center servers"
+    return "scientist research"
 
 
 def _beat_query(
@@ -67,20 +103,16 @@ def _beat_query(
     evidence_by_id: dict[str, dict[str, Any]],
     selected_items: list[dict[str, Any]],
 ) -> str:
-    evidence_titles = [
-        _selected_title_for_evidence(str(evidence_id), evidence_by_id, selected_items)
+    evidence_items = [
+        _selected_item_for_evidence(str(evidence_id), evidence_by_id, selected_items)
         for evidence_id in beat.get("evidence_ids", []) or []
     ]
-    evidence_titles = [title for title in evidence_titles if title]
-    if evidence_titles:
-        # Keep the concrete entity/name from the source, while nudging providers toward documentary visuals.
-        return f"{evidence_titles[0]} research documentary evidence"
+    evidence_items = [item for item in evidence_items if item]
+    if evidence_items:
+        return _evidence_visual_query(evidence_items[0])
 
     kind = str(beat.get("kind", "") or "").strip().lower()
-    if kind in _KIND_QUERIES:
-        return _KIND_QUERIES[kind]
-    purpose = str(beat.get("purpose", "") or "").strip()
-    return f"{purpose} documentary research evidence" if purpose else "research evidence documentary"
+    return _KIND_QUERIES.get(kind, "researcher notes")
 
 
 def build_deterministic_plan(
@@ -95,6 +127,7 @@ def build_deterministic_plan(
     Policy:
     - every candidate slot in the first 20 seconds is multimedia/video-first;
     - after 20 seconds, use one representative visual per narrative beat;
+    - evidence-led beats use concrete documentary domains, not product-name stock searches;
     - always keep a synthesis visual payoff;
     - if the budget is smaller than the plan, preserve opening + synthesis and spread the rest.
     """
@@ -137,7 +170,7 @@ def build_deterministic_plan(
             plan.append({
                 **slot,
                 "mode": "media",
-                "visual_query": "thoughtful final question person reflecting over notes and evidence documentary",
+                "visual_query": "person thinking notes",
                 "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
                 "reason": "Deterministic synthesis visual payoff",
                 "slot_priority": "synthesis_payoff",
@@ -297,7 +330,7 @@ def build_offline_review_media(
         read_json(episode_dir / "run_state.json", {}).get("episode_date", episode_dir.name)
     )
     write_json(output_dir / "plan.json", {
-        "schema_version": 4,
+        "schema_version": 5,
         "review_only": True,
         "planner_mode": "deterministic_offline",
         "script_date": target_date,
