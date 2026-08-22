@@ -4,13 +4,13 @@ import argparse
 import asyncio
 import json
 import re
-import shutil
+import unicodedata
 import zipfile
 from pathlib import Path
 from typing import Any
 
 from app.agent import MultimediaPlan, multimedia_editor_agent
-from pipeline.core import PipelineConfig, build_timeline_slots, timeline_duration_seconds
+from pipeline.core import PipelineConfig, timeline_duration_seconds
 from pipeline.credits import write_credits
 from pipeline.media import download_shot_asset
 from pipeline.run import normalize_multimedia_plan, run_agent, write_json
@@ -26,6 +26,9 @@ def read_json(path: Path, default: Any) -> Any:
 
 def slug(value: Any, *, fallback: str = "none", limit: int = 64) -> str:
     text = str(value or "").strip().lower()
+    text = "".join(
+        char for char in unicodedata.normalize("NFKD", text) if not unicodedata.combining(char)
+    )
     text = re.sub(r"[^a-z0-9]+", "-", text).strip("-")
     return (text or fallback)[:limit].rstrip("-")
 
@@ -54,6 +57,49 @@ def section_timeline(script_sections: dict[str, Any], words_per_second: float) -
             }
         )
     return timeline
+
+
+def build_review_candidate_slots(section_ranges: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Offer a small, evenly distributed set of visual slots across the essay.
+
+    The production timeline may contain hundreds of slots and encourages cheap models to focus on
+    the earliest entries. Review media instead offers one or two representative windows per idea-led
+    section so the visual planner sees the full dramaturgical arc.
+    """
+    slots: list[dict[str, Any]] = []
+    slot_number = 1
+    for section in section_ranges:
+        start = float(section.get("start_seconds", 0) or 0)
+        end = float(section.get("end_seconds", start) or start)
+        duration = max(0.0, end - start)
+        key = str(section.get("section_key", "") or "")
+        if duration <= 0:
+            continue
+        if key in {"opening", "synthesis"}:
+            fractions = (0.55,)
+        elif duration >= 28:
+            fractions = (0.30, 0.72)
+        else:
+            fractions = (0.52,)
+        for fraction in fractions:
+            midpoint = start + (duration * fraction)
+            candidate_start = max(start, midpoint - 2.0)
+            candidate_end = min(end, candidate_start + 4.0)
+            if candidate_end <= candidate_start:
+                continue
+            slots.append(
+                {
+                    "slot_number": slot_number,
+                    "start_seconds": round(candidate_start, 2),
+                    "end_seconds": round(candidate_end, 2),
+                    "section_key": key,
+                    "beat_id": section.get("beat_id", ""),
+                    "beat_kind": section.get("beat_kind", ""),
+                    "evidence_ids": section.get("evidence_ids", []),
+                }
+            )
+            slot_number += 1
+    return slots
 
 
 def section_for_time(timeline: list[dict[str, Any]], start: float, end: float) -> dict[str, Any]:
@@ -108,7 +154,7 @@ def write_bundle_readme(output_dir: Path, *, target_date: str, manifest: list[di
         "Folders are associated to narrative beats, not news order:",
         "`B##_beat-id__E_evidence-id/...`.",
         "",
-        "Each filename contains the timeline slot and approximate seconds:",
+        "Each filename contains the candidate slot and approximate seconds:",
         "`S###__start-end__description.jpg`.",
         "",
         f"Assets: {len(manifest)}",
@@ -153,7 +199,11 @@ async def build_review_media(
 
     output_dir.mkdir(parents=True, exist_ok=True)
     timeline_duration = timeline_duration_seconds(script, CONFIG)
-    timeline_slots = build_timeline_slots(timeline_duration, CONFIG)
+    section_ranges = section_timeline(script_sections, CONFIG.words_per_second)
+    timeline_slots = build_review_candidate_slots(section_ranges)
+    if not timeline_slots:
+        raise ValueError("Could not build review-media candidate slots from script sections")
+
     trace: list[dict[str, Any]] = []
     editor_state = await run_agent(
         multimedia_editor_agent,
@@ -163,13 +213,17 @@ async def build_review_media(
             "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
             "max_media_downloads": max(0, max_media_downloads),
         },
-        "Choose only the timeline slots where external media adds real explanatory value for editorial review.",
+        (
+            "Plan review multimedia across the FULL essay, not only the opening. Inspect every idea-led beat. "
+            "Use at most two assets in any single beat; preserve budget for the complication, narrative turn, "
+            "human stakes and final synthesis when a visual materially helps. Prefer explanatory/documentary "
+            "queries over generic metaphors or stock-photo symbolism."
+        ),
         step="review_plan_multimedia",
         trace=trace,
     )
     raw_plan = MultimediaPlan.model_validate(editor_state.get("multimedia_plan", {})).model_dump()
     normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, max(0, max_media_downloads))
-    section_ranges = section_timeline(script_sections, CONFIG.words_per_second)
 
     selected_segments: list[dict[str, Any]] = []
     manifest: list[dict[str, Any]] = []
@@ -209,14 +263,25 @@ async def build_review_media(
         manifest.append(record)
         selected_segments.append({**segment, "association": folder, "file": relative_file})
 
+    if manifest:
+        max_media_second = max(float(item.get("end_seconds", 0) or 0) for item in manifest)
+        coverage_ratio = max_media_second / max(timeline_duration, 1)
+        if coverage_ratio < 0.70:
+            warnings.append(
+                f"Review multimedia reaches only {coverage_ratio:.0%} of the essay duration; inspect coverage manually"
+            )
+    else:
+        warnings.append("Review multimedia planner selected no external media")
+
     target_date = str(read_json(episode_dir / "run_state.json", {}).get("episode_date", episode_dir.name))
     write_json(
         output_dir / "plan.json",
         {
-            "schema_version": 1,
+            "schema_version": 2,
             "review_only": True,
             "script_date": target_date,
             "timeline_duration_seconds": timeline_duration,
+            "candidate_slot_count": len(timeline_slots),
             "max_media_downloads": max_media_downloads,
             "validation_warnings": warnings,
             "segments": selected_segments,
