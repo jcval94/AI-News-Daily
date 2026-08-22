@@ -6,7 +6,13 @@ import unittest
 from pathlib import Path
 
 from pipeline.review_hub import build_site
-from pipeline.review_media import association_label, media_filename, section_timeline
+from pipeline.review_media import (
+    association_label,
+    build_review_candidate_slots,
+    media_filename,
+    section_timeline,
+    slug,
+)
 
 
 class ReviewHubTests(unittest.TestCase):
@@ -26,10 +32,11 @@ class ReviewHubTests(unittest.TestCase):
                 "slot_number": 12,
                 "start_seconds": 24.2,
                 "end_seconds": 29.8,
-                "on_screen_text": "Rastro verificable",
+                "on_screen_text": "Predicción y verificación",
             }
         )
-        self.assertTrue(name.startswith("S012__0024-0030s__rastro-verificable"))
+        self.assertTrue(name.startswith("S012__0024-0030s__prediccion-y-verificacion"))
+        self.assertEqual(slug("Epistemología operativa"), "epistemologia-operativa")
 
     def test_section_timeline_uses_spoken_word_counts(self) -> None:
         payload = {
@@ -43,6 +50,19 @@ class ReviewHubTests(unittest.TestCase):
         self.assertEqual(timeline[0]["end_seconds"], 2)
         self.assertEqual(timeline[1]["start_seconds"], 2)
         self.assertEqual(timeline[1]["end_seconds"], 4)
+
+    def test_review_candidate_slots_span_all_sections(self) -> None:
+        sections = [
+            {"section_key": "opening", "beat_id": "", "start_seconds": 0, "end_seconds": 40, "evidence_ids": []},
+            {"section_key": "beat:a", "beat_id": "a", "start_seconds": 40, "end_seconds": 100, "evidence_ids": ["case-a"]},
+            {"section_key": "beat:b", "beat_id": "b", "start_seconds": 100, "end_seconds": 170, "evidence_ids": []},
+            {"section_key": "synthesis", "beat_id": "", "start_seconds": 170, "end_seconds": 210, "evidence_ids": []},
+        ]
+        slots = build_review_candidate_slots(sections)
+        section_keys = {slot["section_key"] for slot in slots}
+        self.assertEqual(section_keys, {"opening", "beat:a", "beat:b", "synthesis"})
+        self.assertGreater(max(slot["end_seconds"] for slot in slots), 180)
+        self.assertLessEqual(sum(1 for slot in slots if slot["section_key"] == "beat:a"), 2)
 
     def test_static_site_contains_validation_and_download_links(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
