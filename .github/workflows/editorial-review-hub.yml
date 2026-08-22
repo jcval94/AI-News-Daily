@@ -18,10 +18,18 @@ on:
         required: true
         default: "12"
         type: string
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/review_hub.py"
+      - "pipeline/review_media.py"
+      - "tests/test_review_hub.py"
+      - "evals/editorial/**"
   push:
     branches:
       - main
-      - feat/editorial-review-hub-media
     paths:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/review_hub.py"
@@ -29,13 +37,13 @@ on:
       - "evals/editorial/**"
 
 permissions:
-  contents: write
+  contents: read
   actions: read
   pages: write
   id-token: write
 
 concurrency:
-  group: editorial-review-hub
+  group: editorial-review-hub-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -148,32 +156,18 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Record temporary preview pointer
-        if: github.ref == 'refs/heads/feat/editorial-review-hub-media'
-        env:
-          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
-          TARGET_DATE: ${{ steps.source.outputs.target_date }}
-        run: |
-          printf '{"review_workflow_run_id":%s,"source_run_id":%s,"target_date":"%s","artifact_name":"editorial-review-hub-%s-%s"}\n' \
-            "$GITHUB_RUN_ID" "$SOURCE_RUN_ID" "$TARGET_DATE" "$TARGET_DATE" "$SOURCE_RUN_ID" > .review-hub-preview.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- .review-hub-preview.json
-          git commit -m "test: record review hub preview pointer [skip ci]"
-          git push origin HEAD:feat/editorial-review-hub-media
-
       - name: Configure Pages
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v4
         with:
           path: review-site
 
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
