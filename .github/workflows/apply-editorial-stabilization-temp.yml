@@ -7,6 +7,9 @@ on:
     paths:
       - tools/apply_editorial_stabilization.py
       - .github/workflows/apply-editorial-stabilization-temp.yml
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -34,6 +37,7 @@ jobs:
           python -m unittest discover -s tests -v
           git diff --check
       - name: Commit validated product changes
+        if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
