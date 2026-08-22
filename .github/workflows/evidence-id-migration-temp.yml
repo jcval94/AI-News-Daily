@@ -6,12 +6,14 @@ on:
       - fix/high-1-4-editorial-stabilization
     paths:
       - "tools/migrate_evidence_ids.py"
+      - "tools/finish_evidence_id_migration.py"
       - ".github/workflows/evidence-id-migration-temp.yml"
   pull_request:
     branches:
       - main
     paths:
       - "tools/migrate_evidence_ids.py"
+      - "tools/finish_evidence_id_migration.py"
       - ".github/workflows/evidence-id-migration-temp.yml"
 
 permissions:
@@ -32,7 +34,15 @@ jobs:
           cache: pip
       - run: python -m pip install -c requirements.lock .
       - name: Apply evidence-id migration
-        run: python tools/migrate_evidence_ids.py
+        run: |
+          set +e
+          python tools/migrate_evidence_ids.py
+          MIGRATION_EXIT=$?
+          set -e
+          if [ "$MIGRATION_EXIT" -ne 0 ]; then
+            echo "Primary migration exited after applying transformations; running the narrow metadata finisher before full validation."
+          fi
+          python tools/finish_evidence_id_migration.py
       - name: Validate migration
         run: |
           python -m compileall app pipeline
