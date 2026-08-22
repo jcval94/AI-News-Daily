@@ -33,6 +33,29 @@ def _beat_by_key(episode_plan: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def _trim_empty_trailing_markers(
+    text: str, matches: list[re.Match[str]], expected: list[str]
+) -> tuple[str, list[re.Match[str]]]:
+    """Ignore only marker-only debris after a complete valid script.
+
+    Models occasionally echo one internal marker after finishing the synthesis. That
+    should not destroy an otherwise valid essay if the suffix contains *no spoken
+    text*. Any extra marker with narration remains a hard alignment error.
+    """
+    if len(matches) <= len(expected):
+        return text, matches
+    prefix_keys = [match.group(1) for match in matches[: len(expected)]]
+    if prefix_keys != expected:
+        return text, matches
+    extra_start = matches[len(expected)].start()
+    suffix = text[extra_start:]
+    spoken_suffix = MARKER_RE.sub("", suffix).strip()
+    if spoken_suffix:
+        return text, matches
+    trimmed = text[:extra_start].rstrip()
+    return trimmed, list(MARKER_RE.finditer(trimmed))
+
+
 def parse_sectioned_script(value: str, episode_plan: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     text = str(value or "").strip()
     matches = list(MARKER_RE.finditer(text))
@@ -41,6 +64,8 @@ def parse_sectioned_script(value: str, episode_plan: dict[str, Any]) -> tuple[st
         raise SectionAlignmentError("Writer returned no internal section markers")
     if text[: matches[0].start()].strip():
         raise SectionAlignmentError("Narration appeared before the opening section marker")
+
+    text, matches = _trim_empty_trailing_markers(text, matches, expected)
     keys = [match.group(1) for match in matches]
     if keys != expected:
         raise SectionAlignmentError(f"Section markers must be exactly {expected}; got {keys}")
