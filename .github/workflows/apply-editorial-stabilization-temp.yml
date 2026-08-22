@@ -1,0 +1,49 @@
+name: Temporary Editorial Stabilization
+
+on:
+  push:
+    branches:
+      - fix/high-1-4-editorial-stabilization
+    paths:
+      - tools/apply_editorial_stabilization.py
+      - .github/workflows/apply-editorial-stabilization-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: fix/high-1-4-editorial-stabilization
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+      - name: Apply patch
+        run: python tools/apply_editorial_stabilization.py
+      - name: Validate
+        run: |
+          python -m compileall app pipeline
+          python -c "import app.agent, pipeline.run, pipeline.production_script, pipeline.editorial_regression; print('runtime imports ok')"
+          python -m unittest discover -s tests -v
+          git diff --check
+      - name: Commit validated product changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            AGENTS.md ROADMAP.md app/agent.py pipeline/run.py pipeline/script_sections.py \
+            pipeline/production_script.py pipeline/report.py pipeline/editorial_regression.py \
+            evals/editorial/scenarios.json tests/test_script_sections.py \
+            tests/test_editorial_runtime_contract.py tests/test_production_script.py \
+            tests/test_e2e_orchestration.py tests/test_e2e_failure_paths.py \
+            tests/test_best_candidate.py tests/test_editorial_regression_runtime.py
+          git diff --cached --check
+          git commit -m "fix: stabilize idea-led essays and refinement selection"
+          git push origin HEAD:fix/high-1-4-editorial-stabilization
