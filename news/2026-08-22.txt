@@ -1,0 +1,75 @@
+# Noticias de Inteligencia Artificial — 2026-08-22
+
+Selección de publicaciones relevantes de las últimas 24 horas, priorizando fuentes primarias y desarrollos con impacto técnico o empresarial.
+
+## 1. NVIDIA AVO alcanza 100% en ARC-AGI-3 con una arquitectura de agentes de largo horizonte
+Fecha: 2026-08-21
+Fuente: NVIDIA Technical Blog
+Enlace: https://developer.nvidia.com/blog/nvidia-avo-reaches-100-on-arc-agi-3-demonstrating-a-frontier-level-general-purpose-architecture-for-long-horizon-autonomous-agents/
+Categoría: agentes
+Resumen: NVIDIA presentó Agentic Variation Operators (AVO), una arquitectura que combina memoria persistente, supervisión, herramientas y ciclos de retroalimentación para sostener tareas autónomas prolongadas. En el conjunto público de ARC-AGI-3 completó los 183 niveles de 25 entornos y elevó el desempeño de Claude Opus 5 desde un baseline de modelo de alrededor de 30% hasta 100% como sistema completo.
+Por qué importa: Es una señal fuerte de que el rendimiento de los agentes depende cada vez más del harness —memoria, herramientas, estado y recuperación de errores— y no solamente del modelo base. También muestra que una arquitectura diseñada para ingeniería de software puede transferirse a otros entornos interactivos.
+
+## 2. Anthropic presenta CHIVE para explicar comportamientos inesperados de LLMs mediante experimentos contrafactuales
+Fecha: 2026-08-21
+Fuente: Anthropic Alignment Science
+Enlace: https://alignment.anthropic.com/2026/chive/
+Categoría: investigación
+Resumen: Anthropic publicó CHIVE, un pipeline agentic que detecta comportamientos inesperados de modelos en interacciones reales y prueba modificaciones contrafactuales del prompt para identificar qué causa esos comportamientos. Los investigadores encontraron que dar a los agentes herramientas de lectura de activaciones no mejoró su capacidad para predecir los resultados frente a simplemente leer la conversación.
+Por qué importa: Cuestiona cuánto valor práctico aportan hoy ciertas técnicas de interpretabilidad basadas en activaciones y propone una vía experimental para estudiar causalmente por qué cambia el comportamiento de un LLM.
+
+## 3. Detectores de mentiras afinados para LLMs no generalizan bien fuera de distribución
+Fecha: 2026-08-21
+Fuente: Anthropic Alignment Science
+Enlace: https://alignment.anthropic.com/2026/lie-detectors/
+Categoría: investigación
+Resumen: Investigadores vinculados a Anthropic y MATS entrenaron detectores de mentiras con ejemplos generados por modelos open source. Aunque funcionaron sobre distribuciones similares a las de entrenamiento, su ventaja cayó notablemente en escenarios distintos; modelos grandes usados directamente como jueces llegaron a superar a los detectores especializados.
+Por qué importa: La detección de engaño es una pieza potencialmente importante para supervisar sistemas avanzados, pero estos resultados muestran que un clasificador especializado puede dar una falsa sensación de seguridad si no generaliza a formas nuevas de comportamiento estratégico.
+
+## 4. Mistral introduce Agentic Search para que los agentes naveguen y verifiquen evidencia dentro de grandes corpus
+Fecha: 2026-08-21
+Fuente: Mistral AI
+Enlace: https://docs.mistral.ai/studio/search/agentic-search
+Categoría: agentes
+Resumen: Mistral documentó Agentic Search, una capa de orquestación sobre recuperación semántica o híbrida que permite al agente buscar, abrir fuentes, navegar entre fragmentos, hacer grep y volver a consultar evitando resultados ya vistos. En sus benchmarks reportados, el enfoque elevó FinanceBench de 27% con RAG de una sola pasada a aproximadamente 86% con el loop agentic completo.
+Por qué importa: Es una evolución directa del RAG tradicional: en vez de entregar un top-k fijo al modelo, el agente puede investigar activamente hasta reunir evidencia suficiente, con potencial para mejorar precisión y reducir contexto desperdiciado.
+
+## 5. AWS presenta ADOP, una arquitectura agentic para reducir el onboarding de pipelines de datos de semanas a horas
+Fecha: 2026-08-21
+Fuente: AWS Machine Learning Blog
+Enlace: https://aws.amazon.com/blogs/machine-learning/agentic-data-operations-platform-adop-data-engineering-into-hours/
+Categoría: agentes
+Resumen: AWS presentó Agentic Data Operations Platform (ADOP), una arquitectura de referencia sobre Amazon Bedrock en la que agentes especializados generan ETL, controles de calidad, capas semánticas y políticas para el ciclo Bronze-Silver-Gold. Los artefactos producidos son revisados por ingenieros y promovidos después mediante CI/CD, evitando convertir al agente en una dependencia de runtime.
+Por qué importa: Propone un patrón empresarial pragmático para agentic AI: usar agentes para construir artefactos deterministas y auditables, manteniendo revisión humana, gobernanza y despliegue tradicional en producción.
+
+## 6. NVIDIA DSX MaxLPS busca extraer más capacidad de IA del mismo presupuesto eléctrico
+Fecha: 2026-08-21
+Fuente: NVIDIA Technical Blog
+Enlace: https://developer.nvidia.com/blog/?p=121508
+Categoría: hardware
+Resumen: NVIDIA detalló DSX MaxLPS, un conjunto de tecnologías de gestión dinámica de potencia, optimización de rendimiento por watt y diseño térmico para AI factories. La compañía reporta que, en configuraciones representativas, puede habilitar aproximadamente 35%-39% más racks dentro del mismo límite de potencia y mejoras cercanas a 1.3-1.5x en rendimiento por watt.
+Por qué importa: La electricidad y la refrigeración se están convirtiendo en restricciones tan importantes como la disponibilidad de GPUs. Mejorar tokens o trabajo útil por watt puede modificar directamente la economía de entrenamiento e inferencia a gran escala.
+
+## 7. AWS propone gobernar el acceso de agentes a herramientas mediante AgentCore Gateway
+Fecha: 2026-08-21
+Fuente: AWS Machine Learning Blog
+Enlace: https://aws.amazon.com/blogs/machine-learning/
+Categoría: agentes
+Resumen: AWS publicó un patrón de madurez para dar a agentes acceso gobernado y auditable a herramientas empresariales con Amazon Bedrock AgentCore Gateway. El enfoque separa la evolución en cuatro ámbitos —Connect, Control, Catalog y Harden— para añadir controles conforme aumenta el riesgo operativo.
+Por qué importa: A medida que los agentes dejan de limitarse a responder texto y empiezan a ejecutar acciones, permisos, identidad, auditoría y límites de herramientas pasan a ser parte central de la arquitectura de producción.
+
+## 8. AWS plantea compresión de contexto sensible a la consulta para abaratar sistemas RAG
+Fecha: 2026-08-21
+Fuente: AWS Machine Learning Blog
+Enlace: https://aws.amazon.com/blogs/machine-learning/
+Categoría: producto
+Resumen: AWS describió un patrón de RAG en Amazon Bedrock donde un modelo más pequeño filtra los fragmentos recuperados según su relevancia para la consulta antes de enviarlos al modelo principal. El objetivo es reducir tokens de entrada y costo sin sacrificar la calidad de la respuesta.
+Por qué importa: En aplicaciones RAG de gran escala, recuperar más contexto no siempre significa responder mejor. Introducir una etapa explícita de compresión puede reducir costo y ruido, especialmente cuando los corpus producen muchos fragmentos parcialmente relevantes.
+
+## 9. AWS y Panasonic Avionics aplican agentes para diagnosticar sistemas de entretenimiento y conectividad aérea
+Fecha: 2026-08-21
+Fuente: AWS Machine Learning Blog
+Enlace: https://aws.amazon.com/blogs/machine-learning/
+Categoría: empresas
+Resumen: Panasonic Avionics trabajó con AWS y el AWS Generative AI Innovation Center en un sistema agentic basado en Amazon Bedrock, SageMaker y Glue para diagnosticar incidencias de entretenimiento y conectividad a bordo. AWS afirma que el sistema reduce procesos de diagnóstico que tomaban horas a minutos manteniendo la precisión.
+Por qué importa: Es un ejemplo concreto de agentes aplicados a operaciones industriales con datos heterogéneos y troubleshooting real, más allá de asistentes conversacionales o demos de productividad.
