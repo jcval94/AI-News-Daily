@@ -1,0 +1,182 @@
+name: Editorial Review Hub
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Editorial Regression run ID; leave empty for latest successful run"
+        required: false
+        default: ""
+        type: string
+      target_date:
+        description: "Episode date; leave empty to infer from artifact"
+        required: false
+        default: ""
+        type: string
+      max_media_downloads:
+        description: "Maximum review multimedia assets"
+        required: true
+        default: "12"
+        type: string
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/review_hub.py"
+      - "pipeline/review_media.py"
+      - "tests/test_review_hub.py"
+      - "evals/editorial/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/review_hub.py"
+      - "pipeline/review_media.py"
+      - "evals/editorial/**"
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: editorial-review-hub-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      target_date: ${{ steps.source.outputs.target_date }}
+      source_run_id: ${{ steps.source.outputs.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+
+      - name: Resolve and download latest Editorial Regression artifact
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_RUN_ID: ${{ inputs.source_run_id }}
+          INPUT_TARGET_DATE: ${{ inputs.target_date }}
+        run: |
+          set -euo pipefail
+          RUN_ID="${INPUT_RUN_ID:-}"
+          if [ -z "$RUN_ID" ]; then
+            RUN_ID="$(gh run list --workflow 'Editorial Regression' --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          fi
+          test -n "$RUN_ID" || { echo "No successful Editorial Regression run found"; exit 1; }
+          ARTIFACT_NAME="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '.artifacts | map(select(.expired == false and (.name | startswith("editorial-regression-")))) | sort_by(.created_at) | last | .name')"
+          test -n "$ARTIFACT_NAME" -a "$ARTIFACT_NAME" != "null" || { echo "No editorial-regression artifact found for run $RUN_ID"; exit 1; }
+          rm -rf .review-source
+          mkdir -p .review-source
+          gh run download "$RUN_ID" --name "$ARTIFACT_NAME" --dir .review-source
+
+          EPISODE_DIR=""
+          if [ -n "${INPUT_TARGET_DATE:-}" ] && [ -f ".review-source/scripts/$INPUT_TARGET_DATE/script.txt" ]; then
+            EPISODE_DIR=".review-source/scripts/$INPUT_TARGET_DATE"
+          else
+            SCRIPT_PATH="$(find .review-source -type f -path '*/scripts/*/script.txt' | sort | tail -1)"
+            test -n "$SCRIPT_PATH" || { echo "Artifact contains no scripts/*/script.txt"; exit 1; }
+            EPISODE_DIR="$(dirname "$SCRIPT_PATH")"
+          fi
+          TARGET_DATE="$(basename "$EPISODE_DIR")"
+          REGRESSION_PATH="$(find .review-source -type f -name editorial-regression.json | head -1)"
+          test -f "$REGRESSION_PATH" || { echo "Artifact contains no editorial-regression.json"; exit 1; }
+
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+          echo "episode_dir=$EPISODE_DIR" >> "$GITHUB_OUTPUT"
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+          echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
+          echo "Using Editorial Regression run $RUN_ID / $TARGET_DATE"
+
+      - name: Generate beat-labelled review multimedia
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          MAX_MEDIA: ${{ inputs.max_media_downloads }}
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required to plan review multimedia"; exit 1; }
+          MAX_MEDIA="${MAX_MEDIA:-12}"
+          rm -rf review-media review-downloads
+          mkdir -p review-media review-downloads
+          ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
+          python -m pipeline.review_media \
+            --episode-dir "$EPISODE_DIR" \
+            --output-dir "review-media/$TARGET_DATE" \
+            --zip-out "$ZIP" \
+            --max-media-downloads "$MAX_MEDIA"
+
+      - name: Build static editorial review site
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
+          rm -rf review-site
+          python -m pipeline.review_hub \
+            --episode-dir "$EPISODE_DIR" \
+            --media-dir "review-media/$TARGET_DATE" \
+            --media-zip "$ZIP" \
+            --regression "$REGRESSION_PATH" \
+            --cases evals/editorial/cases.json \
+            --output-dir review-site \
+            --run-id "$RUN_ID"
+          test -s review-site/index.html
+          test -s "review-site/downloads/$(basename "$ZIP")"
+
+      - name: Upload review hub + multimedia artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-review-hub-${{ steps.source.outputs.target_date }}-${{ steps.source.outputs.run_id }}
+          path: |
+            review-site/
+            review-media/
+            review-downloads/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Configure Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: review-site
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

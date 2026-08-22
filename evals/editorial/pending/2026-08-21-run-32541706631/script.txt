@@ -1,0 +1,143 @@
+No sé si te pasa algo parecido, pero últimamente cada vez que una IA me da una respuesta “impecable”, me queda una incomodidad rara. Me emociona la claridad… y al mismo tiempo me pregunto: ¿dónde quedó el trabajo real detrás de eso?
+
+Porque hay respuestas que suenan como conocimiento. Se sienten como conocimiento. Pero suenan demasiado bien para ser solo eso.
+
+Y ahí aparece una tensión casi moral, en el buen sentido: en ciencia no basta con que algo “parezca correcto”. La ciencia tiene una costumbre—humana, pero disciplinada—: lo que se afirma se pueda revisar, desarmar y volver a probar. Si no, no estamos conociendo. Estamos creyendo.
+
+A veces la “luz verde” llega rápido. Un sistema contesta. Suena coherente. Se completa el ritual: hipótesis, explicación, resultado.
+
+Y uno siente que ya terminó.
+
+Pero el examen de verdad es otro: cuando una persona intenta seguir el camino paso a paso, aparecen huecos. No se trata de que falte una palabra bonita. Se trata de que no se puede ver qué evidencia pesó en cada decisión. No queda claro por qué se descartaron alternativas. Y, lo más inquietante: puede haber pruebas que fallaron… y aun así la conclusión no se movió.
+
+La luz verde no siempre está atada a una ruta verificable. Está atada a un estilo de cerrar casos.
+
+A ver, si tú y yo vamos a usar la palabra “descubrimiento” en serio, no alcanza con que la respuesta sea probable.
+
+Necesita algo más parecido a una justicia epistémica: un rastro de razones que no sea decorativo, sino resistente. Un rastro que no dependa de “me pareció lógico”, sino de “esto se puede comprobar de nuevo”.
+
+Así que, provisionalmente, yo diría que una IA tendría que estar obligada a hacer—al menos—cuatro cosas encadenadas:
+
+Primero: buscar evidencia. No solo texto “que suena”, no solo intuición.
+
+Segundo: considerar hipótesis alternativas, porque la ciencia rara vez progresa con una sola trayectoria limpia.
+
+Tercero: ejecutar pasos que puedan fallar—medir, contrastar, iterar—y no esconder los tropiezos.
+
+Cuarto: volver a verificar que lo que “salió bien” se sostiene cuando lo miras con calma.
+
+Y aquí viene una precisión importante: esto no exige que la IA siempre tenga razón. Exige que, cuando falle, no lo tape con estilo. Exige aprendizaje del fallo y ajuste de lo afirmado después.
+
+Hasta aquí suena razonable… pero hay un problema estructural: durante años, muchas evaluaciones han premiado más el formato final que el proceso de llegar ahí.
+
+Por eso esta semana me llamó la atención un intento de cambiar la vara. Existe una prueba llamada TRACES, presentada por Apodex, que apunta a medir “descubrimiento científico real” en problemas donde no hay una respuesta conocida de antemano.
+
+La idea no es solo “qué tan bien contesta”. La idea es que el sistema demuestre un tipo de trabajo. En particular: búsqueda de evidencia, uso de herramientas, hipótesis competidoras, experimentación, aprendizaje a partir del fallo y verificación del resultado.
+
+O sea: el criterio intenta parecerse más a un examen que a un veredicto.
+
+Y ese detalle importa por una razón simple: si el benchmark solo premia que la salida sea bonita, entonces el sistema aprende a producir confianza, no conocimiento. En cambio, si premias rastros y verificaciones, fuerzas—al menos en teoría—una forma más auditable de razonar.
+
+Ahora sí: regresemos a la escena del laboratorio digital.
+
+Supongamos que el sistema recibe una pregunta sobre un fenómeno en el que nadie tiene la respuesta definitiva. No llega con un “verdadero o falso” ya cocido. En vez de eso, arma una carpeta de auditoría.
+
+Imagínate que dentro hay cosas que tú podrías revisar, no solo leer:
+
+¿Qué evidencia buscó y por qué?
+
+¿Qué herramientas usó?
+
+Qué hipótesis se mantuvieron en competencia y cuáles se fueron cayendo con datos—no con retórica.
+
+En qué puntos falló el procedimiento.
+
+Y, sobre todo: qué verificación podría ejecutar una persona fuera del sistema para comprobar que el resultado no depende del encanto del texto.
+
+Ahí la luz verde deja de ser un sello emocional. Se convierte en una conclusión condicionada: “si revisas este rastro, podrías llegar al mismo punto”.
+
+Pero—ojo—todavía hay un borde peligroso.
+
+Incluso si la IA cumple el “ritual” de investigación, puede haber un hueco conceptual: no toda predicción es evidencia. A veces lo que haces es generar un número para priorizar qué probar después. Eso puede ser útil… pero no es lo mismo que conocimiento nuevo verificado.
+
+Piensa en este caso de SandboxAQ. Presentaron AQPotency para cribado virtual de fármacos, y el punto clave es que permite puntuar grandes bibliotecas de moléculas para estimar su potencia frente a una diana incluso cuando no existe una estructura 3D resuelta de la proteína.
+
+Traducción a lenguaje humano: el sistema intenta estimar “qué tan fuerte” podría ser un candidato, aun con una parte de la información estructural que tradicionalmente se usa para razonar.
+
+¿Es útil? Sí, porque si tu objetivo práctico es priorizar, una herramienta rápida puede ahorrarte experimentos tempranos.
+
+Pero aquí está el matiz que no debemos perder: una estimación puede funcionar como brújula—orienta, decide, prioriza—sin ser por sí misma evidencia experimental directa de que ocurrió el fenómeno biológico real.
+
+En ciencia la cadena importa. Predije → lo comprobé → se verificó → resistió controles.
+
+Si el salto hacia evidencia verificable no existe, lo que tienes es un mapa de probabilidad, no el mapa del terreno.
+
+Y esto obliga a una pregunta incómoda: ¿en una carpeta de auditoría, cómo distingues “trabajo de investigación” de “trabajo de simulación útil”?
+
+Entonces entra otra capa: la mediación por herramientas.
+
+SandboxAQ también anunció AQCat en Claude Science usando MCP. MCP—Model Context Protocol—se puede entender como un puente para integrar capacidades con contexto externo. La intención declarada es sencilla: conectar tu pregunta en lenguaje natural con instrumentos que el sistema realmente puede usar, y no solo “responder desde el aire”.
+
+Según el anuncio, AQCat utiliza un modelo cuantitativo grande para predecir propiedades físicas de materiales y priorizar catalizadores a partir de preguntas.
+
+Esto suena como laboratorio. Como “mira, pregunta, y el sistema hace”.
+
+Pero conectar herramientas no garantiza automáticamente que la respuesta sea evidencia auditable. Puede acelerar decisiones basadas en simulación y modelos, y la ciencia no se define por velocidad; se define por justificabilidad.
+
+El puente puede traducir tu intención… y aun así terminar siendo un traductor de proxies en lugar de un generador de evidencia.
+
+Y ahí vuelve el criterio. La pregunta no es solo “¿usó herramientas?”. La pregunta es: ¿dónde termina esa herramienta en el rastro verificable? ¿Qué parte de lo que sale se puede replicar, contrastar o medir de forma independiente?
+
+Si no puedes rastrear el origen del “parece cierto” hasta algo examinable, entonces la ruta sigue siendo teatro: bien iluminado, pero no necesariamente sólido.
+
+Y aquí viene el pico humano, el examen cotidiano.
+
+Supongamos que recibimos un resultado con una luz verde: “correcto”, “resuelto”, “aprobado”. El sistema fue rápido. La respuesta suena razonable.
+
+Por dentro uno asume—casi por inercia—que la evidencia está ahí.
+
+Pero cuando lo auditas aparecen dos fallas pequeñas que son enormes.
+
+Uno: el rastro de evidencia no está atado a las decisiones. Puedes ver una lista de cosas que el sistema hizo, pero no sabes qué parte de esa evidencia inclinó la balanza. Sin esa conexión, el rastro se vuelve decorativo: una historia con pasos, no una demostración.
+
+Dos: el sistema tuvo pruebas que fallaron… y aun así trató esos fallos como ruido. En vez de decir “ok, esto cambia mi conclusión”, el mensaje real es: “lo importante sigue siendo lo mismo”.
+
+Ahí la luz verde deja de ser luz verde. Se vuelve una alarma de gobernanza epistémica.
+
+Verificar no es un check final. Verificar es la condición que decide en qué confiamos sin caer en fe.
+
+Entonces, viendo estas piezas, mi lectura ya no es solo “falta evidencia”.
+
+El problema más interesante parece ser otra cosa: la debilidad—o ausencia—de una epistemología operativa. Una forma de operar que convierta hipótesis en evidencia evaluable, que no ignore los fallos cuando deberían cambiar el relato.
+
+Y si lo digo como tesis evolucionada, sería así:
+
+La inteligencia relevante para “descubrir” no es solo acertar. Es sostener una cadena de verificación que los humanos podamos auditar, reproducir y que cambie cuando el sistema falla.
+
+En esa cadena:
+- los fallos no son vergüenza; son parte del método,
+- las alternativas no son decoración; son antídoto contra la ingenuidad,
+- las herramientas no son magia; son instrumentos que deben terminar en evidencia evaluable,
+- y la verificación no es un sello final: es lo que decide qué cuenta como conocimiento.
+
+Por eso TRACES tiene sentido como gesto metodológico: intenta empujar la evaluación hacia búsqueda de evidencia, herramientas, hipótesis competidoras, experimentación, aprendizaje del fallo y verificación.
+
+Y por eso AQPotency y AQCat funcionan como puente y contraejemplo a la vez: muestran cómo agentes y modelos especializados pueden acelerar priorizaciones o estimaciones incluso sin resolver toda la estructura física del problema. Pero también nos obligan a preguntar qué parte de eso se conecta con evidencia después verificable… y qué parte se queda como proxy.
+
+Cuando esa traducción falla, la ciencia se vuelve ilusión bien armada.
+
+Vuelvo entonces al motivo recurrente: la luz verde.
+
+Antes la veía como cierre. Ahora la veo como interrogante: ¿resuelto para quién? ¿con qué evidencia? ¿y qué pasó cuando no salió a la primera?
+
+Porque descubrir no es solo encontrar un resultado.
+Descubrir es justificar un camino.
+
+La pregunta cambió: de “¿puede la IA acertar?” a “¿puede producir conocimiento verificable con una cadena que humanos podamos auditar, incluso después de fallar?”.
+
+Con esa lente, la emoción por la fluidez deja de ser suficiente. Lo decisivo es si existe un mecanismo de evidencia y verificación—y si la prueba realmente obliga a usarlo, en vez de recompensar solo la estética del cierre.
+
+<!--SECTION:closing-->
+Si esta charla te sirvió, me quedo con una pregunta final para ti: cuando una IA te da una respuesta, ¿qué criterio mínimo usarías para confiar en que no solo suena bien, sino que realmente está sosteniendo conocimiento?
+
+¿Que sea convincente… o que el sistema pueda mostrar, incluso después de fallar, la evidencia que la sostiene?
