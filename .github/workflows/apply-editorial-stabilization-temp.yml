@@ -6,6 +6,7 @@ on:
       - fix/high-1-4-editorial-stabilization
     paths:
       - tools/apply_editorial_stabilization.py
+      - tools/fix_editorial_stabilization_validation.py
       - .github/workflows/apply-editorial-stabilization-temp.yml
   pull_request:
     branches:
@@ -29,7 +30,9 @@ jobs:
           cache: pip
       - run: python -m pip install -c requirements.lock .
       - name: Apply patch
-        run: python tools/apply_editorial_stabilization.py
+        run: |
+          python tools/apply_editorial_stabilization.py
+          python tools/fix_editorial_stabilization_validation.py
       - name: Validate
         run: |
           python -m compileall app pipeline
