@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: "Editorial Regression run ID; leave empty for latest successful run"
+        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID/current pinned run"
         required: false
         default: ""
         type: string
@@ -25,6 +25,7 @@ on:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
+      - "pipeline/media.py"
       - "tests/test_review_hub.py"
       - "evals/editorial/**"
   push:
@@ -34,6 +35,7 @@ on:
       - ".github/workflows/editorial-review-hub.yml"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
+      - "pipeline/media.py"
       - "evals/editorial/**"
 
 permissions:
@@ -61,19 +63,20 @@ jobs:
           cache: pip
       - run: python -m pip install -c requirements.lock .
 
-      - name: Resolve and download latest Editorial Regression artifact
+      - name: Resolve and download Editorial Regression artifact
         id: source
         env:
           GH_TOKEN: ${{ github.token }}
           INPUT_RUN_ID: ${{ inputs.source_run_id }}
           INPUT_TARGET_DATE: ${{ inputs.target_date }}
+          DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID || '32541706631' }}
         run: |
           set -euo pipefail
-          RUN_ID="${INPUT_RUN_ID:-}"
+          RUN_ID="${INPUT_RUN_ID:-$DEFAULT_RUN_ID}"
           if [ -z "$RUN_ID" ]; then
             RUN_ID="$(gh run list --workflow 'Editorial Regression' --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
           fi
-          test -n "$RUN_ID" || { echo "No successful Editorial Regression run found"; exit 1; }
+          test -n "$RUN_ID" || { echo "No Editorial Regression run found"; exit 1; }
           ARTIFACT_NAME="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '.artifacts | map(select(.expired == false and (.name | startswith("editorial-regression-")))) | sort_by(.created_at) | last | .name')"
           test -n "$ARTIFACT_NAME" -a "$ARTIFACT_NAME" != "null" || { echo "No editorial-regression artifact found for run $RUN_ID"; exit 1; }
           rm -rf .review-source
