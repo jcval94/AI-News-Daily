@@ -159,14 +159,22 @@ def load_selection_history(scripts_dir: Path, target_date: date, lookback_days: 
         covered_indices: list[int] = []
         beats = plan.get("beats", []) if isinstance(plan, dict) else []
         if beats:
+            evidence_lookup: dict[str, int] = {}
+            for evidence in plan.get("evidence", []) if isinstance(plan, dict) else []:
+                if not isinstance(evidence, dict):
+                    continue
+                evidence_id = str(evidence.get("evidence_id", "") or "").strip()
+                try:
+                    selected_index = int(evidence.get("selected_news_index", 0) or 0)
+                except (TypeError, ValueError):
+                    continue
+                if evidence_id and selected_index >= 1:
+                    evidence_lookup[evidence_id] = selected_index
             for beat in beats:
                 if not isinstance(beat, dict):
                     continue
-                for raw_index in beat.get("evidence_news_indices", []):
-                    try:
-                        index = int(raw_index)
-                    except (TypeError, ValueError):
-                        continue
+                for evidence_id in beat.get("evidence_ids", []):
+                    index = evidence_lookup.get(str(evidence_id), 0)
                     if index >= 1 and index not in covered_indices:
                         covered_indices.append(index)
         else:
@@ -302,18 +310,25 @@ def validate_episode_plan(plan: dict[str, Any], selected_count: int) -> None:
         raise ValueError("Editorial Director returned no idea-led beats in episode_plan")
 
     evidence_indices: list[int] = []
+    evidence_ids: list[str] = []
     for item in evidence:
         if not isinstance(item, dict):
             raise ValueError("Every episode_plan evidence item must be an object")
         index = int(item.get("selected_news_index", 0) or 0)
         if index < 1 or index > selected_count:
             raise ValueError("episode_plan evidence references selected news outside the catalog")
+        evidence_id = str(item.get("evidence_id", "") or "").strip()
+        if not evidence_id:
+            raise ValueError("Every episode_plan evidence item must have evidence_id")
         evidence_indices.append(index)
+        evidence_ids.append(evidence_id)
     if len(evidence_indices) != len(set(evidence_indices)):
         raise ValueError("episode_plan.evidence must not duplicate selected news")
+    if len(evidence_ids) != len(set(evidence_ids)):
+        raise ValueError("episode_plan.evidence must use unique evidence_id values")
 
-    allowed = set(evidence_indices)
-    used: set[int] = set()
+    allowed = set(evidence_ids)
+    used: set[str] = set()
     beat_ids: list[str] = []
     for beat in beats:
         if not isinstance(beat, dict):
@@ -322,13 +337,12 @@ def validate_episode_plan(plan: dict[str, Any], selected_count: int) -> None:
         if not beat_id:
             raise ValueError("Every episode_plan beat must have beat_id")
         beat_ids.append(beat_id)
-        raw_indices = beat.get("evidence_news_indices", [])
-        indices = [int(value) for value in raw_indices]
-        if len(indices) != len(set(indices)):
-            raise ValueError(f"Beat {beat_id} repeats an evidence index")
-        if set(indices) - allowed:
-            raise ValueError(f"Beat {beat_id} references evidence not declared in episode_plan.evidence")
-        used.update(indices)
+        refs = [str(value) for value in beat.get("evidence_ids", [])]
+        if len(refs) != len(set(refs)):
+            raise ValueError(f"Beat {beat_id} repeats an evidence_id")
+        if set(refs) - allowed:
+            raise ValueError(f"Beat {beat_id} references undeclared evidence_id values")
+        used.update(refs)
     if len(beat_ids) != len(set(beat_ids)):
         raise ValueError("episode_plan beat_id values must be unique")
     if allowed - used:

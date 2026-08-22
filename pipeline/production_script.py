@@ -122,6 +122,12 @@ def build_section_specs(
     body_minutes = max(body_duration_seconds / 60.0, 0.1)
     beats = episode_plan.get("beats", []) if isinstance(episode_plan, dict) else []
     beats = [beat for beat in beats if isinstance(beat, dict)]
+    evidence_catalog = episode_plan.get("evidence", []) if isinstance(episode_plan, dict) else []
+    evidence_by_id = {
+        str(item.get("evidence_id", "")): item
+        for item in evidence_catalog
+        if isinstance(item, dict) and str(item.get("evidence_id", "")).strip()
+    }
     selected_items = selected_news.get("items", []) if isinstance(selected_news, dict) else []
 
     opening_minutes = max(0.75, body_minutes * 0.12)
@@ -141,15 +147,22 @@ def build_section_specs(
         "target_seconds": round(opening_minutes * 60),
         "argument_role": "hook",
         "source_evidence": "",
-        "evidence_news_indices": [],
+        "evidence_ids": [],
         "historical_mirror": str(episode_plan.get("historical_mirror", "") or ""),
     }]
 
     for index, beat in enumerate(beats):
         beat_id = str(beat.get("beat_id", "") or f"beat-{index + 1}")
-        evidence_indices = [int(value) for value in beat.get("evidence_news_indices", [])]
+        evidence_ids = [str(value) for value in beat.get("evidence_ids", [])]
+        selected_indices: list[int] = []
         titles: list[str] = []
-        for selected_index in evidence_indices:
+        for evidence_id in evidence_ids:
+            evidence = evidence_by_id.get(evidence_id, {})
+            try:
+                selected_index = int(evidence.get("selected_news_index", 0) or 0)
+            except (TypeError, ValueError):
+                continue
+            selected_indices.append(selected_index)
             if 1 <= selected_index <= len(selected_items):
                 item = selected_items[selected_index - 1]
                 if isinstance(item, dict):
@@ -168,7 +181,8 @@ def build_section_specs(
             "target_seconds": round(minutes * 60),
             "argument_role": str(beat.get("kind", "") or "development"),
             "source_evidence": "; ".join(titles),
-            "evidence_news_indices": evidence_indices,
+            "evidence_ids": evidence_ids,
+            "selected_news_indices": selected_indices,
         })
 
     specs.append({
@@ -179,7 +193,7 @@ def build_section_specs(
         "target_seconds": round(synthesis_minutes * 60),
         "argument_role": "synthesis",
         "source_evidence": "",
-        "evidence_news_indices": [],
+        "evidence_ids": [],
         "closing_question": str(episode_plan.get("closing_question", "") or ""),
     })
     return specs

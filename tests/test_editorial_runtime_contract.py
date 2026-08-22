@@ -32,12 +32,12 @@ def valid_plan() -> dict:
             "final_payoff": "Al final, ya quedó deja de ser una confirmación y se vuelve una pregunta.",
         },
         "evidence": [{
-            "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
+            "evidence_id": "case", "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
             "narrative_function": "volver concreto el misterio",
         }],
         "beats": [
-            {"beat_id": "reveal", "kind": "reveal", "purpose": "La evidencia cambia la creencia inicial.", "estimated_minutes": 3, "evidence_news_indices": [1]},
-            {"beat_id": "turn", "kind": "turn", "purpose": "La pregunta se mueve hacia el criterio delegado.", "estimated_minutes": 3, "evidence_news_indices": []}
+            {"beat_id": "reveal", "kind": "reveal", "purpose": "La evidencia cambia la creencia inicial.", "estimated_minutes": 3, "evidence_ids": ["case"]},
+            {"beat_id": "turn", "kind": "turn", "purpose": "La pregunta se mueve hacia el criterio delegado.", "estimated_minutes": 3, "evidence_ids": []}
         ],
         "final_synthesis": "La automatización mueve el lugar donde ejercemos criterio.",
         "closing_question": "¿Qué significa para ti que algo ya quedó?",
@@ -65,8 +65,8 @@ class EditorialRuntimeContractTests(unittest.TestCase):
 
     def test_episode_plan_beats_are_not_one_news_per_section_contract(self) -> None:
         plan = EpisodePlan.model_validate(valid_plan())
-        self.assertEqual(plan.beats[0].evidence_news_indices, [1])
-        self.assertEqual(plan.beats[1].evidence_news_indices, [])
+        self.assertEqual(plan.beats[0].evidence_ids, ["case"])
+        self.assertEqual(plan.beats[1].evidence_ids, [])
         self.assertFalse(hasattr(plan, "stories"))
 
     def test_episode_plan_rejects_non_evolving_thesis(self) -> None:

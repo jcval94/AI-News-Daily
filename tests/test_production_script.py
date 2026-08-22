@@ -40,14 +40,14 @@ class ProductionScriptTests(unittest.TestCase):
                     "kind": "reveal",
                     "estimated_minutes": 3.0,
                     "purpose": "Mostrar cuándo la automatización sí produce una ventaja verificable.",
-                    "evidence_news_indices": [1],
+                    "evidence_ids": ["case"],
                 },
                 {
                     "beat_id": "complication",
                     "kind": "complication",
                     "estimated_minutes": 2.0,
                     "purpose": "Complicar la tesis con un caso donde equivocarse cuesta más.",
-                    "evidence_news_indices": [2],
+                    "evidence_ids": ["case-b"],
                 },
             ],
         }
@@ -193,7 +193,8 @@ class ProductionScriptTests(unittest.TestCase):
         episode_plan = {
             "hook": "hook",
             "historical_mirror": "",
-            "beats": [{"beat_id": "case", "kind": "evidence", "estimated_minutes": 4, "purpose": "Caso real", "evidence_news_indices": [1]}],
+            "evidence": [{"evidence_id": "case", "selected_news_index": 1}],
+            "beats": [{"beat_id": "case", "kind": "evidence", "estimated_minutes": 4, "purpose": "Caso real", "evidence_ids": ["case"]}],
             "final_synthesis": "síntesis",
             "closing_question": "¿Qué cambia?",
         }

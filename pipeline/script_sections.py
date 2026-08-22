@@ -88,7 +88,7 @@ def parse_sectioned_script(value: str, episode_plan: dict[str, Any]) -> tuple[st
             "kind": "opening" if key == "opening" else "synthesis" if key == "synthesis" else "development",
             "beat_id": key.split(":", 1)[1] if key.startswith("beat:") else None,
             "beat_kind": beat.get("kind") if beat else None,
-            "evidence_news_indices": list(beat.get("evidence_news_indices", [])) if beat else [],
+            "evidence_ids": list(beat.get("evidence_ids", [])) if beat else [],
             "spoken_text": spoken,
             "word_count": len(spoken.split()),
         }

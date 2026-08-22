@@ -7,8 +7,8 @@ from pipeline.script_sections import SectionAlignmentError, parse_sectioned_scri
 
 PLAN = {
     "beats": [
-        {"beat_id": "first-reveal", "kind": "reveal", "evidence_news_indices": [2, 5]},
-        {"beat_id": "turn", "kind": "turn", "evidence_news_indices": []},
+        {"beat_id": "first-reveal", "kind": "reveal", "evidence_ids": ["case-a", "case-b"]},
+        {"beat_id": "turn", "kind": "turn", "evidence_ids": []},
     ]
 }
 
@@ -27,8 +27,8 @@ class ScriptSectionTests(unittest.TestCase):
             [item["section_key"] for item in payload["sections"]],
             ["opening", "beat:first-reveal", "beat:turn", "synthesis"],
         )
-        self.assertEqual(payload["sections"][1]["evidence_news_indices"], [2, 5])
-        self.assertEqual(payload["sections"][2]["evidence_news_indices"], [])
+        self.assertEqual(payload["sections"][1]["evidence_ids"], ["case-a", "case-b"])
+        self.assertEqual(payload["sections"][2]["evidence_ids"], [])
 
     def test_trailing_marker_only_debris_is_ignored(self) -> None:
         marked = (

@@ -14,8 +14,8 @@ class EditorialRegressionRuntimeTests(unittest.TestCase):
             root = Path(tmp)
             (root / "script.txt").write_text("No sé si te pasa.\n\n## Evidencia 1\nUn caso.", encoding="utf-8")
             (root / "episode_plan.json").write_text(json.dumps({
-                "evidence": [{"selected_news_index": 1}],
-                "beats": [{"beat_id": "turn", "evidence_news_indices": [1]}],
+                "evidence": [{"evidence_id": "case", "selected_news_index": 1}],
+                "beats": [{"beat_id": "turn", "evidence_ids": ["case"]}],
             }), encoding="utf-8")
             (root / "script_sections.json").write_text(json.dumps({"sections": [
                 {"section_key": "opening", "spoken_text": "No sé si te pasa."},

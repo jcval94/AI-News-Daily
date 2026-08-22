@@ -67,6 +67,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                         },
                         "evidence": [
                             {
+                                "evidence_id": "case",
                                 "selected_news_index": 1,
                                 "role": "anchor",
                                 "argument_role": "evidence",
@@ -77,8 +78,8 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                             }
                         ],
                         "beats": [
-                            {"beat_id": "evidence", "kind": "evidence", "purpose": "Volver concreta la tensión con evidencia actual.", "estimated_minutes": 3.0, "evidence_news_indices": [1]},
-                            {"beat_id": "turn", "kind": "turn", "purpose": "Mover la pregunta desde capacidad hacia criterio.", "estimated_minutes": 2.5, "evidence_news_indices": []}
+                            {"beat_id": "evidence", "kind": "evidence", "purpose": "Volver concreta la tensión con evidencia actual.", "estimated_minutes": 3.0, "evidence_ids": ["case"]},
+                            {"beat_id": "turn", "kind": "turn", "purpose": "Mover la pregunta desde capacidad hacia criterio.", "estimated_minutes": 2.5, "evidence_ids": []}
                         ],
                         "final_synthesis": "La pregunta no es solo qué puede hacer la IA, sino qué dejamos de hacer nosotros.",
                         "closing_question": "¿Qué parte de tu criterio no delegarías?",

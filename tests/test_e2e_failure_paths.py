@@ -37,12 +37,12 @@ def plan_payload() -> dict:
             "final_payoff": "Ya quedó termina siendo una pregunta, no una confirmación.",
         },
         "evidence": [{
-            "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
+            "evidence_id": "case", "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
             "narrative_function": "hacer tangible el problema",
         }],
         "beats": [
-            {"beat_id": "evidence", "kind": "evidence", "purpose": "Hacer tangible el problema.", "estimated_minutes": 3, "evidence_news_indices": [1]},
-            {"beat_id": "turn", "kind": "turn", "purpose": "Cambiar el foco hacia el criterio delegado.", "estimated_minutes": 3, "evidence_news_indices": []}
+            {"beat_id": "evidence", "kind": "evidence", "purpose": "Hacer tangible el problema.", "estimated_minutes": 3, "evidence_ids": ["case"]},
+            {"beat_id": "turn", "kind": "turn", "purpose": "Cambiar el foco hacia el criterio delegado.", "estimated_minutes": 3, "evidence_ids": []}
         ],
         "final_synthesis": "La automatización desplaza el lugar del criterio.",
         "closing_question": "¿Qué no delegarías?",

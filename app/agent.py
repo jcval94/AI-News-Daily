@@ -43,6 +43,7 @@ class SelectionResult(BaseModel):
 
 
 class EvidencePlan(BaseModel):
+    evidence_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{0,31}$")
     selected_news_index: int = Field(ge=1)
     role: Literal["anchor", "support", "contrast", "brief"]
     argument_role: Literal[
@@ -61,7 +62,7 @@ class EssayBeat(BaseModel):
     ]
     purpose: str = Field(min_length=5, max_length=500)
     estimated_minutes: float = Field(gt=0, le=6)
-    evidence_news_indices: List[int] = Field(default_factory=list, max_length=4)
+    evidence_ids: List[str] = Field(default_factory=list, max_length=4)
 
 
 class NarrativeArc(BaseModel):
@@ -107,24 +108,27 @@ class EpisodePlan(BaseModel):
         evidence_indices = [item.selected_news_index for item in self.evidence]
         if len(evidence_indices) != len(set(evidence_indices)):
             raise ValueError("episode_plan.evidence must not duplicate selected news")
+        evidence_ids = [item.evidence_id for item in self.evidence]
+        if len(evidence_ids) != len(set(evidence_ids)):
+            raise ValueError("episode_plan.evidence must use unique evidence_id values")
         beat_ids = [beat.beat_id for beat in self.beats]
         if len(beat_ids) != len(set(beat_ids)):
             raise ValueError("episode_plan.beats must use unique beat_id values")
-        planned = set(evidence_indices)
-        used: set[int] = set()
+        planned = set(evidence_ids)
+        used: set[str] = set()
         for beat in self.beats:
-            if len(beat.evidence_news_indices) != len(set(beat.evidence_news_indices)):
-                raise ValueError(f"beat {beat.beat_id} repeats an evidence index")
-            unexpected = set(beat.evidence_news_indices) - planned
+            if len(beat.evidence_ids) != len(set(beat.evidence_ids)):
+                raise ValueError(f"beat {beat.beat_id} repeats an evidence_id")
+            unexpected = set(beat.evidence_ids) - planned
             if unexpected:
                 raise ValueError(
-                    f"beat {beat.beat_id} references evidence not declared in episode_plan.evidence: {sorted(unexpected)}"
+                    f"beat {beat.beat_id} references undeclared evidence_id values: {sorted(unexpected)}"
                 )
-            used.update(beat.evidence_news_indices)
+            used.update(beat.evidence_ids)
         if planned - used:
             raise ValueError(
                 "Every episode_plan.evidence item must serve at least one narrative beat; "
-                f"unused={sorted(planned - used)}"
+                f"unused evidence_id values={sorted(planned - used)}"
             )
         return self
 
@@ -263,9 +267,9 @@ Build the plan in this order:
 
 EVIDENCE AND BEATS — KEEP THEM SEPARATE:
 - News is supporting evidence, never the product itself.
-- episode_plan.evidence is a catalog of current-news evidence, NOT the section structure.
+- episode_plan.evidence is a catalog of current-news evidence, NOT the section structure. Give every evidence item a stable, semantic evidence_id such as `traces` or `aqpotency`; evidence_id is NOT a list position.
 - episode_plan.beats is the actual essay structure. Organize beats by discovery, complication, turn, reflection, or human stakes — never one beat per article by default.
-- A beat may use zero, one, or several evidence_news_indices.
+- A beat may use zero, one, or several evidence_ids.
 - The same evidence may reappear in a later beat only when its meaning/function genuinely changes after a reveal or narrative turn.
 - Every evidence item must serve at least one beat; otherwise omit it from evidence.
 - Prefer 2-4 strong pieces of evidence to 6-8 shallow mentions.
@@ -296,7 +300,7 @@ Audience rule: the viewer is curious but nontechnical. Prefer the human idea ove
 If a term such as runtime, orchestration, inference, embedding, latency, benchmark, or RAG is necessary,
 plan how to explain the idea in ordinary language before naming the term.
 
-Evidence selected_news_index values are 1-based and MUST refer to selected_news.items. Beat evidence_news_indices must refer only to indices declared in episode_plan.evidence.
+Evidence selected_news_index values are 1-based and MUST refer to selected_news.items. Each evidence item also owns a stable evidence_id. Beats reference evidence ONLY by those evidence_id strings; never use selected-news positions inside beats.
 Do not invent new evidence. Do not write polished narration.
 """,
     output_schema=EpisodePlan,
@@ -344,7 +348,7 @@ OPENING — ESSAY FIRST:
 INTERNAL SECTION ALIGNMENT — REQUIRED BUT NEVER SPOKEN:
 - Return the draft with HTML-comment markers that Python will remove before judges/TTS.
 - Exact order: <!--SECTION:opening-->, then one <!--SECTION:beat:BEAT_ID--> for EACH episode_plan.beats item in plan order using its beat_id, then <!--SECTION:synthesis-->.
-- Beats are IDEA sections, not news sections. A beat can contain no current-news item, one item, or several items according to evidence_news_indices.
+- Beats are IDEA sections, not news sections. A beat can contain no current-news item, one item, or several items according to evidence_ids.
 - Put each marker immediately before the narration belonging to that beat.
 - Do not add any other SECTION markers. Do not wrap the result in a code fence.
 - These markers are metadata, not headings; narration must flow naturally across them.
