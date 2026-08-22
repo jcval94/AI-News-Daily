@@ -7,6 +7,12 @@ on:
     paths:
       - "tools/migrate_evidence_ids.py"
       - ".github/workflows/evidence-id-migration-temp.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "tools/migrate_evidence_ids.py"
+      - ".github/workflows/evidence-id-migration-temp.yml"
 
 permissions:
   contents: write
