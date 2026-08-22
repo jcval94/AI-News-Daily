@@ -73,7 +73,7 @@ Prompts are implementations of these profiles, not the source of truth.
 
 **Goal:** avoid improving one episode while silently degrading another.
 
-Create a small curated set of 3–5 historical news windows with expected qualitative properties, not exact scripts.
+Maintain two complementary regression layers: historical human-labelled scripts for judge calibration, plus model-backed scenarios that execute the CURRENT agents against frozen news windows. The model-backed workflow is manual/on-demand because it consumes API budget.
 
 Examples of assertions:
 

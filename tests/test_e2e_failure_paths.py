@@ -36,10 +36,14 @@ def plan_payload() -> dict:
             "emotional_peak": "Alguien asume una decisión que nadie revisó realmente.",
             "final_payoff": "Ya quedó termina siendo una pregunta, no una confirmación.",
         },
-        "stories": [{
+        "evidence": [{
             "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
-            "estimated_minutes": 4, "narrative_function": "hacer tangible el problema",
+            "narrative_function": "hacer tangible el problema",
         }],
+        "beats": [
+            {"beat_id": "evidence", "kind": "evidence", "purpose": "Hacer tangible el problema.", "estimated_minutes": 3, "evidence_news_indices": [1]},
+            {"beat_id": "turn", "kind": "turn", "purpose": "Cambiar el foco hacia el criterio delegado.", "estimated_minutes": 3, "evidence_news_indices": []}
+        ],
         "final_synthesis": "La automatización desplaza el lugar del criterio.",
         "closing_question": "¿Qué no delegarías?",
     }
@@ -48,7 +52,8 @@ def plan_payload() -> dict:
 def marked_script() -> str:
     return (
         "<!--SECTION:opening-->" + " ".join(["inicio"] * 250) +
-        " <!--SECTION:story:1-->" + " ".join(["desarrollo"] * 600) +
+        " <!--SECTION:beat:evidence-->" + " ".join(["desarrollo"] * 500) +
+        " <!--SECTION:beat:turn-->" + " ".join(["giro"] * 100) +
         " <!--SECTION:synthesis-->" + " ".join(["cierre"] * 200)
     )
 

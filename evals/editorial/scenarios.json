@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "description": "Model-backed regression scenarios executed against the CURRENT agents. Historical cases.json remains the human calibration baseline.",
+  "scenarios": [
+    {
+      "scenario_id": "aug21-essay-first-current-runtime",
+      "target_date": "2026-08-21",
+      "source_mode": "recent_window",
+      "lookback_days": 2,
+      "download_multimedia": false,
+      "purpose": "Detect regressions back to news-led structure while exercising the current Director, Writer, judges and Refiner on the known August 20-21 source window."
+    }
+  ]
+}

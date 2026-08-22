@@ -120,8 +120,8 @@ def build_section_specs(
     body_duration_seconds: int,
 ) -> list[dict[str, Any]]:
     body_minutes = max(body_duration_seconds / 60.0, 0.1)
-    stories = episode_plan.get("stories", []) if isinstance(episode_plan, dict) else []
-    stories = [story for story in stories if isinstance(story, dict)]
+    beats = episode_plan.get("beats", []) if isinstance(episode_plan, dict) else []
+    beats = [beat for beat in beats if isinstance(beat, dict)]
     selected_items = selected_news.get("items", []) if isinstance(selected_news, dict) else []
 
     opening_minutes = max(0.75, body_minutes * 0.12)
@@ -129,66 +129,59 @@ def build_section_specs(
     if opening_minutes + synthesis_minutes > body_minutes * 0.45:
         opening_minutes = body_minutes * 0.25
         synthesis_minutes = body_minutes * 0.20
-
     remaining_minutes = max(0.1, body_minutes - opening_minutes - synthesis_minutes)
-    story_weights = [
-        max(0.1, float(story.get("estimated_minutes", 1.0) or 1.0)) for story in stories
-    ]
-    total_story_weight = sum(story_weights) or 1.0
+    beat_weights = [max(0.1, float(beat.get("estimated_minutes", 1.0) or 1.0)) for beat in beats]
+    total_beat_weight = sum(beat_weights) or 1.0
 
-    specs: list[dict[str, Any]] = [
-        {
-            "section_key": "opening",
-            "kind": "opening",
-            "title": "Apertura — tensión humana y pregunta central",
-            "purpose": str(episode_plan.get("hook", "") or "Plantear la tensión central del ensayo."),
-            "target_seconds": round(opening_minutes * 60),
-            "argument_role": "hook",
-            "source_evidence": "",
-            "historical_mirror": str(episode_plan.get("historical_mirror", "") or ""),
-        }
-    ]
+    specs: list[dict[str, Any]] = [{
+        "section_key": "opening",
+        "kind": "opening",
+        "title": "Apertura — tensión humana y pregunta central",
+        "purpose": str(episode_plan.get("hook", "") or "Plantear la tensión central del ensayo."),
+        "target_seconds": round(opening_minutes * 60),
+        "argument_role": "hook",
+        "source_evidence": "",
+        "evidence_news_indices": [],
+        "historical_mirror": str(episode_plan.get("historical_mirror", "") or ""),
+    }]
 
-    for index, story in enumerate(stories):
-        selected_index = int(story.get("selected_news_index", 0) or 0)
-        selected_title = ""
-        if 1 <= selected_index <= len(selected_items):
-            item = selected_items[selected_index - 1]
-            if isinstance(item, dict):
-                selected_title = str(item.get("title", "") or "")
-        minutes = remaining_minutes * story_weights[index] / total_story_weight
-        function = str(story.get("narrative_function", "") or "")
-        role = str(story.get("argument_role", "") or "development")
-        specs.append(
-            {
-                "section_key": f"story:{selected_index}",
-                "selected_news_index": selected_index,
-                "kind": "development",
-                "title": _clean_heading(function, f"Desarrollo {index + 1} — {role}"),
-                "purpose": function or "Desarrollar y tensionar la tesis.",
-                "target_seconds": round(minutes * 60),
-                "argument_role": role,
-                "source_evidence": selected_title,
-                "human_stakes": str(story.get("human_stakes", "") or ""),
-                "skepticism_angle": str(story.get("skepticism_angle", "") or ""),
-            }
-        )
+    for index, beat in enumerate(beats):
+        beat_id = str(beat.get("beat_id", "") or f"beat-{index + 1}")
+        evidence_indices = [int(value) for value in beat.get("evidence_news_indices", [])]
+        titles: list[str] = []
+        for selected_index in evidence_indices:
+            if 1 <= selected_index <= len(selected_items):
+                item = selected_items[selected_index - 1]
+                if isinstance(item, dict):
+                    title = str(item.get("title", "") or "").strip()
+                    if title:
+                        titles.append(title)
+        minutes = remaining_minutes * beat_weights[index] / total_beat_weight
+        purpose = str(beat.get("purpose", "") or "Desarrollar el argumento.")
+        specs.append({
+            "section_key": f"beat:{beat_id}",
+            "beat_id": beat_id,
+            "beat_kind": str(beat.get("kind", "") or "development"),
+            "kind": "development",
+            "title": _clean_heading(purpose, f"Desarrollo {index + 1}"),
+            "purpose": purpose,
+            "target_seconds": round(minutes * 60),
+            "argument_role": str(beat.get("kind", "") or "development"),
+            "source_evidence": "; ".join(titles),
+            "evidence_news_indices": evidence_indices,
+        })
 
-    specs.append(
-        {
-            "section_key": "synthesis",
-            "kind": "synthesis",
-            "title": "Síntesis — qué cambia después de mirar la evidencia",
-            "purpose": str(
-                episode_plan.get("final_synthesis", "")
-                or "Cerrar el argumento sin fingir más certeza de la que existe."
-            ),
-            "target_seconds": round(synthesis_minutes * 60),
-            "argument_role": "synthesis",
-            "source_evidence": "",
-            "closing_question": str(episode_plan.get("closing_question", "") or ""),
-        }
-    )
+    specs.append({
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "title": "Síntesis — qué cambia después de mirar la evidencia",
+        "purpose": str(episode_plan.get("final_synthesis", "") or "Cerrar el argumento sin fingir más certeza de la que existe."),
+        "target_seconds": round(synthesis_minutes * 60),
+        "argument_role": "synthesis",
+        "source_evidence": "",
+        "evidence_news_indices": [],
+        "closing_question": str(episode_plan.get("closing_question", "") or ""),
+    })
     return specs
 
 
