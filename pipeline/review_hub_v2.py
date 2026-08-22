@@ -412,7 +412,7 @@ table{width:100%;border-collapse:collapse;background:var(--panel);border:1px sol
       group.hidden = children.length > 0 && children.every(child => child.hidden);
     });
     const total = matchedItems + scriptMatches;
-    count.textContent = q ? `${total} coincidencia${total === 1 ? '' : 's'}` : 'Busca en todo el hub';
+    count.textContent = q ? (String(total) + ' coincidencia' + (total === 1 ? '' : 's')) : 'Busca en todo el hub';
     noResults.hidden = !q || total > 0;
   }
 
