@@ -30,6 +30,29 @@ class ScriptSectionTests(unittest.TestCase):
         self.assertEqual(payload["sections"][1]["evidence_news_indices"], [2, 5])
         self.assertEqual(payload["sections"][2]["evidence_news_indices"], [])
 
+    def test_trailing_marker_only_debris_is_ignored(self) -> None:
+        marked = (
+            "<!--SECTION:opening-->Inicio. "
+            "<!--SECTION:beat:first-reveal-->Revelación. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre. "
+            "<!--SECTION:beat:first-reveal-->"
+        )
+        clean, payload = parse_sectioned_script(marked, PLAN)
+        self.assertEqual(len(payload["sections"]), 4)
+        self.assertTrue(clean.endswith("Cierre."))
+
+    def test_trailing_duplicate_with_spoken_text_is_rejected(self) -> None:
+        marked = (
+            "<!--SECTION:opening-->Inicio. "
+            "<!--SECTION:beat:first-reveal-->Revelación. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre. "
+            "<!--SECTION:beat:first-reveal-->Texto que no pertenece al cierre."
+        )
+        with self.assertRaises(SectionAlignmentError):
+            parse_sectioned_script(marked, PLAN)
+
     def test_missing_beat_marker_is_rejected(self) -> None:
         marked = "<!--SECTION:opening-->Inicio. <!--SECTION:beat:first-reveal-->Caso. <!--SECTION:synthesis-->Cierre."
         with self.assertRaises(SectionAlignmentError):
