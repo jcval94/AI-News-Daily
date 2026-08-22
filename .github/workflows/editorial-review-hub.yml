@@ -29,7 +29,7 @@ on:
       - "evals/editorial/**"
 
 permissions:
-  contents: read
+  contents: write
   actions: read
   pages: write
   id-token: write
@@ -147,6 +147,20 @@ jobs:
             review-downloads/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Record temporary preview pointer
+        if: github.ref == 'refs/heads/feat/editorial-review-hub-media'
+        env:
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+        run: |
+          printf '{"review_workflow_run_id":%s,"source_run_id":%s,"target_date":"%s","artifact_name":"editorial-review-hub-%s-%s"}\n' \
+            "$GITHUB_RUN_ID" "$SOURCE_RUN_ID" "$TARGET_DATE" "$TARGET_DATE" "$SOURCE_RUN_ID" > .review-hub-preview.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- .review-hub-preview.json
+          git commit -m "test: record review hub preview pointer [skip ci]"
+          git push origin HEAD:feat/editorial-review-hub-media
 
       - name: Configure Pages
         if: github.ref == 'refs/heads/main'
