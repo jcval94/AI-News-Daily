@@ -12,10 +12,14 @@ from typing import Any
 from app.agent import MultimediaPlan, multimedia_editor_agent
 from pipeline.core import PipelineConfig, timeline_duration_seconds
 from pipeline.credits import write_credits
-from pipeline.media import download_shot_asset
+from pipeline.media import download_shot_asset, download_video_shot_asset
 from pipeline.run import normalize_multimedia_plan, run_agent, write_json
 
 CONFIG = PipelineConfig.from_env()
+OPENING_DENSE_MEDIA_SECONDS = 20.0
+OPENING_MIN_MEDIA_SLOTS = 5
+OPENING_SLOT_SECONDS = 3.5
+MAX_SECTION_CANDIDATES = 2
 
 
 def read_json(path: Path, default: Any) -> Any:
@@ -60,28 +64,54 @@ def section_timeline(script_sections: dict[str, Any], words_per_second: float) -
 
 
 def build_review_candidate_slots(section_ranges: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Offer a small, evenly distributed set of visual slots across the essay.
-
-    The production timeline may contain hundreds of slots and encourages cheap models to focus on
-    the earliest entries. Review media instead offers one or two representative windows per idea-led
-    section so the visual planner sees the full dramaturgical arc.
-    """
+    """Offer a dense video-first cold open plus sparse idea-led slots later in the essay."""
     slots: list[dict[str, Any]] = []
     slot_number = 1
+    opening_end = OPENING_DENSE_MEDIA_SECONDS
+    if section_ranges:
+        opening_end = min(
+            OPENING_DENSE_MEDIA_SECONDS,
+            max(0.0, float(section_ranges[-1].get("end_seconds", OPENING_DENSE_MEDIA_SECONDS) or OPENING_DENSE_MEDIA_SECONDS)),
+        )
+
+    start = 0.0
+    while start < opening_end:
+        end = min(opening_end, start + OPENING_SLOT_SECONDS)
+        if end <= start:
+            break
+        slots.append(
+            {
+                "slot_number": slot_number,
+                "start_seconds": round(start, 2),
+                "end_seconds": round(end, 2),
+                "section_key": "opening",
+                "beat_id": "",
+                "beat_kind": "opening",
+                "evidence_ids": [],
+                "slot_priority": "opening_dense_media",
+                "preferred_asset_type": "video",
+                "motion_preference": "high",
+            }
+        )
+        slot_number += 1
+        start = end
+
     for section in section_ranges:
+        key = str(section.get("section_key", "") or "")
+        if key == "opening":
+            continue
         start = float(section.get("start_seconds", 0) or 0)
         end = float(section.get("end_seconds", start) or start)
         duration = max(0.0, end - start)
-        key = str(section.get("section_key", "") or "")
         if duration <= 0:
             continue
-        if key in {"opening", "synthesis"}:
+        if key == "synthesis":
             fractions = (0.55,)
         elif duration >= 28:
             fractions = (0.30, 0.72)
         else:
             fractions = (0.52,)
-        for fraction in fractions:
+        for fraction in fractions[:MAX_SECTION_CANDIDATES]:
             midpoint = start + (duration * fraction)
             candidate_start = max(start, midpoint - 2.0)
             candidate_end = min(end, candidate_start + 4.0)
@@ -96,6 +126,9 @@ def build_review_candidate_slots(section_ranges: list[dict[str, Any]]) -> list[d
                     "beat_id": section.get("beat_id", ""),
                     "beat_kind": section.get("beat_kind", ""),
                     "evidence_ids": section.get("evidence_ids", []),
+                    "slot_priority": "section_focus",
+                    "preferred_asset_type": "image_or_video",
+                    "motion_preference": "normal",
                 }
             )
             slot_number += 1
@@ -137,12 +170,214 @@ def association_label(section: dict[str, Any]) -> str:
     return f"{prefix}__E_{'+'.join(evidence) if evidence else 'none'}"
 
 
-def media_filename(segment: dict[str, Any]) -> str:
+def media_filename(segment: dict[str, Any], *, extension: str = ".jpg") -> str:
     slot = int(segment.get("slot_number", 0) or 0)
     start = int(round(float(segment.get("start_seconds", 0) or 0)))
     end = int(round(float(segment.get("end_seconds", 0) or 0)))
     label = slug(segment.get("on_screen_text") or segment.get("visual_query"), fallback="visual", limit=48)
-    return f"S{slot:03d}__{start:04d}-{end:04d}s__{label}.jpg"
+    return f"S{slot:03d}__{start:04d}-{end:04d}s__{label}{extension}"
+
+
+def _opening_fallback_query(index: int) -> str:
+    queries = [
+        "cinematic close-up of hands highlighting research notes, documentary b-roll",
+        "moving archival documents and handwritten notes on a desk, reflective research footage",
+        "investigative evidence wall with notes and connecting lines, cinematic b-roll",
+        "abstract flowing data traces and light paths, cinematic technology footage",
+        "person carefully reviewing papers and a computer screen, documentary footage",
+        "close-up hands sorting research notes and printed articles, dynamic b-roll",
+    ]
+    return queries[index % len(queries)]
+
+
+def enforce_opening_dense_media(
+    plan: list[dict[str, Any]],
+    candidate_slots: list[dict[str, Any]],
+    *,
+    max_media_downloads: int,
+) -> list[dict[str, Any]]:
+    """Guarantee a dense first 20s cold open even when the planner under-selects it."""
+    by_slot = {int(item.get("slot_number", 0) or 0): dict(item) for item in plan}
+    slot_meta = {int(item.get("slot_number", 0) or 0): item for item in candidate_slots}
+    opening_numbers = [
+        number for number, slot in slot_meta.items()
+        if float(slot.get("start_seconds", 0) or 0) < OPENING_DENSE_MEDIA_SECONDS
+    ]
+    opening_numbers.sort()
+    if not opening_numbers or max_media_downloads <= 0:
+        return [by_slot[number] for number in sorted(by_slot)]
+
+    # With the default budget, fill every ~3.5s opening slot; five is the minimum guardrail.
+    required = min(len(opening_numbers), max_media_downloads)
+    current_opening = [number for number in opening_numbers if by_slot.get(number, {}).get("mode") == "media"]
+    if len(current_opening) >= required:
+        return [by_slot[number] for number in sorted(by_slot)]
+
+    total_media = sum(1 for item in by_slot.values() if item.get("mode") == "media")
+    late_media = [
+        int(item.get("slot_number", 0) or 0)
+        for item in sorted(
+            by_slot.values(),
+            key=lambda value: float(value.get("start_seconds", 0) or 0),
+            reverse=True,
+        )
+        if item.get("mode") == "media" and int(item.get("slot_number", 0) or 0) not in opening_numbers
+    ]
+
+    for index, number in enumerate(opening_numbers):
+        if by_slot.get(number, {}).get("mode") == "media":
+            continue
+        while total_media >= max_media_downloads and late_media:
+            demote = late_media.pop(0)
+            by_slot[demote] = {
+                **by_slot[demote],
+                "mode": "presenter",
+                "visual_query": "",
+                "on_screen_text": "",
+                "reason": "Media budget reallocated to the first 20 seconds cold open",
+            }
+            total_media -= 1
+        if total_media >= max_media_downloads:
+            break
+        meta = slot_meta[number]
+        by_slot[number] = {
+            **by_slot[number],
+            "mode": "media",
+            "visual_query": _opening_fallback_query(index),
+            "on_screen_text": "",
+            "reason": "Dense cold open: high-motion multimedia in the first 20 seconds",
+            "slot_priority": "opening_dense_media",
+            "preferred_asset_type": "video",
+            "motion_preference": "high",
+            "start_seconds": meta.get("start_seconds"),
+            "end_seconds": meta.get("end_seconds"),
+        }
+        total_media += 1
+        current_opening.append(number)
+        if len(current_opening) >= required:
+            break
+    return [by_slot[number] for number in sorted(by_slot)]
+
+
+def enforce_synthesis_media(
+    plan: list[dict[str, Any]],
+    candidate_slots: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Reserve one visual payoff in the synthesis so the visual arc reaches the ending."""
+    by_slot = {int(item.get("slot_number", 0) or 0): dict(item) for item in plan}
+    candidates = [
+        slot for slot in candidate_slots
+        if str(slot.get("section_key", "") or "") == "synthesis"
+    ]
+    if not candidates:
+        return [by_slot[number] for number in sorted(by_slot)]
+    synthesis_numbers = {int(slot.get("slot_number", 0) or 0) for slot in candidates}
+    if any(by_slot.get(number, {}).get("mode") == "media" for number in synthesis_numbers):
+        return [by_slot[number] for number in sorted(by_slot)]
+    slot = candidates[-1]
+    number = int(slot.get("slot_number", 0) or 0)
+    by_slot[number] = {
+        **by_slot[number],
+        "mode": "media",
+        "visual_query": "thoughtful final question, person reflecting over notes and evidence, cinematic documentary",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "reason": "Final visual payoff: preserve multimedia through the synthesis and closing question",
+        "slot_priority": "synthesis_payoff",
+        "preferred_asset_type": "image_or_video",
+        "motion_preference": "normal",
+        "start_seconds": slot.get("start_seconds"),
+        "end_seconds": slot.get("end_seconds"),
+    }
+    return [by_slot[number] for number in sorted(by_slot)]
+
+
+def _spread(items: list[dict[str, Any]], count: int) -> list[dict[str, Any]]:
+    if count <= 0 or not items:
+        return []
+    if count >= len(items):
+        return list(items)
+    if count == 1:
+        return [items[len(items) // 2]]
+    chosen: list[dict[str, Any]] = []
+    used: set[int] = set()
+    last = len(items) - 1
+    for position in range(count):
+        index = round((position * last) / (count - 1))
+        while index in used and index < last:
+            index += 1
+        while index in used and index > 0:
+            index -= 1
+        if index in used:
+            continue
+        used.add(index)
+        chosen.append(items[index])
+    return chosen
+
+
+def select_spread_media_budget(
+    plan: list[dict[str, Any]], *, max_media_downloads: int
+) -> list[dict[str, Any]]:
+    """Keep the dense cold open, reserve synthesis, then distribute the remaining budget across the essay."""
+    media = sorted(
+        (dict(item) for item in plan if item.get("mode") == "media"),
+        key=lambda item: float(item.get("start_seconds", 0) or 0),
+    )
+    if len(media) <= max_media_downloads:
+        return plan
+
+    opening = [
+        item for item in media
+        if float(item.get("start_seconds", 0) or 0) < OPENING_DENSE_MEDIA_SECONDS
+    ]
+    selected_numbers = {
+        int(item.get("slot_number", 0) or 0)
+        for item in opening[:max_media_downloads]
+    }
+    synthesis = [item for item in media if str(item.get("section_key", "") or "") == "synthesis"]
+    if synthesis and len(selected_numbers) < max_media_downloads:
+        selected_numbers.add(int(synthesis[-1].get("slot_number", 0) or 0))
+    remaining = max(0, max_media_downloads - len(selected_numbers))
+
+    late = [
+        item for item in media
+        if float(item.get("start_seconds", 0) or 0) >= OPENING_DENSE_MEDIA_SECONDS
+        and int(item.get("slot_number", 0) or 0) not in selected_numbers
+    ]
+    groups: dict[str, list[dict[str, Any]]] = {}
+    order: list[str] = []
+    for item in late:
+        key = str(item.get("section_key", "") or item.get("beat_id", "") or "unmapped")
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(item)
+
+    first_pass = [groups[key][0] for key in order]
+    for item in _spread(first_pass, min(remaining, len(first_pass))):
+        selected_numbers.add(int(item.get("slot_number", 0) or 0))
+    remaining = max(0, max_media_downloads - len(selected_numbers))
+
+    if remaining:
+        extras: list[dict[str, Any]] = []
+        for key in order:
+            extras.extend(groups[key][1:])
+        for item in _spread(extras, min(remaining, len(extras))):
+            selected_numbers.add(int(item.get("slot_number", 0) or 0))
+
+    result: list[dict[str, Any]] = []
+    for item in plan:
+        number = int(item.get("slot_number", 0) or 0)
+        if item.get("mode") == "media" and number not in selected_numbers:
+            result.append({
+                **item,
+                "mode": "presenter",
+                "visual_query": "",
+                "on_screen_text": "",
+                "reason": "Review media budget redistributed across the full narrative arc",
+            })
+        else:
+            result.append(item)
+    return result
 
 
 def write_bundle_readme(output_dir: Path, *, target_date: str, manifest: list[dict[str, Any]]) -> None:
@@ -151,18 +386,20 @@ def write_bundle_readme(output_dir: Path, *, target_date: str, manifest: list[di
         "",
         "This bundle is for editorial review only; it does not imply episode approval.",
         "",
+        "Cold-open rule: the first 20 seconds prioritize motion/video with cuts every ~3–4 seconds.",
+        "",
         "Folders are associated to narrative beats, not news order:",
         "`B##_beat-id__E_evidence-id/...`.",
         "",
         "Each filename contains the candidate slot and approximate seconds:",
-        "`S###__start-end__description.jpg`.",
+        "`S###__start-end__description.ext`.",
         "",
         f"Assets: {len(manifest)}",
         "",
     ]
     for item in manifest:
         lines.append(
-            f"- `{item.get('file', '')}` — {item.get('provider', '')}; "
+            f"- `{item.get('file', '')}` — {item.get('asset_type', 'image')} — {item.get('provider', '')}; "
             f"license: {item.get('license', '')}; relevance: {item.get('relevance_score')}"
         )
     (output_dir / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -212,42 +449,88 @@ async def build_review_media(
             "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
             "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
             "max_media_downloads": max(0, max_media_downloads),
+            "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
+            "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
         },
         (
-            "Plan review multimedia across the FULL essay, not only the opening. Inspect every idea-led beat. "
-            "Use at most two assets in any single beat; preserve budget for the complication, narrative turn, "
-            "human stakes and final synthesis when a visual materially helps. Prefer explanatory/documentary "
-            "queries over generic metaphors or stock-photo symbolism."
+            "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
+            "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
+            "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
+            "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
         ),
         step="review_plan_multimedia",
         trace=trace,
     )
     raw_plan = MultimediaPlan.model_validate(editor_state.get("multimedia_plan", {})).model_dump()
-    normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, max(0, max_media_downloads))
+    # Normalize every agent-selected slot first; review-specific budget selection happens below so
+    # chronological slot numbers cannot silently bias the package toward the beginning.
+    normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, len(timeline_slots))
+    normalized = enforce_opening_dense_media(
+        normalized,
+        timeline_slots,
+        max_media_downloads=max(0, max_media_downloads),
+    )
+    normalized = enforce_synthesis_media(normalized, timeline_slots)
+    normalized = select_spread_media_budget(
+        normalized, max_media_downloads=max(0, max_media_downloads)
+    )
+    slot_meta = {int(slot["slot_number"]): slot for slot in timeline_slots}
 
     selected_segments: list[dict[str, Any]] = []
     manifest: list[dict[str, Any]] = []
     for segment in normalized:
         if segment.get("mode") != "media":
             continue
+        slot_number = int(segment.get("slot_number", 0) or 0)
+        meta = slot_meta.get(slot_number, {})
+        segment = {
+            **segment,
+            "slot_priority": segment.get("slot_priority") or meta.get("slot_priority", "section_focus"),
+            "preferred_asset_type": segment.get("preferred_asset_type") or meta.get("preferred_asset_type", "image_or_video"),
+            "motion_preference": segment.get("motion_preference") or meta.get("motion_preference", "normal"),
+        }
         section = section_for_time(
             section_ranges,
             float(segment.get("start_seconds", 0) or 0),
             float(segment.get("end_seconds", 0) or 0),
         )
         folder = association_label(section)
-        filename = media_filename(segment)
-        destination = output_dir / folder / filename
-        relative_file = str(destination.relative_to(output_dir)).replace("\\", "/")
-        record = download_shot_asset(
-            {
-                "shot_number": int(segment["slot_number"]),
-                "visual_query": segment["visual_query"],
-                "on_screen_text": segment.get("on_screen_text", ""),
-            },
-            destination,
-            logical_file=relative_file,
-        )
+        preferred_video = segment.get("preferred_asset_type") == "video"
+        record: dict[str, Any] | None = None
+        relative_file = ""
+        if preferred_video:
+            video_name = media_filename(segment, extension=".mp4")
+            video_destination = output_dir / folder / video_name
+            video_relative = str(video_destination.relative_to(output_dir)).replace("\\", "/")
+            record = download_video_shot_asset(
+                {
+                    "shot_number": slot_number,
+                    "visual_query": segment["visual_query"],
+                    "on_screen_text": segment.get("on_screen_text", ""),
+                },
+                video_destination,
+                logical_file=video_relative,
+            )
+            if record:
+                relative_file = video_relative
+
+        if record is None:
+            image_name = media_filename(segment, extension=".jpg")
+            image_destination = output_dir / folder / image_name
+            image_relative = str(image_destination.relative_to(output_dir)).replace("\\", "/")
+            record = download_shot_asset(
+                {
+                    "shot_number": slot_number,
+                    "visual_query": segment["visual_query"],
+                    "on_screen_text": segment.get("on_screen_text", ""),
+                },
+                image_destination,
+                logical_file=image_relative,
+            )
+            relative_file = image_relative
+            if preferred_video:
+                record.setdefault("errors", []).append("video-first fallback: no suitable Pexels video found; used image")
+
         record.update(
             {
                 "beat_id": section.get("beat_id", ""),
@@ -258,10 +541,25 @@ async def build_review_media(
                 "end_seconds": segment.get("end_seconds"),
                 "on_screen_text": segment.get("on_screen_text", ""),
                 "reason": segment.get("reason", ""),
+                "slot_priority": segment.get("slot_priority", "section_focus"),
+                "preferred_asset_type": segment.get("preferred_asset_type", "image_or_video"),
+                "motion_preference": segment.get("motion_preference", "normal"),
             }
         )
         manifest.append(record)
-        selected_segments.append({**segment, "association": folder, "file": relative_file})
+        selected_segments.append({**segment, "association": folder, "file": relative_file, "asset_type": record.get("asset_type", "image")})
+
+    opening_assets = [
+        item for item in manifest
+        if float(item.get("start_seconds", 0) or 0) < OPENING_DENSE_MEDIA_SECONDS
+    ]
+    opening_videos = [item for item in opening_assets if item.get("asset_type") == "video"]
+    if len(opening_assets) < min(OPENING_MIN_MEDIA_SLOTS, max_media_downloads):
+        warnings.append(
+            f"Cold open has only {len(opening_assets)} media assets in the first 20 seconds; target is {OPENING_MIN_MEDIA_SLOTS}"
+        )
+    if not opening_videos:
+        warnings.append("Cold open contains no actual video assets; image fallbacks were used")
 
     if manifest:
         max_media_second = max(float(item.get("end_seconds", 0) or 0) for item in manifest)
@@ -277,12 +575,16 @@ async def build_review_media(
     write_json(
         output_dir / "plan.json",
         {
-            "schema_version": 2,
+            "schema_version": 3,
             "review_only": True,
             "script_date": target_date,
             "timeline_duration_seconds": timeline_duration,
             "candidate_slot_count": len(timeline_slots),
             "max_media_downloads": max_media_downloads,
+            "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
+            "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
+            "opening_media_count": len(opening_assets),
+            "opening_video_count": len(opening_videos),
             "validation_warnings": warnings,
             "segments": selected_segments,
             "agent_trace": trace,
@@ -295,6 +597,8 @@ async def build_review_media(
     return {
         "target_date": target_date,
         "asset_count": len(manifest),
+        "opening_media_count": len(opening_assets),
+        "opening_video_count": len(opening_videos),
         "zip_path": str(zip_path),
         "warnings": warnings,
         "manifest": manifest,

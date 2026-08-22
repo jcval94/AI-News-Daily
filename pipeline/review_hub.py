@@ -76,6 +76,21 @@ def historical_scripts(cases_path: Path, output_dir: Path) -> list[dict[str, Any
     return rows
 
 
+def _render_media_preview(item: dict[str, Any], rel: str) -> str:
+    asset_type = str(item.get("asset_type", "") or "").lower()
+    mime_type = str(item.get("mime_type", "") or "").lower()
+    href = f"media/{esc(rel)}"
+    label = esc(item.get("on_screen_text") or item.get("visual_query"))
+    if asset_type == "video" or mime_type.startswith("video/") or rel.lower().endswith(".mp4"):
+        return (
+            f"<video controls muted loop playsinline preload='metadata' title='{label}'>"
+            f"<source src='{href}' type='{esc(mime_type or 'video/mp4')}'>"
+            "Tu navegador no soporta video HTML5."
+            "</video>"
+        )
+    return f"<a href='{href}' target='_blank'><img src='{href}' loading='lazy' alt='{label}'></a>"
+
+
 def build_site(
     *,
     episode_dir: Path,
@@ -103,6 +118,8 @@ def build_site(
     words = len(script.split())
     duration_seconds = int((reviews.get("gate", {}) or {}).get("duration_seconds", 0) or round(words / CONFIG.words_per_second))
     minutes = duration_seconds / 60.0
+    opening_media_count = int(media_plan.get("opening_media_count", 0) or 0) if isinstance(media_plan, dict) else 0
+    opening_video_count = int(media_plan.get("opening_video_count", 0) or 0) if isinstance(media_plan, dict) else 0
 
     copy_file(episode_dir / "script.txt", output_dir / "scripts" / f"latest-{validation_id}.txt")
     for name in (
@@ -124,12 +141,10 @@ def build_site(
 
     for item in manifest if isinstance(manifest, list) else []:
         rel = str(item.get("file", "") or "")
-        if not rel:
-            continue
-        copy_file(media_dir / rel, output_dir / "media" / rel)
+        if rel:
+            copy_file(media_dir / rel, output_dir / "media" / rel)
 
     history = historical_scripts(cases_path, output_dir)
-
     editorial = reviews.get("editorial", {}) if isinstance(reviews.get("editorial"), dict) else {}
     seo = reviews.get("seo_master", {}) if isinstance(reviews.get("seo_master"), dict) else {}
     attention = reviews.get("youtube_attention_master", {}) if isinstance(reviews.get("youtube_attention_master"), dict) else {}
@@ -173,16 +188,23 @@ def build_site(
         )
 
     media_cards = []
-    for item in manifest if isinstance(manifest, list) else []:
+    for item in sorted(
+        (manifest if isinstance(manifest, list) else []),
+        key=lambda value: float(value.get("start_seconds", 0) or 0),
+    ):
         rel = str(item.get("file", "") or "")
         if not rel:
             continue
+        asset_type = str(item.get("asset_type", "image") or "image")
+        preview = _render_media_preview(item, rel)
         media_cards.append(
             "<article class='media-card'>"
-            f"<a href='media/{esc(rel)}' target='_blank'><img src='media/{esc(rel)}' loading='lazy' alt='{esc(item.get('on_screen_text') or item.get('visual_query'))}'></a>"
-            f"<div class='media-meta'><strong>{esc(item.get('section_key') or item.get('beat_id'))}</strong>"
-            f"<span>{esc(item.get('on_screen_text'))}</span><small>{esc(item.get('provider'))} · {esc(item.get('license'))}</small>"
-            f"<small>{esc(item.get('start_seconds'))}–{esc(item.get('end_seconds'))}s · relevance {esc(item.get('relevance_score'))}</small></div></article>"
+            f"{preview}"
+            f"<div class='media-meta'><div><span class='badge neutral'>{esc(asset_type.upper())}</span> <strong>{esc(item.get('section_key') or item.get('beat_id'))}</strong></div>"
+            f"<span>{esc(item.get('on_screen_text') or item.get('visual_query'))}</span>"
+            f"<small>{esc(item.get('start_seconds'))}–{esc(item.get('end_seconds'))}s · {esc(item.get('provider'))} · {esc(item.get('license'))}</small>"
+            f"<small>priority {esc(item.get('slot_priority'))} · preferred {esc(item.get('preferred_asset_type'))}</small>"
+            f"<a class='button small secondary' href='media/{esc(rel)}' download>Descargar pieza</a></div></article>"
         )
 
     history_rows = []
@@ -222,7 +244,7 @@ a{{color:var(--accent);text-decoration:none}} a:hover{{text-decoration:underline
 .button{{display:inline-block;background:var(--accent);color:#07121a!important;font-weight:850;border-radius:12px;padding:11px 16px;margin:4px 6px 4px 0;text-decoration:none!important}} .button.secondary{{background:#202b3b;color:#e5eef8!important;border:1px solid #334258}} .button.small{{font-size:12px;padding:6px 10px}}
 .script{{white-space:pre-wrap;background:#0c1119;border:1px solid var(--line);border-radius:18px;padding:28px;font-family:Georgia,serif;font-size:17px;line-height:1.82;max-height:900px;overflow:auto}} .beat{{display:grid;grid-template-columns:52px 1fr;gap:14px;padding:20px 0;border-bottom:1px solid var(--line)}} .beat-no{{font-size:22px;color:var(--accent);font-weight:900}} .evidence-row{{display:flex;gap:7px;flex-wrap:wrap}} .evidence{{font-size:12px;background:#172738;border:1px solid #27435e;border-radius:999px;padding:5px 9px}} .evidence.none{{background:#242631;border-color:#383b49;color:#aeb6c0}}
 table{{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line)}} th,td{{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}} th{{color:#b9c6d4;font-size:12px;text-transform:uppercase;letter-spacing:.06em}} .table-wrap{{overflow:auto;border-radius:16px}}
-.media-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}} .media-card{{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}} .media-card img{{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#111}} .media-meta{{padding:12px;display:grid;gap:4px}} .media-meta small{{color:var(--muted)}} .artifact-link{{display:inline-block;margin:5px 8px 5px 0;background:#141c28;border:1px solid var(--line);padding:7px 10px;border-radius:9px;font-size:12px}} .review-notes{{background:#101722;border-left:3px solid var(--warn);padding:10px 16px;margin:12px 0;border-radius:4px 12px 12px 4px}} .footer{{margin-top:60px;color:var(--muted);border-top:1px solid var(--line);padding-top:24px}}
+.media-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}} .media-card{{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}} .media-card img,.media-card video{{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#111}} .media-meta{{padding:12px;display:grid;gap:6px}} .media-meta small{{color:var(--muted)}} .artifact-link{{display:inline-block;margin:5px 8px 5px 0;background:#141c28;border:1px solid var(--line);padding:7px 10px;border-radius:9px;font-size:12px}} .review-notes{{background:#101722;border-left:3px solid var(--warn);padding:10px 16px;margin:12px 0;border-radius:4px 12px 12px 4px}} .footer{{margin-top:60px;color:var(--muted);border-top:1px solid var(--line);padding-top:24px}}
 @media(max-width:600px){{.hero{{padding:26px}} .wrap{{padding:24px 14px 70px}} .script{{padding:18px;font-size:16px}}}}
 </style>
 </head>
@@ -236,6 +258,7 @@ table{{width:100%;border-collapse:collapse;background:var(--panel);border:1px so
 <div class='metric'><strong>{words}</strong><span>palabras</span></div><div class='metric'><strong>{minutes:.1f}</strong><span>min estimados</span></div>
 <div class='metric'><strong>{score(editorial.get('score'))}</strong><span>Editorial</span></div><div class='metric'><strong>{score(seo.get('score'))}</strong><span>SEO</span></div>
 <div class='metric'><strong>{score(attention.get('score'))}</strong><span>Attention</span></div><div class='metric'><strong>{score(voice.get('score'))}</strong><span>Voice</span></div>
+<div class='metric'><strong>{opening_media_count}</strong><span>media 0–20s</span></div><div class='metric'><strong>{opening_video_count}</strong><span>videos 0–20s</span></div>
 </div>
 <div class='review-box'><strong>Human review pendiente · ID <code>{esc(validation_id)}</code></strong><p>Para incorporarlo al corpus humano, responde en ChatGPT con <code>VALIDADO {esc(validation_id)}</code> o <code>RECHAZADO {esc(validation_id)}</code> y, si quieres, una razón breve.</p>
 <a class='button' href='scripts/latest-{esc(validation_id)}.txt'>Descargar guion TXT</a><a class='button secondary' href='downloads/{esc(media_zip_name)}'>Descargar multimedia ZIP</a></div>
@@ -259,7 +282,8 @@ table{{width:100%;border-collapse:collapse;background:var(--panel);border:1px so
 
 <h2>Fuentes seleccionadas</h2><div class='table-wrap'><table><thead><tr><th>#</th><th>Título</th><th>Fuente</th><th>URL quality</th><th>ID</th></tr></thead><tbody>{''.join(source_rows)}</tbody></table></div>
 
-<h2>Multimedia de revisión</h2><p>Los nombres y carpetas llevan el beat y los <code>evidence_id</code> para poder asociar cada pieza al guion. Paquete: <strong>{len(manifest) if isinstance(manifest,list) else 0}</strong> assets.</p>
+<h2>Multimedia de revisión</h2><p>Los primeros 20 segundos se tratan como cold open de alta densidad visual: objetivo mínimo de cinco piezas, con prioridad a video y cambios cada ~3–4 segundos. Después del segundo 20 la multimedia vuelve a ser selectiva y explicativa.</p>
+<p>Cold open actual: <strong>{opening_media_count}</strong> piezas, de las cuales <strong>{opening_video_count}</strong> son video. Paquete total: <strong>{len(manifest) if isinstance(manifest,list) else 0}</strong> assets.</p>
 <p><a class='button' href='downloads/{esc(media_zip_name)}'>Descargar ZIP completo</a><a class='button secondary' href='artifacts/credits.md'>Ver créditos/licencias</a></p>
 <div class='media-grid'>{''.join(media_cards) or '<div class="card">No hubo assets descargables; revisa media-plan.json.</div>'}</div>
 

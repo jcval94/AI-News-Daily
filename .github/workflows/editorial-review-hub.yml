@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: "Editorial Regression run ID; leave empty for latest successful run"
+        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID/current pinned run"
         required: false
         default: ""
         type: string
@@ -16,24 +16,32 @@ on:
       max_media_downloads:
         description: "Maximum review multimedia assets"
         required: true
-        default: "12"
+        default: "18"
         type: string
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
+      - "pipeline/review_media_offline.py"
+      - "pipeline/media.py"
+      - "tests/test_evidence_reconciliation.py"
       - "tests/test_review_hub.py"
+      - "tests/test_review_media_offline.py"
       - "evals/editorial/**"
   push:
     branches:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_media.py"
+      - "pipeline/review_media_offline.py"
+      - "pipeline/media.py"
       - "evals/editorial/**"
 
 permissions:
@@ -61,19 +69,20 @@ jobs:
           cache: pip
       - run: python -m pip install -c requirements.lock .
 
-      - name: Resolve and download latest Editorial Regression artifact
+      - name: Resolve and download Editorial Regression artifact
         id: source
         env:
           GH_TOKEN: ${{ github.token }}
           INPUT_RUN_ID: ${{ inputs.source_run_id }}
           INPUT_TARGET_DATE: ${{ inputs.target_date }}
+          DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID || '32541706631' }}
         run: |
           set -euo pipefail
-          RUN_ID="${INPUT_RUN_ID:-}"
+          RUN_ID="${INPUT_RUN_ID:-$DEFAULT_RUN_ID}"
           if [ -z "$RUN_ID" ]; then
             RUN_ID="$(gh run list --workflow 'Editorial Regression' --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
           fi
-          test -n "$RUN_ID" || { echo "No successful Editorial Regression run found"; exit 1; }
+          test -n "$RUN_ID" || { echo "No Editorial Regression run found"; exit 1; }
           ARTIFACT_NAME="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '.artifacts | map(select(.expired == false and (.name | startswith("editorial-regression-")))) | sort_by(.created_at) | last | .name')"
           test -n "$ARTIFACT_NAME" -a "$ARTIFACT_NAME" != "null" || { echo "No editorial-regression artifact found for run $RUN_ID"; exit 1; }
           rm -rf .review-source
@@ -99,6 +108,13 @@ jobs:
           echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
           echo "Using Editorial Regression run $RUN_ID / $TARGET_DATE"
 
+      - name: Reconcile high-confidence evidence/source references for review
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.evidence_reconciliation --episode-dir "$EPISODE_DIR" --write
+
       - name: Generate beat-labelled review multimedia
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -113,16 +129,41 @@ jobs:
           RUN_ID: ${{ steps.source.outputs.run_id }}
         run: |
           set -euo pipefail
-          test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required to plan review multimedia"; exit 1; }
-          MAX_MEDIA="${MAX_MEDIA:-12}"
+          MAX_MEDIA="${MAX_MEDIA:-18}"
           rm -rf review-media review-downloads
           mkdir -p review-media review-downloads
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
-          python -m pipeline.review_media \
-            --episode-dir "$EPISODE_DIR" \
-            --output-dir "review-media/$TARGET_DATE" \
-            --zip-out "$ZIP" \
-            --max-media-downloads "$MAX_MEDIA"
+
+          run_offline() {
+            rm -rf "review-media/$TARGET_DATE" "$ZIP"
+            python -m pipeline.review_media_offline \
+              --episode-dir "$EPISODE_DIR" \
+              --output-dir "review-media/$TARGET_DATE" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA"
+          }
+
+          if [ -z "${OPENAI_API_KEY:-}" ]; then
+            echo "::warning::OPENAI_API_KEY unavailable; using deterministic multimedia planner"
+            run_offline
+          else
+            set +e
+            python -m pipeline.review_media \
+              --episode-dir "$EPISODE_DIR" \
+              --output-dir "review-media/$TARGET_DATE" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/review-media.log
+            STATUS=${PIPESTATUS[0]}
+            set -e
+            if [ "$STATUS" -ne 0 ]; then
+              if grep -Eqi 'credit_balance_exhausted|insufficient_quota|no credits remaining' /tmp/review-media.log; then
+                echo "::warning::Model quota unavailable; rebuilding multimedia deterministically from beats/evidence"
+                run_offline
+              else
+                exit "$STATUS"
+              fi
+            fi
+          fi
 
       - name: Build static editorial review site
         env:

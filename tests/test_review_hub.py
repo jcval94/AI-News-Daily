@@ -9,6 +9,7 @@ from pipeline.review_hub import build_site
 from pipeline.review_media import (
     association_label,
     build_review_candidate_slots,
+    enforce_opening_dense_media,
     media_filename,
     section_timeline,
     slug,
@@ -36,6 +37,18 @@ class ReviewHubTests(unittest.TestCase):
             }
         )
         self.assertTrue(name.startswith("S012__0024-0030s__prediccion-y-verificacion"))
+        self.assertEqual(
+            media_filename(
+                {
+                    "slot_number": 2,
+                    "start_seconds": 3.5,
+                    "end_seconds": 7.0,
+                    "visual_query": "research footage",
+                },
+                extension=".mp4",
+            ),
+            "S002__0004-0007s__research-footage.mp4",
+        )
         self.assertEqual(slug("Epistemología operativa"), "epistemologia-operativa")
 
     def test_section_timeline_uses_spoken_word_counts(self) -> None:
@@ -51,7 +64,7 @@ class ReviewHubTests(unittest.TestCase):
         self.assertEqual(timeline[1]["start_seconds"], 2)
         self.assertEqual(timeline[1]["end_seconds"], 4)
 
-    def test_review_candidate_slots_span_all_sections(self) -> None:
+    def test_review_candidate_slots_frontload_first_twenty_seconds_and_span_all_sections(self) -> None:
         sections = [
             {"section_key": "opening", "beat_id": "", "start_seconds": 0, "end_seconds": 40, "evidence_ids": []},
             {"section_key": "beat:a", "beat_id": "a", "start_seconds": 40, "end_seconds": 100, "evidence_ids": ["case-a"]},
@@ -63,8 +76,36 @@ class ReviewHubTests(unittest.TestCase):
         self.assertEqual(section_keys, {"opening", "beat:a", "beat:b", "synthesis"})
         self.assertGreater(max(slot["end_seconds"] for slot in slots), 180)
         self.assertLessEqual(sum(1 for slot in slots if slot["section_key"] == "beat:a"), 2)
+        opening = [slot for slot in slots if slot["start_seconds"] < 20]
+        self.assertGreaterEqual(len(opening), 5)
+        self.assertTrue(all(slot["preferred_asset_type"] == "video" for slot in opening))
+        self.assertTrue(all(slot["slot_priority"] == "opening_dense_media" for slot in opening))
 
-    def test_static_site_contains_validation_and_download_links(self) -> None:
+    def test_opening_dense_media_backstop_reallocates_budget(self) -> None:
+        sections = [
+            {"section_key": "opening", "beat_id": "", "start_seconds": 0, "end_seconds": 40, "evidence_ids": []},
+            {"section_key": "beat:a", "beat_id": "a", "start_seconds": 40, "end_seconds": 100, "evidence_ids": []},
+            {"section_key": "synthesis", "beat_id": "", "start_seconds": 100, "end_seconds": 140, "evidence_ids": []},
+        ]
+        slots = build_review_candidate_slots(sections)
+        plan = [
+            {
+                **slot,
+                "mode": "media" if slot["start_seconds"] >= 20 else "presenter",
+                "visual_query": "later visual" if slot["start_seconds"] >= 20 else "",
+                "on_screen_text": "",
+                "reason": "",
+            }
+            for slot in slots
+        ]
+        result = enforce_opening_dense_media(plan, slots, max_media_downloads=6)
+        media = [item for item in result if item["mode"] == "media"]
+        opening_media = [item for item in media if item["start_seconds"] < 20]
+        self.assertEqual(len(media), 6)
+        self.assertGreaterEqual(len(opening_media), 5)
+        self.assertTrue(all(item["preferred_asset_type"] == "video" for item in opening_media))
+
+    def test_static_site_contains_script_video_preview_and_zip_download(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             episode = root / "episode"
@@ -104,8 +145,26 @@ class ReviewHubTests(unittest.TestCase):
             (episode / "selected_news.json").write_text(json.dumps({"items": [{"title": "Caso", "source": "Fuente", "url_quality": "article", "news_id": "x", "url": "https://example.com"}]}), encoding="utf-8")
             for name in ("novelty_check.json", "execution_trace.json"):
                 (episode / name).write_text("{}", encoding="utf-8")
-            (media / "manifest.json").write_text("[]", encoding="utf-8")
-            (media / "plan.json").write_text("{}", encoding="utf-8")
+
+            video_rel = "B00_opening__E_none/S001__0000-0004s__cold-open.mp4"
+            video_path = media / video_rel
+            video_path.parent.mkdir(parents=True)
+            video_path.write_bytes(b"fake-mp4")
+            (media / "manifest.json").write_text(json.dumps([{
+                "file": video_rel,
+                "asset_type": "video",
+                "mime_type": "video/mp4",
+                "section_key": "opening",
+                "beat_id": "",
+                "start_seconds": 0,
+                "end_seconds": 4,
+                "visual_query": "cold open research footage",
+                "provider": "pexels",
+                "license": "Pexels License",
+                "slot_priority": "opening_dense_media",
+                "preferred_asset_type": "video",
+            }]), encoding="utf-8")
+            (media / "plan.json").write_text(json.dumps({"opening_media_count": 5, "opening_video_count": 4}), encoding="utf-8")
             (media / "credits.md").write_text("# Credits\n", encoding="utf-8")
             media_zip = root / "multimedia.zip"
             media_zip.write_bytes(b"zip")
@@ -135,7 +194,11 @@ class ReviewHubTests(unittest.TestCase):
             self.assertIn("2026-08-21-run-12345", text)
             self.assertIn("Descargar multimedia ZIP", text)
             self.assertIn("Guiones anteriores", text)
+            self.assertIn("<video", text)
+            self.assertIn("5</strong><span>media 0–20s", text)
+            self.assertIn("4</strong><span>videos 0–20s", text)
             self.assertTrue((output / "downloads" / "multimedia.zip").exists())
+            self.assertTrue((output / "media" / video_rel).exists())
 
 
 if __name__ == "__main__":
