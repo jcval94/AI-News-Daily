@@ -207,7 +207,8 @@ def enforce_opening_dense_media(
     if not opening_numbers or max_media_downloads <= 0:
         return [by_slot[number] for number in sorted(by_slot)]
 
-    required = min(OPENING_MIN_MEDIA_SLOTS, len(opening_numbers), max_media_downloads)
+    # With the default budget, fill every ~3.5s opening slot; five is the minimum guardrail.
+    required = min(len(opening_numbers), max_media_downloads)
     current_opening = [number for number in opening_numbers if by_slot.get(number, {}).get("mode") == "media"]
     if len(current_opening) >= required:
         return [by_slot[number] for number in sorted(by_slot)]
@@ -256,6 +257,91 @@ def enforce_opening_dense_media(
         if len(current_opening) >= required:
             break
     return [by_slot[number] for number in sorted(by_slot)]
+
+
+def _spread(items: list[dict[str, Any]], count: int) -> list[dict[str, Any]]:
+    if count <= 0 or not items:
+        return []
+    if count >= len(items):
+        return list(items)
+    if count == 1:
+        return [items[len(items) // 2]]
+    chosen: list[dict[str, Any]] = []
+    used: set[int] = set()
+    last = len(items) - 1
+    for position in range(count):
+        index = round((position * last) / (count - 1))
+        while index in used and index < last:
+            index += 1
+        while index in used and index > 0:
+            index -= 1
+        if index in used:
+            continue
+        used.add(index)
+        chosen.append(items[index])
+    return chosen
+
+
+def select_spread_media_budget(
+    plan: list[dict[str, Any]], *, max_media_downloads: int
+) -> list[dict[str, Any]]:
+    """Keep the dense cold open, then distribute the remaining budget across the full essay."""
+    media = sorted(
+        (dict(item) for item in plan if item.get("mode") == "media"),
+        key=lambda item: float(item.get("start_seconds", 0) or 0),
+    )
+    if len(media) <= max_media_downloads:
+        return plan
+
+    opening = [
+        item for item in media
+        if float(item.get("start_seconds", 0) or 0) < OPENING_DENSE_MEDIA_SECONDS
+    ]
+    selected_numbers = {
+        int(item.get("slot_number", 0) or 0)
+        for item in opening[:max_media_downloads]
+    }
+    remaining = max(0, max_media_downloads - len(selected_numbers))
+
+    late = [
+        item for item in media
+        if float(item.get("start_seconds", 0) or 0) >= OPENING_DENSE_MEDIA_SECONDS
+    ]
+    groups: dict[str, list[dict[str, Any]]] = {}
+    order: list[str] = []
+    for item in late:
+        key = str(item.get("section_key", "") or item.get("beat_id", "") or "unmapped")
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(item)
+
+    first_pass = [groups[key][0] for key in order]
+    for item in _spread(first_pass, min(remaining, len(first_pass))):
+        selected_numbers.add(int(item.get("slot_number", 0) or 0))
+    remaining = max(0, max_media_downloads - len(selected_numbers))
+
+    if remaining:
+        extras: list[dict[str, Any]] = []
+        for key in order:
+            extras.extend(groups[key][1:])
+        for item in _spread(extras, min(remaining, len(extras))):
+            selected_numbers.add(int(item.get("slot_number", 0) or 0))
+
+    result: list[dict[str, Any]] = []
+    for item in plan:
+        number = int(item.get("slot_number", 0) or 0)
+        if item.get("mode") == "media" and number not in selected_numbers:
+            result.append({
+                **item,
+                "mode": "presenter",
+                "visual_query": "",
+                "on_screen_text": "",
+                "reason": "Review media budget redistributed across the full narrative arc",
+            })
+        else:
+            result.append(item)
+    return result
 
 
 def write_bundle_readme(output_dir: Path, *, target_date: str, manifest: list[dict[str, Any]]) -> None:
@@ -340,11 +426,16 @@ async def build_review_media(
         trace=trace,
     )
     raw_plan = MultimediaPlan.model_validate(editor_state.get("multimedia_plan", {})).model_dump()
-    normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, max(0, max_media_downloads))
+    # Normalize every agent-selected slot first; review-specific budget selection happens below so
+    # chronological slot numbers cannot silently bias the package toward the beginning.
+    normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, len(timeline_slots))
     normalized = enforce_opening_dense_media(
         normalized,
         timeline_slots,
         max_media_downloads=max(0, max_media_downloads),
+    )
+    normalized = select_spread_media_budget(
+        normalized, max_media_downloads=max(0, max_media_downloads)
     )
     slot_meta = {int(slot["slot_number"]): slot for slot in timeline_slots}
 
