@@ -16,7 +16,7 @@ on:
       max_media_downloads:
         description: "Maximum review multimedia assets"
         required: true
-        default: "12"
+        default: "18"
         type: string
   pull_request:
     branches:
@@ -117,7 +117,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required to plan review multimedia"; exit 1; }
-          MAX_MEDIA="${MAX_MEDIA:-12}"
+          MAX_MEDIA="${MAX_MEDIA:-18}"
           rm -rf review-media review-downloads
           mkdir -p review-media review-downloads
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
