@@ -32,6 +32,7 @@ on:
     paths:
       - ".github/workflows/editorial-regression.yml"
       - "pipeline/run_cost_optimized.py"
+      - "pipeline/cost_context_replay.py"
       - "tests/test_cost_context.py"
   push:
     branches:
@@ -76,7 +77,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$TARGET_DATE" = "2026-08-21" || {
-            echo "Offline replay is pinned to the audited 2026-08-21 artifact; got $TARGET_DATE";
+            echo "Offline replay is pinned to audited target 2026-08-21; got $TARGET_DATE";
             exit 1;
           }
           rm -rf .cost-baseline
@@ -84,161 +85,11 @@ jobs:
           gh run download 32541706631 \
             --name editorial-regression-2026-08-21-32541706631 \
             --dir .cost-baseline
-
-          python - <<'PY'
-          import json
-          import os
-          from collections import Counter
-          from datetime import date
-          from pathlib import Path
-          from types import SimpleNamespace
-
-          import tiktoken
-
-          from pipeline.evidence_reconciliation import reconcile_evidence_indices
-          from pipeline.run import collect_available_news
-          from pipeline.run_cost_optimized import compact_agent_state
-
-          target = date.fromisoformat(os.environ["TARGET_DATE"])
-          episode_dir = Path(".cost-baseline") / "scripts" / target.isoformat()
-          selection = json.loads((episode_dir / "selected_news.json").read_text(encoding="utf-8"))
-          plan = json.loads((episode_dir / "episode_plan.json").read_text(encoding="utf-8"))
-          historical_trace = json.loads((episode_dir / "execution_trace.json").read_text(encoding="utf-8"))
-
-          news_text, available_files, missing_dates, source_items = collect_available_news(Path("news"), target)
-          state = {
-              "selected_news": json.dumps(selection, ensure_ascii=False),
-              "news_text": news_text,
-              "episode_plan": json.dumps(plan, ensure_ascii=False),
-              "draft_script": (episode_dir / "script.txt").read_text(encoding="utf-8"),
-          }
-
-          reconciled, changes = reconcile_evidence_indices(plan, selection)
-          declared_indices = {
-              item["evidence_id"]: item["selected_news_index"]
-              for item in plan.get("evidence", [])
-          }
-          reconciled_indices = {
-              item["evidence_id"]: item["selected_news_index"]
-              for item in reconciled.get("evidence", [])
-          }
-
-          source_by_id = {item.news_id: item.model_dump() for item in source_items}
-          evidence_integrity = []
-          for evidence in reconciled.get("evidence", []):
-              index = int(evidence["selected_news_index"])
-              selected_item = selection["items"][index - 1]
-              source_item = source_by_id.get(selected_item.get("news_id"), {})
-              row = {
-                  "evidence_id": evidence["evidence_id"],
-                  "selected_news_index": index,
-                  "news_id": selected_item.get("news_id"),
-                  "raw_content_exact_match": bool(source_item) and source_item.get("raw_content") == selected_item.get("raw_content"),
-                  "source_locator_exact_match": bool(source_item) and source_item.get("source_locator") == selected_item.get("source_locator"),
-                  "url_exact_match": bool(source_item) and source_item.get("url") == selected_item.get("url"),
-              }
-              evidence_integrity.append(row)
-
-          if not evidence_integrity or not all(
-              row["raw_content_exact_match"]
-              and row["source_locator_exact_match"]
-              and row["url_exact_match"]
-              for row in evidence_integrity
-          ):
-              raise SystemExit("Evidence integrity check failed; refusing to report savings")
-
-          enc = tiktoken.get_encoding("o200k_base")
-          tok = lambda text: len(enc.encode(str(text or "")))
-          selected_full_tokens = tok(state["selected_news"])
-          news_full_tokens = tok(state["news_text"])
-          source_full_tokens = selected_full_tokens + news_full_tokens
-
-          successful_steps = Counter(
-              call.get("step")
-              for call in historical_trace.get("agent_calls", [])
-              if isinstance(call, dict) and call.get("status") == "success"
-          )
-          baseline_prompt_tokens = sum(
-              int((call.get("usage") or {}).get("prompt_tokens", 0) or 0)
-              for call in historical_trace.get("agent_calls", [])
-              if isinstance(call, dict) and call.get("status") == "success"
-          )
-          baseline_output_tokens = sum(
-              int((call.get("usage") or {}).get("output_tokens", 0) or 0)
-              for call in historical_trace.get("agent_calls", [])
-              if isinstance(call, dict) and call.get("status") == "success"
-          )
-          factual_calls = (
-              successful_steps["write_script"]
-              + successful_steps["editorial_judge"]
-              + successful_steps["refine_script"]
-          )
-          seo_calls = successful_steps["seo_judge"]
-
-          variants = {}
-          for mode in ("conservative", "strict"):
-              factual_state, factual_stats = compact_agent_state(
-                  SimpleNamespace(name="script_critic"), state, mode=mode
-              )
-              seo_state, seo_stats = compact_agent_state(
-                  SimpleNamespace(name="seo_master"), state, mode=mode
-              )
-              if factual_stats is None or seo_stats is None:
-                  raise SystemExit(f"{mode} compaction unexpectedly failed open")
-
-              factual_source_tokens = tok(factual_state["selected_news"]) + tok(factual_state["news_text"])
-              seo_selected_tokens = tok(seo_state["selected_news"])
-              estimated_saved_prompt_tokens = (
-                  (source_full_tokens - factual_source_tokens) * factual_calls
-                  + (selected_full_tokens - seo_selected_tokens) * seo_calls
-              )
-              variants[mode] = {
-                  "source_context_chars_before": len(state["selected_news"]) + len(state["news_text"]),
-                  "source_context_chars_after": factual_stats["context_chars_after"],
-                  "source_context_char_reduction_pct": factual_stats["context_char_reduction_pct"],
-                  "source_context_tokens_before_o200k": source_full_tokens,
-                  "source_context_tokens_after_o200k": factual_source_tokens,
-                  "source_context_token_reduction_pct": round((1 - factual_source_tokens / source_full_tokens) * 100, 1),
-                  "seo_selected_tokens_before_o200k": selected_full_tokens,
-                  "seo_selected_tokens_after_o200k": seo_selected_tokens,
-                  "historical_factual_call_count": factual_calls,
-                  "historical_seo_call_count": seo_calls,
-                  "estimated_prompt_tokens_saved_static_replay": estimated_saved_prompt_tokens,
-                  "estimated_baseline_prompt_reduction_pct_static_replay": round(
-                      estimated_saved_prompt_tokens / baseline_prompt_tokens * 100, 1
-                  ) if baseline_prompt_tokens else 0.0,
-                  "estimated_total_token_reduction_pct_if_output_unchanged": round(
-                      estimated_saved_prompt_tokens / (baseline_prompt_tokens + baseline_output_tokens) * 100, 1
-                  ) if (baseline_prompt_tokens + baseline_output_tokens) else 0.0,
-                  "used_evidence_indices": factual_stats["used_evidence_indices"],
-                  "raw_source_item_count": factual_stats.get("raw_source_item_count"),
-              }
-
-          report = {
-              "schema_version": 3,
-              "measurement_scope": (
-                  "Offline deterministic replay of source-context payload only. Token estimates use "
-                  "o200k_base and are not measured API billing/usage."
-              ),
-              "baseline_run_id": 32541706631,
-              "target_date": target.isoformat(),
-              "available_news_files": [path.name for path in available_files],
-              "missing_news_dates": [value.isoformat() for value in missing_dates],
-              "source_item_count": len(source_items),
-              "selected_item_count": len(selection.get("items", [])),
-              "declared_evidence_indices": declared_indices,
-              "reconciled_evidence_indices": reconciled_indices,
-              "evidence_reconciliation_changes": changes,
-              "evidence_integrity": evidence_integrity,
-              "historical_baseline_prompt_tokens": baseline_prompt_tokens,
-              "historical_baseline_output_tokens": baseline_output_tokens,
-              "historical_successful_step_counts": dict(successful_steps),
-              "variants": variants,
-          }
-          output = Path(os.environ["RUN_ROOT"]) / "cost-replay.json"
-          output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-          print(json.dumps(report, ensure_ascii=False, indent=2))
-          PY
+          python -m pipeline.cost_context_replay \
+            --episode-dir ".cost-baseline/scripts/$TARGET_DATE" \
+            --news-dir news \
+            --target-date "$TARGET_DATE" \
+            --output "$RUN_ROOT/cost-replay.json"
 
       - name: Require model secret for explicit live test
         if: github.event_name == 'workflow_dispatch' && inputs.run_live_model == true
