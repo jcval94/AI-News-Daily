@@ -1,0 +1,88 @@
+name: No-Source-Loss Context Regression
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/context-budget-regression.yml"
+      - "pipeline/context_budget.py"
+      - "pipeline/context_budget_replay.py"
+      - "pipeline/run_context_budget.py"
+      - "tests/test_context_budget.py"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  offline-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+
+      - name: Download audited historical episode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .context-budget-baseline
+          mkdir -p .context-budget-baseline
+          gh run download 32541706631 \
+            --name editorial-regression-2026-08-21-32541706631 \
+            --dir .context-budget-baseline
+
+      - name: Replay no-source-loss context optimization
+        env:
+          NEWS_SOURCE_MODE: recent_window
+          NEWS_LOOKBACK_DAYS: "4"
+        run: |
+          set -euo pipefail
+          mkdir -p .context-budget-report
+          python -m pipeline.context_budget_replay \
+            --episode-dir .context-budget-baseline/scripts/2026-08-21 \
+            --news-dir news \
+            --target-date 2026-08-21 \
+            --output .context-budget-report/report.json
+
+      - name: Require zero source loss
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path('.context-budget-report/report.json').read_text(encoding='utf-8'))
+          assert report['discovery_item_count_before'] == 18
+          assert report['discovery_item_count_after'] == 18
+          assert report['removed_source_items'] == 0
+          assert report['all_discovery_sources_preserved'] is True
+          assert report['selected_exact_source_matches'] == report['selected_item_count']
+          assert report['guarantees']['all_18_discovery_sources_still_available'] is True
+          assert report['guarantees']['source_filtering_or_rag'] is False
+          assert report['guarantees']['review_count_changed'] is False
+          assert report['guarantees']['refinement_count_changed'] is False
+          assert report['estimated_prompt_tokens_saved'] > 0
+          print(json.dumps({
+              'sources_before': report['discovery_item_count_before'],
+              'sources_after': report['discovery_item_count_after'],
+              'removed_sources': report['removed_source_items'],
+              'prompt_tokens_saved': report['estimated_prompt_tokens_saved'],
+              'prompt_reduction_pct': report['estimated_prompt_reduction_pct'],
+              'total_token_reduction_pct': report['estimated_total_token_reduction_pct_if_output_unchanged'],
+          }, indent=2))
+          PY
+
+      - name: Upload replay report
+        uses: actions/upload-artifact@v4
+        with:
+          name: context-budget-replay-${{ github.run_id }}
+          path: .context-budget-report/report.json
+          if-no-files-found: error
+          retention-days: 30
