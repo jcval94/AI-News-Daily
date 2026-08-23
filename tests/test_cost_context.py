@@ -62,7 +62,6 @@ class CostContextTests(unittest.TestCase):
                 {"beat_id": "b3", "evidence_ids": ["aqcat_tool_use"]},
             ],
         }
-        # validate_episode_plan only needs the evidence/beat fields used by its structural checks.
         return {
             "selected_news": json.dumps(selection),
             "news_text": json.dumps({"items": items}),
@@ -70,7 +69,7 @@ class CostContextTests(unittest.TestCase):
             "draft_script": "Draft",
         }
 
-    def test_conservative_mode_reconciles_and_keeps_unused_editorial_context(self) -> None:
+    def test_conservative_mode_reconciles_and_keeps_every_selected_raw_source(self) -> None:
         state = self._state()
         compacted, stats = compact_agent_state(
             SimpleNamespace(name="script_critic"), state, mode="conservative"
@@ -80,11 +79,12 @@ class CostContextTests(unittest.TestCase):
         self.assertEqual(stats["evidence_reconciliation_count"], 2)
         self.assertEqual(stats["used_evidence_indices"], [1, 2, 3])
         self.assertEqual(stats["selected_item_count"], 4)
+        self.assertEqual(stats["raw_source_item_count"], 4)
         self.assertEqual(stats["used_evidence_item_count"], 3)
-        self.assertGreater(stats["context_char_reduction_pct"], 20)
+        self.assertGreater(stats["context_char_reduction_pct"], 10)
 
         selected = json.loads(compacted["selected_news"])
-        evidence = json.loads(compacted["news_text"])
+        sources = json.loads(compacted["news_text"])
         plan = json.loads(compacted["episode_plan"])
 
         indices = {
@@ -93,36 +93,44 @@ class CostContextTests(unittest.TestCase):
         }
         self.assertEqual(indices["aqpotency_predictions"], 3)
         self.assertEqual(indices["aqcat_tool_use"], 2)
+        self.assertNotIn("evidence_reconciliation", plan)
 
-        # Conservative mode keeps all selected stories visible as editorial context.
+        # Every selected story remains visible as editorial context.
         self.assertEqual(len(selected["items"]), 4)
         self.assertEqual(selected["items"][3]["title"], "Story about Harness")
         self.assertIn("Summary Harness", selected["items"][3]["summary"])
         self.assertFalse(selected["items"][3]["planned_evidence"])
 
-        # But raw factual payload is retained only for the three intended evidence items.
+        # More importantly, every selected story retains its exact raw factual payload in news_text.
         self.assertEqual(
-            [item["selected_news_index"] for item in evidence["items"]], [1, 2, 3]
+            [item["selected_news_index"] for item in sources["items"]], [1, 2, 3, 4]
         )
         self.assertIn("RAW FACTUAL SOURCE TRACES", compacted["news_text"])
         self.assertIn("RAW FACTUAL SOURCE AQCat", compacted["news_text"])
         self.assertIn("RAW FACTUAL SOURCE AQPotency", compacted["news_text"])
-        self.assertNotIn("RAW FACTUAL SOURCE Harness", compacted["news_text"])
+        self.assertIn("RAW FACTUAL SOURCE Harness", compacted["news_text"])
+        self.assertEqual(sources["context_scope"], "all_selected_news_raw")
 
-        # Selection rationale is editorial bookkeeping, not factual evidence.
+        # raw_content is not duplicated inside selected_news, and selector rationale is bookkeeping.
+        self.assertNotIn("RAW FACTUAL SOURCE", compacted["selected_news"])
         self.assertNotIn("Selection reason", compacted["selected_news"])
         self.assertEqual(len(stats["retained_evidence_sha256"]), 3)
 
-    def test_strict_mode_hides_unused_headlines(self) -> None:
+    def test_strict_mode_keeps_only_planned_raw_and_hides_unused_headlines(self) -> None:
         state = self._state()
         compacted, stats = compact_agent_state(
             SimpleNamespace(name="script_refiner"), state, mode="strict"
         )
         self.assertIsNotNone(stats)
         selected = json.loads(compacted["selected_news"])
+        sources = json.loads(compacted["news_text"])
         unused = selected["items"][3]
         self.assertTrue(unused["omitted_unused_evidence"])
         self.assertNotIn("title", unused)
+        self.assertEqual(
+            [item["selected_news_index"] for item in sources["items"]], [1, 2, 3]
+        )
+        self.assertNotIn("RAW FACTUAL SOURCE Harness", compacted["news_text"])
         self.assertGreater(
             stats["context_char_reduction_pct"],
             compact_agent_state(
