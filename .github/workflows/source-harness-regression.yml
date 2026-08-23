@@ -1,0 +1,85 @@
+name: Source Harness Regression
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/source-harness-regression.yml"
+      - "pipeline/source_harness.py"
+      - "pipeline/source_harness_replay.py"
+      - "pipeline/run_source_harness.py"
+      - "tests/test_source_harness.py"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  offline-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+
+      - name: Download audited historical episode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .source-harness-baseline
+          mkdir -p .source-harness-baseline
+          gh run download 32541706631 \
+            --name editorial-regression-2026-08-21-32541706631 \
+            --dir .source-harness-baseline
+
+      - name: Replay progressive source disclosure
+        run: |
+          set -euo pipefail
+          mkdir -p .source-harness-report
+          python -m pipeline.source_harness_replay \
+            --episode-dir .source-harness-baseline/scripts/2026-08-21 \
+            --news-dir news \
+            --target-date 2026-08-21 \
+            --output .source-harness-report/report.json
+
+      - name: Require exact selected-source integrity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path('.source-harness-report/report.json').read_text(encoding='utf-8'))
+          rows = report['selected_source_integrity']
+          assert len(rows) == report['selected_item_count']
+          assert all(
+              row['raw_content_exact_match']
+              and row['source_locator_exact_match']
+              and row['url_exact_match']
+              for row in rows
+          )
+          assert report['omitted_after_selector_count'] > 0
+          assert report['estimated_prompt_tokens_saved'] > 0
+          print(json.dumps({
+              'discovery_items': report['discovery_item_count'],
+              'selected_items': report['selected_item_count'],
+              'omitted_after_selector': report['omitted_after_selector_count'],
+              'source_state_reduction_pct': report['source_state_reduction_pct'],
+              'estimated_prompt_reduction_pct': report['estimated_prompt_reduction_pct'],
+              'estimated_total_token_reduction_pct': report['estimated_total_token_reduction_pct_if_output_unchanged'],
+          }, indent=2))
+          PY
+
+      - name: Upload replay report
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-harness-replay-${{ github.run_id }}
+          path: .source-harness-report/report.json
+          if-no-files-found: error
+          retention-days: 30
