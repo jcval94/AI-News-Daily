@@ -1,0 +1,75 @@
+# Noticias de Inteligencia Artificial — 2026-08-23
+
+Selección de noticias relevantes publicadas durante las últimas 24 horas, priorizando fuentes primarias y medios confiables.
+
+## 1. NVIDIA apuesta $6.000 millones por Poolside para reforzar Nemotron y los modelos open-weight
+- Fecha: 2026-08-23
+- Fuente: The Wall Street Journal
+- Enlace: https://www.wsj.com/tech/ai/nvidia-is-spending-6-billion-to-build-a-powerful-u-s-alternative-to-chinese-ai-c51c38cc
+- Resumen breve: NVIDIA acordó una operación de unos $6.000 millones para licenciar tecnología de Poolside e incorporar a más de 100 de sus ingenieros, con el objetivo de fortalecer su familia Nemotron de modelos abiertos.
+- Por qué importa: profundiza el movimiento de NVIDIA desde proveedor de chips hacia competidor directo en modelos y software de IA, además de reforzar la competencia estadounidense frente a modelos open-weight chinos.
+- Categoría: empresas
+
+## 2. OpenAI advierte sobre una nueva etapa de ciberataques persistentes impulsados por IA
+- Fecha: 2026-08-23
+- Fuente: The Guardian
+- Enlace: https://www.theguardian.com/technology/2026/aug/23/openai-cyber-attacks-threat-chris-lehane
+- Resumen breve: Chris Lehane, ejecutivo de OpenAI, advirtió que los sistemas avanzados pueden habilitar ataques cibernéticos persistentes y que la compañía ha frenado temporalmente parte del desarrollo de sus modelos internos más avanzados mientras refuerza salvaguardas.
+- Por qué importa: muestra que las capacidades agenticas de ciberseguridad ya están obligando a los laboratorios frontier a reconsiderar controles, evaluación y ritmos de entrenamiento.
+- Categoría: regulación
+
+## 3. DeepSeek lleva visión a V4-Flash sin cobrar una prima multimodal
+- Fecha: 2026-08-22
+- Fuente: DeepSeek / cobertura de lanzamiento
+- Enlace: https://www.communeify.com/en/blog/ai-daily-2026-08-22/
+- Resumen breve: DeepSeek-V4-Flash-Vision-Exp añade entrada de imágenes a V4-Flash, mantiene una ventana de contexto de 1M tokens y soporta tool calling y salidas JSON. DeepSeek afirma que conserva el rendimiento de texto de V4-Flash y se acerca a Claude Opus 4.8 en varios benchmarks de agentes multimodales.
+- Por qué importa: reduce de forma importante la barrera de costo para agentes capaces de interpretar capturas, documentos y otras interfaces visuales; las cifras de benchmark siguen siendo declaraciones del proveedor y requieren validación independiente.
+- Categoría: modelos
+
+## 4. Claude Mythos 5 llega a Claude Security para clientes Enterprise
+- Fecha: 2026-08-22
+- Fuente: Anthropic / cobertura de Claude Security
+- Enlace: https://www.superpowerdaily.com/posts/anthropic-gives-enterprise-teams-mythos-5-s-bug-hunt-not-its-prompt-box
+- Resumen breve: Anthropic amplió el uso de Claude Mythos 5 mediante Claude Security: clientes Enterprise pueden conectar repositorios de GitHub y recibir hallazgos de vulnerabilidades y propuestas de corrección, sin obtener acceso conversacional directo al modelo.
+- Por qué importa: es un ejemplo importante de cómo capacidades frontier de alto riesgo pueden exponerse mediante superficies de producto restringidas y con revisión humana, en vez de liberar el modelo sin controles.
+- Categoría: producto
+
+## 5. Anthropic mueve la retención de datos de modelos avanzados a la nube del cliente
+- Fecha: 2026-08-22
+- Fuente: AI Insiders
+- Enlace: https://aiinsiders.net/article/anthropic-moves-customer-data-retention-into-clients-own
+- Resumen breve: Anthropic mantendrá la ventana de retención de seguridad de 30 días para determinados modelos avanzados, pero planea trasladar el almacenamiento a infraestructura controlada por sus clientes empresariales en lugar de conservar esos datos directamente.
+- Por qué importa: responde a una de las tensiones centrales de la IA empresarial: permitir monitoreo de seguridad sin obligar a organizaciones reguladas a ceder la custodia de datos sensibles al proveedor del modelo.
+- Categoría: empresas
+
+## 6. El stack agentic de Claude amplía computer use, browser, Skills y Files
+- Fecha: 2026-08-22
+- Fuente: Claude / cobertura técnica
+- Enlace: https://nowline.net/reports/claude-s-agent-stack-goes-ga-computer-use-browser-skills-files
+- Resumen breve: nuevas capacidades del stack de Claude llevan computer use fuera de beta para varios modelos, permiten múltiples acciones por llamada y añaden control de navegador basado en el árbol de accesibilidad, además de mejoras en Skills y Files.
+- Por qué importa: el foco competitivo está desplazándose del chatbot al runtime de agentes: herramientas, navegación, archivos y ejecución multiacción pueden determinar tanto la utilidad real como el modelo subyacente.
+- Categoría: agentes
+
+## 7. NVIDIA AVO logra 100% en el conjunto público de ARC-AGI-3 usando Claude Opus 5
+- Fecha: 2026-08-22
+- Fuente: NVIDIA / cobertura del resultado AVO
+- Enlace: https://techamerica.ai/nvidia-avo-harness-claude-opus-5-arc-agi-3
+- Resumen breve: la arquitectura Agentic Variation Operators (AVO) de NVIDIA completó los 183 niveles de los 25 entornos públicos de ARC-AGI-3 con Claude Opus 5. El mismo modelo obtiene resultados muy inferiores cuando se usa sin ese scaffolding especializado.
+- Por qué importa: refuerza una idea crítica para la ingeniería de agentes: memoria, supervisión, contexto, herramientas y loops de ejecución pueden elevar el rendimiento más que cambiar simplemente de modelo.
+- Categoría: agentes
+
+## 8. Un estudio de Princeton y UC San Diego muestra dónde fallan las bibliotecas de skills para agentes
+- Fecha: 2026-08-22
+- Fuente: Princeton / UC San Diego, cobertura de investigación
+- Enlace: https://www.neura.market/news/ai-agent-skills-study-princeton-ucsd
+- Resumen breve: un estudio con 8.135 ejecuciones encontró que las skills ayudan sobre todo mediante instrucciones procedimentales que reducen errores de ejecución, pero la precisión de recuperación cae con fuerza cuando crece el catálogo de skills.
+- Por qué importa: sugiere que añadir memoria o cientos de skills no escala automáticamente; retrieval, versionado, evaluación y la capacidad de rechazar una skill inadecuada serán componentes esenciales de agentes confiables.
+- Categoría: investigación
+
+## 9. Nuevos world models incorporan creencias, objetivos y emociones para predecir acciones humanas
+- Fecha: 2026-08-22
+- Fuente: The Decoder / cobertura de Mental World Modeling
+- Enlace: https://hellomarvisaitoday.com/articles/2a9761ae-389e-4705-b6a8-5da127c152bf
+- Resumen breve: investigadores presentaron Mental World Modeling (MWM), un marco que representa estados mentales como creencias, atención, objetivos y emociones junto con el estado físico. En 448 escenas de decisión, la implementación MENTIS mejoró notablemente la predicción de acciones frente a respuestas directas de modelos de lenguaje.
+- Por qué importa: los world models orientados a robots, asistentes y simulaciones sociales necesitan modelar no solo qué existe físicamente, sino también qué creen y pretenden las personas con las que interactúan.
+- Categoría: investigación
