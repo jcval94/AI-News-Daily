@@ -149,7 +149,9 @@ class ReviewHubSearchTests(unittest.TestCase):
             hero = page.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
             self.assertNotIn('class="metrics"', hero)
             self.assertNotIn("Editorial</span>", hero)
-            self.assertIn("Human review", hero)
+            self.assertIn("Revisión humana", hero)
+            self.assertIn("sin registro humano", hero)
+            self.assertNotIn("Human review", hero)
 
 
 if __name__ == "__main__":
