@@ -74,7 +74,6 @@ def _validated_reconciled_plan(
     if not isinstance(items, list) or not items:
         return None, []
     reconciled, changes = reconcile_evidence_indices(plan, selection)
-    # Keep runtime agent context schema-clean. Reconciliation telemetry is carried separately.
     reconciled = dict(reconciled)
     reconciled.pop("evidence_reconciliation", None)
     try:
@@ -115,8 +114,6 @@ def _selection_item(
     evidence_roles: list[dict[str, Any]],
 ) -> dict[str, Any]:
     if mode == "strict" and not planned:
-        # Aggressive comparison arm only: preserve positional/provenance semantics but
-        # expose no unused headline that could tempt a downstream model to reuse it.
         return {
             "news_id": raw_item.get("news_id", ""),
             "source_locator": raw_item.get("source_locator", ""),
@@ -124,8 +121,6 @@ def _selection_item(
             "omitted_unused_evidence": True,
         }
 
-    # Conservative arm: retain metadata, summary and why_it_matters for every selected
-    # story. Exact raw factual text lives in news_text to avoid duplicating it twice.
     compact_item = {
         key: raw_item.get(key)
         for key in _SELECTION_FIELDS
@@ -138,6 +133,97 @@ def _selection_item(
     return compact_item
 
 
+def compact_director_state(
+    state: dict[str, Any], *, mode: str | None = None
+) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Progressive-disclosure harness for the Editorial Director.
+
+    The Selector still sees the full discovery catalog. Once it has selected a shortlist,
+    the Director receives only those selected stories, while retaining each selected
+    story's exact raw source block plus the Selector's rationale/notes. This prevents the
+    10 already-rejected stories from being resent without introducing a retrieval model,
+    embeddings, or lossy summarization.
+    """
+
+    selected_mode = (mode or _configured_mode()).strip().lower()
+    if selected_mode not in _ALLOWED_MODES:
+        selected_mode = "conservative"
+    if selected_mode == "off":
+        return state, None
+
+    selection = _json_dict(state.get("selected_news"))
+    if not selection:
+        return state, None
+    items = selection.get("items", [])
+    if not isinstance(items, list) or not items or not all(isinstance(item, dict) for item in items):
+        return state, None
+
+    compact_items: list[dict[str, Any]] = []
+    raw_sources: list[dict[str, Any]] = []
+    for position, raw_item in enumerate(items, start=1):
+        compact_item = {
+            key: raw_item.get(key)
+            for key in _SELECTION_FIELDS
+            if raw_item.get(key) not in (None, "")
+        }
+        selection_reason = str(raw_item.get("selection_reason", "") or "").strip()
+        if selection_reason:
+            compact_item["selection_reason"] = selection_reason
+        compact_item["selected_news_index"] = position
+        compact_items.append(compact_item)
+
+        raw_content = str(raw_item.get("raw_content", "") or _fallback_raw(raw_item))
+        if not raw_content.strip():
+            return state, None
+        raw_sources.append(
+            {
+                "selected_news_index": position,
+                "news_id": raw_item.get("news_id", ""),
+                "source_locator": raw_item.get("source_locator", ""),
+                "url_quality": raw_item.get("url_quality", ""),
+                "raw_content": raw_content,
+            }
+        )
+
+    compact_selection = {
+        "schema_version": 1,
+        "items": compact_items,
+        "discarded_duplicates": selection.get("discarded_duplicates", []),
+        "selection_notes": selection.get("selection_notes", []),
+        "context_scope": "selector_shortlist_metadata_for_director",
+    }
+    compact_news = {
+        "schema_version": 1,
+        "items": raw_sources,
+        "context_scope": "selector_shortlist_raw_for_director",
+    }
+
+    before_selected = str(state.get("selected_news", "") or "")
+    before_news = str(state.get("news_text", "") or "")
+    selected_json = json.dumps(compact_selection, ensure_ascii=False, separators=(",", ":"))
+    news_json = json.dumps(compact_news, ensure_ascii=False, separators=(",", ":"))
+
+    compacted = dict(state)
+    compacted["selected_news"] = selected_json
+    compacted["news_text"] = news_json
+    before_chars = len(before_selected) + len(before_news)
+    after_chars = len(selected_json) + len(news_json)
+    stats = {
+        "mode": selected_mode,
+        "harness_stage": "selector_to_director",
+        "selected_item_count": len(items),
+        "raw_source_item_count": len(raw_sources),
+        "context_chars_before": before_chars,
+        "context_chars_after": after_chars,
+        "context_char_reduction_pct": round(
+            (1.0 - (after_chars / before_chars)) * 100.0, 1
+        )
+        if before_chars > 0
+        else 0.0,
+    }
+    return compacted, stats
+
+
 def compact_agent_state(
     agent: Any,
     state: dict[str, Any],
@@ -147,7 +233,8 @@ def compact_agent_state(
     """Reduce repeated model context without removing selected factual evidence.
 
     Safety rules:
-    - selector/director/attention/voice keep their existing state;
+    - selector/attention/voice keep their existing state;
+    - the Director uses a separate selector-shortlist harness;
     - evidence indices are high-confidence reconciled and revalidated before scoping;
     - conservative mode keeps title/source/URL/summary/why_it_matters for ALL selected news;
     - conservative factual agents keep exact raw_content for ALL selected news in news_text;
@@ -210,15 +297,11 @@ def compact_agent_state(
             )
         )
 
-        # Conservative factual agents retain exact raw facts for every selected story.
-        # Strict mode is the evidence-only comparison arm.
         retain_raw = selected_mode == "conservative" or planned
         if not retain_raw:
             continue
         raw_content = str(raw_item.get("raw_content", "") or _fallback_raw(raw_item))
         if not raw_content.strip():
-            # If the raw source cannot be preserved as promised, fail open rather than
-            # silently weakening factual review.
             if agent_name in _FACTUAL_AGENT_NAMES:
                 return state, None
             continue
@@ -315,7 +398,6 @@ def _usage_with_cache_from_event(event: Any) -> dict[str, int]:
             cached = value
             break
 
-    # Some adapters expose OpenAI-style prompt token details rather than the GenAI field.
     if cached is None:
         details = getattr(meta, "prompt_tokens_details", None)
         if isinstance(details, dict):
@@ -362,18 +444,19 @@ async def _cost_aware_run_agent(
 ) -> dict[str, Any]:
     agent_name = str(getattr(agent, "name", "") or "")
 
-    # Director must see the complete catalog. Once it has chosen evidence, repair only
-    # deterministic/high-confidence evidence-id/index mismatches BEFORE the plan is persisted,
-    # written, judged or used for any cost scoping.
     if agent_name == "editorial_director":
+        director_state, director_stats = compact_director_state(initial_state)
         result = await _ORIGINAL_RUN_AGENT(
             agent,
-            initial_state,
+            director_state,
             prompt,
             step=step,
             trace=trace,
             iteration=iteration,
         )
+        if director_stats and trace:
+            trace[-1]["context_compaction"] = director_stats
+
         selection = _json_dict(initial_state.get("selected_news"))
         plan = _json_dict(result.get("episode_plan"))
         if selection and plan:
