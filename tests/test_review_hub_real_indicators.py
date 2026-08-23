@@ -81,6 +81,10 @@ class ReviewHubRealIndicatorTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
+            (media / "plan.json").write_text(
+                json.dumps({"opening_media_count": 5, "opening_video_count": 4}),
+                encoding="utf-8",
+            )
             regression = root / "editorial-regression.json"
             regression.write_text(json.dumps({"structural_pass": True}), encoding="utf-8")
 
@@ -96,6 +100,8 @@ class ReviewHubRealIndicatorTests(unittest.TestCase):
             self.assertEqual(indicators["asset_count"], 2)
             self.assertEqual(indicators["opening_asset_count"], 1)
             self.assertEqual(indicators["opening_video_count"], 1)
+            self.assertEqual(indicators["planned_opening_media_count"], 5)
+            self.assertEqual(indicators["planned_opening_video_count"], 4)
             self.assertEqual(indicators["scores"]["editorial"], 7.1)
             self.assertIsNone(indicators["scores"]["seo"])
             self.assertEqual(indicators["recorded_total_tokens"], 123)
@@ -120,8 +126,32 @@ class ReviewHubRealIndicatorTests(unittest.TestCase):
             self.assertIn("—</strong><span>SEO · reviews.json", upgraded)
             self.assertNotIn("0.0</strong><span>SEO", upgraded)
             self.assertIn("123</strong><span>Tokens registrados", upgraded)
-            self.assertIn("Revisión humana: <strong>pendiente</strong>", upgraded)
+            self.assertIn("Revisión humana: <strong>sin registro humano</strong>", upgraded)
             self.assertIn("costo monetario no se muestra", upgraded)
+
+    def test_missing_source_files_stay_unrecorded_not_zero(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            episode = root / "episode"
+            media = root / "media"
+            episode.mkdir()
+            media.mkdir()
+            regression = root / "missing-regression.json"
+
+            indicators = derive_real_indicators(
+                episode_dir=episode,
+                media_dir=media,
+                regression_path=regression,
+                run_id="missing",
+            )
+
+            self.assertIsNone(indicators["word_count"])
+            self.assertIsNone(indicators["asset_count"])
+            self.assertIsNone(indicators["opening_video_count"])
+            self.assertIsNone(indicators["novelty_attempt_count"])
+            self.assertIsNone(indicators["agent_error_count"])
+            self.assertIsNone(indicators["recorded_total_tokens"])
+            self.assertIsNone(indicators["publishable"])
 
 
 if __name__ == "__main__":
