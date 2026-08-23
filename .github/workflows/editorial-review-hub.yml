@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID/current pinned run"
+        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID or the latest successful run"
         required: false
         default: ""
         type: string
@@ -26,12 +26,14 @@ on:
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
+      - "pipeline/review_hub_v3.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
       - "tests/test_evidence_reconciliation.py"
       - "tests/test_review_hub.py"
       - "tests/test_review_hub_search.py"
+      - "tests/test_review_hub_v3.py"
       - "tests/test_review_media_offline.py"
       - "evals/editorial/**"
   push:
@@ -42,10 +44,12 @@ on:
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
+      - "pipeline/review_hub_v3.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
       - "tests/test_review_hub_search.py"
+      - "tests/test_review_hub_v3.py"
       - "evals/editorial/**"
 
 permissions:
@@ -79,7 +83,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           INPUT_RUN_ID: ${{ inputs.source_run_id }}
           INPUT_TARGET_DATE: ${{ inputs.target_date }}
-          DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID || '32541706631' }}
+          DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID }}
         run: |
           set -euo pipefail
           RUN_ID="${INPUT_RUN_ID:-$DEFAULT_RUN_ID}"
@@ -191,6 +195,8 @@ jobs:
           test -s "review-site/downloads/$(basename "$ZIP")"
           grep -q 'id="globalSearch"' review-site/index.html
           grep -q 'details class="diagnostic"' review-site/index.html
+          grep -q 'class="skip-link"' review-site/index.html
+          grep -q "preload='none'" review-site/index.html
 
       - name: Upload review hub + multimedia artifact
         uses: actions/upload-artifact@v4
@@ -204,21 +210,22 @@ jobs:
           retention-days: 30
 
       - name: Configure Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-pages-artifact@v4
         with:
           path: review-site
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: build
     permissions:
       pages: write
@@ -227,3 +234,21 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify deployed review hub
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsSL --max-time 20 "$PAGE_URL" -o /tmp/review-hub.html \
+              && grep -q 'id="globalSearch"' /tmp/review-hub.html \
+              && grep -q 'class="skip-link"' /tmp/review-hub.html; then
+              echo "GitHub Pages smoke test passed: $PAGE_URL"
+              exit 0
+            fi
+            echo "Pages not ready yet (attempt $attempt/6)"
+            sleep 10
+          done
+          echo "::error::GitHub Pages deployment did not pass smoke test: $PAGE_URL"
+          exit 1
