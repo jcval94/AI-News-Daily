@@ -11,8 +11,8 @@ import pipeline.run as base
 from pipeline.evidence_reconciliation import reconcile_evidence_indices
 
 # This module is intentionally experimental. Production still executes pipeline.run.
-# The default experiment keeps broad editorial context and removes only repeated factual
-# payload that the Editorial Director did not choose as episode evidence.
+# The default experiment keeps every selected story's exact factual source while removing
+# raw source material that the Selector already rejected from downstream repeated prompts.
 _ALLOWED_MODES = {"off", "conservative", "strict"}
 _FACTUAL_AGENT_NAMES = {
     "essay_script_writer",
@@ -74,6 +74,9 @@ def _validated_reconciled_plan(
     if not isinstance(items, list) or not items:
         return None, []
     reconciled, changes = reconcile_evidence_indices(plan, selection)
+    # Keep runtime agent context schema-clean. Reconciliation telemetry is carried separately.
+    reconciled = dict(reconciled)
+    reconciled.pop("evidence_reconciliation", None)
     try:
         base.validate_episode_plan(reconciled, len(items))
     except (TypeError, ValueError):
@@ -122,7 +125,7 @@ def _selection_item(
         }
 
     # Conservative arm: retain metadata, summary and why_it_matters for every selected
-    # story. The only fields dropped here are duplicated raw_content and selection_reason.
+    # story. Exact raw factual text lives in news_text to avoid duplicating it twice.
     compact_item = {
         key: raw_item.get(key)
         for key in _SELECTION_FIELDS
@@ -141,13 +144,14 @@ def compact_agent_state(
     *,
     mode: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any] | None]:
-    """Reduce repeated model context without removing intended factual evidence.
+    """Reduce repeated model context without removing selected factual evidence.
 
     Safety rules:
     - selector/director/attention/voice keep their existing state;
     - evidence indices are high-confidence reconciled and revalidated before scoping;
     - conservative mode keeps title/source/URL/summary/why_it_matters for ALL selected news;
-    - exact raw factual text is retained for every planned evidence item;
+    - conservative factual agents keep exact raw_content for ALL selected news in news_text;
+    - strict mode keeps exact raw factual text only for planned evidence and is comparison-only;
     - malformed or ambiguous state fails open to the original full context.
     """
 
@@ -176,7 +180,7 @@ def compact_agent_state(
     used_indices, evidence_by_index = mapped
 
     compact_items: list[dict[str, Any]] = []
-    raw_evidence: list[dict[str, Any]] = []
+    raw_sources: list[dict[str, Any]] = []
     evidence_hashes: dict[str, str] = {}
 
     for position, raw_item in enumerate(items, start=1):
@@ -206,40 +210,48 @@ def compact_agent_state(
             )
         )
 
-        if not planned:
+        # Conservative factual agents retain exact raw facts for every selected story.
+        # Strict mode is the evidence-only comparison arm.
+        retain_raw = selected_mode == "conservative" or planned
+        if not retain_raw:
             continue
         raw_content = str(raw_item.get("raw_content", "") or _fallback_raw(raw_item))
         if not raw_content.strip():
-            # Factual agents must never receive a supposedly retained evidence item with
-            # no factual payload. Fail open instead of silently weakening review quality.
+            # If the raw source cannot be preserved as promised, fail open rather than
+            # silently weakening factual review.
             if agent_name in _FACTUAL_AGENT_NAMES:
                 return state, None
             continue
-        raw_evidence.append(
+        raw_sources.append(
             {
                 "selected_news_index": position,
                 "news_id": raw_item.get("news_id", ""),
                 "source_locator": raw_item.get("source_locator", ""),
                 "url_quality": raw_item.get("url_quality", ""),
                 "raw_content": raw_content,
+                "planned_evidence": planned,
             }
         )
-        for role in evidence_roles:
-            evidence_id = str(role.get("evidence_id", "") or "")
-            if evidence_id:
-                evidence_hashes[evidence_id] = hashlib.sha256(
-                    raw_content.encode("utf-8")
-                ).hexdigest()
+        if planned:
+            for role in evidence_roles:
+                evidence_id = str(role.get("evidence_id", "") or "")
+                if evidence_id:
+                    evidence_hashes[evidence_id] = hashlib.sha256(
+                        raw_content.encode("utf-8")
+                    ).hexdigest()
 
     compact_selection = {
         "schema_version": 1,
         "items": compact_items,
-        "context_scope": f"episode_plan_evidence_{selected_mode}",
+        "context_scope": f"selected_news_metadata_{selected_mode}",
     }
     compact_news = {
         "schema_version": 1,
-        "items": raw_evidence,
-        "context_scope": "episode_plan_evidence_raw_only",
+        "items": raw_sources,
+        "context_scope": (
+            "all_selected_news_raw" if selected_mode == "conservative"
+            else "episode_plan_evidence_raw_only"
+        ),
     }
 
     before_selected = str(state.get("selected_news", "") or "")
@@ -263,6 +275,7 @@ def compact_agent_state(
     stats = {
         "mode": selected_mode,
         "selected_item_count": len(items),
+        "raw_source_item_count": len(raw_sources),
         "used_evidence_item_count": len(used_indices),
         "used_evidence_indices": sorted(used_indices),
         "evidence_reconciliation_count": len(reconciliation_changes),
