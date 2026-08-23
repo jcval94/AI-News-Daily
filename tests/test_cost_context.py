@@ -4,7 +4,15 @@ import json
 import unittest
 from types import SimpleNamespace
 
-from pipeline.run_cost_optimized import compact_agent_state
+from pipeline.run_cost_optimized import (
+    _cost_retryable_exception,
+    _usage_with_cache_from_event,
+    compact_agent_state,
+)
+
+
+class Dummy429Error(Exception):
+    status_code = 429
 
 
 class CostContextTests(unittest.TestCase):
@@ -177,6 +185,40 @@ class CostContextTests(unittest.TestCase):
         )
         self.assertIsNone(stats)
         self.assertEqual(compacted, state)
+
+    def test_exhausted_credit_429_fails_fast(self) -> None:
+        self.assertFalse(
+            _cost_retryable_exception(
+                Dummy429Error(
+                    "429 insufficient_quota code=credit_balance_exhausted: no credits remaining"
+                )
+            )
+        )
+
+    def test_transient_rate_limit_429_still_retries(self) -> None:
+        self.assertTrue(
+            _cost_retryable_exception(
+                Dummy429Error("429 rate_limit_exceeded: tokens per minute exceeded")
+            )
+        )
+
+    def test_usage_telemetry_records_cached_and_uncached_prompt_tokens(self) -> None:
+        event = SimpleNamespace(
+            usage_metadata=SimpleNamespace(
+                prompt_token_count=1000,
+                candidates_token_count=120,
+                thoughts_token_count=30,
+                total_token_count=1150,
+                cached_content_token_count=600,
+            )
+        )
+        usage = _usage_with_cache_from_event(event)
+        self.assertEqual(usage["prompt_tokens"], 1000)
+        self.assertEqual(usage["cached_prompt_tokens"], 600)
+        self.assertEqual(usage["uncached_prompt_tokens"], 400)
+        self.assertEqual(usage["output_tokens"], 120)
+        self.assertEqual(usage["reasoning_tokens"], 30)
+        self.assertEqual(usage["total_tokens"], 1150)
 
 
 if __name__ == "__main__":
