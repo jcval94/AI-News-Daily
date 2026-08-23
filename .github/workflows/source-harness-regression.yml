@@ -40,6 +40,9 @@ jobs:
             --dir .source-harness-baseline
 
       - name: Replay progressive source disclosure
+        env:
+          NEWS_SOURCE_MODE: recent_window
+          NEWS_LOOKBACK_DAYS: "4"
         run: |
           set -euo pipefail
           mkdir -p .source-harness-report
