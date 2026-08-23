@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import html
 import json
-import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -74,30 +73,50 @@ def derive_real_indicators(
     """
 
     script_path = episode_dir / "script.txt"
-    script = script_path.read_text(encoding="utf-8").strip() if script_path.exists() else ""
-    reviews = _read_json(episode_dir / "reviews.json", {})
-    state = _read_json(episode_dir / "run_state.json", {})
-    novelty = _read_json(episode_dir / "novelty_check.json", {})
-    trace = _read_json(episode_dir / "execution_trace.json", {})
-    regression = _read_json(regression_path, {})
-    manifest = _read_json(media_dir / "manifest.json", [])
+    reviews_path = episode_dir / "reviews.json"
+    state_path = episode_dir / "run_state.json"
+    novelty_path = episode_dir / "novelty_check.json"
+    trace_path = episode_dir / "execution_trace.json"
+    manifest_path = media_dir / "manifest.json"
+    media_plan_path = media_dir / "plan.json"
 
-    manifest_items = manifest if isinstance(manifest, list) else []
-    downloaded: list[dict[str, Any]] = []
-    opening: list[dict[str, Any]] = []
-    opening_videos: list[dict[str, Any]] = []
-    for raw in manifest_items:
-        if not isinstance(raw, dict):
-            continue
-        rel = str(raw.get("file", "") or "").strip()
-        if not rel or not (media_dir / rel).is_file():
-            continue
-        downloaded.append(raw)
-        start_seconds = _as_float(raw.get("start_seconds"))
-        if start_seconds is not None and start_seconds < 20:
-            opening.append(raw)
-            if _is_video(raw, rel):
-                opening_videos.append(raw)
+    script = script_path.read_text(encoding="utf-8").strip() if script_path.exists() else ""
+    reviews = _read_json(reviews_path, {})
+    state = _read_json(state_path, {})
+    novelty = _read_json(novelty_path, {})
+    trace = _read_json(trace_path, {})
+    regression = _read_json(regression_path, {})
+    manifest = _read_json(manifest_path, None)
+    media_plan = _read_json(media_plan_path, None)
+
+    asset_count: int | None = None
+    opening_asset_count: int | None = None
+    opening_video_count: int | None = None
+    if manifest_path.exists() and isinstance(manifest, list):
+        downloaded: list[dict[str, Any]] = []
+        opening: list[dict[str, Any]] = []
+        opening_videos: list[dict[str, Any]] = []
+        for raw in manifest:
+            if not isinstance(raw, dict):
+                continue
+            rel = str(raw.get("file", "") or "").strip()
+            if not rel or not (media_dir / rel).is_file():
+                continue
+            downloaded.append(raw)
+            start_seconds = _as_float(raw.get("start_seconds"))
+            if start_seconds is not None and start_seconds < 20:
+                opening.append(raw)
+                if _is_video(raw, rel):
+                    opening_videos.append(raw)
+        asset_count = len(downloaded)
+        opening_asset_count = len(opening)
+        opening_video_count = len(opening_videos)
+
+    planned_opening_media_count: int | None = None
+    planned_opening_video_count: int | None = None
+    if media_plan_path.exists() and isinstance(media_plan, dict):
+        planned_opening_media_count = _as_int(media_plan.get("opening_media_count"))
+        planned_opening_video_count = _as_int(media_plan.get("opening_video_count"))
 
     gate = reviews.get("gate", {}) if isinstance(reviews.get("gate"), dict) else {}
     editorial = reviews.get("editorial", {}) if isinstance(reviews.get("editorial"), dict) else {}
@@ -106,62 +125,79 @@ def derive_real_indicators(
     voice = reviews.get("voice_humanity", {}) if isinstance(reviews.get("voice_humanity"), dict) else {}
     best = reviews.get("best_candidate", {}) if isinstance(reviews.get("best_candidate"), dict) else {}
 
-    duration_seconds = _as_int(gate.get("duration_seconds"))
+    duration_seconds = _as_int(gate.get("duration_seconds")) if reviews_path.exists() else None
     scores = {
-        "editorial": _as_float(editorial.get("score")),
-        "seo": _as_float(seo.get("score")),
-        "attention": _as_float(attention.get("score")),
-        "voice": _as_float(voice.get("score")),
+        "editorial": _as_float(editorial.get("score")) if reviews_path.exists() else None,
+        "seo": _as_float(seo.get("score")) if reviews_path.exists() else None,
+        "attention": _as_float(attention.get("score")) if reviews_path.exists() else None,
+        "voice": _as_float(voice.get("score")) if reviews_path.exists() else None,
     }
 
-    recorded_usage: dict[str, int] = {}
-    agent_attempts = 0
-    agent_errors = 0
-    for call in trace.get("agent_calls", []) if isinstance(trace, dict) else []:
-        if not isinstance(call, dict):
-            continue
-        agent_attempts += 1
-        if str(call.get("status", "")).lower() == "error":
-            agent_errors += 1
-        usage = call.get("usage", {}) if isinstance(call.get("usage"), dict) else {}
-        for key, value in usage.items():
-            parsed = _as_int(value)
-            if parsed is not None:
-                recorded_usage[key] = recorded_usage.get(key, 0) + parsed
+    recorded_total_tokens: int | None = None
+    agent_attempt_count: int | None = None
+    agent_error_count: int | None = None
+    if trace_path.exists() and isinstance(trace, dict) and isinstance(trace.get("agent_calls"), list):
+        recorded_usage: dict[str, int] = {}
+        agent_attempt_count = 0
+        agent_error_count = 0
+        for call in trace.get("agent_calls", []):
+            if not isinstance(call, dict):
+                continue
+            agent_attempt_count += 1
+            if str(call.get("status", "")).lower() == "error":
+                agent_error_count += 1
+            usage = call.get("usage", {}) if isinstance(call.get("usage"), dict) else {}
+            for key, value in usage.items():
+                parsed = _as_int(value)
+                if parsed is not None:
+                    recorded_usage[key] = recorded_usage.get(key, 0) + parsed
+        recorded_total_tokens = recorded_usage.get("total_tokens")
 
     wall_seconds: float | None = None
-    try:
-        started = datetime.fromisoformat(str(state.get("started_at_utc")))
-        finished = datetime.fromisoformat(str(state.get("finished_at_utc")))
-        wall_seconds = max(0.0, (finished - started).total_seconds())
-    except (TypeError, ValueError):
-        pass
+    if state_path.exists():
+        try:
+            started = datetime.fromisoformat(str(state.get("started_at_utc")))
+            finished = datetime.fromisoformat(str(state.get("finished_at_utc")))
+            wall_seconds = max(0.0, (finished - started).total_seconds())
+        except (TypeError, ValueError):
+            pass
 
-    novelty_attempts = novelty.get("attempts", []) if isinstance(novelty, dict) else []
-    if not isinstance(novelty_attempts, list):
-        novelty_attempts = []
+    novelty_attempt_count: int | None = None
+    if novelty_path.exists() and isinstance(novelty, dict) and isinstance(novelty.get("attempts"), list):
+        novelty_attempt_count = len(novelty.get("attempts", []))
+
+    publishable: bool | None = None
+    status = "no_registrado"
+    episode_date = episode_dir.name
+    if state_path.exists() and isinstance(state, dict):
+        episode_date = str(state.get("episode_date") or episode_dir.name)
+        status = str(state.get("status") or "no_registrado")
+        if "publishable" in state:
+            publishable = bool(state.get("publishable"))
 
     return {
         "run_id": str(run_id),
-        "episode_date": str(state.get("episode_date") or episode_dir.name),
-        "status": str(state.get("status") or "pending"),
-        "publishable": bool(state.get("publishable", False)),
-        "word_count": len(script.split()) if script else None,
+        "episode_date": episode_date,
+        "status": status,
+        "publishable": publishable,
+        "word_count": len(script.split()) if script_path.exists() else None,
         "duration_seconds": duration_seconds,
         "duration_minutes": (duration_seconds / 60.0) if duration_seconds is not None else None,
-        "asset_count": len(downloaded),
-        "opening_asset_count": len(opening),
-        "opening_video_count": len(opening_videos),
+        "asset_count": asset_count,
+        "opening_asset_count": opening_asset_count,
+        "opening_video_count": opening_video_count,
+        "planned_opening_media_count": planned_opening_media_count,
+        "planned_opening_video_count": planned_opening_video_count,
         "scores": scores,
-        "best_iteration": _as_int(best.get("iteration")),
-        "judged_unique_script_count": _as_int(best.get("judged_unique_script_count")),
-        "novelty_attempt_count": len(novelty_attempts),
-        "structural_pass": regression.get("structural_pass") if isinstance(regression, dict) else None,
-        "recorded_total_tokens": recorded_usage.get("total_tokens"),
-        "agent_attempt_count": agent_attempts,
-        "agent_error_count": agent_errors,
+        "best_iteration": _as_int(best.get("iteration")) if reviews_path.exists() else None,
+        "judged_unique_script_count": _as_int(best.get("judged_unique_script_count")) if reviews_path.exists() else None,
+        "novelty_attempt_count": novelty_attempt_count,
+        "structural_pass": regression.get("structural_pass") if regression_path.exists() and isinstance(regression, dict) else None,
+        "recorded_total_tokens": recorded_total_tokens,
+        "agent_attempt_count": agent_attempt_count,
+        "agent_error_count": agent_error_count,
         "wall_seconds": wall_seconds,
-        "human_review_status": "pendiente",
+        "human_review_status": "sin registro humano",
     }
 
 
@@ -169,22 +205,18 @@ def _metric(value: str, label: str) -> str:
     return f'<div class="metric"><strong>{html.escape(value)}</strong><span>{html.escape(label)}</span></div>'
 
 
-def _extract_existing_metric(document: str, label: str) -> str | None:
-    pattern = re.compile(
-        r'<div class="metric"><strong>([^<]+)</strong><span>' + re.escape(label) + r'</span></div>',
-        re.IGNORECASE,
-    )
-    match = pattern.search(document)
-    return html.unescape(match.group(1).strip()) if match else None
-
-
 def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
-    # v2 values are retained only when they describe a plan, and are explicitly labelled as such.
-    planned_opening_media = _extract_existing_metric(document, "media 0–20s")
-    planned_opening_videos = _extract_existing_metric(document, "videos 0–20s")
+    publishable = indicators.get("publishable")
+    if publishable is True:
+        status_text = "PUBLICABLE"
+        status_class = "ok"
+    elif publishable is False:
+        status_text = str(indicators.get("status") or "no_registrado").upper()
+        status_class = "bad"
+    else:
+        status_text = "ESTADO NO REGISTRADO"
+        status_class = "neutral"
 
-    status_text = "PUBLICABLE" if indicators["publishable"] else str(indicators["status"]).upper()
-    status_class = "ok" if indicators["publishable"] else "bad"
     duration_minutes = indicators.get("duration_minutes")
     duration_label = (
         f"{float(duration_minutes):.1f} min estimados"
@@ -218,7 +250,7 @@ def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
         '<div class="hero-meta">'
         f'Revisión humana: <strong>{html.escape(str(indicators.get("human_review_status")))}</strong> · '
         f'fuente <code>{html.escape(validation_id)}</code> · '
-        'indicadores derivados de artefactos persistidos, sin ceros sintéticos.'
+        'indicadores derivados de artefactos persistidos; “—” significa no registrado.'
         "</div>"
     )
     document = document[:meta_start] + hero_meta + document[meta_end:]
@@ -233,10 +265,14 @@ def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
     structural = indicators.get("structural_pass")
     structural_text = "PASS" if structural is True else "FAIL" if structural is False else "—"
     planned_metrics = ""
-    if planned_opening_media is not None:
-        planned_metrics += _metric(planned_opening_media, "media 0–20s · plan")
-    if planned_opening_videos is not None:
-        planned_metrics += _metric(planned_opening_videos, "videos 0–20s · plan")
+    if indicators.get("planned_opening_media_count") is not None:
+        planned_metrics += _metric(
+            _fmt_number(indicators.get("planned_opening_media_count")), "media 0–20s · plan"
+        )
+    if indicators.get("planned_opening_video_count") is not None:
+        planned_metrics += _metric(
+            _fmt_number(indicators.get("planned_opening_video_count")), "videos 0–20s · plan"
+        )
 
     metrics_html = (
         '<div class="metrics">'
@@ -257,7 +293,7 @@ def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
         + '<p class="muted metric-provenance">'
         + 'Procedencia: <code>run_state.json</code>, <code>reviews.json</code>, '
         + '<code>novelty_check.json</code>, <code>execution_trace.json</code>, '
-        + '<code>editorial-regression.json</code> y archivos presentes en <code>media-manifest.json</code>. '
+        + '<code>editorial-regression.json</code>, <code>media-plan.json</code> y archivos realmente presentes de <code>media-manifest.json</code>. '
         + 'La duración es una estimación del gate, no tiempo de reproducción medido. '
         + 'Los indicadores marcados como plan describen intención; los de manifest describen archivos realmente descargados. '
         + 'El costo monetario no se muestra porque este run no persiste un snapshot de precios/costo; mostrar 0 o N/A como costo sería engañoso.'
