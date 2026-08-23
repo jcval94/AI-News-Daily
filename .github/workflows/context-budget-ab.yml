@@ -1,0 +1,186 @@
+name: Context Budget Paired A/B
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_live_model:
+        description: "Run the paid control + candidate pair. Leave false for offline validation only."
+        required: true
+        default: false
+        type: boolean
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/context-budget-ab.yml"
+      - "pipeline/run_ab_arm.py"
+      - "pipeline/context_ab_report.py"
+      - "pipeline/context_budget.py"
+      - "pipeline/run_context_budget.py"
+      - "tests/test_context_ab.py"
+      - "tests/test_context_budget.py"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  paired-ab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      TARGET_DATE: "2026-08-21"
+      OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+      SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+      JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+      VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
+      MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+      NEWS_SOURCE_MODE: recent_window
+      NEWS_LOOKBACK_DAYS: "4"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+
+      - name: Run deterministic A/B and context-budget tests
+        run: >-
+          python -m unittest
+          tests.test_context_budget
+          tests.test_context_ab
+          -v
+
+      - name: Replay audited no-source-loss baseline without model calls
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .context-ab-baseline .context-ab/offline
+          mkdir -p .context-ab-baseline .context-ab/offline
+          gh run download 32541706631 \
+            --name editorial-regression-2026-08-21-32541706631 \
+            --dir .context-ab-baseline
+          python -m pipeline.context_budget_replay \
+            --episode-dir ".context-ab-baseline/scripts/$TARGET_DATE" \
+            --news-dir news \
+            --target-date "$TARGET_DATE" \
+            --output .context-ab/offline/context-budget-replay.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('.context-ab/offline/context-budget-replay.json').read_text(encoding='utf-8'))
+          assert report['all_discovery_sources_preserved'] is True, report
+          assert report['removed_source_items'] == 0, report
+          assert report['selected_exact_source_matches'] == report['selected_item_count'], report
+          assert report['estimated_prompt_tokens_saved'] > 0, report
+          print('offline_context_budget_gate=PASS', report['estimated_prompt_reduction_pct'])
+          PY
+
+      - name: Require OpenAI secret for explicit live pair
+        if: github.event_name == 'workflow_dispatch' && inputs.run_live_model == true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required for the live A/B pair"; exit 2; }
+
+      - name: Run control arm
+        id: control
+        if: github.event_name == 'workflow_dispatch' && inputs.run_live_model == true
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AB_ARM: control
+        run: |
+          set -euo pipefail
+          rm -rf .context-ab/control
+          mkdir -p .context-ab/control/scripts .context-ab/control/multimedia
+          python -m pipeline.run_ab_arm \
+            --target-date "$TARGET_DATE" \
+            --news-dir news \
+            --scripts-dir .context-ab/control/scripts \
+            --multimedia-dir .context-ab/control/multimedia \
+            --history-scripts-dir scripts \
+            --editorial-dir editorial \
+            --max-media-downloads 0 \
+            --no-download-multimedia
+
+      - name: Run context-budget candidate arm
+        id: candidate
+        if: github.event_name == 'workflow_dispatch' && inputs.run_live_model == true && steps.control.outcome == 'success'
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AB_ARM: candidate
+        run: |
+          set -euo pipefail
+          rm -rf .context-ab/candidate
+          mkdir -p .context-ab/candidate/scripts .context-ab/candidate/multimedia
+          python -m pipeline.run_ab_arm \
+            --target-date "$TARGET_DATE" \
+            --news-dir news \
+            --scripts-dir .context-ab/candidate/scripts \
+            --multimedia-dir .context-ab/candidate/multimedia \
+            --history-scripts-dir scripts \
+            --editorial-dir editorial \
+            --max-media-downloads 0 \
+            --no-download-multimedia
+
+      - name: Build live quality + cost comparison
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.run_live_model == true
+        env:
+          CONTROL_OUTCOME: ${{ steps.control.outcome }}
+          CANDIDATE_OUTCOME: ${{ steps.candidate.outcome }}
+        run: |
+          set -euo pipefail
+          mkdir -p .context-ab/live
+          python -m pipeline.context_ab_report \
+            --control-dir ".context-ab/control/scripts/$TARGET_DATE" \
+            --candidate-dir ".context-ab/candidate/scripts/$TARGET_DATE" \
+            --quality-tolerance 0.25 \
+            --min-prompt-reduction-pct 5.0 \
+            --output .context-ab/live/report.json
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path('.context-ab/live/report.json')
+          report = json.loads(path.read_text(encoding='utf-8'))
+          report['workflow_process_outcomes'] = {
+              'control': os.environ.get('CONTROL_OUTCOME', 'skipped'),
+              'candidate': os.environ.get('CANDIDATE_OUTCOME', 'skipped'),
+          }
+          path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          print(json.dumps(report['comparison'], indent=2, ensure_ascii=False))
+          PY
+
+      - name: Upload A/B evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: context-budget-ab-${{ github.run_id }}
+          path: .context-ab/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Propagate live A/B merge gate
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.run_live_model == true
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('.context-ab/live/report.json')
+          if not path.exists():
+              raise SystemExit('live A/B report missing')
+          report = json.loads(path.read_text(encoding='utf-8'))
+          outcomes = report.get('workflow_process_outcomes', {})
+          if outcomes.get('control') != 'success' or outcomes.get('candidate') != 'success':
+              raise SystemExit(f'A/B arm failed: {outcomes}')
+          comparison = report.get('comparison', {})
+          if comparison.get('gate_pass') is not True:
+              raise SystemExit(f'A/B quality/cost gate failed: {comparison.get("failures")}')
+          print('context_budget_live_ab=PASS')
+          PY
