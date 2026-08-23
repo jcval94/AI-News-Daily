@@ -293,6 +293,62 @@ def compact_agent_state(
 
 
 _ORIGINAL_RUN_AGENT = base.run_agent
+_ORIGINAL_USAGE_FROM_EVENT = base._usage_from_event
+_ORIGINAL_IS_RETRYABLE_EXCEPTION = base.is_retryable_exception
+
+
+def _usage_with_cache_from_event(event: Any) -> dict[str, int]:
+    """Preserve existing usage accounting and add cached-input telemetry when ADK exposes it."""
+    result = _ORIGINAL_USAGE_FROM_EVENT(event)
+    meta = getattr(event, "usage_metadata", None)
+    if not meta:
+        return result
+
+    cached = None
+    for name in (
+        "cached_content_token_count",
+        "cached_prompt_token_count",
+        "cache_read_input_tokens",
+    ):
+        value = getattr(meta, name, None)
+        if isinstance(value, int):
+            cached = value
+            break
+
+    # Some adapters expose OpenAI-style prompt token details rather than the GenAI field.
+    if cached is None:
+        details = getattr(meta, "prompt_tokens_details", None)
+        if isinstance(details, dict):
+            value = details.get("cached_tokens")
+            if isinstance(value, int):
+                cached = value
+        elif details is not None:
+            value = getattr(details, "cached_tokens", None)
+            if isinstance(value, int):
+                cached = value
+
+    if cached is not None:
+        result["cached_prompt_tokens"] = max(0, cached)
+        prompt_tokens = result.get("prompt_tokens")
+        if isinstance(prompt_tokens, int):
+            result["uncached_prompt_tokens"] = max(0, prompt_tokens - cached)
+    return result
+
+
+def _cost_retryable_exception(exc: Exception) -> bool:
+    """Do not retry permanent quota/balance exhaustion disguised as HTTP 429."""
+    text = f"{type(exc).__name__}: {exc}".lower()
+    permanent_quota_markers = (
+        "insufficient_quota",
+        "credit_balance_exhausted",
+        "no credits remaining",
+        "no credits left",
+        "billing quota",
+        "run out of credits",
+    )
+    if any(marker in text for marker in permanent_quota_markers):
+        return False
+    return _ORIGINAL_IS_RETRYABLE_EXCEPTION(exc)
 
 
 async def _cost_aware_run_agent(
@@ -348,12 +404,18 @@ async def _cost_aware_run_agent(
 
 async def build(**kwargs: Any) -> Path | None:
     """Run the production pipeline with experimental evidence-safe context scoping."""
-    previous = base.run_agent
+    previous_agent = base.run_agent
+    previous_usage = base._usage_from_event
+    previous_retryable = base.is_retryable_exception
     base.run_agent = _cost_aware_run_agent
+    base._usage_from_event = _usage_with_cache_from_event
+    base.is_retryable_exception = _cost_retryable_exception
     try:
         return await base.build(**kwargs)
     finally:
-        base.run_agent = previous
+        base.run_agent = previous_agent
+        base._usage_from_event = previous_usage
+        base.is_retryable_exception = previous_retryable
 
 
 def main() -> None:
