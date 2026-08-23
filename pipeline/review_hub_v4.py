@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -168,7 +169,20 @@ def _metric(value: str, label: str) -> str:
     return f'<div class="metric"><strong>{html.escape(value)}</strong><span>{html.escape(label)}</span></div>'
 
 
+def _extract_existing_metric(document: str, label: str) -> str | None:
+    pattern = re.compile(
+        r'<div class="metric"><strong>([^<]+)</strong><span>' + re.escape(label) + r'</span></div>',
+        re.IGNORECASE,
+    )
+    match = pattern.search(document)
+    return html.unescape(match.group(1).strip()) if match else None
+
+
 def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
+    # v2 values are retained only when they describe a plan, and are explicitly labelled as such.
+    planned_opening_media = _extract_existing_metric(document, "media 0–20s")
+    planned_opening_videos = _extract_existing_metric(document, "videos 0–20s")
+
     status_text = "PUBLICABLE" if indicators["publishable"] else str(indicators["status"]).upper()
     status_class = "ok" if indicators["publishable"] else "bad"
     duration_minutes = indicators.get("duration_minutes")
@@ -218,6 +232,12 @@ def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
     scores = indicators.get("scores", {}) if isinstance(indicators.get("scores"), dict) else {}
     structural = indicators.get("structural_pass")
     structural_text = "PASS" if structural is True else "FAIL" if structural is False else "—"
+    planned_metrics = ""
+    if planned_opening_media is not None:
+        planned_metrics += _metric(planned_opening_media, "media 0–20s · plan")
+    if planned_opening_videos is not None:
+        planned_metrics += _metric(planned_opening_videos, "videos 0–20s · plan")
+
     metrics_html = (
         '<div class="metrics">'
         + _metric(_fmt_number(scores.get("editorial"), decimals=1), "Editorial · reviews.json")
@@ -225,7 +245,8 @@ def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
         + _metric(_fmt_number(scores.get("attention"), decimals=1), "Attention · reviews.json")
         + _metric(_fmt_number(scores.get("voice"), decimals=1), "Voice · reviews.json")
         + _metric(_fmt_number(indicators.get("asset_count")), "Assets descargados · manifest")
-        + _metric(_fmt_number(indicators.get("opening_video_count")), "Videos 0–20s · manifest")
+        + _metric(_fmt_number(indicators.get("opening_video_count")), "Videos descargados 0–20s · manifest")
+        + planned_metrics
         + _metric(_fmt_number(indicators.get("judged_unique_script_count")), "Guiones juzgados")
         + _metric(_fmt_number(indicators.get("novelty_attempt_count")), "Intentos novelty")
         + _metric(structural_text, "Regression estructural")
@@ -238,6 +259,7 @@ def apply_real_indicators(document: str, indicators: dict[str, Any]) -> str:
         + '<code>novelty_check.json</code>, <code>execution_trace.json</code>, '
         + '<code>editorial-regression.json</code> y archivos presentes en <code>media-manifest.json</code>. '
         + 'La duración es una estimación del gate, no tiempo de reproducción medido. '
+        + 'Los indicadores marcados como plan describen intención; los de manifest describen archivos realmente descargados. '
         + 'El costo monetario no se muestra porque este run no persiste un snapshot de precios/costo; mostrar 0 o N/A como costo sería engañoso.'
         + '</p>'
     )
