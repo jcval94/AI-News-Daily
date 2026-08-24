@@ -37,7 +37,41 @@ def is_permanent_quota_error(exc: Exception) -> bool:
     return any(marker in haystack for marker in _PERMANENT_QUOTA_MARKERS)
 
 
-async def _run_agent_once(base: Any, agent: Any, initial_state: dict[str, Any], prompt: str) -> tuple[dict[str, Any], dict[str, int]]:
+def is_model_output_validation_error(exc: Exception) -> bool:
+    """Identify schema/contract failures produced while ADK validates model output.
+
+    These are safe to retry because the agent call has no external side effect and the
+    contract itself remains unchanged. We do not relax the schema; the next attempt gets
+    the validation message as repair feedback.
+    """
+    name = type(exc).__name__.lower()
+    module = type(exc).__module__.lower()
+    text = str(exc).lower()
+    return (
+        name == "validationerror"
+        and ("pydantic" in module or "validation error" in text)
+    )
+
+
+def _repair_prompt(prompt: str, exc: Exception) -> str:
+    detail = str(exc).strip()[:1600]
+    return (
+        f"{prompt}\n\n"
+        "Your previous response failed the required structured-output schema/contract. "
+        "Return a corrected response that satisfies the existing schema exactly. Do not "
+        "weaken, omit, or reinterpret any constraint merely to pass validation. Keep the "
+        "same task and evidence boundary; repair only the invalid structure or internal "
+        "consistency.\n"
+        f"Validation feedback:\n{detail}"
+    )
+
+
+async def _run_agent_once(
+    base: Any,
+    agent: Any,
+    initial_state: dict[str, Any],
+    prompt: str,
+) -> tuple[dict[str, Any], dict[str, int]]:
     service = base.InMemorySessionService()
     session_id = base.uuid.uuid4().hex
     await service.create_session(
@@ -72,7 +106,10 @@ async def _run_agent_once(base: Any, agent: Any, initial_state: dict[str, Any], 
         session_id=session_id,
     )
     if session is None:
-        raise _AgentCallFailure(RuntimeError("ADK session disappeared unexpectedly"), dict(usage))
+        raise _AgentCallFailure(
+            RuntimeError("ADK session disappeared unexpectedly"),
+            dict(usage),
+        )
     return dict(session.state), usage
 
 
@@ -109,11 +146,17 @@ async def _run_agent(
             return {"multimedia_plan": {"segments": []}}
 
     last_error: Exception | None = None
+    current_prompt = prompt
     for attempt in range(1, base.CONFIG.agent_max_attempts + 1):
         started = time.monotonic()
         usage: dict[str, int] = {}
         try:
-            state, usage = await _run_agent_once(base, agent, initial_state, prompt)
+            state, usage = await _run_agent_once(
+                base,
+                agent,
+                initial_state,
+                current_prompt,
+            )
             trace.append(
                 {
                     "step": step,
@@ -131,7 +174,11 @@ async def _run_agent(
             usage = wrapped.usage
             last_error = exc
             permanent_quota = is_permanent_quota_error(exc)
-            retryable = base.is_retryable_exception(exc) and not permanent_quota
+            schema_repair = is_model_output_validation_error(exc)
+            retryable = (
+                not permanent_quota
+                and (base.is_retryable_exception(exc) or schema_repair)
+            )
             trace.append(
                 {
                     "step": step,
@@ -141,6 +188,7 @@ async def _run_agent(
                     "status": "error",
                     "elapsed_seconds": round(time.monotonic() - started, 3),
                     "retryable": retryable,
+                    "schema_repair": schema_repair,
                     "permanent_quota_error": permanent_quota,
                     "error_type": type(exc).__name__,
                     "error": str(exc)[:1000],
@@ -149,12 +197,19 @@ async def _run_agent(
             )
             if not retryable or attempt >= base.CONFIG.agent_max_attempts:
                 raise exc
-            delay = base.CONFIG.agent_retry_base_seconds * (2 ** (attempt - 1))
-            print(
-                f"Transient failure in {step}; retrying in {delay:.1f}s: "
-                f"{type(exc).__name__}: {exc}"
-            )
-            await asyncio.sleep(delay)
+            if schema_repair:
+                current_prompt = _repair_prompt(prompt, exc)
+                print(
+                    f"Structured output failed validation in {step}; retrying with "
+                    f"contract repair feedback (attempt {attempt + 1})."
+                )
+            else:
+                delay = base.CONFIG.agent_retry_base_seconds * (2 ** (attempt - 1))
+                print(
+                    f"Transient failure in {step}; retrying in {delay:.1f}s: "
+                    f"{type(exc).__name__}: {exc}"
+                )
+                await asyncio.sleep(delay)
 
     assert last_error is not None
     raise last_error
@@ -167,7 +222,11 @@ def install() -> Any:
     if getattr(base, "_RUNTIME_HARDENING_INSTALLED", False):
         return base
 
-    async def hardened_once(agent: Any, initial_state: dict[str, Any], prompt: str) -> tuple[dict[str, Any], dict[str, int]]:
+    async def hardened_once(
+        agent: Any,
+        initial_state: dict[str, Any],
+        prompt: str,
+    ) -> tuple[dict[str, Any], dict[str, int]]:
         return await _run_agent_once(base, agent, initial_state, prompt)
 
     async def hardened_run(
