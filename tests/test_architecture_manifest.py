@@ -27,6 +27,16 @@ class ArchitectureManifestTests(unittest.TestCase):
             ["refine_factual", "refine_voice", "refine_secondary"],
         )
 
+    def test_manifest_tracks_hardened_production_contract(self) -> None:
+        data = manifest()
+        stages = {stage["id"]: stage for stage in data["stages"]}
+        self.assertEqual(data["version"], 2)
+        self.assertIn("source_coverage", stages)
+        self.assertIn("75%", stages["source_coverage"]["summary"])
+        self.assertIn("post-aprobación", stages["media_plan"]["title"])
+        self.assertIn("ai-news-run", stages["pages"]["inputs"])
+        self.assertIn("fuente canónica", stages["pages"]["summary"])
+
     def test_pages_process_is_rendered_from_manifest(self) -> None:
         panel = process_panel({"totals": {}, "usage": {}, "breakdown_by_step": [], "attempts": []})
         self.assertIn("pipeline/architecture_manifest.py", panel)
@@ -34,6 +44,9 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("Mapa de decisiones", panel)
         self.assertIn("trace: refine_factual", panel)
         self.assertIn("factual_refiner_agent", panel)
+        self.assertIn("Build AI News Video Kit", panel)
+        self.assertIn("ai-news-run artifact", panel)
+        self.assertIn("Lane B · QA", panel)
         self.assertIn("La documentación también debe pasar un gate", panel)
 
 
