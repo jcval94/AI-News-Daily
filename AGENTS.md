@@ -4,7 +4,7 @@ This repository is intentionally a small production-oriented agentic architectur
 
 ## Non-negotiable architecture rule
 
-Agents may select, plan, generate, judge, refine, and propose multimedia. They must not be the final authority for retry policy, episode state, duration enforcement, publication/promotion, filesystem side effects, or whether an episode is considered approved history. Those decisions belong to deterministic Python/GitHub Actions code.
+Agents may select, plan, generate, judge, refine, and propose multimedia. They must not be the final authority for retry policy, episode state, duration enforcement, publication/promotion, filesystem side effects, refinement routing, or whether an episode is considered approved history. Those decisions belong to deterministic Python/GitHub Actions code.
 
 ## Editorial identity is data, not prompt glue
 
@@ -17,7 +17,7 @@ Prompts implement those profiles; they are not the source of truth. Do not imita
 
 ## Agent inventory
 
-`app/agent.py` contains independent ADK agents:
+`app/agent.py` contains the planning, writing, judging, and multimedia agents:
 
 1. `news_relevance_selector` — selects stories with editorial/human value.
 2. `editorial_director` — creates the central question, thesis, narrative arc, evidence roles, **Claim Ledger**, and idea-led beats before prose exists.
@@ -26,8 +26,15 @@ Prompts implement those profiles; they are not the source of truth. Do not imita
 5. `seo_master` — discoverability judge; SEO never outranks rigor or voice.
 6. `youtube_attention_master` — earned-attention/retention judge.
 7. `voice_humanity_critic` — voice fidelity, depth, human relevance, analogies, and AI-smell judge.
-8. `script_refiner` — performs exactly one refinement responsibility per iteration: factual repair first, voice repair second, secondary attention/SEO polish only after both pass.
-9. `multimedia_editor_master` — selects only visuals that add explanatory/contextual value.
+8. `multimedia_editor_master` — selects only visuals that add explanatory/contextual value.
+
+`app/refiners.py` contains deliberately isolated refiners:
+
+9. `factual_script_refiner` — receives the script, factual review, selected evidence, source corpus, episode plan, and curated discourse context. It does **not** receive voice, SEO, or attention feedback.
+10. `voice_script_refiner` — receives the script, voice review, episode plan, and voice profile. It does **not** receive `news_text`, selected-news bodies, the factual review, SEO review, or attention review. The factual claim semantics are frozen before it runs.
+11. `secondary_script_refiner` — receives only the remaining SEO/attention feedback after factuality and voice already pass; claim semantics remain frozen.
+
+`pipeline/run.py` chooses which refiner runs next using deterministic gate results. Do not move that routing decision back into an LLM.
 
 Do not reintroduce `LoopAgent`, `SequentialAgent`, or an LLM-based quality gate unless there is a concrete requirement that cannot be expressed deterministically.
 
@@ -50,15 +57,21 @@ Every `episode_plan.evidence` item must have exactly one `episode_plan.claim_led
 
 The ledger is a pre-writing factual boundary, not a prose outline. `news_text` remains the ultimate current-event source of truth if a ledger entry conflicts with it. Company marketing must stay attributed unless independently supported by the source material.
 
+The schema and deterministic runtime validation both fail closed if the ledger is missing, duplicates an evidence ID, references the wrong selected-news index, omits an evidence item, or has no `supported_facts` for an entry.
+
 ### Refinement separation contract
 
-One refinement iteration must never optimize factuality and voice simultaneously.
+Refinement responsibilities are separated by **different agents and different state payloads**, not merely by prompt instructions.
 
-- If factuality/traceability is not passing, the pass is **factual-only**. Voice, SEO, and retention feedback waits.
-- Once factuality is low-risk and editorially passing, a failing Voice/Humanity gate triggers **voice-only** repair with a frozen semantic claim set.
-- Attention/SEO polish occurs only after factual and voice gates pass, with claim semantics still frozen.
+Deterministic routing order in `pipeline/run.py` is:
 
-This ordering prevents a factual repair from becoming robotic and a later style rewrite from silently reintroducing unsupported claims.
+1. **Factual repair first.** If editorial approval, editorial score, or `factuality_low` fails, route to `factual_script_refiner`. No voice/SEO/attention feedback is supplied.
+2. **Voice repair second.** Only after factuality passes may a voice/AI-smell failure route to `voice_script_refiner`. No source corpus or factual review is supplied, and claim semantics are frozen.
+3. **Secondary polish last.** Only after factual and voice gates pass may a remaining attention/SEO/pacing/duration issue route to `secondary_script_refiner`.
+
+One refinement iteration must never optimize factuality and voice simultaneously. This ordering prevents a factual repair from becoming robotic and a later style rewrite from silently reintroducing unsupported implications.
+
+`execution_trace.json` / refinement traces should expose the next selected refinement phase so regressions can be diagnosed from artifacts rather than inferred from prose.
 
 ## State machine
 
@@ -87,7 +100,7 @@ Default gate:
 - Voice/Humanity `ai_smell_risk == low`,
 - every judge says approved.
 
-Duration, score thresholds, and AI-smell must be checked by Python even if prompts contain the same requirements.
+Duration, score thresholds, refinement routing, and AI-smell must be checked by Python even if prompts contain the same requirements.
 
 ## Editorial priorities
 
@@ -112,6 +125,7 @@ Structured agent outputs must be validated with their Pydantic models before bei
 - no duplicate planned story indices,
 - exactly one Claim Ledger entry per planned evidence item,
 - matching Claim Ledger/evidence IDs and selected-news indices,
+- non-empty `supported_facts` for every ledger entry,
 - known timeline slots,
 - media hard cap,
 - 7–20 minute duration,
@@ -159,7 +173,7 @@ python -m compileall app pipeline
 python -m unittest discover -s tests -v
 ```
 
-Tests must cover Tuesday/Friday windows, 7–20 minute duration boundaries, deterministic approval including voice/AI-smell, retries, report state/hashes, Claim Ledger consistency, phased refinement, editorial direction, and timeline non-truncation.
+Tests must cover Tuesday/Friday windows, 7–20 minute duration boundaries, deterministic approval including voice/AI-smell, retries, report state/hashes, Claim Ledger consistency, isolated refinement contexts, deterministic factual→voice→secondary routing, editorial direction, and timeline non-truncation.
 
 For changes to model orchestration or provider integration, also run a manual GitHub Actions E2E when feasible.
 
