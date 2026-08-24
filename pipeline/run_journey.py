@@ -55,17 +55,27 @@ def _elapsed(records: list[dict[str, Any]]) -> float:
     return round(total, 3)
 
 
-def _discover_production_media(episode_dir: Path) -> Path | None:
-    """Find production multimedia only from the same persisted artifact tree as scripts.
-
-    This intentionally does not inspect the Review Hub's ``media_dir``. In both canonical
-    runs and downloaded production artifacts, ``scripts/<date>`` and ``multimedia/<date>``
-    are siblings under one root, which provides provenance without a synthetic marker.
-    """
+def _artifact_root(episode_dir: Path) -> Path | None:
     if episode_dir.parent.name != "scripts":
         return None
-    candidate = episode_dir.parent.parent / "multimedia" / episode_dir.name
+    return episode_dir.parent.parent
+
+
+def _discover_production_media(episode_dir: Path) -> Path | None:
+    """Find production multimedia only from the same persisted artifact tree as scripts."""
+    root = _artifact_root(episode_dir)
+    if root is None:
+        return None
+    candidate = root / "multimedia" / episode_dir.name
     return candidate if (candidate / "manifest.json").exists() else None
+
+
+def _discover_source_coverage(episode_dir: Path) -> dict[str, Any]:
+    root = _artifact_root(episode_dir)
+    if root is None:
+        return {}
+    value = _read_json(root / "source_coverage.json", {})
+    return value if isinstance(value, dict) else {}
 
 
 def derive_run_journey(
@@ -80,12 +90,13 @@ def derive_run_journey(
 
     ``media_dir`` is retained for Review Hub caller compatibility but is deliberately not
     treated as proof of production-media materialization: in Pages it may point to media
-    generated later by the review workflow. Production media is accepted only when passed
-    explicitly or discovered beside ``scripts/<date>`` in the same persisted artifact.
+    generated later by the review workflow. Production evidence is accepted only from the
+    persisted production artifact tree or an explicit ``production_media_dir``.
     """
     del media_dir
     if production_media_dir is None:
         production_media_dir = _discover_production_media(episode_dir)
+    source_coverage = _discover_source_coverage(episode_dir)
     architecture = architecture or manifest()
     cost_snapshot = cost_snapshot or {}
     trace = _read_json(episode_dir / "execution_trace.json", {})
@@ -109,6 +120,9 @@ def derive_run_journey(
     )
     reached_plan = bool(plan)
     reached_selection = bool(selected)
+    production_media_observed = bool(
+        production_media_dir is not None and (production_media_dir / "manifest.json").exists()
+    )
 
     stages: list[dict[str, Any]] = []
     for stage in architecture.get("stages", []):
@@ -124,7 +138,11 @@ def derive_run_journey(
 
         if matched:
             status = "executed" if successes else "error"
-        elif stage_id in {"trigger", "workspace", "ingest", "memory"} and (run_state or reached_selection):
+        elif stage_id in {"trigger", "workspace"} and run_state:
+            status = "inferred"
+        elif stage_id == "source_coverage" and source_coverage:
+            status = "executed" if bool(source_coverage.get("sufficient")) else "terminal"
+        elif stage_id in {"ingest", "memory"} and (run_state or reached_selection):
             status = "inferred"
         elif stage_id == "novelty" and novelty:
             status = "executed"
@@ -134,11 +152,10 @@ def derive_run_journey(
             status = "executed" if any(item.get("next_refinement_phase") for item in refinement_iterations if isinstance(item, dict)) else "not_required"
         elif stage_id in {"factual_refine", "voice_refine", "secondary_refine"} and reached_quality_gate:
             status = "not_required"
+        elif stage_id == "media_plan" and production_media_observed:
+            status = "inferred"
         elif stage_id == "media_materialize":
-            if production_media_dir is not None and (production_media_dir / "manifest.json").exists():
-                status = "executed"
-            else:
-                status = "not_observed"
+            status = "executed" if production_media_observed else "not_observed"
         elif stage_id == "report_promote" and (run_state or report):
             status = "executed" if final_status == "approved" else "terminal"
         elif stage_id == "pages":
@@ -173,6 +190,8 @@ def derive_run_journey(
         "status": final_status,
         "publishable": bool(run_state.get("publishable", final_status == "approved")),
         "reason": str(run_state.get("reason") or ""),
+        "source_coverage_ratio": source_coverage.get("coverage_ratio") if source_coverage else None,
+        "source_coverage_sufficient": source_coverage.get("sufficient") if source_coverage else None,
         "selected_news_count": len(selected_items) if isinstance(selected_items, list) else 0,
         "novelty_attempts": len(novelty_attempts) if isinstance(novelty_attempts, list) else 0,
         "nearest_similarity": final_novelty.get("similarity") if isinstance(final_novelty, dict) else None,
