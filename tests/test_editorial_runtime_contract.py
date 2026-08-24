@@ -4,7 +4,9 @@ import unittest
 
 from pydantic import ValidationError
 
-from app.agent import EpisodePlan, editorial_director_agent, refiner_agent, writer_agent
+from app.agent import EpisodePlan, editorial_director_agent, writer_agent
+from app.refiners import factual_refiner_agent, secondary_refiner_agent, voice_refiner_agent
+from pipeline.run import _select_refinement_phase
 
 
 def valid_plan() -> dict:
@@ -54,6 +56,25 @@ def valid_plan() -> dict:
     }
 
 
+def gate_checks(*, factual: bool, voice: bool, seo: bool = True, attention: bool = True) -> dict:
+    return {
+        "checks": {
+            "editorial_approved": factual,
+            "editorial_score_ok": factual,
+            "factuality_low": factual,
+            "voice_approved": voice,
+            "voice_score_ok": voice,
+            "ai_smell_low": voice,
+            "seo_approved": seo,
+            "seo_score_ok": seo,
+            "attention_approved": attention,
+            "attention_score_ok": attention,
+            "script_present": True,
+            "duration_ok": True,
+        }
+    }
+
+
 class EditorialRuntimeContractTests(unittest.TestCase):
     def test_director_and_writer_runtime_prompts_contain_full_dramaturgy(self) -> None:
         director = editorial_director_agent.instruction.lower()
@@ -100,13 +121,47 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             EpisodePlan.model_validate(mismatch)
 
-    def test_refiner_uses_mutually_exclusive_factual_and_voice_phases(self) -> None:
-        prompt = refiner_agent.instruction.lower()
-        self.assertIn("never optimize factuality and voice in the same refinement pass", prompt)
-        self.assertIn("phase 1 — factual repair", prompt)
-        self.assertIn("phase 2 — voice repair", prompt)
-        self.assertIn("the semantic claim set is frozen", prompt)
-        self.assertIn("when both factual and voice problems exist, fix factuality only", prompt)
+    def test_factual_and_voice_refiners_are_separate_agents_with_isolated_contexts(self) -> None:
+        factual = factual_refiner_agent.instruction.lower()
+        voice = voice_refiner_agent.instruction.lower()
+        secondary = secondary_refiner_agent.instruction.lower()
+
+        self.assertEqual(factual_refiner_agent.name, "factual_script_refiner")
+        self.assertEqual(voice_refiner_agent.name, "voice_script_refiner")
+        self.assertNotEqual(factual_refiner_agent.name, voice_refiner_agent.name)
+
+        self.assertIn("your only job is factual repair", factual)
+        self.assertIn("do not optimize voice", factual)
+        self.assertNotIn("{voice_review}", factual)
+        self.assertNotIn("{seo_review}", factual)
+        self.assertNotIn("{attention_review}", factual)
+
+        self.assertIn("the semantic claim set is frozen", voice)
+        self.assertIn("do not receive news_text", voice)
+        self.assertNotIn("{news_text}", voice)
+        self.assertNotIn("{selected_news}", voice)
+        self.assertNotIn("{review}", voice)
+        self.assertNotIn("{seo_review}", voice)
+        self.assertNotIn("{attention_review}", voice)
+
+        self.assertIn("factuality and voice already pass", secondary)
+
+    def test_refinement_routing_is_deterministic_and_factual_first(self) -> None:
+        self.assertEqual(
+            _select_refinement_phase(gate_checks(factual=False, voice=False)), "factual"
+        )
+        self.assertEqual(
+            _select_refinement_phase(gate_checks(factual=False, voice=True)), "factual"
+        )
+        self.assertEqual(
+            _select_refinement_phase(gate_checks(factual=True, voice=False)), "voice"
+        )
+        self.assertEqual(
+            _select_refinement_phase(
+                gate_checks(factual=True, voice=True, seo=False, attention=True)
+            ),
+            "secondary",
+        )
 
 
 if __name__ == "__main__":
