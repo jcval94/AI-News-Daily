@@ -19,12 +19,12 @@ on:
           - recent_window
           - scheduled_window
       lookback_days:
-        description: "Calendar days considered by recent_window (1-14). Missing daily files remain non-fatal."
+        description: "Calendar days considered by recent_window (1-14)."
         required: true
         default: "4"
         type: string
       download_multimedia:
-        description: "Download external media after the script is approved. Turn off for a cheaper script/voice test."
+        description: "Download dense external media after the script is approved. Turn off for a cheaper script/voice test."
         required: true
         default: true
         type: boolean
@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run, pipeline.production_script; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -118,12 +118,39 @@ jobs:
         run: |
           RUN_ROOT=".pipeline-runs/$TARGET_DATE/$GITHUB_RUN_ID"
           rm -rf "$RUN_ROOT"
-          mkdir -p "$RUN_ROOT/scripts" "$RUN_ROOT/multimedia"
+          mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE" "$RUN_ROOT/multimedia"
           echo "run_root=$RUN_ROOT" >> "$GITHUB_OUTPUT"
           echo "Isolated run workspace: $RUN_ROOT"
 
+      - name: Validate source coverage before model calls
+        id: source_coverage
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
+          NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
+          MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
+        run: |
+          set +e
+          python -m pipeline.source_coverage \
+            --target-date "$TARGET_DATE" \
+            --news-dir news \
+            --output "$RUN_ROOT/source_coverage.json" \
+            --state-out "$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
+          STATUS=$?
+          set -e
+          if [ "$STATUS" -eq 0 ]; then
+            echo "sufficient=true" >> "$GITHUB_OUTPUT"
+          elif [ "$STATUS" -eq 2 ]; then
+            echo "sufficient=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Source coverage below production threshold; skipping all model calls."
+          else
+            exit "$STATUS"
+          fi
+
       - name: Check OpenAI secret
         id: secret_check
+        if: steps.source_coverage.outputs.sufficient == 'true'
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -135,19 +162,17 @@ jobs:
 
       - name: Build isolated episode
         id: build
-        if: steps.secret_check.outcome == 'success'
+        if: steps.source_coverage.outputs.sufficient == 'true' && steps.secret_check.outcome == 'success'
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
           SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
           JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
-          MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
-          DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
+          DOWNLOAD_MULTIMEDIA: "false"
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
           MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
@@ -158,20 +183,18 @@ jobs:
           WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
           AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
-          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
-          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
-          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.18' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
-          python -m pipeline.run \
+          python -m pipeline.run_hardened \
             --target-date "${{ steps.script_date.outputs.target_date }}" \
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia" \
             --history-scripts-dir scripts \
             --editorial-dir editorial \
-            --max-media-downloads "$MAX_MEDIA_DOWNLOADS"
+            --max-media-downloads 0 \
+            --no-download-multimedia
 
       - name: Determine episode outcome
         id: episode_outcome
@@ -179,11 +202,14 @@ jobs:
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          COVERAGE_SUFFICIENT: ${{ steps.source_coverage.outputs.sufficient }}
           SECRET_OUTCOME: ${{ steps.secret_check.outcome }}
           BUILD_STEP_OUTCOME: ${{ steps.build.outcome }}
         run: |
           STATE_FILE="$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
-          if [ "$SECRET_OUTCOME" != "success" ]; then
+          if [ "$COVERAGE_SUFFICIENT" = "false" ] && [ -f "$STATE_FILE" ]; then
+            STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE_FILE")"
+          elif [ "$COVERAGE_SUFFICIENT" = "true" ] && [ "$SECRET_OUTCOME" != "success" ]; then
             STATUS="missing_openai_secret"
           elif [ -f "$STATE_FILE" ]; then
             STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE_FILE")"
@@ -195,9 +221,73 @@ jobs:
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           echo "Episode outcome: $STATUS"
 
+      - name: Build canonical dense multimedia package
+        id: dense_media
+        if: steps.episode_outcome.outputs.status == 'approved' && steps.runtime_options.outputs.download_multimedia == 'true'
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          MAX_MEDIA: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          MAX_MEDIA="${MAX_MEDIA:-54}"
+          OUTPUT_DIR="$RUN_ROOT/multimedia/$TARGET_DATE"
+          ZIP="$RUN_ROOT/multimedia/multimedia-${TARGET_DATE}-run-${GITHUB_RUN_ID}.zip"
+          rm -rf "$OUTPUT_DIR" "$ZIP"
+
+          run_offline() {
+            rm -rf "$OUTPUT_DIR" "$ZIP"
+            python -m pipeline.review_media_offline_dense \
+              --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
+              --output-dir "$OUTPUT_DIR" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA"
+          }
+
+          set +e
+          python -m pipeline.review_media_dense_hardened \
+            --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
+            --output-dir "$OUTPUT_DIR" \
+            --zip-out "$ZIP" \
+            --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/production-dense-media.log
+          STATUS=${PIPESTATUS[0]}
+          set -e
+          if [ "$STATUS" -ne 0 ]; then
+            if grep -Eqi 'credit_balance_exhausted|insufficient_quota|no credits remaining' /tmp/production-dense-media.log; then
+              echo "::warning::Model quota unavailable; rebuilding canonical multimedia deterministically."
+              run_offline
+            else
+              exit "$STATUS"
+            fi
+          fi
+
+          export OUTPUT_DIR MAX_MEDIA
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest = json.loads((Path(os.environ["OUTPUT_DIR"]) / "manifest.json").read_text(encoding="utf-8"))
+          budget = int(os.environ.get("MAX_MEDIA", "54"))
+          count = len(manifest)
+          videos = sum(1 for item in manifest if item.get("asset_type") == "video")
+          images = sum(1 for item in manifest if item.get("asset_type") == "image")
+          opening = sum(1 for item in manifest if float(item.get("start_seconds", 0) or 0) < 20)
+          print(f"Canonical dense media: {count} assets = {videos} video + {images} image; opening={opening}")
+          if budget >= 45 and count < 45:
+              raise SystemExit(f"Dense media floor failed: expected >=45 assets, got {count}")
+          if opening < 5:
+              raise SystemExit(f"Cold-open media floor failed: expected >=5 assets, got {opening}")
+          PY
+
       - name: Create production script
         id: production_script
-        if: always() && steps.secret_check.outcome == 'success'
+        if: always() && steps.episode_outcome.outputs.status == 'approved'
         continue-on-error: true
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
@@ -222,7 +312,7 @@ jobs:
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
-          MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '12' }}
+          MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
           DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
@@ -236,7 +326,7 @@ jobs:
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
-          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.18' }}
+          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
@@ -253,6 +343,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
           steps.report.outcome == 'success' &&
+          (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
         run: git pull --rebase origin "$GITHUB_REF_NAME"
 
@@ -262,6 +353,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
           steps.report.outcome == 'success' &&
+          (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
         env:
           TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
@@ -303,6 +395,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'missing_openai_secret' ||
           steps.episode_outcome.outputs.status == 'failure' ||
           steps.episode_outcome.outputs.status == 'script_not_approved' ||
+          steps.dense_media.outcome == 'failure' ||
           steps.production_script.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |

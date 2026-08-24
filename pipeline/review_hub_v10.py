@@ -14,7 +14,6 @@ from pipeline.review_hub_v8 import (
     _gate_block,
     _run_kpis,
     _state_machine,
-    _workflow_lanes,
 )
 from pipeline.review_hub_v9 import build_site as _build_site_v9
 
@@ -136,6 +135,22 @@ def _design_decisions(data: dict[str, Any]) -> str:
     ) + '</div>'
 
 
+def _workflow_lanes() -> str:
+    return (
+        '<div class="e2e-lanes">'
+        '<article class="e2e-lane" data-search-item><span class="eyebrow">Lane A · Producción</span><h3>Build AI News Video Kit</h3>'
+        '<p>Preflight de cobertura → runtime editorial aislado → quality gates → multimedia densa solo si el guion fue aprobado → reporte → promoción fail-closed. El artifact <code>ai-news-run-*</code> es la fuente de verdad observable.</p>'
+        '<div class="e2e-chain">source coverage → agents/judges → approved? → dense media → report → promotion → ai-news-run artifact</div></article>'
+        '<article class="e2e-lane" data-search-item><span class="eyebrow">Lane B · QA</span><h3>Editorial Regression</h3>'
+        '<p>Ejecuta validación editorial/model-backed sobre el último input disponible para detectar regresiones. Es una lane de QA independiente y ya no alimenta Pages como contenido canónico.</p>'
+        '<div class="e2e-chain">latest news window → hardened runtime → regression checks → editorial-regression artifact</div></article>'
+        '<article class="e2e-lane" data-search-item><span class="eyebrow">Lane C · Observabilidad</span><h3>Editorial Review Hub / Pages</h3>'
+        '<p>Consume el artifact productivo real, construye un snapshot determinista de QA, reutiliza la multimedia canónica si cumple el contrato y solo reconstruye paquetes legacy/sparse. Después arma el catálogo histórico y despliega Pages.</p>'
+        '<div class="e2e-chain">ai-news-run artifact → review snapshot → canonical media/rebuild legacy → static hub → catalog → Pages</div></article>'
+        '</div>'
+    )
+
+
 def process_panel(snapshot: dict[str, Any], data: dict[str, Any] | None = None) -> str:
     data = data or manifest()
     errors = validate_manifest_runtime(data)
@@ -162,7 +177,7 @@ def process_panel(snapshot: dict[str, Any], data: dict[str, Any] | None = None) 
         '<section id="e2e-gates" class="e2e-chapter"><span class="eyebrow">06 · Quality gates</span><h2>Aprobación por restricciones</h2>' + _gate_block() + '<h3 class="e2e-subheading">Estados finales</h3>' + _state_machine() + '</section>'
         '<section id="e2e-costs" class="e2e-chapter"><span class="eyebrow">07 · FinOps</span><h2>Costos del episodio mostrado</h2>' + _cost_section(snapshot) + '</section>'
         '<section id="e2e-artifacts" class="e2e-chapter"><span class="eyebrow">08 · Artefactos</span><h2>Memoria auditable</h2>' + _artifact_map() + '</section>'
-        '<section id="e2e-actions" class="e2e-chapter"><span class="eyebrow">09 · GitHub Actions</span><h2>Producción, evaluación y observabilidad separadas</h2>' + _workflow_lanes() + '</section>'
+        '<section id="e2e-actions" class="e2e-chapter"><span class="eyebrow">09 · GitHub Actions</span><h2>Producción, QA y observabilidad separadas</h2>' + _workflow_lanes() + '</section>'
         '<section id="e2e-why" class="e2e-chapter"><span class="eyebrow">10 · Decisiones de diseño</span><h2>Por qué está construido así</h2>' + _design_decisions(data) + '</section>'
         '<div class="e2e-final"><span class="eyebrow">Contrato</span><h2>La documentación también debe pasar un gate</h2><p>El manifest conecta nombres humanos, símbolos de runtime y trace steps. Si divergen, CI debe impedir que la explicación quede obsoleta.</p></div>'
         '</section>'
