@@ -192,7 +192,7 @@ jobs:
         run: |
           set -euo pipefail
           MAX_MEDIA="${MAX_MEDIA:-54}"
-          export MAX_MEDIA
+          export MAX_MEDIA TARGET_DATE
           rm -rf review-media review-downloads
           mkdir -p review-media review-downloads
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
