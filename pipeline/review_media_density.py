@@ -5,7 +5,10 @@ from typing import Any
 from pipeline import review_media as base
 
 DENSE_DEFAULT_MAX_MEDIA = 54
-POST_OPENING_INTERVAL_SECONDS = 12.0
+# Keep the candidate cadence compatible with the production floor. A valid minimum
+# 420-second episode yields 6 cold-open slots plus at least 40 late slots, so the
+# >=45-asset contract remains achievable without relaxing the gate.
+POST_OPENING_INTERVAL_SECONDS = 10.0
 POST_OPENING_ASSET_SECONDS = 4.5
 LATE_VIDEO_EVERY = 3
 
@@ -41,7 +44,7 @@ def dense_candidate_slots(section_ranges: list[dict[str, Any]]) -> list[dict[str
 
     Policy:
     - 0–20s: keep the existing ~3.5s video-first cold-open cadence.
-    - after 20s: offer one candidate about every 12s across the complete spoken timeline.
+    - after 20s: offer one candidate about every 10s across the complete spoken timeline.
     - every candidate remains tied to its section/beat/evidence metadata.
     """
     slots: list[dict[str, Any]] = []
@@ -211,7 +214,6 @@ def install_density_policy() -> None:
     original_budget = base.select_spread_media_budget
 
     def capped_dense_budget(plan: list[dict[str, Any]], *, max_media_downloads: int) -> list[dict[str, Any]]:
-        # dense_media_budget calls the original via this saved reference to avoid recursion.
         if max_media_downloads <= 0:
             return original_budget(plan, max_media_downloads=0)
         target = min(max_media_downloads, len(plan))
