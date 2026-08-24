@@ -55,6 +55,19 @@ def _elapsed(records: list[dict[str, Any]]) -> float:
     return round(total, 3)
 
 
+def _discover_production_media(episode_dir: Path) -> Path | None:
+    """Find production multimedia only from the same persisted artifact tree as scripts.
+
+    This intentionally does not inspect the Review Hub's ``media_dir``. In both canonical
+    runs and downloaded production artifacts, ``scripts/<date>`` and ``multimedia/<date>``
+    are siblings under one root, which provides provenance without a synthetic marker.
+    """
+    if episode_dir.parent.name != "scripts":
+        return None
+    candidate = episode_dir.parent.parent / "multimedia" / episode_dir.name
+    return candidate if (candidate / "manifest.json").exists() else None
+
+
 def derive_run_journey(
     *,
     episode_dir: Path,
@@ -66,11 +79,13 @@ def derive_run_journey(
     """Reconstruct the observed production journey from persisted run artifacts.
 
     ``media_dir`` is retained for Review Hub caller compatibility but is deliberately not
-    treated as proof of production-media materialization: in Pages it points to media
-    generated later by the review workflow. Only ``production_media_dir`` may prove that
-    the original production run persisted a multimedia manifest.
+    treated as proof of production-media materialization: in Pages it may point to media
+    generated later by the review workflow. Production media is accepted only when passed
+    explicitly or discovered beside ``scripts/<date>`` in the same persisted artifact.
     """
     del media_dir
+    if production_media_dir is None:
+        production_media_dir = _discover_production_media(episode_dir)
     architecture = architecture or manifest()
     cost_snapshot = cost_snapshot or {}
     trace = _read_json(episode_dir / "execution_trace.json", {})
