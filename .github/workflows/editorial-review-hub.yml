@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID or the latest successful run"
+        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID or the latest successful run with a valid artifact"
         required: false
         default: ""
         type: string
@@ -27,6 +27,8 @@ on:
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
       - "pipeline/review_hub_v3.py"
+      - "pipeline/review_hub_v4.py"
+      - "pipeline/review_hub_v5.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
@@ -34,6 +36,7 @@ on:
       - "tests/test_review_hub.py"
       - "tests/test_review_hub_search.py"
       - "tests/test_review_hub_v3.py"
+      - "tests/test_review_hub_v5.py"
       - "tests/test_review_media_offline.py"
       - "evals/editorial/**"
   push:
@@ -45,11 +48,14 @@ on:
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
       - "pipeline/review_hub_v3.py"
+      - "pipeline/review_hub_v4.py"
+      - "pipeline/review_hub_v5.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/media.py"
       - "tests/test_review_hub_search.py"
       - "tests/test_review_hub_v3.py"
+      - "tests/test_review_hub_v5.py"
       - "evals/editorial/**"
 
 permissions:
@@ -86,13 +92,49 @@ jobs:
           DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID }}
         run: |
           set -euo pipefail
+
+          artifact_for_run() {
+            local candidate="$1"
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate/artifacts" \
+              --jq '.artifacts | map(select(.expired == false and (.name | startswith("editorial-regression-")))) | sort_by(.created_at) | last | .name' \
+              2>/dev/null || true
+          }
+
           RUN_ID="${INPUT_RUN_ID:-$DEFAULT_RUN_ID}"
-          if [ -z "$RUN_ID" ]; then
-            RUN_ID="$(gh run list --workflow 'Editorial Regression' --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          ARTIFACT_NAME=""
+          if [ -n "$RUN_ID" ]; then
+            ARTIFACT_NAME="$(artifact_for_run "$RUN_ID")"
           fi
-          test -n "$RUN_ID" || { echo "No Editorial Regression run found"; exit 1; }
-          ARTIFACT_NAME="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '.artifacts | map(select(.expired == false and (.name | startswith("editorial-regression-")))) | sort_by(.created_at) | last | .name')"
+
+          if [ -n "${INPUT_RUN_ID:-}" ] && { [ -z "$ARTIFACT_NAME" ] || [ "$ARTIFACT_NAME" = "null" ]; }; then
+            echo "Explicit Editorial Regression run $INPUT_RUN_ID has no usable editorial-regression artifact."
+            exit 1
+          fi
+
+          if [ -z "$ARTIFACT_NAME" ] || [ "$ARTIFACT_NAME" = "null" ]; then
+            if [ -n "$RUN_ID" ]; then
+              echo "::warning::Configured source run $RUN_ID has no usable artifact; searching recent successful Editorial Regression runs."
+            fi
+            RUN_ID=""
+            while IFS= read -r candidate; do
+              [ -n "$candidate" ] || continue
+              candidate_artifact="$(artifact_for_run "$candidate")"
+              if [ -n "$candidate_artifact" ] && [ "$candidate_artifact" != "null" ]; then
+                RUN_ID="$candidate"
+                ARTIFACT_NAME="$candidate_artifact"
+                break
+              fi
+            done < <(gh run list \
+              --workflow 'Editorial Regression' \
+              --status success \
+              --limit 20 \
+              --json databaseId \
+              --jq '.[].databaseId')
+          fi
+
+          test -n "$RUN_ID" || { echo "No successful Editorial Regression run with a usable artifact found"; exit 1; }
           test -n "$ARTIFACT_NAME" -a "$ARTIFACT_NAME" != "null" || { echo "No editorial-regression artifact found for run $RUN_ID"; exit 1; }
+
           rm -rf .review-source
           mkdir -p .review-source
           gh run download "$RUN_ID" --name "$ARTIFACT_NAME" --dir .review-source
@@ -114,7 +156,7 @@ jobs:
           echo "episode_dir=$EPISODE_DIR" >> "$GITHUB_OUTPUT"
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
-          echo "Using Editorial Regression run $RUN_ID / $TARGET_DATE"
+          echo "Using Editorial Regression run $RUN_ID / $TARGET_DATE / $ARTIFACT_NAME"
 
       - name: Reconcile high-confidence evidence/source references for review
         env:
@@ -197,6 +239,13 @@ jobs:
           grep -q 'details class="diagnostic"' review-site/index.html
           grep -q 'class="skip-link"' review-site/index.html
           grep -q "preload='none'" review-site/index.html
+          grep -q 'role="tablist"' review-site/index.html
+          grep -q 'data-tab="overview"' review-site/index.html
+          grep -q 'data-tab="script"' review-site/index.html
+          grep -q 'data-tab="evidence"' review-site/index.html
+          grep -q 'data-tab="media"' review-site/index.html
+          grep -q 'data-tab="technical"' review-site/index.html
+          grep -q 'class="source-cards"' review-site/index.html
 
       - name: Upload review hub + multimedia artifact
         uses: actions/upload-artifact@v4
@@ -243,7 +292,9 @@ jobs:
           for attempt in 1 2 3 4 5 6; do
             if curl -fsSL --max-time 20 "$PAGE_URL" -o /tmp/review-hub.html \
               && grep -q 'id="globalSearch"' /tmp/review-hub.html \
-              && grep -q 'class="skip-link"' /tmp/review-hub.html; then
+              && grep -q 'class="skip-link"' /tmp/review-hub.html \
+              && grep -q 'data-tab="overview"' /tmp/review-hub.html \
+              && grep -q 'data-tab="technical"' /tmp/review-hub.html; then
               echo "GitHub Pages smoke test passed: $PAGE_URL"
               exit 0
             fi
