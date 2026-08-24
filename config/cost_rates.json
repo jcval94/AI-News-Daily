@@ -17,6 +17,16 @@
       "source": "https://www.pexels.com/api/documentation/",
       "notes": "Pexels states that API content is available free of charge; request quotas still apply."
     },
+    "wikimedia_commons": {
+      "usd_per_request": 0.0,
+      "source": "https://www.mediawiki.org/wiki/Wikimedia_APIs",
+      "notes": "The pipeline uses Wikimedia's public community API, which has no per-request billing. Wikimedia Enterprise is a separate high-volume commercial product and is not used here."
+    },
+    "generated_fallback": {
+      "usd_per_asset": 0.0,
+      "source": "local",
+      "notes": "Fallback cards are generated locally with Pillow and incur no external provider charge."
+    },
     "github_actions_standard_public_runner": {
       "usd_per_minute": 0.0,
       "source": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
