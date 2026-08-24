@@ -678,7 +678,7 @@ Forbidden in this phase:
 - adding analogies, scenes, hooks, personality, SEO terms, new examples, or new factual claims;
 - restructuring for retention;
 - trying to satisfy voice/AI-smell feedback.
-When factual and voice problems both exist, fix factuality ONLY. Voice waits for a later iteration.
+When both factual and voice problems exist, fix factuality ONLY. Voice waits for a later iteration.
 
 PHASE 2 — VOICE REPAIR
 Use this phase ONLY when factuality_risk is low AND the editorial factual gate is already satisfied, but
