@@ -111,8 +111,9 @@ def _service_cards(snapshot: dict[str, Any]) -> str:
     usage = snapshot.get("usage", {}) if isinstance(snapshot, dict) else {}
     multimedia = snapshot.get("multimedia", {}) if isinstance(snapshot, dict) else {}
     github = snapshot.get("github", {}) if isinstance(snapshot, dict) else {}
-    provider_counts = multimedia.get("provider_counts", {}) if isinstance(multimedia.get("provider_counts"), dict) else {}
     pexels_assets = int(multimedia.get("pexels_assets", 0) or 0)
+    wikimedia_assets = int(multimedia.get("wikimedia_assets", 0) or 0)
+    fallback_assets = int(multimedia.get("generated_fallback_assets", 0) or 0)
     cards = [
         (
             "OpenAI API",
@@ -123,7 +124,19 @@ def _service_cards(snapshot: dict[str, Any]) -> str:
         (
             "Pexels API",
             _usd(totals.get("pexels_known_cost_usd")),
-            f"{pexels_assets} assets Pexels · requests exactos no persistidos" if pexels_assets else f"Providers: {provider_counts or '—'}",
+            f"{pexels_assets} assets · requests exactos no persistidos · API sin cargo por request según snapshot",
+            "policy",
+        ),
+        (
+            "Wikimedia Commons",
+            _usd(totals.get("wikimedia_known_cost_usd")),
+            f"{wikimedia_assets} assets · community API sin cargo por request; Wikimedia Enterprise no se usa",
+            "policy",
+        ),
+        (
+            "Fallback local",
+            _usd(totals.get("generated_fallback_known_cost_usd")),
+            f"{fallback_assets} assets generados localmente con Pillow · sin cargo externo",
             "policy",
         ),
         (
@@ -218,6 +231,7 @@ def _coverage(snapshot: dict[str, Any]) -> str:
         ("Costo directo", "Completo para uso persistido" if completeness else "Es un piso: hay uso sin medir o sin precio", completeness),
         ("Cached input", "No medido; se cobra conservadoramente como input estándar", False),
         ("Pexels requests", "No se persiste el conteo exacto de requests; costo monetario de API = 0 según snapshot", False),
+        ("Wikimedia requests", "No se persiste el conteo exacto; la community API usada por el pipeline no tiene cargo por request", False),
         ("GitHub billing", "La página no tiene acceso a la utilización de facturación de la cuenta; storage se muestra como exposición bruta", False),
     ]
     checks = '<div class="coverage-grid">' + "".join(
@@ -238,12 +252,15 @@ def _source_links(snapshot: dict[str, Any]) -> str:
     labels = (
         ("OpenAI pricing", sources.get("openai")),
         ("Pexels API", sources.get("pexels")),
+        ("Wikimedia APIs", sources.get("wikimedia")),
         ("GitHub Actions", sources.get("github_actions")),
         ("GitHub artifact storage", sources.get("github_storage")),
     )
     links = []
     for label, url in labels:
         if not url:
+            continue
+        if str(url) == "local":
             continue
         links.append(f'<a href="{html.escape(str(url), quote=True)}" target="_blank" rel="noreferrer">{html.escape(label)}</a>')
     return '<div class="cost-sources"><span>Fuentes de tarifa:</span>' + " · ".join(links) + '</div>'
@@ -279,7 +296,7 @@ BUDGET_CSS = r"""
 /* v7: dedicated FinOps / budget workspace. */
 .budget-section{padding:22px 0 10px}.budget-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:18px}.budget-heading h2{margin:4px 0 6px}.budget-heading p{margin:0;color:var(--muted);max-width:720px}.budget-state{display:grid;justify-items:end;gap:3px;min-width:180px}.budget-state>strong{font-size:30px;line-height:1.05}.budget-state>small{color:var(--muted)}
 .budget-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.budget-kpi{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:15px}.budget-kpi>span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}.budget-kpi>strong{display:block;font-size:25px;margin:7px 0 5px}.budget-kpi>small{display:block;color:#aebdcd;line-height:1.35}.pricing-note{margin:11px 0 22px;padding:11px 13px;border-left:3px solid #315b78;background:#101a25;color:#aebdcd;font-size:12px;line-height:1.55}.budget-section-heading{display:flex;justify-content:space-between;gap:18px;align-items:end;margin:25px 0 10px}.budget-section-heading h3{margin:0}.budget-section-heading p{margin:0;color:var(--muted);font-size:12px;text-align:right}
-.service-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.service-card{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:15px}.service-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.service-card h3{font-size:14px;margin:0}.service-card>strong{display:block;font-size:24px;margin:10px 0 6px}.service-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}.cost-kind{font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:3px 6px;border-radius:999px;background:#1b2938;color:#adbed0}.cost-kind.calculated{color:#bfe9ff;background:#163047}.cost-kind.policy{color:#bce8d8;background:#153127}.cost-kind.exposure{color:#f0d3a5;background:#3a2b17}
+.service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.service-card{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:15px}.service-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.service-card h3{font-size:14px;margin:0}.service-card>strong{display:block;font-size:24px;margin:10px 0 6px}.service-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}.cost-kind{font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:3px 6px;border-radius:999px;background:#1b2938;color:#adbed0}.cost-kind.calculated{color:#bfe9ff;background:#163047}.cost-kind.policy{color:#bce8d8;background:#153127}.cost-kind.exposure{color:#f0d3a5;background:#3a2b17}
 .budget-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#101722}.budget-table{width:100%;border-collapse:collapse;min-width:860px;font-size:12px}.budget-table th{position:sticky;top:0;background:#161f2c;color:#91a5ba;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:10px 11px;border-bottom:1px solid var(--line)}.budget-table td{padding:10px 11px;border-top:1px solid #243143;vertical-align:top}.budget-table tbody tr:first-child td{border-top:0}.budget-table td small{display:block;color:var(--muted);margin-top:3px}.budget-table .money{text-align:right;font-variant-numeric:tabular-nums;font-weight:800}.scope-pill{display:inline-block;padding:3px 6px;border-radius:7px;background:#19283a;color:#b6cadc;font-size:10px}.attempt-status{display:inline-block;padding:2px 6px;border-radius:999px;background:#242f3d}.attempt-status.success{color:#bce8d8;background:#153127}.attempt-status.error{color:#ffc0c9;background:#3b1c27}
 .cost-details{margin-top:10px;border:1px solid var(--line);border-radius:13px;background:#0f151f}.cost-details>summary{cursor:pointer;padding:11px 13px;font-weight:760;color:#bdd0e2}.cost-details>.budget-table-wrap{border:0;border-top:1px solid var(--line);border-radius:0}.coverage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.coverage-item{display:flex;gap:10px;border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--panel)}.coverage-item strong{font-size:12px}.coverage-item p{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.4}.coverage-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex:0 0 auto;background:#bd8740}.coverage-dot.ok{background:#53b88f}.cost-warnings{margin:0;padding:0 30px 13px;color:#d9c3a4}.cost-warnings li{margin:7px 0}.cost-download{margin:17px 0 10px}.cost-sources{color:var(--muted);font-size:11px;margin-top:12px}.cost-sources span{margin-right:5px}.cost-sources a{color:#9bdcff}
 @media(max-width:900px){.budget-kpis,.service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
