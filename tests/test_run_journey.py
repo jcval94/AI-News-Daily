@@ -17,17 +17,14 @@ class RunJourneyTests(unittest.TestCase):
     def test_derives_executed_and_not_required_refinement_phases(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             episode = Path(tmp) / "scripts" / "2026-08-21"
-            media = Path(tmp) / "multimedia" / "2026-08-21"
+            production_media = Path(tmp) / "multimedia" / "2026-08-21"
             episode.mkdir(parents=True)
-            media.mkdir(parents=True)
+            production_media.mkdir(parents=True)
             self._write(episode / "run_state.json", {"status": "approved", "publishable": True, "reason": "all gates passed"})
             self._write(episode / "selected_news.json", {"items": [{"title": "A"}, {"title": "B"}]})
             self._write(episode / "episode_plan.json", {"claim_ledger": [{"evidence_id": "E1"}]})
             self._write(episode / "novelty_check.json", {"attempts": [{"similarity": 0.19, "duplicate": False}]})
-            self._write(
-                episode / "reviews.json",
-                {"approved_for_multimedia": True, "gate": {"approved": True}},
-            )
+            self._write(episode / "reviews.json", {"approved_for_multimedia": True, "gate": {"approved": True}})
             self._write(
                 episode / "execution_trace.json",
                 {
@@ -48,7 +45,7 @@ class RunJourneyTests(unittest.TestCase):
                     ],
                 },
             )
-            self._write(media / "manifest.json", [{"file": "asset.jpg"}])
+            self._write(production_media / "manifest.json", [{"file": "asset.jpg"}])
             snapshot = {
                 "breakdown_by_step": [
                     {"step": "select_news", "estimated_cost_usd": 0.001},
@@ -56,7 +53,11 @@ class RunJourneyTests(unittest.TestCase):
                 ]
             }
 
-            journey = derive_run_journey(episode_dir=episode, media_dir=media, cost_snapshot=snapshot)
+            journey = derive_run_journey(
+                episode_dir=episode,
+                production_media_dir=production_media,
+                cost_snapshot=snapshot,
+            )
             by_id = {stage["id"]: stage for stage in journey["stages"]}
             self.assertEqual(journey["status"], "approved")
             self.assertEqual(journey["selected_news_count"], 2)
@@ -74,6 +75,18 @@ class RunJourneyTests(unittest.TestCase):
             self.assertIn("Factual repair", html)
             self.assertIn("NO REQUERIDO", html)
             self.assertIn("$0.0040", html)
+
+    def test_review_media_is_not_misreported_as_production_media(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            episode = Path(tmp) / "episode"
+            review_media = Path(tmp) / "review-media"
+            episode.mkdir()
+            review_media.mkdir()
+            self._write(episode / "run_state.json", {"status": "approved", "publishable": True})
+            self._write(review_media / "manifest.json", [{"file": "review-only.jpg"}])
+            journey = derive_run_journey(episode_dir=episode, media_dir=review_media, cost_snapshot={})
+            by_id = {stage["id"]: stage for stage in journey["stages"]}
+            self.assertEqual(by_id["media_materialize"]["status"], "not_observed")
 
     def test_non_publishable_state_remains_visible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
