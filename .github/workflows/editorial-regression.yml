@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       target_date:
-        description: "Frozen news window date"
-        required: true
-        default: "2026-08-21"
+        description: "Optional news-window date. Empty = latest available news file."
+        required: false
+        default: ""
         type: string
       lookback_days:
         description: "Recent-window lookback"
@@ -18,11 +18,31 @@ on:
       - main
     paths:
       - ".github/workflows/editorial-regression.yml"
+      - "app/**"
+      - "pipeline/run.py"
+      - "pipeline/run_hardened.py"
+      - "pipeline/runtime_hardening.py"
+      - "pipeline/core.py"
+      - "pipeline/news.py"
+      - "pipeline/script_sections.py"
+      - "pipeline/source_coverage.py"
+      - "pipeline/editorial_regression.py"
+      - "editorial/**"
   push:
     branches:
-      - fix/high-1-4-editorial-stabilization
+      - main
     paths:
       - ".github/workflows/editorial-regression.yml"
+      - "app/**"
+      - "pipeline/run.py"
+      - "pipeline/run_hardened.py"
+      - "pipeline/runtime_hardening.py"
+      - "pipeline/core.py"
+      - "pipeline/news.py"
+      - "pipeline/script_sections.py"
+      - "pipeline/source_coverage.py"
+      - "pipeline/editorial_regression.py"
+      - "editorial/**"
 
 permissions:
   contents: read
@@ -45,9 +65,34 @@ jobs:
           INPUT_DATE: ${{ inputs.target_date }}
           INPUT_LOOKBACK: ${{ inputs.lookback_days }}
         run: |
-          echo "target_date=${INPUT_DATE:-2026-08-21}" >> "$GITHUB_OUTPUT"
+          if [ -n "$INPUT_DATE" ]; then
+            TARGET_DATE="$INPUT_DATE"
+          else
+            LATEST_FILE="$(find news -maxdepth 1 -type f -name '????-??-??.txt' | sort | tail -1)"
+            test -n "$LATEST_FILE" || { echo "No dated news files available"; exit 1; }
+            TARGET_DATE="$(basename "$LATEST_FILE" .txt)"
+          fi
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "lookback_days=${INPUT_LOOKBACK:-4}" >> "$GITHUB_OUTPUT"
           echo "run_root=.editorial-regression/$GITHUB_RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "Editorial regression target: $TARGET_DATE"
+
+      - name: Validate source coverage
+        id: coverage
+        env:
+          TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
+          LOOKBACK_DAYS: ${{ steps.scenario.outputs.lookback_days }}
+          RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
+          NEWS_SOURCE_MODE: recent_window
+          NEWS_LOOKBACK_DAYS: ${{ steps.scenario.outputs.lookback_days }}
+          MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
+        run: |
+          mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE" "$RUN_ROOT/multimedia"
+          python -m pipeline.source_coverage \
+            --target-date "$TARGET_DATE" \
+            --news-dir news \
+            --output "$RUN_ROOT/source_coverage.json" \
+            --state-out "$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
 
       - name: Require model secret
         env:
@@ -55,7 +100,7 @@ jobs:
         run: |
           test -n "$OPENAI_API_KEY" || { echo "OPENAI_API_KEY is required"; exit 1; }
 
-      - name: Run current agents on frozen news window
+      - name: Run current agents on latest valid news window
         id: build
         continue-on-error: true
         env:
@@ -82,8 +127,7 @@ jobs:
           TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
           RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
         run: |
-          mkdir -p "$RUN_ROOT/scripts" "$RUN_ROOT/multimedia"
-          python -m pipeline.run \
+          python -m pipeline.run_hardened \
             --target-date "$TARGET_DATE" \
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia" \
@@ -110,7 +154,7 @@ jobs:
           TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
           RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
         run: |
-          for file in episode_plan.json script_sections.json reviews.json run_state.json script.txt; do
+          for file in episode_plan.json script_sections.json reviews.json run_state.json execution_trace.json script.txt; do
             path="$RUN_ROOT/scripts/$TARGET_DATE/$file"
             if [ -f "$path" ]; then
               echo "===== $file ====="
@@ -118,6 +162,10 @@ jobs:
               echo
             fi
           done
+          if [ -f "$RUN_ROOT/source_coverage.json" ]; then
+            echo "===== source_coverage.json ====="
+            cat "$RUN_ROOT/source_coverage.json"
+          fi
           if [ -f "$RUN_ROOT/editorial-regression.json" ]; then
             echo "===== editorial-regression.json ====="
             cat "$RUN_ROOT/editorial-regression.json"
