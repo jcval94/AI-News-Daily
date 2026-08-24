@@ -9,7 +9,7 @@ import time
 import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -24,13 +24,17 @@ from app.agent import (
     VoiceReviewResult,
     editorial_director_agent,
     multimedia_editor_agent,
-    refiner_agent,
     reviewer_agent,
     selector_agent,
     seo_master_agent,
     voice_humanity_critic_agent,
     writer_agent,
     youtube_attention_master_agent,
+)
+from app.refiners import (
+    factual_refiner_agent,
+    secondary_refiner_agent,
+    voice_refiner_agent,
 )
 from pipeline.core import (
     APPROVED,
@@ -303,9 +307,12 @@ def load_editorial_profiles(editorial_dir: Path) -> tuple[str, str]:
 
 def validate_episode_plan(plan: dict[str, Any], selected_count: int) -> None:
     evidence = plan.get("evidence", []) if isinstance(plan, dict) else []
+    ledger = plan.get("claim_ledger", []) if isinstance(plan, dict) else []
     beats = plan.get("beats", []) if isinstance(plan, dict) else []
     if not evidence:
         raise ValueError("Editorial Director returned no evidence in episode_plan")
+    if not ledger:
+        raise ValueError("Editorial Director returned no claim_ledger in episode_plan")
     if not beats:
         raise ValueError("Editorial Director returned no idea-led beats in episode_plan")
 
@@ -326,6 +333,28 @@ def validate_episode_plan(plan: dict[str, Any], selected_count: int) -> None:
         raise ValueError("episode_plan.evidence must not duplicate selected news")
     if len(evidence_ids) != len(set(evidence_ids)):
         raise ValueError("episode_plan.evidence must use unique evidence_id values")
+
+    evidence_index_by_id = dict(zip(evidence_ids, evidence_indices, strict=True))
+    ledger_ids: list[str] = []
+    for entry in ledger:
+        if not isinstance(entry, dict):
+            raise ValueError("Every claim_ledger entry must be an object")
+        ledger_id = str(entry.get("evidence_id", "") or "").strip()
+        if not ledger_id:
+            raise ValueError("Every claim_ledger entry must have evidence_id")
+        ledger_ids.append(ledger_id)
+        if ledger_id not in evidence_index_by_id:
+            raise ValueError("claim_ledger references undeclared evidence")
+        index = int(entry.get("selected_news_index", 0) or 0)
+        if index != evidence_index_by_id[ledger_id]:
+            raise ValueError("claim_ledger selected_news_index must match evidence")
+        supported = entry.get("supported_facts", [])
+        if not isinstance(supported, list) or not supported:
+            raise ValueError("Every claim_ledger entry must contain supported_facts")
+    if len(ledger_ids) != len(set(ledger_ids)):
+        raise ValueError("claim_ledger evidence_id values must be unique")
+    if set(ledger_ids) != set(evidence_ids):
+        raise ValueError("claim_ledger must cover every evidence item exactly once")
 
     allowed = set(evidence_ids)
     used: set[str] = set()
@@ -385,6 +414,25 @@ def _candidate_rank(
         float(voice.get("intellectual_depth", 0) or 0),
         float(voice.get("human_relevance", 0) or 0),
     )
+
+
+def _select_refinement_phase(gate: dict[str, Any]) -> Literal["factual", "voice", "secondary"]:
+    """Choose the next refiner deterministically and in strict quality order."""
+    checks = gate.get("checks", {}) if isinstance(gate, dict) else {}
+    factual_ok = all(
+        bool(checks.get(key, False))
+        for key in ("editorial_approved", "editorial_score_ok", "factuality_low")
+    )
+    if not factual_ok:
+        return "factual"
+
+    voice_ok = all(
+        bool(checks.get(key, False))
+        for key in ("voice_approved", "voice_score_ok", "ai_smell_low")
+    )
+    if not voice_ok:
+        return "voice"
+    return "secondary"
 
 
 def _usage_from_event(event: Any) -> dict[str, int]:
@@ -810,34 +858,61 @@ async def build(
                 "discourse_profile": discourse_profile,
             }
             editorial_state = await run_agent(
-                reviewer_agent, review_base,
+                reviewer_agent,
+                review_base,
                 "Evaluate factuality, conceptual rigor, and editorial quality.",
-                step="editorial_judge", trace=agent_trace, iteration=iteration,
+                step="editorial_judge",
+                trace=agent_trace,
+                iteration=iteration,
             )
             seo_state = await run_agent(
-                seo_master_agent, review_base,
+                seo_master_agent,
+                review_base,
                 "Evaluate discoverability without sacrificing rigor or voice.",
-                step="seo_judge", trace=agent_trace, iteration=iteration,
+                step="seo_judge",
+                trace=agent_trace,
+                iteration=iteration,
             )
             attention_state = await run_agent(
-                youtube_attention_master_agent, review_base,
+                youtube_attention_master_agent,
+                review_base,
                 "Evaluate earned attention, progressive revelation, pacing, and CTA.",
-                step="attention_judge", trace=agent_trace, iteration=iteration,
+                step="attention_judge",
+                trace=agent_trace,
+                iteration=iteration,
             )
             voice_state = await run_agent(
-                voice_humanity_critic_agent, review_base,
+                voice_humanity_critic_agent,
+                review_base,
                 "Evaluate voice fidelity, intellectual depth, humanity, analogies, and AI smell.",
-                step="voice_judge", trace=agent_trace, iteration=iteration,
+                step="voice_judge",
+                trace=agent_trace,
+                iteration=iteration,
             )
 
-            editorial_result = ReviewResult.model_validate(editorial_state.get("review", {})).model_dump()
-            seo_result = MasterJudgeResult.model_validate(seo_state.get("seo_review", {})).model_dump()
-            attention_result = MasterJudgeResult.model_validate(attention_state.get("attention_review", {})).model_dump()
-            voice_result = VoiceReviewResult.model_validate(voice_state.get("voice_review", {})).model_dump()
+            editorial_result = ReviewResult.model_validate(
+                editorial_state.get("review", {})
+            ).model_dump()
+            seo_result = MasterJudgeResult.model_validate(
+                seo_state.get("seo_review", {})
+            ).model_dump()
+            attention_result = MasterJudgeResult.model_validate(
+                attention_state.get("attention_review", {})
+            ).model_dump()
+            voice_result = VoiceReviewResult.model_validate(
+                voice_state.get("voice_review", {})
+            ).model_dump()
             gate_result = evaluate_script_gate(
-                draft_script, editorial_result, seo_result, attention_result, voice_result, CONFIG
+                draft_script,
+                editorial_result,
+                seo_result,
+                attention_result,
+                voice_result,
+                CONFIG,
             )
-            rank = _candidate_rank(gate_result, editorial_result, seo_result, attention_result, voice_result)
+            rank = _candidate_rank(
+                gate_result, editorial_result, seo_result, attention_result, voice_result
+            )
             candidate = {
                 "iteration": iteration,
                 "script_sha256": candidate_hash,
@@ -855,6 +930,8 @@ async def build(
             if became_best:
                 best_candidate = candidate
 
+            should_refine = not gate_result["approved"] and iteration < CONFIG.max_refinement_iterations
+            refinement_phase = _select_refinement_phase(gate_result) if should_refine else None
             iteration_trace.append(
                 {
                     "iteration": iteration,
@@ -873,38 +950,74 @@ async def build(
                     "analogy_quality": voice_result["analogy_quality"],
                     "ai_smell_risk": voice_result["ai_smell_risk"],
                     "factuality_risk": editorial_result["factuality_risk"],
+                    "next_refinement_phase": refinement_phase,
                 }
             )
-            if gate_result["approved"] or iteration == CONFIG.max_refinement_iterations:
+            if not should_refine:
                 break
 
-            refiner_state = await run_agent(
-                refiner_agent,
-                {
-                    **review_base,
+            if refinement_phase == "factual":
+                refiner = factual_refiner_agent
+                refiner_state_input = {
                     "sectioned_draft_script": sectioned_draft_script,
                     "review": json.dumps(editorial_result, ensure_ascii=False),
+                    "selected_news": selected_json,
+                    "news_text": news_text,
+                    "episode_plan": episode_plan_json,
+                    "discourse_profile": discourse_profile,
+                }
+                refinement_prompt = (
+                    "Repair factuality and traceability only. Ignore voice, SEO, and retention."
+                )
+                refinement_step = "refine_factual"
+            elif refinement_phase == "voice":
+                refiner = voice_refiner_agent
+                refiner_state_input = {
+                    "sectioned_draft_script": sectioned_draft_script,
+                    "voice_review": json.dumps(voice_result, ensure_ascii=False),
+                    "episode_plan": episode_plan_json,
+                    "voice_profile": voice_profile,
+                }
+                refinement_prompt = (
+                    "Repair voice and AI smell only. The factual claim semantics are frozen."
+                )
+                refinement_step = "refine_voice"
+            else:
+                refiner = secondary_refiner_agent
+                refiner_state_input = {
+                    "sectioned_draft_script": sectioned_draft_script,
                     "seo_review": json.dumps(seo_result, ensure_ascii=False),
                     "attention_review": json.dumps(attention_result, ensure_ascii=False),
-                    "voice_review": json.dumps(voice_result, ensure_ascii=False),
-                },
-                "Revise the script while preserving factuality, voice, depth, and the episode plan.",
-                step="refine_script", trace=agent_trace, iteration=iteration,
+                    "episode_plan": episode_plan_json,
+                    "voice_profile": voice_profile,
+                }
+                refinement_prompt = (
+                    "Make the smallest remaining SEO, attention, pacing, or duration repair. Claim semantics are frozen."
+                )
+                refinement_step = "refine_secondary"
+
+            refiner_state = await run_agent(
+                refiner,
+                refiner_state_input,
+                refinement_prompt,
+                step=refinement_step,
+                trace=agent_trace,
+                iteration=iteration,
             )
             refined = str(refiner_state.get("draft_script", "")).strip()
             if not refined:
-                raise RuntimeError("Refiner did not produce draft_script")
+                raise RuntimeError(f"{refinement_step} did not produce draft_script")
             try:
                 refined_script, refined_alignment = parse_sectioned_script(refined, episode_plan)
             except SectionAlignmentError as exc:
                 validation_warnings.append(
-                    f"Stopped refinement after iteration {iteration}: refiner returned invalid section markers: {exc}"
+                    f"Stopped refinement after iteration {iteration}: {refinement_step} returned invalid section markers: {exc}"
                 )
                 break
             refined_hash = _script_sha256(refined_script)
             if refined_hash in judged_hashes:
                 validation_warnings.append(
-                    f"Stopped refinement after iteration {iteration}: refiner produced an already-judged script hash {refined_hash[:12]}"
+                    f"Stopped refinement after iteration {iteration}: {refinement_step} produced an already-judged script hash {refined_hash[:12]}"
                 )
                 break
             sectioned_draft_script = refined

@@ -21,8 +21,16 @@ _SELECTED_INDEX_AGENTS = {
     "editorial_director",
     "essay_script_writer",
     "script_critic",
-    "script_refiner",
+    "script_refiner",  # legacy compatibility
+    "factual_script_refiner",
     "seo_master",
+}
+
+_REFINER_AGENTS = {
+    "script_refiner",  # legacy compatibility
+    "factual_script_refiner",
+    "voice_script_refiner",
+    "secondary_script_refiner",
 }
 
 _COMPACT_JSON_KEYS = {
@@ -180,6 +188,9 @@ def optimize_agent_state(
 
     If source-integrity validation cannot be proven, fail open and return the original
     state. Cost optimization must never weaken a valid production run.
+
+    Only the factual refiner is source-aware. Voice and secondary refiners deliberately
+    receive no discovery corpus, preserving the refinement-isolation contract.
     """
     result = dict(state)
     before_chars = sum(len(str(value or "")) for value in state.values())
@@ -209,7 +220,7 @@ def optimize_agent_state(
                 continue
             result[key] = compact_json(parsed)
 
-        if agent_name == "script_refiner" and result.get("sectioned_draft_script"):
+        if agent_name in _REFINER_AGENTS and result.get("sectioned_draft_script"):
             result.pop("draft_script", None)
 
     after_chars = sum(len(str(value or "")) for value in result.values())

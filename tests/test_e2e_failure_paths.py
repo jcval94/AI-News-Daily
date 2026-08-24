@@ -40,6 +40,16 @@ def plan_payload() -> dict:
             "evidence_id": "case", "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
             "narrative_function": "hacer tangible el problema",
         }],
+        "claim_ledger": [{
+            "evidence_id": "case",
+            "selected_news_index": 1,
+            "supported_facts": ["El caso fuente describe una automatización relevante."],
+            "allowed_interpretations": ["Puede leerse como un desplazamiento del criterio humano."],
+            "hypotheses": [],
+            "uncertainties": ["No se detallan todos los controles de validación."],
+            "prohibited_claims": ["El caso demuestra que la supervisión humana desaparece."],
+            "source_limitations": ["El fixture contiene un resumen breve."],
+        }],
         "beats": [
             {"beat_id": "evidence", "kind": "evidence", "purpose": "Hacer tangible el problema.", "estimated_minutes": 3, "evidence_ids": ["case"]},
             {"beat_id": "turn", "kind": "turn", "purpose": "Cambiar el foco hacia el criterio delegado.", "estimated_minutes": 3, "evidence_ids": []}
@@ -68,6 +78,7 @@ def write_news(news: Path) -> None:
 class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
     async def test_voice_failure_stops_before_multimedia(self) -> None:
         steps: list[str] = []
+
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":
@@ -97,6 +108,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_exhausted_novelty_replans_stop_before_writer(self) -> None:
         steps: list[str] = []
+
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":

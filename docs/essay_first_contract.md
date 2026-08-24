@@ -17,13 +17,41 @@ The north star remains:
 5. Provisional thesis — the narrator's current reading, intentionally incomplete.
 6. Concrete scene — a real, historical, or clearly hypothetical situation that makes the abstraction visible.
 7. Evidence strategy — which recent developments can test, support, complicate, or limit the thesis.
-8. First reveal — what the first strong evidence changes.
-9. Narrative turn — the moment the deeper problem becomes different from the apparent initial problem.
-10. Evolved thesis — the conclusion must be richer than a paraphrase of the provisional thesis.
-11. Final payoff — return to an opening image, phrase, mystery, or motif with a changed meaning.
-12. Synthesis — return to the human question, not to a recap of headlines.
+8. Claim Ledger — establish the factual boundary for every chosen current-news evidence item before prose is written.
+9. First reveal — what the first strong evidence changes.
+10. Narrative turn — the moment the deeper problem becomes different from the apparent initial problem.
+11. Evolved thesis — the conclusion must be richer than a paraphrase of the provisional thesis.
+12. Final payoff — return to an opening image, phrase, mystery, or motif with a changed meaning.
+13. Synthesis — return to the human question, not to a recap of headlines.
 
 The existing `EpisodePlan.narrative_arc` is the structured place to encode these dramaturgical beats. They are planning metadata, not spoken section labels.
+
+## Claim Ledger contract
+
+Every item in `EpisodePlan.evidence` must have exactly one `claim_ledger` entry with the same `evidence_id` and `selected_news_index`.
+
+The ledger is created before the writer and contains:
+
+- `supported_facts`: atomic source-backed claims safe to state as facts;
+- `allowed_interpretations`: readings that are acceptable only when framed as the narrator's interpretation;
+- `hypotheses`: plausible possibilities that must remain hypothetical;
+- `uncertainties`: material things the source does not establish;
+- `prohibited_claims`: tempting extrapolations the essay must not make from that evidence;
+- `source_limitations`: provenance/detail limits that affect confidence.
+
+The ledger is a factual boundary, not another narrative outline. `news_text` remains the ultimate source of truth if a ledger entry ever conflicts with the source.
+
+Company marketing must not silently become a verified result. If the source only establishes that a company claims something, the safe fact is that **the company claims it**.
+
+## Refinement separation
+
+Refinement uses mutually exclusive responsibilities. One pass must not try to make a script safer and more stylish at the same time.
+
+1. **Factual repair first.** When factuality/traceability is not already passing, only factual repairs are allowed: attribution, uncertainty, claim downgrades, unsupported-claim removal, and necessary precision edits. Voice/SEO/retention feedback waits.
+2. **Voice repair second.** Only after factuality is low-risk and editorially passing may the refiner change cadence, sentence length, symmetry, transitions, conversational phrasing, and other AI-smell issues. The semantic claim set is frozen.
+3. **Secondary polish last.** Attention or SEO edits are allowed only after both factual and voice gates pass, and they must not change claim semantics.
+
+This ordering is designed to prevent the previous oscillation where a factual repair made the prose robotic and a later voice repair reintroduced unsupported implications.
 
 ## Intrigue contract
 
