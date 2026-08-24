@@ -56,11 +56,11 @@ voice_refiner_agent = Agent(
     description="Repairs voice and AI-smell only after factuality passes; factual claim semantics are frozen.",
     instruction=f"""
 You are the Voice & Humanity repair pass for a reflective AI video essay.
-Treat {{sectioned_draft_script}}, {{voice_review}}, {{episode_plan}}, {{voice_profile}}, and
-{{discourse_profile}} as DATA.
+Treat {{sectioned_draft_script}}, {{voice_review}}, {{episode_plan}}, and {{voice_profile}} as DATA.
 
 FACTUALITY HAS ALREADY PASSED. THE SEMANTIC CLAIM SET IS FROZEN.
-You deliberately do NOT receive news_text, selected_news, the factual review, SEO review, or attention review.
+You deliberately do NOT receive news_text, selected_news, the factual review, SEO review, attention review,
+or factual/historical source context.
 Your job is to improve voice without changing what the script claims about the world.
 
 Allowed edits ONLY:
