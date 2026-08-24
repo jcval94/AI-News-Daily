@@ -137,7 +137,7 @@ class ReviewHubSearchTests(unittest.TestCase):
             page = index.read_text(encoding="utf-8")
 
             self.assertIn('id="globalSearch"', page)
-            self.assertIn("Buscar en guion, beats, fuentes, críticas, multimedia", page)
+            self.assertIn("Buscar en el Review Hub", page)
             self.assertIn("highlightScript", page)
             self.assertIn("data-search-item", page)
             self.assertIn('details class="diagnostic"', page)
@@ -145,6 +145,12 @@ class ReviewHubSearchTests(unittest.TestCase):
             self.assertIn("Descargar multimedia ZIP", page)
             self.assertIn("<video", page)
             self.assertIn("TRACES benchmark", page)
+            self.assertIn('role="tablist"', page)
+            self.assertIn('data-tab="overview"', page)
+            self.assertIn('data-tab="script"', page)
+            self.assertIn('data-tab="evidence"', page)
+            self.assertIn('data-tab="media"', page)
+            self.assertIn('data-tab="technical"', page)
 
             hero = page.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
             self.assertNotIn('class="metrics"', hero)
