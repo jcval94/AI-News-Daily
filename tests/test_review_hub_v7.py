@@ -18,6 +18,7 @@ class ReviewHubV7Tests(unittest.TestCase):
             "totals": {
                 "known_openai_cost_usd": 0.12,
                 "pexels_known_cost_usd": 0.0,
+                "wikimedia_known_cost_usd": 0.0,
                 "github_actions_compute_known_cost_usd": 0.0,
                 "known_direct_cost_usd": 0.12,
                 "artifact_storage_gross_exposure_usd": 0.10,
@@ -39,8 +40,10 @@ class ReviewHubV7Tests(unittest.TestCase):
             },
             "multimedia": {
                 "asset_count": 54,
-                "pexels_assets": 54,
-                "provider_counts": {"pexels": 54},
+                "pexels_assets": 50,
+                "wikimedia_assets": 3,
+                "generated_fallback_assets": 1,
+                "provider_counts": {"pexels": 50, "wikimedia_commons": 3, "generated_fallback": 1},
             },
             "github": {
                 "raw_artifact_upload_bytes_estimate": 411_000_000,
@@ -82,6 +85,7 @@ class ReviewHubV7Tests(unittest.TestCase):
             "sources": {
                 "openai": "https://example.com/openai",
                 "pexels": "https://example.com/pexels",
+                "wikimedia": "https://example.com/wikimedia",
                 "github_actions": "https://example.com/actions",
                 "github_storage": "https://example.com/storage",
             },
@@ -89,9 +93,10 @@ class ReviewHubV7Tests(unittest.TestCase):
 
     def test_budget_panel_contains_full_breakdown_and_download(self) -> None:
         panel = budget_panel(self.snapshot)
-        self.assertIn("Budget &amp; Costs", panel)
+        self.assertIn("Budget & Costs", panel)
         self.assertIn("Costo directo conocido", panel)
         self.assertIn("Pexels API", panel)
+        self.assertIn("Wikimedia Commons", panel)
         self.assertIn("GitHub Actions compute", panel)
         self.assertIn("Artifact storage", panel)
         self.assertIn("Costo por paso", panel)
