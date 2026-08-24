@@ -4,7 +4,9 @@ This repository is intentionally a small production-oriented agentic architectur
 
 ## Non-negotiable architecture rule
 
-Agents may select, plan, generate, judge, refine, and propose multimedia. They must not be the final authority for retry policy, episode state, duration enforcement, publication/promotion, filesystem side effects, refinement routing, or whether an episode is considered approved history. Those decisions belong to deterministic Python/GitHub Actions code.
+Agents may select, plan, generate, judge, refine, and propose multimedia. They must not be the final authority for source-coverage policy, retry policy, episode state, duration enforcement, publication/promotion, filesystem side effects, refinement routing, or whether an episode is considered approved history. Those decisions belong to deterministic Python/GitHub Actions code.
+
+Production enters through `pipeline.run_hardened`; core editorial orchestration and deterministic refinement routing remain in `pipeline/run.py`.
 
 ## Editorial identity is data, not prompt glue
 
@@ -26,7 +28,7 @@ Prompts implement those profiles; they are not the source of truth. Do not imita
 5. `seo_master` — discoverability judge; SEO never outranks rigor or voice.
 6. `youtube_attention_master` — earned-attention/retention judge.
 7. `voice_humanity_critic` — voice fidelity, depth, human relevance, analogies, and AI-smell judge.
-8. `multimedia_editor_master` — selects only visuals that add explanatory/contextual value.
+8. `multimedia_editor_master` — proposes visuals that add explanatory/contextual value when model-backed media planning is available.
 
 `app/refiners.py` contains deliberately isolated refiners:
 
@@ -110,7 +112,9 @@ Dramaturgy should be structurally strong but invisible in the prose. Do not let 
 
 ## Retry contract
 
-Agent calls are safe to retry because these agents have no external side-effect tools. Retry only likely transient provider/network failures and use bounded exponential backoff. Media retrieval has its own bounded HTTP retries. Do not retry invalid requests/auth failures indefinitely.
+Agent calls are safe to retry because these agents have no external side-effect tools. Retry only likely transient provider/network failures and use bounded exponential backoff. Permanent quota/configuration failures must not burn retries. Media retrieval has its own bounded HTTP retries.
+
+When provider usage is emitted before a failed stream, preserve partial usage in `execution_trace.json` when available.
 
 ## Input safety
 
@@ -143,26 +147,45 @@ Every model-backed attempted episode should preserve:
 
 `run_report.json` should expose both factual-quality and voice-quality dimensions. `pipeline/report.py` must remain independent from ADK/OpenAI so it can execute after model failures.
 
+`pipeline/architecture_manifest.py` is the living architecture source consumed by the E2E teaching view. `pipeline/run_journey.py` reconstructs observed execution from persisted production artifacts and must not treat Review Hub-only media reconstruction as production provenance.
+
 ## Output isolation
 
 GitHub Actions must generate into `.pipeline-runs/<date>/<run-id>/` first. Only an approved run may replace canonical episode directories. Never write a partial/unapproved attempt directly over canonical outputs.
 
-## Source windows
+## Source coverage and windows
 
-- Tuesday uses available Friday–Monday news.
-- Friday uses available Tuesday–Thursday news.
-- Missing days are non-fatal.
-- Empty full window => `no_source_news`.
+Before model calls, production validates source coverage deterministically.
+
+Default policy:
+
+- require at least one structured news item;
+- require `MIN_SOURCE_COVERAGE_RATIO >= 0.75` by default across the expected window;
+- insufficient coverage => `no_source_news` before model usage.
+
+Scheduled windows:
+
+- Tuesday uses Friday–Monday news.
+- Friday uses Tuesday–Thursday news.
+- Missing days are tolerated only while the configured coverage threshold still passes.
 - Sources but zero selected stories => `no_relevant_news`.
 
 ## Multimedia contract
 
-- 00:00–00:15: 3-second slots.
-- After 00:15: 4-second slots.
-- Editor returns only external-media slots; omitted slots are presenter.
-- `MAX_MEDIA_DOWNLOADS` is enforced by code.
-- Prefer explanatory/contextual visuals over generic stock footage.
-- Provider failures may fall back to generated local cards.
+Multimedia is post-approval. A rejected script never reaches canonical media production.
+
+Current dense production policy:
+
+- default `MAX_MEDIA_DOWNLOADS=54`;
+- 00:00–00:20: ~3.5-second, video-first cold-open slots;
+- after 00:20: one candidate about every 10 seconds across the spoken timeline;
+- when media budget is >=45, require at least 45 materialized assets;
+- require at least 5 assets in the first 20 seconds;
+- prefer explanatory/contextual visuals over generic stock footage;
+- provider/model quota failures may fall back to deterministic/local media generation;
+- media failure may block promotion but must never change script approval state.
+
+Review Hub should reuse canonical production multimedia when it exists and satisfies the gate. If it rebuilds legacy/sparse media for review, that output must not be labeled as production provenance.
 
 ## Validation before merging
 
@@ -173,9 +196,9 @@ python -m compileall app pipeline
 python -m unittest discover -s tests -v
 ```
 
-Tests must cover Tuesday/Friday windows, 7–20 minute duration boundaries, deterministic approval including voice/AI-smell, retries, report state/hashes, Claim Ledger consistency, isolated refinement contexts, deterministic factual→voice→secondary routing, editorial direction, and timeline non-truncation.
+Tests must cover Tuesday/Friday windows, source-coverage preflight, 7–20 minute duration boundaries, deterministic approval including voice/AI-smell, retries, report state/hashes, Claim Ledger consistency, isolated refinement contexts, deterministic factual→voice→secondary routing, editorial direction, dense-media floor/cold-open contract, and provenance-safe run journey reconstruction.
 
-For changes to model orchestration or provider integration, also run a manual GitHub Actions E2E when feasible.
+For changes to model orchestration, provider integration, production workflows, or Review Hub wiring, also validate the corresponding GitHub Actions E2E when feasible.
 
 ## Dependency discipline
 
