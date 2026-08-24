@@ -4,7 +4,7 @@ import unittest
 
 from pydantic import ValidationError
 
-from app.agent import EpisodePlan, editorial_director_agent, writer_agent
+from app.agent import EpisodePlan, editorial_director_agent, refiner_agent, writer_agent
 
 
 def valid_plan() -> dict:
@@ -34,6 +34,16 @@ def valid_plan() -> dict:
         "evidence": [{
             "evidence_id": "case", "selected_news_index": 1, "role": "anchor", "argument_role": "evidence",
             "narrative_function": "volver concreto el misterio",
+        }],
+        "claim_ledger": [{
+            "evidence_id": "case",
+            "selected_news_index": 1,
+            "supported_facts": ["El caso describe una automatización que cierra una tarea."],
+            "allowed_interpretations": ["Puede leerse como un cambio en dónde ejercemos criterio."],
+            "hypotheses": ["Podría reducir la revisión humana si se adopta sin controles."],
+            "uncertainties": ["No sabemos cómo se valida el cierre en producción."],
+            "prohibited_claims": ["La automatización elimina la supervisión humana."],
+            "source_limitations": ["El resumen no describe métricas de validación."],
         }],
         "beats": [
             {"beat_id": "reveal", "kind": "reveal", "purpose": "La evidencia cambia la creencia inicial.", "estimated_minutes": 3, "evidence_ids": ["case"]},
@@ -74,6 +84,29 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         plan["narrative_arc"]["evolved_thesis"] = plan["thesis"]
         with self.assertRaises(ValidationError):
             EpisodePlan.model_validate(plan)
+
+    def test_claim_ledger_is_required_and_matches_evidence(self) -> None:
+        plan = EpisodePlan.model_validate(valid_plan())
+        self.assertEqual(plan.claim_ledger[0].evidence_id, "case")
+        self.assertTrue(plan.claim_ledger[0].supported_facts)
+
+        missing = valid_plan()
+        missing.pop("claim_ledger")
+        with self.assertRaises(ValidationError):
+            EpisodePlan.model_validate(missing)
+
+        mismatch = valid_plan()
+        mismatch["claim_ledger"][0]["evidence_id"] = "other"
+        with self.assertRaises(ValidationError):
+            EpisodePlan.model_validate(mismatch)
+
+    def test_refiner_uses_mutually_exclusive_factual_and_voice_phases(self) -> None:
+        prompt = refiner_agent.instruction.lower()
+        self.assertIn("never optimize factuality and voice in the same refinement pass", prompt)
+        self.assertIn("phase 1 — factual repair", prompt)
+        self.assertIn("phase 2 — voice repair", prompt)
+        self.assertIn("the semantic claim set is frozen", prompt)
+        self.assertIn("when both factual and voice problems exist, fix factuality only", prompt)
 
 
 if __name__ == "__main__":
