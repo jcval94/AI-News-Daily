@@ -59,9 +59,18 @@ def derive_run_journey(
     *,
     episode_dir: Path,
     media_dir: Path | None = None,
+    production_media_dir: Path | None = None,
     cost_snapshot: dict[str, Any] | None = None,
     architecture: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Reconstruct the observed production journey from persisted run artifacts.
+
+    ``media_dir`` is retained for Review Hub caller compatibility but is deliberately not
+    treated as proof of production-media materialization: in Pages it points to media
+    generated later by the review workflow. Only ``production_media_dir`` may prove that
+    the original production run persisted a multimedia manifest.
+    """
+    del media_dir
     architecture = architecture or manifest()
     cost_snapshot = cost_snapshot or {}
     trace = _read_json(episode_dir / "execution_trace.json", {})
@@ -110,8 +119,11 @@ def derive_run_journey(
             status = "executed" if any(item.get("next_refinement_phase") for item in refinement_iterations if isinstance(item, dict)) else "not_required"
         elif stage_id in {"factual_refine", "voice_refine", "secondary_refine"} and reached_quality_gate:
             status = "not_required"
-        elif stage_id == "media_materialize" and media_dir is not None and (media_dir / "manifest.json").exists():
-            status = "executed"
+        elif stage_id == "media_materialize":
+            if production_media_dir is not None and (production_media_dir / "manifest.json").exists():
+                status = "executed"
+            else:
+                status = "not_observed"
         elif stage_id == "report_promote" and (run_state or report):
             status = "executed" if final_status == "approved" else "terminal"
         elif stage_id == "pages":
