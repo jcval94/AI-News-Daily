@@ -18,11 +18,18 @@ on:
         required: true
         default: "54"
         type: string
+      episode_budget_usd:
+        description: "Optional episode budget in USD; leave empty to use REVIEW_HUB_EPISODE_BUDGET_USD or show unconfigured"
+        required: false
+        default: ""
+        type: string
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - "config/cost_rates.json"
+      - "pipeline/costs.py"
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
@@ -30,18 +37,21 @@ on:
       - "pipeline/review_hub_v4.py"
       - "pipeline/review_hub_v5.py"
       - "pipeline/review_hub_v6.py"
+      - "pipeline/review_hub_v7.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/review_media_density.py"
       - "pipeline/review_media_dense.py"
       - "pipeline/review_media_offline_dense.py"
       - "pipeline/media.py"
+      - "tests/test_costs.py"
       - "tests/test_evidence_reconciliation.py"
       - "tests/test_review_hub.py"
       - "tests/test_review_hub_search.py"
       - "tests/test_review_hub_v3.py"
       - "tests/test_review_hub_v5.py"
       - "tests/test_review_hub_v6.py"
+      - "tests/test_review_hub_v7.py"
       - "tests/test_review_media_offline.py"
       - "tests/test_review_media_density.py"
       - "evals/editorial/**"
@@ -50,6 +60,8 @@ on:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - "config/cost_rates.json"
+      - "pipeline/costs.py"
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
@@ -57,16 +69,19 @@ on:
       - "pipeline/review_hub_v4.py"
       - "pipeline/review_hub_v5.py"
       - "pipeline/review_hub_v6.py"
+      - "pipeline/review_hub_v7.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/review_media_density.py"
       - "pipeline/review_media_dense.py"
       - "pipeline/review_media_offline_dense.py"
       - "pipeline/media.py"
+      - "tests/test_costs.py"
       - "tests/test_review_hub_search.py"
       - "tests/test_review_hub_v3.py"
       - "tests/test_review_hub_v5.py"
       - "tests/test_review_hub_v6.py"
+      - "tests/test_review_hub_v7.py"
       - "tests/test_review_media_density.py"
       - "evals/editorial/**"
 
@@ -252,6 +267,8 @@ jobs:
           REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
           TARGET_DATE: ${{ steps.source.outputs.target_date }}
           RUN_ID: ${{ steps.source.outputs.run_id }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          REVIEW_HUB_EPISODE_BUDGET_USD: ${{ inputs.episode_budget_usd || vars.REVIEW_HUB_EPISODE_BUDGET_USD }}
         run: |
           set -euo pipefail
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
@@ -266,6 +283,7 @@ jobs:
             --run-id "$RUN_ID"
           test -s review-site/index.html
           test -s "review-site/downloads/$(basename "$ZIP")"
+          test -s review-site/downloads/cost_snapshot.json
           grep -q 'id="globalSearch"' review-site/index.html
           grep -q 'details class="diagnostic"' review-site/index.html
           grep -q 'class="skip-link"' review-site/index.html
@@ -275,7 +293,10 @@ jobs:
           grep -q 'data-tab="script"' review-site/index.html
           grep -q 'data-tab="evidence"' review-site/index.html
           grep -q 'data-tab="media"' review-site/index.html
+          grep -q 'data-tab="budget"' review-site/index.html
           grep -q 'data-tab="technical"' review-site/index.html
+          grep -q 'id="panel-budget"' review-site/index.html
+          grep -q 'Budget & Costs' review-site/index.html
           grep -q 'class="source-cards"' review-site/index.html
           grep -q 'data-media-filter="video"' review-site/index.html
           grep -q 'data-media-filter="image"' review-site/index.html
@@ -327,6 +348,8 @@ jobs:
               && grep -q 'id="globalSearch"' /tmp/review-hub.html \
               && grep -q 'class="skip-link"' /tmp/review-hub.html \
               && grep -q 'data-tab="overview"' /tmp/review-hub.html \
+              && grep -q 'data-tab="budget"' /tmp/review-hub.html \
+              && grep -q 'id="panel-budget"' /tmp/review-hub.html \
               && grep -q 'data-tab="technical"' /tmp/review-hub.html; then
               echo "GitHub Pages smoke test passed: $PAGE_URL"
               exit 0
