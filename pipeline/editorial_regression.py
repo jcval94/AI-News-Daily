@@ -56,9 +56,15 @@ def evaluate_episode(episode_dir: Path) -> dict[str, Any]:
     }
     voice = reviews.get("voice_humanity", {}) if isinstance(reviews, dict) else {}
     editorial = reviews.get("editorial", {}) if isinstance(reviews, dict) else {}
+    status = state.get("status") if isinstance(state, dict) else None
+    # Canonical episodes generated before the essay-first runtime did not persist
+    # run_state/episode_plan/script_sections. They remain valuable historical production
+    # artifacts, but must never be represented as passing today's structural contract.
+    legacy_contract = bool(script) and not bool(plan) and status is None
     return {
         "episode_dir": str(episode_dir),
-        "status": state.get("status"),
+        "status": status,
+        "legacy_contract": legacy_contract,
         "structural_pass": all(structural_checks.values()),
         "structural_checks": structural_checks,
         "word_count": len(script.split()),
@@ -75,6 +81,16 @@ def evaluate_episode(episode_dir: Path) -> dict[str, Any]:
     }
 
 
+def exit_code_for_result(result: dict[str, Any]) -> int:
+    if bool(result.get("structural_pass")):
+        return 0
+    # Historical production may be rendered for comparison, while visibly retaining
+    # structural_pass=false. Current-runtime failures remain hard failures.
+    if bool(result.get("legacy_contract")):
+        return 0
+    return 1
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate current-runtime editorial regression artifacts")
     parser.add_argument("--episode-dir", required=True)
@@ -85,7 +101,7 @@ def main() -> None:
     if args.output:
         Path(args.output).write_text(rendered, encoding="utf-8")
     print(rendered, end="")
-    raise SystemExit(0 if result["structural_pass"] else 1)
+    raise SystemExit(exit_code_for_result(result))
 
 
 if __name__ == "__main__":

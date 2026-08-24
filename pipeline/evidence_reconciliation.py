@@ -132,6 +132,20 @@ def reconcile_evidence_indices(
 def reconcile_episode_dir(episode_dir: Path, *, write: bool) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     plan_path = episode_dir / "episode_plan.json"
     selected_path = episode_dir / "selected_news.json"
+    if not plan_path.exists():
+        # Canonical episodes created before the essay-first contract have no EpisodePlan.
+        # The Review Hub may still render them as legacy history; there is nothing safe to
+        # reconcile and we must not synthesize an evidence catalog retroactively.
+        return {
+            "evidence_reconciliation": {
+                "schema_version": 1,
+                "changed": False,
+                "skipped": True,
+                "reason": "legacy artifact has no episode_plan.json",
+            }
+        }, []
+    if not selected_path.exists():
+        raise FileNotFoundError(f"Modern episode has episode_plan.json but no {selected_path.name}")
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     selected = json.loads(selected_path.read_text(encoding="utf-8"))
     reconciled, changes = reconcile_evidence_indices(plan, selected)
@@ -149,8 +163,20 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    _, changes = reconcile_episode_dir(Path(args.episode_dir), write=bool(args.write))
-    print(json.dumps({"changed_count": len(changes), "changes": changes}, ensure_ascii=False, indent=2))
+    reconciled, changes = reconcile_episode_dir(Path(args.episode_dir), write=bool(args.write))
+    metadata = reconciled.get("evidence_reconciliation", {}) if isinstance(reconciled, dict) else {}
+    print(
+        json.dumps(
+            {
+                "changed_count": len(changes),
+                "changes": changes,
+                "skipped": bool(metadata.get("skipped", False)),
+                "reason": metadata.get("reason", ""),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -4,17 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: "Editorial Regression run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID or the latest successful run with a valid artifact"
+        description: "Build AI News Video Kit run ID; leave empty to use REVIEW_HUB_SOURCE_RUN_ID or the latest production run with a valid artifact"
         required: false
         default: ""
         type: string
       target_date:
-        description: "Episode date; leave empty to infer from artifact"
+        description: "Episode date; leave empty to infer from production artifact"
         required: false
         default: ""
         type: string
       max_media_downloads:
-        description: "Maximum review multimedia assets"
+        description: "Maximum review multimedia assets when a legacy production artifact needs rebuilding"
         required: true
         default: "54"
         type: string
@@ -28,14 +28,21 @@ on:
         required: true
         default: "4"
         type: string
+  workflow_run:
+    workflows:
+      - Build AI News Video Kit
+    types:
+      - completed
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - ".github/workflows/build-video-kit.yml"
       - "config/cost_rates.json"
       - "pipeline/costs.py"
       - "pipeline/evidence_reconciliation.py"
+      - "pipeline/runtime_hardening.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
       - "pipeline/review_hub_v3.py"
@@ -43,11 +50,13 @@ on:
       - "pipeline/review_hub_v5.py"
       - "pipeline/review_hub_v6.py"
       - "pipeline/review_hub_v7.py"
+      - "pipeline/review_hub_v8.py"
       - "pipeline/review_hub_catalog.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/review_media_density.py"
       - "pipeline/review_media_dense.py"
+      - "pipeline/review_media_dense_hardened.py"
       - "pipeline/review_media_offline_dense.py"
       - "pipeline/media.py"
       - "tests/test_costs.py"
@@ -59,6 +68,7 @@ on:
       - "tests/test_review_hub_v5.py"
       - "tests/test_review_hub_v6.py"
       - "tests/test_review_hub_v7.py"
+      - "tests/test_review_hub_v8.py"
       - "tests/test_review_media_offline.py"
       - "tests/test_review_media_density.py"
       - "evals/editorial/**"
@@ -67,9 +77,11 @@ on:
       - main
     paths:
       - ".github/workflows/editorial-review-hub.yml"
+      - ".github/workflows/build-video-kit.yml"
       - "config/cost_rates.json"
       - "pipeline/costs.py"
       - "pipeline/evidence_reconciliation.py"
+      - "pipeline/runtime_hardening.py"
       - "pipeline/review_hub.py"
       - "pipeline/review_hub_v2.py"
       - "pipeline/review_hub_v3.py"
@@ -77,11 +89,13 @@ on:
       - "pipeline/review_hub_v5.py"
       - "pipeline/review_hub_v6.py"
       - "pipeline/review_hub_v7.py"
+      - "pipeline/review_hub_v8.py"
       - "pipeline/review_hub_catalog.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/review_media_density.py"
       - "pipeline/review_media_dense.py"
+      - "pipeline/review_media_dense_hardened.py"
       - "pipeline/review_media_offline_dense.py"
       - "pipeline/media.py"
       - "tests/test_costs.py"
@@ -91,6 +105,7 @@ on:
       - "tests/test_review_hub_v5.py"
       - "tests/test_review_hub_v6.py"
       - "tests/test_review_hub_v7.py"
+      - "tests/test_review_hub_v8.py"
       - "tests/test_review_media_density.py"
       - "evals/editorial/**"
 
@@ -101,7 +116,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: editorial-review-hub-${{ github.ref }}
+  group: editorial-review-hub-${{ github.event.workflow_run.head_branch || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -111,6 +126,7 @@ jobs:
     outputs:
       target_date: ${{ steps.source.outputs.target_date }}
       source_run_id: ${{ steps.source.outputs.run_id }}
+      source_head_branch: ${{ steps.source.outputs.source_head_branch }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -119,12 +135,13 @@ jobs:
           cache: pip
       - run: python -m pip install -c requirements.lock .
 
-      - name: Resolve and download Editorial Regression artifact
+      - name: Resolve and download production run artifact
         id: source
         env:
           GH_TOKEN: ${{ github.token }}
           INPUT_RUN_ID: ${{ inputs.source_run_id }}
           INPUT_TARGET_DATE: ${{ inputs.target_date }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
           DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID }}
         run: |
           set -euo pipefail
@@ -132,24 +149,24 @@ jobs:
           artifact_for_run() {
             local candidate="$1"
             gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate/artifacts" \
-              --jq '.artifacts | map(select(.expired == false and (.name | startswith("editorial-regression-")))) | sort_by(.created_at) | last | .name' \
+              --jq '.artifacts | map(select(.expired == false and (.name | startswith("ai-news-run-")))) | sort_by(.created_at) | last | .name' \
               2>/dev/null || true
           }
 
-          RUN_ID="${INPUT_RUN_ID:-$DEFAULT_RUN_ID}"
+          RUN_ID="${INPUT_RUN_ID:-${WORKFLOW_RUN_ID:-$DEFAULT_RUN_ID}}"
           ARTIFACT_NAME=""
           if [ -n "$RUN_ID" ]; then
             ARTIFACT_NAME="$(artifact_for_run "$RUN_ID")"
           fi
 
           if [ -n "${INPUT_RUN_ID:-}" ] && { [ -z "$ARTIFACT_NAME" ] || [ "$ARTIFACT_NAME" = "null" ]; }; then
-            echo "Explicit Editorial Regression run $INPUT_RUN_ID has no usable editorial-regression artifact."
+            echo "Explicit production run $INPUT_RUN_ID has no usable ai-news-run artifact."
             exit 1
           fi
 
           if [ -z "$ARTIFACT_NAME" ] || [ "$ARTIFACT_NAME" = "null" ]; then
             if [ -n "$RUN_ID" ]; then
-              echo "::warning::Configured source run $RUN_ID has no usable artifact; searching recent successful Editorial Regression runs."
+              echo "::warning::Requested/configured production run $RUN_ID has no usable artifact; searching recent Build AI News Video Kit runs."
             fi
             RUN_ID=""
             while IFS= read -r candidate; do
@@ -161,15 +178,14 @@ jobs:
                 break
               fi
             done < <(gh run list \
-              --workflow 'Editorial Regression' \
-              --status success \
-              --limit 20 \
+              --workflow 'Build AI News Video Kit' \
+              --limit 30 \
               --json databaseId \
               --jq '.[].databaseId')
           fi
 
-          test -n "$RUN_ID" || { echo "No successful Editorial Regression run with a usable artifact found"; exit 1; }
-          test -n "$ARTIFACT_NAME" -a "$ARTIFACT_NAME" != "null" || { echo "No editorial-regression artifact found for run $RUN_ID"; exit 1; }
+          test -n "$RUN_ID" || { echo "No Build AI News Video Kit run with a usable artifact found"; exit 1; }
+          test -n "$ARTIFACT_NAME" -a "$ARTIFACT_NAME" != "null" || { echo "No ai-news-run artifact found for run $RUN_ID"; exit 1; }
 
           rm -rf .review-source
           mkdir -p .review-source
@@ -180,19 +196,31 @@ jobs:
             EPISODE_DIR=".review-source/scripts/$INPUT_TARGET_DATE"
           else
             SCRIPT_PATH="$(find .review-source -type f -path '*/scripts/*/script.txt' | sort | tail -1)"
-            test -n "$SCRIPT_PATH" || { echo "Artifact contains no scripts/*/script.txt"; exit 1; }
+            test -n "$SCRIPT_PATH" || { echo "Production artifact contains no scripts/*/script.txt"; exit 1; }
             EPISODE_DIR="$(dirname "$SCRIPT_PATH")"
           fi
           TARGET_DATE="$(basename "$EPISODE_DIR")"
-          REGRESSION_PATH="$(find .review-source -type f -name editorial-regression.json | head -1)"
-          test -f "$REGRESSION_PATH" || { echo "Artifact contains no editorial-regression.json"; exit 1; }
+          REGRESSION_PATH=".review-source/editorial-regression.json"
+          SOURCE_HEAD_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.head_branch // ""')"
 
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
           echo "episode_dir=$EPISODE_DIR" >> "$GITHUB_OUTPUT"
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
-          echo "Using Editorial Regression run $RUN_ID / $TARGET_DATE / $ARTIFACT_NAME"
+          echo "source_head_branch=$SOURCE_HEAD_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Using production run $RUN_ID / $TARGET_DATE / $ARTIFACT_NAME / branch=$SOURCE_HEAD_BRANCH"
+
+      - name: Build deterministic regression snapshot from production episode
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.editorial_regression \
+            --episode-dir "$EPISODE_DIR" \
+            --output "$REGRESSION_PATH"
+          test -s "$REGRESSION_PATH"
 
       - name: Reconcile high-confidence evidence/source references for review
         env:
@@ -201,7 +229,7 @@ jobs:
           set -euo pipefail
           python -m pipeline.evidence_reconciliation --episode-dir "$EPISODE_DIR" --write
 
-      - name: Generate dense beat-labelled review multimedia
+      - name: Reuse canonical production multimedia or rebuild legacy package
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -220,6 +248,46 @@ jobs:
           rm -rf review-media review-downloads
           mkdir -p review-media review-downloads
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
+          SOURCE_MEDIA=".review-source/multimedia/$TARGET_DATE"
+          REUSED=false
+
+          if [ -s "$SOURCE_MEDIA/manifest.json" ] && [ -s "$SOURCE_MEDIA/plan.json" ]; then
+            export SOURCE_MEDIA
+            if python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["SOURCE_MEDIA"])
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          budget = int(os.environ.get("MAX_MEDIA", "54"))
+          count = len(manifest)
+          opening = sum(1 for item in manifest if float(item.get("start_seconds", 0) or 0) < 20)
+          floor = min(45, budget)
+          print(f"Production media candidate: assets={count}, opening={opening}, floor={floor}")
+          raise SystemExit(0 if count >= floor and opening >= 5 else 1)
+          PY
+            then
+              mkdir -p "review-media/$TARGET_DATE"
+              cp -a "$SOURCE_MEDIA/." "review-media/$TARGET_DATE/"
+              EXISTING_ZIP="$(find .review-source/multimedia -maxdepth 1 -type f -name "multimedia-${TARGET_DATE}-run-*.zip" -print -quit)"
+              if [ -n "$EXISTING_ZIP" ]; then
+                cp "$EXISTING_ZIP" "$ZIP"
+              else
+                export ZIP
+                python - <<'PY'
+          import os, zipfile
+          from pathlib import Path
+          root = Path(os.environ["SOURCE_MEDIA"])
+          out = Path(os.environ["ZIP"])
+          with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+              for path in sorted(root.rglob("*")):
+                  if path.is_file():
+                      archive.write(path, path.relative_to(root))
+          PY
+              fi
+              REUSED=true
+              echo "Reused canonical production multimedia without a second model/media search pass."
+            fi
+          fi
 
           run_offline() {
             rm -rf "review-media/$TARGET_DATE" "$ZIP"
@@ -230,24 +298,26 @@ jobs:
               --max-media-downloads "$MAX_MEDIA"
           }
 
-          if [ -z "${OPENAI_API_KEY:-}" ]; then
-            echo "::warning::OPENAI_API_KEY unavailable; using deterministic dense multimedia planner"
-            run_offline
-          else
-            set +e
-            python -m pipeline.review_media_dense \
-              --episode-dir "$EPISODE_DIR" \
-              --output-dir "review-media/$TARGET_DATE" \
-              --zip-out "$ZIP" \
-              --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/review-media.log
-            STATUS=${PIPESTATUS[0]}
-            set -e
-            if [ "$STATUS" -ne 0 ]; then
-              if grep -Eqi 'credit_balance_exhausted|insufficient_quota|no credits remaining' /tmp/review-media.log; then
-                echo "::warning::Model quota unavailable; rebuilding multimedia deterministically with dense cadence"
-                run_offline
-              else
-                exit "$STATUS"
+          if [ "$REUSED" != "true" ]; then
+            echo "::warning::Production artifact is legacy/sparse; rebuilding dense media for review only."
+            if [ -z "${OPENAI_API_KEY:-}" ]; then
+              run_offline
+            else
+              set +e
+              python -m pipeline.review_media_dense_hardened \
+                --episode-dir "$EPISODE_DIR" \
+                --output-dir "review-media/$TARGET_DATE" \
+                --zip-out "$ZIP" \
+                --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/review-media.log
+              STATUS=${PIPESTATUS[0]}
+              set -e
+              if [ "$STATUS" -ne 0 ]; then
+                if grep -Eqi 'credit_balance_exhausted|insufficient_quota|no credits remaining' /tmp/review-media.log; then
+                  echo "::warning::Model quota unavailable; rebuilding multimedia deterministically with dense cadence"
+                  run_offline
+                else
+                  exit "$STATUS"
+                fi
               fi
             fi
           fi
@@ -263,7 +333,7 @@ jobs:
           images = sum(1 for item in manifest if item.get("asset_type") == "image")
           opening = sum(1 for item in manifest if float(item.get("start_seconds", 0) or 0) < 20)
           floor = min(45, budget)
-          print(f"Dense media validation: {count} assets = {videos} video + {images} image; opening={opening}; floor={floor}")
+          print(f"Review media validation: {count} assets = {videos} video + {images} image; opening={opening}; floor={floor}")
           if budget >= 45 and count < 45:
               raise SystemExit(f"Dense media floor failed: expected >=45 assets, got {count}")
           if opening < 5:
@@ -325,6 +395,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          SOURCE_HEAD_BRANCH: ${{ steps.source.outputs.source_head_branch }}
           HISTORY_LIMIT: ${{ inputs.history_episode_limit || vars.REVIEW_HUB_HISTORY_LIMIT || '4' }}
         run: |
           set -euo pipefail
@@ -338,7 +409,7 @@ jobs:
           mkdir -p "pages-site/episodes/$TARGET_DATE" .review-archive
           cp -a review-site/. "pages-site/episodes/$TARGET_DATE/"
 
-          if [ "$GITHUB_REF" = "refs/heads/main" ] && { [ "$GITHUB_EVENT_NAME" = "push" ] || [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; }; then
+          if [ "$SOURCE_HEAD_BRANCH" = "main" ] && [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then
             declare -A SEEN
             SEEN["$TARGET_DATE"]=1
             EPISODE_COUNT=1
@@ -402,17 +473,17 @@ jobs:
           grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
 
       - name: Configure Pages
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: steps.source.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: steps.source.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: pages-site
 
   deploy:
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: needs.build.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
