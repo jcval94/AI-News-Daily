@@ -1,47 +1,122 @@
 {
+  "topic_signature": "delegacion de razonamiento y capacidades humanas",
+  "narrative_lens": "cognicion",
+  "novelty_angle": "No pregunta qué tarea ganó la IA, sino qué parte del pensamiento humano conviene seguir practicando.",
+  "historical_mirror": "Un referente curado sobre herramientas que externalizan memoria puede servir como espejo si encaja con la evidencia.",
+  "evidence_strategy": "Un caso funciona como ancla y otro como contraste para evitar una conclusión unilateral.",
   "central_question": "¿Qué dejamos de hacer nosotros cuando una herramienta empieza a pensar por nosotros?",
-  "thesis": "La discusión importante no es si la IA puede resolver más tareas, sino qué capacidades humanas dejamos de practicar cuando delegamos demasiado pronto.",
-  "hook": "No sé si te pasa algo parecido, pero cada vez que una IA hace algo que antes parecía exclusivamente humano, me entusiasma y al mismo tiempo me deja una pequeña incomodidad.",
+  "thesis": "La discusión importante no es solo si la IA puede resolver más tareas, sino qué capacidades humanas dejamos de practicar cuando delegamos demasiado pronto.",
+  "hook": "Cada vez que una IA hace algo que antes parecía exclusivamente humano, aparece una mezcla extraña de entusiasmo y pérdida de control.",
   "target_duration_minutes": 12.0,
-  "narrative_arc": [
-    "partir de una sensación humana reconocible",
-    "usar un espejo histórico sobre memoria y herramientas cognitivas",
-    "plantear la pregunta sobre delegación del razonamiento",
-    "introducir casos actuales solo cuando la tesis necesita evidencia",
-    "complicar la tesis con un contraejemplo",
-    "cerrar regresando a la capacidad humana que queremos conservar"
-  ],
-  "stories": [
+  "narrative_arc": {
+    "opening_belief": "Delegar una tarea mental parece equivalente a ahorrar esfuerzo.",
+    "central_mystery": "¿Ahorrar esfuerzo cambia también la capacidad que conservamos?",
+    "concrete_scene": "Una persona acepta una respuesta correcta sin poder reconstruir cómo llegó hasta ella.",
+    "first_reveal": "Verificar el resultado puede importar tanto como obtenerlo.",
+    "complication": "No toda automatización debilita una habilidad; algunas herramientas amplían lo que podemos hacer.",
+    "narrative_turn": "La pregunta deja de ser cuánto delegamos y pasa a ser qué parte del juicio decidimos conservar.",
+    "second_reveal": "El diseño del proceso determina dónde sigue ocurriendo el aprendizaje humano.",
+    "evolved_thesis": "La IA puede ampliar nuestra capacidad, pero esa ampliación depende de qué partes del pensamiento seguimos ejerciendo deliberadamente.",
+    "recurring_motif": "¿Cómo llegaste ahí?",
+    "emotional_peak": "Una respuesta útil puede volver innecesario practicar una capacidad hasta el día en que realmente la necesitamos.",
+    "final_payoff": "La pregunta ¿cómo llegaste ahí? deja de ser una exigencia a la máquina y se convierte también en una exigencia para nosotros."
+  },
+  "evidence": [
     {
+      "evidence_id": "verification_case",
       "selected_news_index": 1,
       "role": "anchor",
-      "estimated_minutes": 3.5,
-      "narrative_function": "evidence: vuelve concreto el intento de medir si un sistema puede producir conocimiento verificable",
-      "beats": [
-        "explicar primero la idea en lenguaje cotidiano",
-        "nombrar la prueba solo después de que el espectador entienda por qué importa",
-        "separar lo que demuestra de lo que todavía no sabemos"
-      ],
-      "analogy_goal": "comparar la verificación con mostrar el procedimiento de un problema, no solo la respuesta",
-      "skepticism_angle": "una prueba no demuestra automáticamente inteligencia general",
-      "human_stakes": "qué significa confiar en un sistema cuando ya no podemos revisar mentalmente cada paso",
-      "open_loop": "si podemos verificar el resultado, ¿seguimos necesitando entender el proceso?",
-      "mini_conclusion": ""
+      "argument_role": "evidence",
+      "narrative_function": "Volver concreta la diferencia entre producir una respuesta y producir conocimiento verificable.",
+      "analogy_goal": "Comparar la verificación con mostrar el procedimiento de un problema, no solo la respuesta.",
+      "skepticism_angle": "Una prueba no demuestra automáticamente inteligencia general.",
+      "human_stakes": "Qué significa confiar en un sistema cuando ya no podemos revisar mentalmente cada paso."
     },
     {
+      "evidence_id": "amplification_case",
       "selected_news_index": 2,
       "role": "contrast",
-      "estimated_minutes": 2.5,
-      "narrative_function": "counterexample: muestra un caso donde automatizar una tarea puede ampliar la capacidad humana en lugar de sustituirla",
-      "beats": [
-        "presentar el caso como contraste a la tesis inicial",
-        "distinguir delegación de amplificación"
+      "argument_role": "counterexample",
+      "narrative_function": "Mostrar un caso donde automatizar puede ampliar capacidad en lugar de sustituirla.",
+      "analogy_goal": "Usar la calculadora como ejemplo de una herramienta que cambia qué parte del problema resolvemos nosotros.",
+      "skepticism_angle": "Evitar asumir que toda automatización reduce aprendizaje.",
+      "human_stakes": "Qué habilidades vale la pena seguir practicando."
+    }
+  ],
+  "claim_ledger": [
+    {
+      "evidence_id": "verification_case",
+      "selected_news_index": 1,
+      "supported_facts": [
+        "La fuente describe una prueba que evalúa no solo la respuesta, sino también evidencia o procedimiento verificable."
       ],
-      "analogy_goal": "usar la calculadora como ejemplo de una herramienta que cambia qué parte del problema resolvemos nosotros",
-      "skepticism_angle": "evitar asumir que toda automatización reduce aprendizaje",
-      "human_stakes": "qué habilidades vale la pena seguir practicando",
-      "open_loop": "quizá la pregunta no sea cuánto delegamos, sino qué decidimos conservar",
-      "mini_conclusion": ""
+      "allowed_interpretations": [
+        "El caso puede leerse como una señal de que evaluar procesos empieza a importar más cuando las respuestas son difíciles de comprobar directamente."
+      ],
+      "hypotheses": [
+        "Si este tipo de evaluación se generalizara, podría cambiar qué comportamientos de los sistemas se consideran valiosos."
+      ],
+      "uncertainties": [
+        "La fuente no establece que esta forma de evaluación elimine errores ni que mida inteligencia general."
+      ],
+      "prohibited_claims": [
+        "La prueba demuestra que el sistema comprende como una persona.",
+        "La prueba garantiza resultados científicamente correctos."
+      ],
+      "source_limitations": [
+        "El episodio debe conservar cualquier limitación de procedencia o detalle indicada en la noticia seleccionada."
+      ]
+    },
+    {
+      "evidence_id": "amplification_case",
+      "selected_news_index": 2,
+      "supported_facts": [
+        "La fuente describe una herramienta que automatiza parte de una tarea manteniendo participación humana en otras etapas."
+      ],
+      "allowed_interpretations": [
+        "El caso puede funcionar como contraejemplo a la idea de que toda delegación sustituye capacidad humana."
+      ],
+      "hypotheses": [
+        "El efecto sobre aprendizaje podría depender de qué parte de la tarea permanece bajo control humano."
+      ],
+      "uncertainties": [
+        "La fuente no demuestra por sí sola efectos de largo plazo sobre aprendizaje o habilidades."
+      ],
+      "prohibited_claims": [
+        "La herramienta mejora necesariamente el aprendizaje.",
+        "La automatización preserva todas las habilidades humanas relevantes."
+      ],
+      "source_limitations": []
+    }
+  ],
+  "beats": [
+    {
+      "beat_id": "tension",
+      "kind": "scene",
+      "purpose": "Hacer tangible la comodidad de aceptar una respuesta sin reconstruir el proceso.",
+      "estimated_minutes": 2.0,
+      "evidence_ids": []
+    },
+    {
+      "beat_id": "verification_reveal",
+      "kind": "reveal",
+      "purpose": "Usar el primer caso para distinguir respuesta correcta de proceso verificable.",
+      "estimated_minutes": 3.5,
+      "evidence_ids": ["verification_case"]
+    },
+    {
+      "beat_id": "complication",
+      "kind": "complication",
+      "purpose": "Introducir el contraejemplo que impide concluir que toda automatización empobrece una habilidad.",
+      "estimated_minutes": 2.5,
+      "evidence_ids": ["amplification_case"]
+    },
+    {
+      "beat_id": "turn",
+      "kind": "turn",
+      "purpose": "Mover la pregunta desde cuánto delegamos hacia qué juicio decidimos conservar.",
+      "estimated_minutes": 2.0,
+      "evidence_ids": ["verification_case", "amplification_case"]
     }
   ],
   "final_synthesis": "La IA puede ampliar nuestra capacidad, pero esa ampliación depende de qué partes del pensamiento seguimos ejerciendo de forma deliberada.",
