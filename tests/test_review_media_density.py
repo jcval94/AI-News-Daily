@@ -12,6 +12,25 @@ from pipeline import review_media as review_media_base
 
 
 class ReviewMediaDensityTests(unittest.TestCase):
+    def test_minimum_supported_episode_can_satisfy_production_floor(self) -> None:
+        sections = [
+            {
+                "position": 0,
+                "section_key": "beat:minimum",
+                "beat_id": "minimum",
+                "beat_kind": "evidence",
+                "evidence_ids": ["e1"],
+                "start_seconds": 0.0,
+                "end_seconds": 420.0,
+            }
+        ]
+        slots = dense_candidate_slots(sections)
+        opening = [slot for slot in slots if float(slot["start_seconds"]) < 20]
+
+        self.assertGreaterEqual(len(slots), 45)
+        self.assertGreaterEqual(len(opening), 5)
+        self.assertGreaterEqual(float(slots[-1]["end_seconds"]), 410.0)
+
     def test_eleven_minute_episode_offers_more_than_triple_previous_media(self) -> None:
         sections = [
             {
