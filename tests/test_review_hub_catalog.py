@@ -68,12 +68,13 @@ class ReviewHubCatalogTests(unittest.TestCase):
 
             self.assertIn('class="episode-sidebar"', document)
             self.assertIn('id="episodeFrame"', document)
+            self.assertIn('id="episodeSearch"', document)
+            self.assertIn('placeholder="Buscar episodio…"', document)
             self.assertIn("URLSearchParams(window.location.search).get('episode')", document)
             self.assertIn("history.pushState", document)
             self.assertIn('src="episodes/2026-08-18/index.html"', document)
             self.assertIn('data-episode-id="2026-08-21"', document)
             self.assertIn('data-episode-id="2026-08-18"', document)
-            self.assertIn("Filtrar", document.replace("Buscar episodio", "Filtrar"))
             self.assertEqual(manifest["default_episode"], "2026-08-18")
             self.assertEqual(len(manifest["episodes"]), 2)
 
