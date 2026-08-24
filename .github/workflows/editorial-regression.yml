@@ -47,6 +47,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: editorial-regression-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   current-runtime-regression:
     runs-on: ubuntu-latest
