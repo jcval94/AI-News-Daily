@@ -76,6 +76,18 @@ class RunJourneyTests(unittest.TestCase):
             self.assertIn("NO REQUERIDO", html)
             self.assertIn("$0.0040", html)
 
+    def test_discovers_production_media_beside_persisted_scripts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            episode = Path(tmp) / ".review-source" / "scripts" / "2026-08-21"
+            production_media = Path(tmp) / ".review-source" / "multimedia" / "2026-08-21"
+            episode.mkdir(parents=True)
+            self._write(episode / "run_state.json", {"status": "approved", "publishable": True})
+            self._write(production_media / "manifest.json", [{"file": "production.jpg"}])
+
+            journey = derive_run_journey(episode_dir=episode, cost_snapshot={})
+            by_id = {stage["id"]: stage for stage in journey["stages"]}
+            self.assertEqual(by_id["media_materialize"]["status"], "executed")
+
     def test_review_media_is_not_misreported_as_production_media(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             episode = Path(tmp) / "episode"
