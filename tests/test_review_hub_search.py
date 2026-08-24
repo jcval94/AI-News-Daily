@@ -151,13 +151,21 @@ class ReviewHubSearchTests(unittest.TestCase):
             self.assertIn('data-tab="evidence"', page)
             self.assertIn('data-tab="media"', page)
             self.assertIn('data-tab="technical"', page)
+            self.assertIn('id="clearSearch"', page)
+            self.assertIn('data-subtab-group="evidence"', page)
+            self.assertIn('data-subtab-group="technical"', page)
 
             hero = page.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
             self.assertNotIn('class="metrics"', hero)
             self.assertNotIn("Editorial</span>", hero)
-            self.assertIn("Revisión humana", hero)
-            self.assertIn("sin registro humano", hero)
+            self.assertNotIn("Revisión humana", hero)
+            self.assertNotIn("sin registro humano", hero)
             self.assertNotIn("Human review", hero)
+
+            technical = page.split('id="panel-technical"', 1)[1]
+            self.assertIn("Provenance del run", technical)
+            self.assertIn("Revisión humana", technical)
+            self.assertIn("sin registro humano", technical)
 
 
 if __name__ == "__main__":
