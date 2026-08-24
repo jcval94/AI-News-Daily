@@ -23,6 +23,11 @@ on:
         required: false
         default: ""
         type: string
+      history_episode_limit:
+        description: "Maximum distinct episodes retained in GitHub Pages, including the current episode"
+        required: true
+        default: "4"
+        type: string
   pull_request:
     branches:
       - main
@@ -38,6 +43,7 @@ on:
       - "pipeline/review_hub_v5.py"
       - "pipeline/review_hub_v6.py"
       - "pipeline/review_hub_v7.py"
+      - "pipeline/review_hub_catalog.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/review_media_density.py"
@@ -47,6 +53,7 @@ on:
       - "tests/test_costs.py"
       - "tests/test_evidence_reconciliation.py"
       - "tests/test_review_hub.py"
+      - "tests/test_review_hub_catalog.py"
       - "tests/test_review_hub_search.py"
       - "tests/test_review_hub_v3.py"
       - "tests/test_review_hub_v5.py"
@@ -70,6 +77,7 @@ on:
       - "pipeline/review_hub_v5.py"
       - "pipeline/review_hub_v6.py"
       - "pipeline/review_hub_v7.py"
+      - "pipeline/review_hub_catalog.py"
       - "pipeline/review_media.py"
       - "pipeline/review_media_offline.py"
       - "pipeline/review_media_density.py"
@@ -77,6 +85,7 @@ on:
       - "pipeline/review_media_offline_dense.py"
       - "pipeline/media.py"
       - "tests/test_costs.py"
+      - "tests/test_review_hub_catalog.py"
       - "tests/test_review_hub_search.py"
       - "tests/test_review_hub_v3.py"
       - "tests/test_review_hub_v5.py"
@@ -312,6 +321,86 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Assemble multi-episode Pages catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          HISTORY_LIMIT: ${{ inputs.history_episode_limit || vars.REVIEW_HUB_HISTORY_LIMIT || '4' }}
+        run: |
+          set -euo pipefail
+          HISTORY_LIMIT="${HISTORY_LIMIT:-4}"
+          if ! [[ "$HISTORY_LIMIT" =~ ^[0-9]+$ ]] || [ "$HISTORY_LIMIT" -lt 1 ]; then
+            echo "::warning::Invalid history limit '$HISTORY_LIMIT'; using 4"
+            HISTORY_LIMIT=4
+          fi
+
+          rm -rf pages-site .review-archive
+          mkdir -p "pages-site/episodes/$TARGET_DATE" .review-archive
+          cp -a review-site/. "pages-site/episodes/$TARGET_DATE/"
+
+          if [ "$GITHUB_REF" = "refs/heads/main" ] && { [ "$GITHUB_EVENT_NAME" = "push" ] || [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; }; then
+            declare -A SEEN
+            SEEN["$TARGET_DATE"]=1
+            EPISODE_COUNT=1
+
+            while IFS= read -r candidate_run; do
+              [ -n "$candidate_run" ] || continue
+              while IFS=$'\t' read -r artifact_name artifact_id; do
+                [ -n "$artifact_name" ] || continue
+                if [[ "$artifact_name" =~ ^editorial-review-hub-([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]+)$ ]]; then
+                  episode_date="${BASH_REMATCH[1]}"
+                else
+                  continue
+                fi
+                [ -z "${SEEN[$episode_date]:-}" ] || continue
+
+                archive_dir=".review-archive/${candidate_run}-${artifact_id}"
+                rm -rf "$archive_dir"
+                mkdir -p "$archive_dir"
+                if ! gh run download "$candidate_run" --name "$artifact_name" --dir "$archive_dir"; then
+                  echo "::warning::Could not download historical Review Hub artifact $artifact_name"
+                  continue
+                fi
+                archived_index="$(find "$archive_dir" -type f -path '*/review-site/index.html' -print -quit)"
+                if [ -z "$archived_index" ]; then
+                  echo "::warning::Historical artifact $artifact_name has no review-site/index.html"
+                  continue
+                fi
+                archived_site="$(dirname "$archived_index")"
+                mkdir -p "pages-site/episodes/$episode_date"
+                cp -a "$archived_site/." "pages-site/episodes/$episode_date/"
+                SEEN["$episode_date"]=1
+                EPISODE_COUNT=$((EPISODE_COUNT + 1))
+                echo "Archived episode $episode_date from $artifact_name"
+                if [ "$EPISODE_COUNT" -ge "$HISTORY_LIMIT" ]; then
+                  break 2
+                fi
+              done < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate_run/artifacts?per_page=100" \
+                --jq '.artifacts[] | select(.expired == false and (.name | startswith("editorial-review-hub-"))) | [.name, (.id|tostring)] | @tsv' \
+                2>/dev/null || true)
+            done < <(gh run list \
+              --workflow 'Editorial Review Hub' \
+              --branch main \
+              --status success \
+              --limit 30 \
+              --json databaseId \
+              --jq '.[].databaseId')
+          fi
+
+          python -m pipeline.review_hub_catalog \
+            --episodes-root pages-site/episodes \
+            --output-dir pages-site \
+            --current "$TARGET_DATE"
+
+          test -s pages-site/index.html
+          test -s pages-site/episodes.json
+          test -s "pages-site/episodes/$TARGET_DATE/index.html"
+          grep -q 'class="episode-sidebar"' pages-site/index.html
+          grep -q 'id="episodeFrame"' pages-site/index.html
+          grep -q 'id="episodeSearch"' pages-site/index.html
+          grep -q 'history.pushState' pages-site/index.html
+          grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
+
       - name: Configure Pages
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/configure-pages@v5
@@ -320,7 +409,7 @@ jobs:
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-pages-artifact@v4
         with:
-          path: review-site
+          path: pages-site
 
   deploy:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
@@ -338,24 +427,31 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Verify deployed review hub
+      - name: Verify deployed episode catalog and current Review Hub
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          TARGET_DATE: ${{ needs.build.outputs.target_date }}
         run: |
           set -euo pipefail
+          ROOT_URL="${PAGE_URL%/}/"
+          EPISODE_URL="${ROOT_URL}episodes/${TARGET_DATE}/"
           for attempt in 1 2 3 4 5 6; do
-            if curl -fsSL --max-time 20 "$PAGE_URL" -o /tmp/review-hub.html \
+            if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/review-catalog.html \
+              && grep -q 'class="episode-sidebar"' /tmp/review-catalog.html \
+              && grep -q 'id="episodeFrame"' /tmp/review-catalog.html \
+              && grep -q 'id="episodeSearch"' /tmp/review-catalog.html \
+              && curl -fsSL --max-time 20 "$EPISODE_URL" -o /tmp/review-hub.html \
               && grep -q 'id="globalSearch"' /tmp/review-hub.html \
               && grep -q 'class="skip-link"' /tmp/review-hub.html \
               && grep -q 'data-tab="overview"' /tmp/review-hub.html \
               && grep -q 'data-tab="budget"' /tmp/review-hub.html \
               && grep -q 'id="panel-budget"' /tmp/review-hub.html \
               && grep -q 'data-tab="technical"' /tmp/review-hub.html; then
-              echo "GitHub Pages smoke test passed: $PAGE_URL"
+              echo "GitHub Pages episode catalog smoke test passed: $ROOT_URL"
               exit 0
             fi
             echo "Pages not ready yet (attempt $attempt/6)"
             sleep 10
           done
-          echo "::error::GitHub Pages deployment did not pass smoke test: $PAGE_URL"
+          echo "::error::GitHub Pages deployment did not pass episode catalog smoke test: $ROOT_URL"
           exit 1
