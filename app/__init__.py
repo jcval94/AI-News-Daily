@@ -1,4 +1,5 @@
 from .agent import (
+    ClaimLedgerEntry,
     EpisodePlan,
     MasterJudgeResult,
     MultimediaPlan,
@@ -18,6 +19,7 @@ from .agent import (
 
 __all__ = [
     "SelectionResult",
+    "ClaimLedgerEntry",
     "EpisodePlan",
     "ReviewResult",
     "MasterJudgeResult",
