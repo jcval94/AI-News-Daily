@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "currency": "USD",
+  "as_of": "2026-08-24",
+  "models": {
+    "gpt-5.4-nano": {
+      "input_per_million": 0.20,
+      "cached_input_per_million": 0.02,
+      "output_per_million": 1.25,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-nano",
+      "notes": "Standard direct API pricing. Cached input is not separately persisted by the current ADK trace, so historical estimates conservatively price all prompt tokens at the standard input rate."
+    }
+  },
+  "services": {
+    "pexels": {
+      "usd_per_request": 0.0,
+      "source": "https://www.pexels.com/api/documentation/",
+      "notes": "Pexels states that API content is available free of charge; request quotas still apply."
+    },
+    "github_actions_standard_public_runner": {
+      "usd_per_minute": 0.0,
+      "source": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "notes": "Standard GitHub-hosted runners are free for public repositories. Larger runners are excluded from this assumption."
+    },
+    "github_actions_artifact_storage": {
+      "usd_per_gb_month_over_included_allowance": 0.25,
+      "source": "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+      "notes": "Only usage above the account's included/shared artifact allowance is billable. The Review Hub cannot see account-level billing utilization, so storage exposure is reported separately and excluded from the episode total."
+    }
+  }
+}
