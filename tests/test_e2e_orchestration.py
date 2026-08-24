@@ -77,6 +77,18 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                                 "human_stakes": "aprendizaje y criterio"
                             }
                         ],
+                        "claim_ledger": [
+                            {
+                                "evidence_id": "case",
+                                "selected_news_index": 1,
+                                "supported_facts": ["La noticia describe un caso verificable relacionado con IA."],
+                                "allowed_interpretations": ["Puede usarse para discutir dónde ejercemos criterio."],
+                                "hypotheses": [],
+                                "uncertainties": ["El fixture no detalla resultados adicionales."],
+                                "prohibited_claims": ["El caso demuestra que la IA elimina el criterio humano."],
+                                "source_limitations": ["El fixture usa un resumen mínimo para pruebas."],
+                            }
+                        ],
                         "beats": [
                             {"beat_id": "evidence", "kind": "evidence", "purpose": "Volver concreta la tensión con evidencia actual.", "estimated_minutes": 3.0, "evidence_ids": ["case"]},
                             {"beat_id": "turn", "kind": "turn", "purpose": "Mover la pregunta desde capacidad hacia criterio.", "estimated_minutes": 2.5, "evidence_ids": []}
@@ -177,6 +189,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(reviews["voice_humanity"]["ai_smell_risk"], "low")
             self.assertTrue(episode_plan["central_question"])
             self.assertTrue(episode_plan["topic_signature"])
+            self.assertEqual(episode_plan["claim_ledger"][0]["evidence_id"], "case")
             self.assertTrue((result / "script_sections.json").exists())
             selected_payload = json.loads((result / "selected_news.json").read_text(encoding="utf-8"))
             self.assertEqual(selected_payload["items"][0]["source_locator"], "2026-08-20.txt#item-1")
