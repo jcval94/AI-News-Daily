@@ -68,8 +68,6 @@ def _billable_usage(usage: dict[str, Any]) -> dict[str, int]:
     output = _int(usage.get("output_tokens"))
     reasoning = _int(usage.get("reasoning_tokens"))
     total = _int(usage.get("total_tokens"))
-    # Some adapters expose reasoning separately from candidate/output tokens, while others
-    # include it in the aggregate. Use the larger observed output-side count without double billing.
     output_side_from_total = max(0, total - prompt) if total else 0
     billable_output = max(output + reasoning, output_side_from_total, output)
     return {
@@ -89,8 +87,6 @@ def _estimate_call_cost(usage: dict[str, Any], rate: dict[str, Any] | None) -> f
     output_rate = _number(rate.get("output_per_million"))
     if input_rate is None or output_rate is None:
         return None
-    # Cached-input token counts are not persisted by the current trace. Conservatively treat
-    # all prompt tokens as standard input rather than claiming an unobserved cache discount.
     return round(
         (normalized["prompt_tokens"] / 1_000_000.0) * input_rate
         + (normalized["billable_output_tokens"] / 1_000_000.0) * output_rate,
@@ -115,7 +111,10 @@ def _trace_rows(
             continue
         usage = call.get("usage", {}) if isinstance(call.get("usage"), dict) else {}
         normalized = _billable_usage(usage)
-        observed_usage = any(normalized[key] > 0 for key in ("prompt_tokens", "output_tokens", "reasoning_tokens", "total_tokens"))
+        observed_usage = any(
+            normalized[key] > 0
+            for key in ("prompt_tokens", "output_tokens", "reasoning_tokens", "total_tokens")
+        )
         status = str(call.get("status") or "unknown")
         estimated = _estimate_call_cost(usage, rate) if observed_usage else None
         if status == "error" and not observed_usage:
@@ -166,7 +165,13 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         group["attempts"] += 1
         if row.get("status") == "error":
             group["errors"] += 1
-        for token_key in ("prompt_tokens", "output_tokens", "reasoning_tokens", "billable_output_tokens", "total_tokens"):
+        for token_key in (
+            "prompt_tokens",
+            "output_tokens",
+            "reasoning_tokens",
+            "billable_output_tokens",
+            "total_tokens",
+        ):
             group[token_key] += _int(row.get(token_key))
         group["elapsed_seconds"] += float(row.get("elapsed_seconds") or 0.0)
         cost = row.get("estimated_cost_usd")
@@ -190,6 +195,10 @@ def _provider_counts(manifest: list[dict[str, Any]]) -> dict[str, int]:
         provider = str(item.get("provider") or "unknown").strip().lower()
         counts[provider] += 1
     return dict(sorted(counts.items()))
+
+
+def _zero_policy_cost(service: dict[str, Any], key: str) -> float | None:
+    return 0.0 if _number(service.get(key)) == 0 else None
 
 
 def build_cost_snapshot(
@@ -233,7 +242,11 @@ def build_cost_snapshot(
     rows = production_rows + review_rows
 
     known_openai_cost = round(
-        sum(float(row["estimated_cost_usd"]) for row in rows if row.get("estimated_cost_usd") is not None),
+        sum(
+            float(row["estimated_cost_usd"])
+            for row in rows
+            if row.get("estimated_cost_usd") is not None
+        ),
         8,
     )
     observed_prompt = sum(_int(row.get("prompt_tokens")) for row in rows)
@@ -245,19 +258,34 @@ def build_cost_snapshot(
         1 for row in rows if row.get("status") == "error" and not row.get("usage_observed")
     )
     unpriced_observed_attempts = sum(
-        1 for row in rows if row.get("usage_observed") and row.get("estimated_cost_usd") is None
+        1
+        for row in rows
+        if row.get("usage_observed") and row.get("estimated_cost_usd") is None
     )
 
     providers = _provider_counts(manifest)
     pexels_assets = providers.get("pexels", 0)
+    wikimedia_assets = providers.get("wikimedia_commons", 0)
     generated_assets = providers.get("generated_fallback", 0)
 
     services = pricing.get("services", {}) if isinstance(pricing, dict) else {}
     pexels_rate = services.get("pexels", {}) if isinstance(services, dict) else {}
-    actions_rate = services.get("github_actions_standard_public_runner", {}) if isinstance(services, dict) else {}
-    storage_rate = services.get("github_actions_artifact_storage", {}) if isinstance(services, dict) else {}
-    pexels_known_cost = 0.0 if _number(pexels_rate.get("usd_per_request")) == 0 else None
-    actions_compute_cost = 0.0 if _number(actions_rate.get("usd_per_minute")) == 0 else None
+    wikimedia_rate = services.get("wikimedia_commons", {}) if isinstance(services, dict) else {}
+    fallback_rate = services.get("generated_fallback", {}) if isinstance(services, dict) else {}
+    actions_rate = (
+        services.get("github_actions_standard_public_runner", {})
+        if isinstance(services, dict)
+        else {}
+    )
+    storage_rate = (
+        services.get("github_actions_artifact_storage", {})
+        if isinstance(services, dict)
+        else {}
+    )
+    pexels_known_cost = _zero_policy_cost(pexels_rate, "usd_per_request")
+    wikimedia_known_cost = _zero_policy_cost(wikimedia_rate, "usd_per_request")
+    generated_fallback_cost = _zero_policy_cost(fallback_rate, "usd_per_asset")
+    actions_compute_cost = _zero_policy_cost(actions_rate, "usd_per_minute")
 
     media_bytes = _tree_bytes(media_dir)
     zip_bytes = _tree_bytes(media_zip)
@@ -265,7 +293,9 @@ def build_cost_snapshot(
     raw_upload_bytes = media_bytes + zip_bytes + site_bytes_before_snapshot
     storage_gb = raw_upload_bytes / (1024**3)
     retention_days = 30
-    storage_rate_value = _number(storage_rate.get("usd_per_gb_month_over_included_allowance"))
+    storage_rate_value = _number(
+        storage_rate.get("usd_per_gb_month_over_included_allowance")
+    )
     gross_storage_exposure = (
         round(storage_gb * (retention_days / 30.0) * storage_rate_value, 8)
         if storage_rate_value is not None
@@ -273,15 +303,21 @@ def build_cost_snapshot(
     )
 
     known_direct_cost = known_openai_cost
-    if pexels_known_cost is not None:
-        known_direct_cost += pexels_known_cost
-    if actions_compute_cost is not None:
-        known_direct_cost += actions_compute_cost
+    for zero_or_known in (
+        pexels_known_cost,
+        wikimedia_known_cost,
+        generated_fallback_cost,
+        actions_compute_cost,
+    ):
+        if zero_or_known is not None:
+            known_direct_cost += zero_or_known
     known_direct_cost = round(known_direct_cost, 8)
 
     if episode_budget_usd is None:
         env_budget = _number(os.getenv("REVIEW_HUB_EPISODE_BUDGET_USD"))
-        episode_budget_usd = env_budget if env_budget is not None and env_budget >= 0 else None
+        episode_budget_usd = (
+            env_budget if env_budget is not None and env_budget >= 0 else None
+        )
     remaining = (
         round(float(episode_budget_usd) - known_direct_cost, 8)
         if episode_budget_usd is not None
@@ -294,9 +330,13 @@ def build_cost_snapshot(
     )
 
     if production_rate is None:
-        warnings.append(f"No pricing snapshot found for production model {production_model}; observed production tokens are unpriced.")
+        warnings.append(
+            f"No pricing snapshot found for production model {production_model}; observed production tokens are unpriced."
+        )
     if review_rows and review_rate is None:
-        warnings.append(f"No pricing snapshot found for review planner model {review_model}; observed review-planner tokens are unpriced.")
+        warnings.append(
+            f"No pricing snapshot found for review planner model {review_model}; observed review-planner tokens are unpriced."
+        )
     if unmeasured_failed_attempts:
         warnings.append(
             f"{unmeasured_failed_attempts} failed model attempt(s) have no persisted token usage; known cost is a lower bound for this historical run."
@@ -333,6 +373,8 @@ def build_cost_snapshot(
         "totals": {
             "known_openai_cost_usd": known_openai_cost,
             "pexels_known_cost_usd": pexels_known_cost,
+            "wikimedia_known_cost_usd": wikimedia_known_cost,
+            "generated_fallback_known_cost_usd": generated_fallback_cost,
             "github_actions_compute_known_cost_usd": actions_compute_cost,
             "known_direct_cost_usd": known_direct_cost,
             "artifact_storage_gross_exposure_usd": gross_storage_exposure,
@@ -353,6 +395,7 @@ def build_cost_snapshot(
             "asset_count": len(manifest),
             "provider_counts": providers,
             "pexels_assets": pexels_assets,
+            "wikimedia_assets": wikimedia_assets,
             "generated_fallback_assets": generated_assets,
             "media_directory_bytes": media_bytes,
             "media_zip_bytes": zip_bytes,
@@ -369,16 +412,32 @@ def build_cost_snapshot(
             "artifact_storage_note": "Gross exposure assumes the entire raw upload footprint were billable for 30 days. Actual billing depends on compression, account plan, shared included storage, other artifacts/packages, and account-level metered usage; that billing state is not available inside this artifact.",
         },
         "coverage": {
-            "known_direct_total_is_complete": unmeasured_failed_attempts == 0 and unpriced_observed_attempts == 0,
+            "known_direct_total_is_complete": (
+                unmeasured_failed_attempts == 0 and unpriced_observed_attempts == 0
+            ),
             "cached_input_discount_measured": False,
             "pexels_request_count_measured": False,
+            "wikimedia_request_count_measured": False,
             "github_account_billing_measured": False,
             "warnings": warnings,
         },
         "sources": {
-            "openai": production_rate.get("source") if isinstance(production_rate, dict) else None,
+            "openai": (
+                production_rate.get("source")
+                if isinstance(production_rate, dict)
+                else None
+            ),
             "pexels": pexels_rate.get("source") if isinstance(pexels_rate, dict) else None,
-            "github_actions": actions_rate.get("source") if isinstance(actions_rate, dict) else None,
-            "github_storage": storage_rate.get("source") if isinstance(storage_rate, dict) else None,
+            "wikimedia": (
+                wikimedia_rate.get("source")
+                if isinstance(wikimedia_rate, dict)
+                else None
+            ),
+            "github_actions": (
+                actions_rate.get("source") if isinstance(actions_rate, dict) else None
+            ),
+            "github_storage": (
+                storage_rate.get("source") if isinstance(storage_rate, dict) else None
+            ),
         },
     }
