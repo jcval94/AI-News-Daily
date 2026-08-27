@@ -343,7 +343,6 @@ multimedia/YYYY-MM-DD/
 ├── plan.json
 ├── manifest.json
 ├── credits.json
-├── footage_candidates.json
 └── assets/
 ```
 
@@ -401,7 +400,7 @@ PEXELS_API_KEY
 YOUTUBE_API_KEY
 ```
 
-`YOUTUBE_API_KEY` enables post-approval real-footage discovery. The pipeline stores YouTube links and metadata in `multimedia/YYYY-MM-DD/footage_candidates.json`; it does **not** download YouTube audiovisual content and never auto-declares fair use.
+`YOUTUBE_API_KEY` enables post-approval real-footage discovery. The pipeline stores YouTube links and metadata only in the isolated run as `.pipeline-runs/<date>/<run-id>/multimedia/<date>/footage_candidates.json`. The GitHub Actions run artifact is retained for 30 days and this YouTube API metadata is deliberately excluded from canonical `multimedia/` history. The pipeline does **not** download YouTube audiovisual content and never auto-declares fair use.
 
 Useful repository variables:
 
