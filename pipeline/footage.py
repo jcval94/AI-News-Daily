@@ -146,6 +146,12 @@ def score_candidate(story: dict[str, Any], candidate: dict[str, Any]) -> dict[st
 
     if title_score >= 0.58 and date_score >= 0.45:
         match_type = "DIRECT_EVENT"
+    elif source_score >= 0.75 and (
+        title_score >= 0.18 or summary_score >= 0.18 or date_score >= 0.8
+    ):
+        # A same-source/current video can be a useful primary demo even when the
+        # news title is Spanish and the official video metadata is English.
+        match_type = "PRIMARY_DEMO"
     elif source_score >= 0.5 and title_score >= 0.35:
         match_type = "PRIMARY_DEMO"
     elif relationship_score >= 0.28:
