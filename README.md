@@ -343,6 +343,7 @@ multimedia/YYYY-MM-DD/
 ├── plan.json
 ├── manifest.json
 ├── credits.json
+├── footage_candidates.json
 └── assets/
 ```
 
@@ -393,11 +394,14 @@ Required secret:
 OPENAI_API_KEY
 ```
 
-Optional secret:
+Optional secrets:
 
 ```text
 PEXELS_API_KEY
+YOUTUBE_API_KEY
 ```
+
+`YOUTUBE_API_KEY` enables post-approval real-footage discovery. The pipeline stores YouTube links and metadata in `multimedia/YYYY-MM-DD/footage_candidates.json`; it does **not** download YouTube audiovisual content and never auto-declares fair use.
 
 Useful repository variables:
 
