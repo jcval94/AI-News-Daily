@@ -30,10 +30,14 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 2)
+        self.assertEqual(data["version"], 3)
         self.assertIn("source_coverage", stages)
         self.assertIn("75%", stages["source_coverage"]["summary"])
         self.assertIn("post-aprobación", stages["media_plan"]["title"])
+        self.assertIn("footage_discovery", stages)
+        self.assertIn("YouTube", stages["footage_discovery"]["title"])
+        self.assertIn("30-day ephemeral", stages["footage_discovery"]["outputs"])
+        self.assertIn("revisión humana", stages["footage_discovery"]["authority"])
         self.assertIn("ai-news-run", stages["pages"]["inputs"])
         self.assertIn("fuente canónica", stages["pages"]["summary"])
 
