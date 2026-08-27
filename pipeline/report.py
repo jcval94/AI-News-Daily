@@ -189,6 +189,7 @@ def build_report(
     media_plan = read_json(multimedia_dir / "plan.json", {})
     manifest = read_json(multimedia_dir / "manifest.json", [])
     credits = read_json(multimedia_dir / "credits.json", {})
+    footage = read_json(multimedia_dir / "footage_candidates.json", {})
     script = read_text(scripts_dir / "script.txt")
 
     selected_items = selected.get("items", []) if isinstance(selected, dict) else []
@@ -253,6 +254,7 @@ def build_report(
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
         "multimedia_credits_json": artifact_record(multimedia_dir / "credits.json", f"multimedia/{episode}/credits.json"),
         "multimedia_credits_md": artifact_record(multimedia_dir / "credits.md", f"multimedia/{episode}/credits.md"),
+        "footage_candidates": artifact_record(multimedia_dir / "footage_candidates.json", f"multimedia/{episode}/footage_candidates.json"),
         "voice_profile": artifact_record(editorial_dir / "voice_profile.md", "editorial/voice_profile.md"),
         "discourse_profile": artifact_record(editorial_dir / "discourse_profile.md", "editorial/discourse_profile.md"),
     }
@@ -380,6 +382,17 @@ def build_report(
             "credits_generated": bool(credits),
             "all_assets_license_valid": credits.get("all_assets_license_valid") if isinstance(credits, dict) else None,
             "attribution_required_count": credits.get("attribution_required_count", 0) if isinstance(credits, dict) else 0,
+            "real_footage_discovery": {
+                "status": footage.get("status") if isinstance(footage, dict) else None,
+                "stories_checked": len(footage.get("items", [])) if isinstance(footage, dict) else 0,
+                "stories_with_candidates": sum(
+                    1 for item in footage.get("items", [])
+                    if isinstance(item, dict) and int(item.get("candidate_count", 0) or 0) > 0
+                ) if isinstance(footage, dict) else 0,
+                "manual_rights_review_required": bool(footage) and bool(
+                    (footage.get("policy") or {}).get("manual_rights_review_required", True)
+                ) if isinstance(footage, dict) else False,
+            },
             "provider_errors": (
                 sum(
                     len(item.get("errors", []))
