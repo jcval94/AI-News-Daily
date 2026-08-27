@@ -382,6 +382,9 @@ jobs:
           cp -R "$RUN_ROOT/scripts/$TARGET_DATE" "scripts/$TARGET_DATE"
           if [ -d "$RUN_ROOT/multimedia/$TARGET_DATE" ]; then
             cp -R "$RUN_ROOT/multimedia/$TARGET_DATE" "multimedia/$TARGET_DATE"
+            # YouTube API metadata is intentionally ephemeral. The isolated run artifact
+            # retains it for 30 days, but canonical history must not persist it indefinitely.
+            rm -f "multimedia/$TARGET_DATE/footage_candidates.json"
           fi
           echo "promoted=true" >> "$GITHUB_OUTPUT"
 
