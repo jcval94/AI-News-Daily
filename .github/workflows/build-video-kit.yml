@@ -285,6 +285,25 @@ jobs:
               raise SystemExit(f"Cold-open media floor failed: expected >=5 assets, got {opening}")
           PY
 
+      - name: Discover real footage on YouTube
+        id: footage
+        if: always() && steps.episode_outcome.outputs.status == 'approved'
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_MAX_QUERIES_PER_NEWS: ${{ vars.YOUTUBE_MAX_QUERIES_PER_NEWS || '2' }}
+          YOUTUBE_MAX_RESULTS_PER_QUERY: ${{ vars.YOUTUBE_MAX_RESULTS_PER_QUERY || '6' }}
+          YOUTUBE_MAX_CANDIDATES_PER_NEWS: ${{ vars.YOUTUBE_MAX_CANDIDATES_PER_NEWS || '5' }}
+          YOUTUBE_HTTP_MAX_ATTEMPTS: ${{ vars.YOUTUBE_HTTP_MAX_ATTEMPTS || '3' }}
+          YOUTUBE_HTTP_RETRY_BASE_SECONDS: ${{ vars.YOUTUBE_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          mkdir -p "$RUN_ROOT/multimedia/$TARGET_DATE"
+          python -m pipeline.footage \\
+            --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \\
+            --output "$RUN_ROOT/multimedia/$TARGET_DATE/footage_candidates.json"
+
       - name: Create production script
         id: production_script
         if: always() && steps.episode_outcome.outputs.status == 'approved'
