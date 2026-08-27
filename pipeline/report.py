@@ -254,7 +254,6 @@ def build_report(
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
         "multimedia_credits_json": artifact_record(multimedia_dir / "credits.json", f"multimedia/{episode}/credits.json"),
         "multimedia_credits_md": artifact_record(multimedia_dir / "credits.md", f"multimedia/{episode}/credits.md"),
-        "footage_candidates": artifact_record(multimedia_dir / "footage_candidates.json", f"multimedia/{episode}/footage_candidates.json"),
         "voice_profile": artifact_record(editorial_dir / "voice_profile.md", "editorial/voice_profile.md"),
         "discourse_profile": artifact_record(editorial_dir / "discourse_profile.md", "editorial/discourse_profile.md"),
     }
@@ -392,6 +391,9 @@ def build_report(
                 "manual_rights_review_required": bool(footage) and bool(
                     (footage.get("policy") or {}).get("manual_rights_review_required", True)
                 ) if isinstance(footage, dict) else False,
+                "ephemeral_artifact": f"multimedia/{episode}/footage_candidates.json" if footage else None,
+                "retention_days": 30 if footage else None,
+                "canonical_persistence": False,
             },
             "provider_errors": (
                 sum(
