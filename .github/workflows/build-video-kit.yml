@@ -129,6 +129,7 @@ jobs:
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
+          SOCIAL_SIGNAL_LOOKBACK_DAYS: ${{ vars.SOCIAL_SIGNAL_LOOKBACK_DAYS || '14' }}
           MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
         run: |
           set +e
@@ -185,6 +186,7 @@ jobs:
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
+          SOCIAL_SIGNAL_LOOKBACK_DAYS: ${{ vars.SOCIAL_SIGNAL_LOOKBACK_DAYS || '14' }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           python -m pipeline.run_hardened \
@@ -348,6 +350,7 @@ jobs:
           MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
+          SOCIAL_SIGNAL_LOOKBACK_DAYS: ${{ vars.SOCIAL_SIGNAL_LOOKBACK_DAYS || '14' }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           python -m pipeline.report \
