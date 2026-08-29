@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import json
+import tempfile
 import unittest
+from datetime import date
+from pathlib import Path
 
 from pydantic import ValidationError
 
 from app.agent import TensionCandidate, TensionScoutResult, tension_scout_agent
+from pipeline.run import collect_social_signals
 
 
 def candidate(tension_id: str, signal_id: str) -> TensionCandidate:
@@ -66,6 +71,43 @@ class TensionScoutContractTests(unittest.TestCase):
         instruction = str(tension_scout_agent.instruction)
         self.assertIn("{social_signals}", instruction)
         self.assertNotIn("{news_text}", instruction)
+
+
+    def test_collect_social_signals_uses_recent_structured_catalogs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload = {
+                "generated_at": "2026-08-28T09:00:00-06:00",
+                "signals": [
+                    {
+                        "signal_id": "oversight_speed_gap",
+                        "date": "2026-08-28",
+                        "source": "Example primary source",
+                        "url": "https://example.org/source",
+                        "observation": "Human review is becoming a bottleneck in an automated workflow.",
+                        "domains": ["work", "trust"],
+                        "evidence_type": "report",
+                    }
+                ],
+            }
+            (root / "2026-08-28.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+
+            raw, files = collect_social_signals(root, date(2026, 8, 28), 14)
+
+            self.assertIsNotNone(raw)
+            decoded = json.loads(raw or "{}")
+            self.assertEqual(decoded["signals"][0]["signal_id"], "oversight_speed_gap")
+            self.assertEqual(files, [root / "2026-08-28.json"])
+
+    def test_collect_social_signals_returns_none_without_catalogs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            raw, files = collect_social_signals(
+                Path(tmp), date(2026, 8, 28), 14
+            )
+            self.assertIsNone(raw)
+            self.assertEqual(files, [])
 
 
 if __name__ == "__main__":
