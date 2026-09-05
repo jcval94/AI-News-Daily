@@ -33,6 +33,7 @@ PIPELINE_ENV_DEFAULTS: dict[str, str] = {
     "MEDIA_MIN_RELEVANCE_SCORE": "0.18",
     "NEWS_SOURCE_MODE": "scheduled_window",
     "NEWS_LOOKBACK_DAYS": "4",
+    "SOCIAL_SIGNAL_LOOKBACK_DAYS": "14",
 }
 
 
@@ -66,6 +67,7 @@ class PipelineConfig:
     normal_slot_seconds: int = 4
     news_source_mode: str = "scheduled_window"
     news_lookback_days: int = 4
+    social_signal_lookback_days: int = 14
 
     @classmethod
     def from_env(cls) -> "PipelineConfig":
@@ -92,6 +94,7 @@ class PipelineConfig:
             media_min_relevance_score=float(_config_env("MEDIA_MIN_RELEVANCE_SCORE")),
             news_source_mode=_config_env("NEWS_SOURCE_MODE").strip().lower(),
             news_lookback_days=int(_config_env("NEWS_LOOKBACK_DAYS")),
+            social_signal_lookback_days=int(_config_env("SOCIAL_SIGNAL_LOOKBACK_DAYS")),
         ).validated()
 
     def validated(self) -> "PipelineConfig":
@@ -135,6 +138,8 @@ class PipelineConfig:
             raise ValueError("NEWS_SOURCE_MODE must be scheduled_window or recent_window")
         if not (1 <= self.news_lookback_days <= 14):
             raise ValueError("NEWS_LOOKBACK_DAYS must be between 1 and 14")
+        if not (1 <= self.social_signal_lookback_days <= 30):
+            raise ValueError("SOCIAL_SIGNAL_LOOKBACK_DAYS must be between 1 and 30")
         return self
 
     @property

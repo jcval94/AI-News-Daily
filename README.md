@@ -82,6 +82,40 @@ reflection / contrast / synthesis
 
 A company announcement, model launch, paper, benchmark, or product should not normally be the hook. The viewer should first understand the human question; names and technical labels arrive only when they become useful.
 
+## Tension Scout — shadow precursor
+
+The first migration away from news-first storytelling is now available in **shadow mode**.
+
+When one or more structured catalogs exist under `signals/YYYY-MM-DD.json`, the pipeline runs
+`tension_scout_agent` before news selection. It receives social signals, recent approved essay memory,
+and the curated discourse profile — **not `news_text`**.
+
+Its job is to rank 3–5 candidates through:
+
+```text
+observation
+  ↓
+social problem
+  ↓
+human tension
+  ↓
+central mystery
+  ↓
+second-order question
+```
+
+The result is persisted to:
+
+```text
+scripts/YYYY-MM-DD/tension_candidates.json
+```
+
+For this milestone the artifact is explicitly marked `mode=shadow` and
+`influences_production=false`. News selection, episode planning, writing, judging, and promotion
+remain unchanged. This lets the new editorial precursor be evaluated before it becomes authoritative.
+
+The input contract is documented in `signals/README.md`.
+
 ## Agent inventory
 
 `app/agent.py` contains the planning, writing, judging, and multimedia agents:
@@ -331,6 +365,7 @@ Approved canonical outputs become:
 ```text
 scripts/YYYY-MM-DD/
 ├── run_state.json
+├── tension_candidates.json
 ├── execution_trace.json
 ├── run_report.json
 ├── selected_news.json
@@ -426,6 +461,7 @@ MEDIA_HTTP_MAX_ATTEMPTS=3
 MEDIA_HTTP_RETRY_BASE_SECONDS=1.0
 NEWS_SOURCE_MODE=scheduled_window
 NEWS_LOOKBACK_DAYS=4
+SOCIAL_SIGNAL_LOOKBACK_DAYS=14
 ```
 
 ## Validation

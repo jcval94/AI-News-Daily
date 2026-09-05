@@ -21,12 +21,14 @@ from app.agent import (
     MultimediaPlan,
     ReviewResult,
     SelectionResult,
+    TensionScoutResult,
     VoiceReviewResult,
     editorial_director_agent,
     multimedia_editor_agent,
     reviewer_agent,
     selector_agent,
     seo_master_agent,
+    tension_scout_agent,
     voice_humanity_critic_agent,
     writer_agent,
     youtube_attention_master_agent,
@@ -102,6 +104,65 @@ def collect_available_news(
         "items": [item.model_dump() for item in items],
     }
     return json.dumps(payload, ensure_ascii=False), available, missing, items
+
+
+def collect_social_signals(
+    signals_dir: Path,
+    target_date: date,
+    lookback_days: int,
+) -> tuple[str | None, list[Path]]:
+    """Load recent structured social signals without consulting the news catalog."""
+
+    files: list[Path] = []
+    signals: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+
+    for offset in range(max(1, lookback_days)):
+        signal_date = target_date.fromordinal(target_date.toordinal() - offset)
+        path = signals_dir / f"{signal_date.isoformat()}.json"
+        if not path.exists():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ValueError(f"Invalid social signal catalog {path}: {exc}") from exc
+
+        raw_signals = payload.get("signals", []) if isinstance(payload, dict) else []
+        if not isinstance(raw_signals, list):
+            raise ValueError(f"Social signal catalog {path} must contain a signals list")
+
+        for raw in raw_signals:
+            if not isinstance(raw, dict):
+                raise ValueError(f"Social signal catalog {path} contains a non-object signal")
+            signal_id = str(raw.get("signal_id", "") or "").strip()
+            if not signal_id:
+                raise ValueError(f"Social signal catalog {path} contains a signal without signal_id")
+            if signal_id in seen_ids:
+                continue
+            for required in ("date", "source", "url", "observation"):
+                if not str(raw.get(required, "") or "").strip():
+                    raise ValueError(
+                        f"Social signal {signal_id!r} in {path} is missing required field {required!r}"
+                    )
+            seen_ids.add(signal_id)
+            signals.append(raw)
+        files.append(path)
+
+    if not signals:
+        return None, files
+
+    return (
+        json.dumps(
+            {
+                "schema_version": 1,
+                "target_date": target_date.isoformat(),
+                "lookback_days": lookback_days,
+                "signals": signals,
+            },
+            ensure_ascii=False,
+        ),
+        files,
+    )
 
 
 def materialize_selection(
@@ -642,6 +703,7 @@ async def build(
     max_media_downloads: int,
     download_multimedia: bool,
     editorial_dir: Path = Path("editorial"),
+    signals_dir: Path = Path("signals"),
 ) -> Path | None:
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("Set OPENAI_API_KEY before running the pipeline")
@@ -681,6 +743,56 @@ async def build(
             CONFIG.max_recent_essays,
         )
         previous_essays_json = json.dumps(previous_essays, ensure_ascii=False)
+
+        social_signals, signal_files = collect_social_signals(
+            signals_dir,
+            target_date,
+            CONFIG.social_signal_lookback_days,
+        )
+        tension_path = episode_scripts_dir / "tension_candidates.json"
+        if social_signals:
+            tension_state = await run_agent(
+                tension_scout_agent,
+                {
+                    "social_signals": social_signals,
+                    "previous_essays": previous_essays_json,
+                    "discourse_profile": discourse_profile,
+                },
+                (
+                    "Find recent, observable human or social tensions worth investigating. "
+                    "Do not use current news, write hooks, or decide a thesis."
+                ),
+                step="scout_tensions_shadow",
+                trace=agent_trace,
+            )
+            tension_result = TensionScoutResult.model_validate(
+                tension_state.get("tension_candidates", {})
+            ).model_dump()
+            write_json(
+                tension_path,
+                {
+                    "schema_version": 1,
+                    "mode": "shadow",
+                    "influences_production": False,
+                    "source_files": [str(path) for path in signal_files],
+                    **tension_result,
+                },
+            )
+        else:
+            write_json(
+                tension_path,
+                {
+                    "schema_version": 1,
+                    "mode": "shadow",
+                    "influences_production": False,
+                    "status": "skipped_no_signals",
+                    "source_files": [str(path) for path in signal_files],
+                    "candidates": [],
+                    "selection_notes": [
+                        "No social signal catalogs were available in the configured lookback window."
+                    ],
+                },
+            )
 
         selection_state = await run_agent(
             selector_agent,
@@ -1182,6 +1294,7 @@ def parse_args() -> argparse.Namespace:
         "--target-date", default=None, help="YYYY-MM-DD; must be Tuesday or Friday"
     )
     parser.add_argument("--news-dir", default="news")
+    parser.add_argument("--signals-dir", default="signals")
     parser.add_argument("--scripts-dir", default="scripts")
     parser.add_argument("--multimedia-dir", default="multimedia")
     parser.add_argument("--history-scripts-dir", default="scripts")
@@ -1205,6 +1318,7 @@ def main() -> None:
             max_media_downloads=args.max_media_downloads,
             download_multimedia=DOWNLOAD_MULTIMEDIA and not args.no_download_multimedia,
             editorial_dir=Path(args.editorial_dir),
+            signals_dir=Path(args.signals_dir),
         )
     )
 
