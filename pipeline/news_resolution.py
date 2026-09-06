@@ -1,42 +1,28 @@
 from __future__ import annotations
 
 import json
-import re
 from datetime import date
 from pathlib import Path
 from typing import Any
 
 from pipeline.core import expected_news_dates
 from pipeline.news import NewsItem, parse_news_file
-
-_TIMESTAMPED_NAME = re.compile(r"^(?P<date>\d{4}-\d{2}-\d{2})-\d{2}-\d{2}-\d{2}\.txt$")
+from pipeline.source_naming import files_for_date
 
 
 def candidate_news_files(news_dir: Path, news_date: date) -> list[Path]:
-    """Return supported source files for one editorial day, newest first.
+    """Return every supported source file for one editorial day, newest first.
 
-    Timestamped files are preferred because they are collision-safe and can represent
-    multiple captures in one day. The legacy YYYY-MM-DD.txt form remains a fallback.
+    Discovery is semantic rather than tied to one producer filename. A source may
+    encode the date anywhere in its .txt filename (with optional embedded time) or,
+    when the filename is arbitrary, through an unambiguous repeated ``Fecha:`` value
+    in the file content. Timestamped captures are preferred deterministically.
     """
-    day = news_date.isoformat()
-    timestamped = sorted(
-        (
-            path
-            for path in news_dir.glob(f"{day}-*.txt")
-            if (match := _TIMESTAMPED_NAME.fullmatch(path.name))
-            and match.group("date") == day
-        ),
-        key=lambda path: path.name,
-        reverse=True,
-    )
-    legacy = news_dir / f"{day}.txt"
-    if legacy.exists():
-        timestamped.append(legacy)
-    return timestamped
+    return files_for_date(news_dir, news_date)
 
 
 def load_news_for_date(news_dir: Path, news_date: date) -> tuple[Path | None, list[NewsItem]]:
-    """Load the newest usable source for a day, falling back when necessary."""
+    """Load the newest usable source for a day, falling back across naming variants."""
     for path in candidate_news_files(news_dir, news_date):
         try:
             if not path.read_text(encoding="utf-8").strip():
@@ -53,7 +39,7 @@ def collect_available_news(
     news_dir: Path,
     target_date: date,
 ) -> tuple[str, list[Path], list[date], list[NewsItem]]:
-    """Collect the configured editorial window using both supported filename formats."""
+    """Collect the configured editorial window across all supported source names."""
     available: list[Path] = []
     missing: list[date] = []
     items: list[NewsItem] = []
