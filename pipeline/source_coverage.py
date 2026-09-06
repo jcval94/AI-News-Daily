@@ -68,6 +68,30 @@ def evaluate_source_coverage(
     }
 
 
+def suppress_unusable_canonical_sources(news_dir: Path, payload: dict[str, Any]) -> list[str]:
+    """Hide canonical files that preflight already classified as unusable.
+
+    The legacy runtime reads exact ``YYYY-MM-DD.txt`` paths. If such a file exists but
+    failed deterministic parsing during preflight, leaving it in the ephemeral Actions
+    checkout would let runtime re-read it and fail after preflight had intentionally
+    counted that day as missing. Removing it only from the transient workspace keeps the
+    runtime source view identical to the validated coverage view. Repository history is
+    never modified by this operation.
+    """
+    suppressed: list[str] = []
+    missing_dates = payload.get("missing_dates", [])
+    if not isinstance(missing_dates, list):
+        return suppressed
+
+    for editorial_date in missing_dates:
+        canonical = news_dir / f"{editorial_date}.txt"
+        if not canonical.exists() or not canonical.is_file():
+            continue
+        canonical.unlink()
+        suppressed.append(canonical.name)
+    return suppressed
+
+
 def materialize_canonical_sources(news_dir: Path, payload: dict[str, Any]) -> list[str]:
     """Create transient canonical aliases consumed by the existing runtime.
 
@@ -147,6 +171,7 @@ def main() -> None:
         news_dir=news_dir,
         min_ratio=args.min_ratio,
     )
+    payload["suppressed_unusable_files"] = suppress_unusable_canonical_sources(news_dir, payload)
     payload["canonicalized_files"] = materialize_canonical_sources(news_dir, payload)
     _write_json(Path(args.output), payload)
     print(json.dumps(payload, ensure_ascii=False, indent=2))
