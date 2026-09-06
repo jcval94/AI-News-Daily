@@ -3,12 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from pipeline.core import expected_news_dates
-from pipeline.news import parse_news_file
+from pipeline.news import parse_news_file, resolve_news_file
 
 
 def _utc_now() -> str:
@@ -24,19 +25,25 @@ def evaluate_source_coverage(
     target = datetime.strptime(target_date, "%Y-%m-%d").date()
     expected = expected_news_dates(target)
     available_files: list[str] = []
+    resolved_files: dict[str, str] = {}
     missing_dates: list[str] = []
     item_count = 0
 
     for current in expected:
-        path = news_dir / f"{current.isoformat()}.txt"
-        if not path.exists() or not path.read_text(encoding="utf-8").strip():
+        path = resolve_news_file(news_dir, current)
+        if path is None:
             missing_dates.append(current.isoformat())
             continue
-        parsed = parse_news_file(path)
+        try:
+            parsed = parse_news_file(path)
+        except (OSError, ValueError):
+            missing_dates.append(current.isoformat())
+            continue
         if not parsed:
             missing_dates.append(current.isoformat())
             continue
         available_files.append(path.name)
+        resolved_files[current.isoformat()] = path.name
         item_count += len(parsed)
 
     expected_count = len(expected)
@@ -44,11 +51,12 @@ def evaluate_source_coverage(
     ratio = available_count / expected_count if expected_count else 0.0
     sufficient = ratio >= min_ratio and item_count > 0
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "episode_date": target_date,
         "source_mode": os.getenv("NEWS_SOURCE_MODE", "scheduled_window"),
         "expected_dates": [value.isoformat() for value in expected],
         "available_files": available_files,
+        "resolved_files": resolved_files,
         "missing_dates": missing_dates,
         "expected_day_count": expected_count,
         "available_day_count": available_count,
@@ -58,6 +66,54 @@ def evaluate_source_coverage(
         "sufficient": sufficient,
         "checked_at_utc": _utc_now(),
     }
+
+
+def suppress_unusable_canonical_sources(news_dir: Path, payload: dict[str, Any]) -> list[str]:
+    """Hide canonical files that preflight already classified as unusable.
+
+    The legacy runtime reads exact ``YYYY-MM-DD.txt`` paths. If such a file exists but
+    failed deterministic parsing during preflight, leaving it in the ephemeral Actions
+    checkout would let runtime re-read it and fail after preflight had intentionally
+    counted that day as missing. Removing it only from the transient workspace keeps the
+    runtime source view identical to the validated coverage view. Repository history is
+    never modified by this operation.
+    """
+    suppressed: list[str] = []
+    missing_dates = payload.get("missing_dates", [])
+    if not isinstance(missing_dates, list):
+        return suppressed
+
+    for editorial_date in missing_dates:
+        canonical = news_dir / f"{editorial_date}.txt"
+        if not canonical.exists() or not canonical.is_file():
+            continue
+        canonical.unlink()
+        suppressed.append(canonical.name)
+    return suppressed
+
+
+def materialize_canonical_sources(news_dir: Path, payload: dict[str, Any]) -> list[str]:
+    """Create transient canonical aliases consumed by the existing runtime.
+
+    Daily ingestion is append-only and may emit ``YYYY-MM-DD-HH-MM-SS.txt``. The core
+    runtime historically consumes ``YYYY-MM-DD.txt``. Preflight bridges those contracts
+    inside the Actions workspace without committing duplicate news files back to git.
+    """
+    created: list[str] = []
+    resolved = payload.get("resolved_files", {})
+    if not isinstance(resolved, dict):
+        return created
+
+    for editorial_date, source_name in resolved.items():
+        source = news_dir / str(source_name)
+        canonical = news_dir / f"{editorial_date}.txt"
+        if source == canonical or canonical.exists():
+            continue
+        if not source.exists() or not source.is_file():
+            continue
+        shutil.copyfile(source, canonical)
+        created.append(canonical.name)
+    return created
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -109,11 +165,14 @@ def main() -> None:
     args = parse_args()
     if not (0 < args.min_ratio <= 1):
         raise SystemExit("MIN_SOURCE_COVERAGE_RATIO must be > 0 and <= 1")
+    news_dir = Path(args.news_dir)
     payload = evaluate_source_coverage(
         target_date=args.target_date,
-        news_dir=Path(args.news_dir),
+        news_dir=news_dir,
         min_ratio=args.min_ratio,
     )
+    payload["suppressed_unusable_files"] = suppress_unusable_canonical_sources(news_dir, payload)
+    payload["canonicalized_files"] = materialize_canonical_sources(news_dir, payload)
     _write_json(Path(args.output), payload)
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     if not payload["sufficient"]:

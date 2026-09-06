@@ -20,7 +20,7 @@ PIPELINE_ENV_DEFAULTS: dict[str, str] = {
     "VOICE_THRESHOLD": "8.7",
     "MAX_REFINEMENT_ITERATIONS": "5",
     "MAX_SELECTED_NEWS": "8",
-    "MAX_MEDIA_DOWNLOADS": "12",
+    "MAX_MEDIA_DOWNLOADS": "54",
     "SELECTION_HISTORY_DAYS": "30",
     "ESSAY_HISTORY_DAYS": "120",
     "MAX_RECENT_ESSAYS": "12",
@@ -30,7 +30,7 @@ PIPELINE_ENV_DEFAULTS: dict[str, str] = {
     "AGENT_RETRY_BASE_SECONDS": "2.0",
     "MEDIA_HTTP_MAX_ATTEMPTS": "3",
     "MEDIA_HTTP_RETRY_BASE_SECONDS": "1.0",
-    "MEDIA_MIN_RELEVANCE_SCORE": "0.18",
+    "MEDIA_MIN_RELEVANCE_SCORE": "0.22",
     "NEWS_SOURCE_MODE": "scheduled_window",
     "NEWS_LOOKBACK_DAYS": "4",
 }
@@ -51,7 +51,7 @@ class PipelineConfig:
     voice_threshold: float = 8.7
     max_refinement_iterations: int = 5
     max_selected_news: int = 8
-    max_media_downloads: int = 12
+    max_media_downloads: int = 54
     selection_history_days: int = 30
     essay_history_days: int = 120
     max_recent_essays: int = 12
@@ -61,7 +61,7 @@ class PipelineConfig:
     agent_retry_base_seconds: float = 2.0
     media_http_max_attempts: int = 3
     media_http_retry_base_seconds: float = 1.0
-    media_min_relevance_score: float = 0.18
+    media_min_relevance_score: float = 0.22
     first_15_slot_seconds: int = 3
     normal_slot_seconds: int = 4
     news_source_mode: str = "scheduled_window"

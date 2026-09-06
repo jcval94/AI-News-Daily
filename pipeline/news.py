@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import hashlib
 import re
+from datetime import date
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field
+
+
+_SOURCE_STEM_RE = re.compile(
+    r"^(?P<date>\d{4}-\d{2}-\d{2})(?:-(?P<time>\d{2}-\d{2}-\d{2}))?$"
+)
 
 
 class NewsItem(BaseModel):
@@ -47,6 +54,38 @@ def classify_url(url: str) -> Literal["article", "generic", "missing"]:
     return "article"
 
 
+def source_date_from_path(path: Path) -> str:
+    """Return the editorial date encoded in canonical or timestamped source filenames."""
+    match = _SOURCE_STEM_RE.fullmatch(path.stem)
+    return match.group("date") if match else ""
+
+
+def resolve_news_file(news_dir: Path, news_date: date | str) -> Path | None:
+    """Resolve one source file for an editorial day.
+
+    Canonical ``YYYY-MM-DD.txt`` wins. If the producer emits timestamped files such as
+    ``YYYY-MM-DD-HH-MM-SS.txt``, the latest non-empty timestamped file wins. This keeps
+    production compatible with append-only daily ingestion while preserving a single
+    deterministic source per editorial day.
+    """
+    value = news_date.isoformat() if isinstance(news_date, date) else str(news_date)
+    canonical = news_dir / f"{value}.txt"
+    if canonical.exists() and canonical.is_file() and canonical.read_text(encoding="utf-8").strip():
+        return canonical
+
+    candidates: list[Path] = []
+    for path in news_dir.glob(f"{value}-*.txt"):
+        if not path.is_file():
+            continue
+        match = _SOURCE_STEM_RE.fullmatch(path.stem)
+        if not match or match.group("date") != value or not match.group("time"):
+            continue
+        if not path.read_text(encoding="utf-8").strip():
+            continue
+        candidates.append(path)
+    return max(candidates, key=lambda item: item.name) if candidates else None
+
+
 def _field(block: str, *labels: str) -> str:
     for label in labels:
         match = re.search(rf"(?mi)^{re.escape(label)}\s*:\s*(.+?)\s*$", block)
@@ -56,64 +95,125 @@ def _field(block: str, *labels: str) -> str:
 
 
 def _item_matches(text: str) -> list[re.Match[str]]:
-    """Parse both the canonical Markdown contract and the repository's existing report format.
-
-    Supported headings:
-    - ``## 1. Title`` (canonical going forward)
-    - ``1) Title`` (existing 2026 source corpus)
-
-    Metadata remains deterministic in both cases; the LLM never reconstructs it.
-    """
-    pattern = re.compile(
-        r"(?m)^(?:##\s+)?(\d+)(?:\.|\))\s+(.+?)\s*$"
-    )
+    """Parse both canonical Markdown headings and the repository's older numbered format."""
+    pattern = re.compile(r"(?m)^(?:##\s+)?(\d+)(?:\.|\))\s+(.+?)\s*$")
     return list(pattern.finditer(text))
+
+
+def _title_matches(text: str) -> list[re.Match[str]]:
+    """Parse current daily-digest blocks that start with ``Título: ...``."""
+    return list(re.finditer(r"(?mi)^Título\s*:\s*(.+?)\s*$", text))
+
+
+def stable_news_id(*, title: str, source: str, url: str, item_index: int) -> str:
+    """Create an opaque selection identifier that cannot be confused with item dates.
+
+    The identifier intentionally excludes the source filename so a timestamped source and
+    its transient canonical Actions alias produce the same ID. It is not a provenance key;
+    ``source_file`` and ``source_locator`` retain that role.
+    """
+    normalized = "\x1f".join(
+        (
+            " ".join(title.casefold().split()),
+            " ".join(source.casefold().split()),
+            url.strip(),
+            str(item_index),
+        )
+    )
+    digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+    return f"n_{digest}"
+
+
+def _build_item(
+    *,
+    path: Path,
+    item_index: int,
+    title: str,
+    block: str,
+    file_date: str,
+) -> NewsItem:
+    explicit_date = _field(block, "Fecha")
+    date_value = explicit_date or file_date
+    if not date_value:
+        raise ValueError(f"News item {item_index} in {path} has no date and filename has no editorial date")
+
+    source = _field(block, "Fuente")
+    if not source:
+        raise ValueError(f"News item {item_index} in {path} has no Fuente field")
+
+    url = _field(block, "Enlace")
+    source_file = path.name
+    clean_title = title.strip()
+    return NewsItem(
+        news_id=stable_news_id(
+            title=clean_title,
+            source=source,
+            url=url,
+            item_index=item_index,
+        ),
+        source_file=source_file,
+        source_locator=f"{source_file}#item-{item_index}",
+        item_index=item_index,
+        title=clean_title,
+        date=date_value,
+        date_origin="field" if explicit_date else "source_file",
+        source=source,
+        url=url,
+        url_quality=classify_url(url),
+        category=_field(block, "Categoría"),
+        summary=_field(block, "Resumen", "Resumen breve"),
+        why_it_matters=_field(block, "Por qué importa"),
+        raw_content=block,
+    )
 
 
 def parse_news_file(path: Path) -> list[NewsItem]:
     text = path.read_text(encoding="utf-8").strip()
     if not text:
         return []
-    matches = _item_matches(text)
-    if not matches:
-        raise ValueError(
-            f"No structured news items found in {path}; expected headings like '## 1. Title' or '1) Title'"
-        )
 
-    file_date = path.stem if re.fullmatch(r"\d{4}-\d{2}-\d{2}", path.stem) else ""
+    file_date = source_date_from_path(path)
+    numbered = _item_matches(text)
     items: list[NewsItem] = []
-    seen_indices: set[int] = set()
-    for position, match in enumerate(matches):
-        item_index = int(match.group(1))
-        if item_index in seen_indices:
-            raise ValueError(f"Duplicate news item index {item_index} in {path}")
-        seen_indices.add(item_index)
 
-        start = match.start()
-        end = matches[position + 1].start() if position + 1 < len(matches) else len(text)
-        block = text[start:end].strip()
-        title = match.group(2).strip()
-        explicit_date = _field(block, "Fecha")
-        date_value = explicit_date or file_date
-        date_origin: Literal["field", "source_file"] = "field" if explicit_date else "source_file"
-        url = _field(block, "Enlace")
-        source_file = path.name
-        items.append(
-            NewsItem(
-                news_id=f"{path.stem}:{item_index}",
-                source_file=source_file,
-                source_locator=f"{source_file}#item-{item_index}",
-                item_index=item_index,
-                title=title,
-                date=date_value,
-                date_origin=date_origin,
-                source=_field(block, "Fuente"),
-                url=url,
-                url_quality=classify_url(url),
-                category=_field(block, "Categoría"),
-                summary=_field(block, "Resumen", "Resumen breve"),
-                why_it_matters=_field(block, "Por qué importa"),
-                raw_content=block,
+    if numbered:
+        seen_indices: set[int] = set()
+        for position, match in enumerate(numbered):
+            item_index = int(match.group(1))
+            if item_index in seen_indices:
+                raise ValueError(f"Duplicate news item index {item_index} in {path}")
+            seen_indices.add(item_index)
+            start = match.start()
+            end = numbered[position + 1].start() if position + 1 < len(numbered) else len(text)
+            block = text[start:end].strip()
+            items.append(
+                _build_item(
+                    path=path,
+                    item_index=item_index,
+                    title=match.group(2),
+                    block=block,
+                    file_date=file_date,
+                )
             )
-        )
-    return items
+        return items
+
+    titled = _title_matches(text)
+    if titled:
+        for position, match in enumerate(titled):
+            start = match.start()
+            end = titled[position + 1].start() if position + 1 < len(titled) else len(text)
+            block = text[start:end].strip()
+            items.append(
+                _build_item(
+                    path=path,
+                    item_index=position + 1,
+                    title=match.group(1),
+                    block=block,
+                    file_date=file_date,
+                )
+            )
+        return items
+
+    raise ValueError(
+        f"No structured news items found in {path}; expected numbered headings or blocks starting with 'Título:'"
+    )
