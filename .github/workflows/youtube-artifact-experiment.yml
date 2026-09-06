@@ -16,18 +16,12 @@ on:
       runner:
         description: "Runner network used for the live download"
         required: false
-        default: "macos-15"
+        default: "ubuntu-latest"
         type: choice
         options:
-          - macos-15
           - ubuntu-latest
-  push:
-    branches:
-      - experiment/youtube-artifacts
-    paths:
-      - "experiments/youtube_artifacts/**"
-      - "tests/test_youtube_artifact_experiment.py"
-      - ".github/workflows/youtube-artifact-experiment.yml"
+          - macos-15
+          - self-hosted
 
 permissions:
   contents: read
@@ -38,10 +32,10 @@ concurrency:
 
 jobs:
   download-ten-samples:
-    # YouTube currently challenges the shared Ubuntu Actions egress range before
-    # player extraction. macOS uses a separate runner fleet; the manual input keeps
-    # the Ubuntu failure mode reproducible without weakening the 10/10 gate.
-    runs-on: ${{ inputs.runner || 'macos-15' }}
+    # Anonymous runs on both GitHub-hosted fleets were challenged by YouTube on
+    # 2026-09-06. Keep them selectable for reproducibility; use self-hosted only on
+    # an operator-controlled network where this traffic is authorized.
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     timeout-minutes: 30
     env:
       CLIP_SECONDS: ${{ inputs.clip_seconds || '15' }}

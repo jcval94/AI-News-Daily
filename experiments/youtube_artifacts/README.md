@@ -41,9 +41,10 @@ The workflow `.github/workflows/youtube-artifact-experiment.yml`:
 
 Run it from **Actions → Experiment — YouTube clips as artifacts → Run workflow**.
 The manual inputs can vary clip duration (1–60 seconds), concurrency (1–4), and the
-runner fleet without changing the ten-video catalog. The default is `macos-15` because
-the shared Ubuntu Actions egress range currently receives YouTube's pre-authentication
-bot challenge; `ubuntu-latest` remains selectable to reproduce that failure mode.
+runner fleet without changing the ten-video catalog. Anonymous tests on both hosted
+fleets received YouTube's pre-authentication bot challenge. `self-hosted` is available
+for an operator-controlled runner whose network is authorized to make these requests.
+See [RESULTS.md](RESULTS.md) for the observed runs and diagnostic artifacts.
 
 The artifact contains:
 
