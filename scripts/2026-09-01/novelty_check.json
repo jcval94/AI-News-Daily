@@ -1,0 +1,18 @@
+{
+  "history_days": 120,
+  "previous_essay_count": 0,
+  "threshold": 0.42,
+  "max_novelty_replans": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "topic_signature": "El valor de comprender cuando una IA puede producir resultados competentes antes que las personas puedan explicar o reproducir el razonamiento",
+      "narrative_lens": "cognición, ciencia y confianza",
+      "novelty_angle": "El episodio no pregunta si la IA reemplaza a humanos ni se centra en productividad o seguridad de agentes. Investiga una mutación más precisa: la separación entre obtener un resultado que funciona y comprender por qué funciona, tanto en el aula como en la ciencia. El caso educativo y el diseño de RNA no son dos titulares equivalentes: funcionan como extremos de la misma pregunta epistemológica.",
+      "nearest_previous_essay": null,
+      "similarity": 0.0,
+      "threshold": 0.42,
+      "duplicate": false
+    }
+  ]
+}

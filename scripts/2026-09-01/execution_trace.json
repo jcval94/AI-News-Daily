@@ -1,0 +1,150 @@
+{
+  "schema_version": 2,
+  "episode_date": "2026-09-01",
+  "agent_calls": [
+    {
+      "step": "select_news",
+      "agent": "news_relevance_selector",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 13.031,
+      "usage": {
+        "prompt_tokens": 64258,
+        "output_tokens": 818,
+        "reasoning_tokens": 174,
+        "total_tokens": 65076
+      }
+    },
+    {
+      "step": "plan_episode",
+      "agent": "editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 51.186,
+      "usage": {
+        "prompt_tokens": 48240,
+        "output_tokens": 4615,
+        "reasoning_tokens": 145,
+        "total_tokens": 52855
+      }
+    },
+    {
+      "step": "write_script",
+      "agent": "essay_script_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 42.116,
+      "usage": {
+        "prompt_tokens": 51753,
+        "output_tokens": 3262,
+        "reasoning_tokens": 58,
+        "total_tokens": 55015
+      }
+    },
+    {
+      "step": "editorial_judge",
+      "agent": "script_critic",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 20.328,
+      "usage": {
+        "prompt_tokens": 20033,
+        "output_tokens": 1543,
+        "reasoning_tokens": 493,
+        "total_tokens": 21576
+      }
+    },
+    {
+      "step": "seo_judge",
+      "agent": "seo_master",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 10.826,
+      "usage": {
+        "prompt_tokens": 15978,
+        "output_tokens": 706,
+        "reasoning_tokens": 87,
+        "total_tokens": 16684
+      }
+    },
+    {
+      "step": "attention_judge",
+      "agent": "youtube_attention_master",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 15.755,
+      "usage": {
+        "prompt_tokens": 7744,
+        "output_tokens": 1265,
+        "reasoning_tokens": 156,
+        "total_tokens": 9009
+      }
+    },
+    {
+      "step": "voice_judge",
+      "agent": "voice_humanity_critic",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 16.617,
+      "usage": {
+        "prompt_tokens": 13227,
+        "output_tokens": 1361,
+        "reasoning_tokens": 395,
+        "total_tokens": 14588
+      }
+    },
+    {
+      "step": "plan_multimedia",
+      "agent": "multimedia_editor_master",
+      "iteration": null,
+      "attempt": 0,
+      "status": "skipped",
+      "elapsed_seconds": 0.0,
+      "usage": {},
+      "reason": "dedicated_dense_media_stage"
+    }
+  ],
+  "refinement_iterations": [
+    {
+      "iteration": 1,
+      "script_sha256": "8862d0dec03c804287754b63f031d367e6484c71e047c10566e6ce35e621f8b3",
+      "selected_as_best_so_far": true,
+      "duration_seconds": 945,
+      "approved": true,
+      "checks": {
+        "script_present": true,
+        "duration_ok": true,
+        "editorial_approved": true,
+        "editorial_score_ok": true,
+        "factuality_low": true,
+        "seo_approved": true,
+        "seo_score_ok": true,
+        "attention_approved": true,
+        "attention_score_ok": true,
+        "voice_approved": true,
+        "voice_score_ok": true,
+        "ai_smell_low": true
+      },
+      "editorial_score": 9.2,
+      "seo_score": 9.3,
+      "attention_score": 8.8,
+      "voice_score": 9.1,
+      "voice_fidelity": 9.0,
+      "intellectual_depth": 9.5,
+      "human_relevance": 9.2,
+      "analogy_quality": 9.1,
+      "ai_smell_risk": "low",
+      "factuality_risk": "low",
+      "next_refinement_phase": null
+    }
+  ],
+  "validation_warnings": [],
+  "finished_at_utc": "2026-09-06T22:22:33.852267+00:00"
+}
