@@ -10,6 +10,16 @@ from pathlib import Path
 from unittest.mock import patch
 
 from pipeline import run as pipeline_run
+from pipeline.news import stable_news_id
+
+
+def fixture_news_id() -> str:
+    return stable_news_id(
+        title="Caso",
+        source="Primaria",
+        url="https://example.com/case",
+        item_index=1,
+    )
 
 
 def plan_payload() -> dict:
@@ -82,7 +92,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":
-                return {"selected_news": {"items": [{"news_id": "2026-08-20:1", "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
+                return {"selected_news": {"items": [{"news_id": fixture_news_id(), "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
             if step == "plan_episode":
                 return {"episode_plan": plan_payload()}
             if step == "write_script":
@@ -112,7 +122,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":
-                return {"selected_news": {"items": [{"news_id": "2026-08-20:1", "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
+                return {"selected_news": {"items": [{"news_id": fixture_news_id(), "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
             if step in {"plan_episode", "replan_episode_novelty"}:
                 return {"episode_plan": plan_payload()}
             self.fail(f"Unexpected step {step}")
