@@ -21,6 +21,7 @@ YOUTUBE_URL_RE = re.compile(r"^https://www\.youtube\.com/watch\?v=([A-Za-z0-9_-]
 MEDIA_SUFFIXES = {".mkv", ".mov", ".mp4", ".webm"}
 ALLOWED_COHORTS = {"famous_open_movie", "random_cc"}
 ALLOWED_LICENSE_BASES = {"publisher_license", "youtube_metadata"}
+YOUTUBE_EXTRACTOR_ARGS = "player_client=web_embedded;skip=hls,dash"
 FORMAT_SELECTOR = (
     "bv*[height<=360][ext=mp4]+ba[ext=m4a]/"
     "bv*[height<=360]+ba/"
@@ -153,7 +154,7 @@ def build_yt_dlp_command(
         "--js-runtimes",
         "node",
         "--extractor-args",
-        "youtube:skip=hls,dash",
+        f"youtube:{YOUTUBE_EXTRACTOR_ARGS}",
         "--match-filter",
         "!is_live & !was_live",
         "--format",
@@ -433,7 +434,7 @@ def build_manifest(
         "configuration": {
             "catalog": catalog_path.as_posix(),
             "format_selector": FORMAT_SELECTOR,
-            "youtube_extractor_args": "skip=hls,dash",
+            "youtube_extractor_args": YOUTUBE_EXTRACTOR_ARGS,
             "requested_videos": len(ordered),
             "clip_seconds": clip_seconds,
             "maximum_height": 360,

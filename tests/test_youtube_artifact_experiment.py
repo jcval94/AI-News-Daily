@@ -71,7 +71,7 @@ class YouTubeArtifactExperimentTests(unittest.TestCase):
         self.assertIn("--download-sections", command)
         self.assertIn("*0-15", command)
         self.assertIn("!is_live & !was_live", command)
-        self.assertIn("youtube:skip=hls,dash", command)
+        self.assertIn("youtube:player_client=web_embedded;skip=hls,dash", command)
         self.assertEqual(item["source_url"], command[-1])
 
     def test_sanitized_metadata_drops_signed_urls_and_format_inventory(self) -> None:

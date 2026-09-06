@@ -29,13 +29,15 @@ page.
 The workflow `.github/workflows/youtube-artifact-experiment.yml`:
 
 1. installs the pinned `yt-dlp` release and Node.js runtime;
-2. downloads at most the first 15 seconds at 360p with two workers;
-3. rejects live content, channel drift, unexpected licensing, oversized files, and
+2. uses YouTube's unauthenticated embedded-player client, which all ten curated
+   videos permit;
+3. downloads at most the first 15 seconds at 360p with two workers;
+4. rejects live content, channel drift, unexpected licensing, oversized files, and
    malformed media;
-4. requires 10/10 successful clips;
-5. uploads results even when the gate fails, so anti-bot, format, or network failures
+5. requires 10/10 successful clips;
+6. uploads results even when the gate fails, so anti-bot, format, or network failures
    remain inspectable;
-6. retains the artifact for seven days and never commits MP4 files.
+7. retains the artifact for seven days and never commits MP4 files.
 
 Run it from **Actions → Experiment — YouTube clips as artifacts → Run workflow**.
 The manual inputs can vary clip duration (1–60 seconds) and concurrency (1–4) without
