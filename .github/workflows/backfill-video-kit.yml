@@ -115,6 +115,15 @@ jobs:
             --max-media-downloads 0 \
             --no-download-multimedia
 
+      - name: Upload backfill diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-news-backfill-diagnostic-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Require approved script
         env:
           TARGET_DATE: ${{ steps.target.outputs.target_date }}
