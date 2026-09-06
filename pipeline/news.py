@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import re
 from datetime import date
 from pathlib import Path
@@ -104,6 +105,25 @@ def _title_matches(text: str) -> list[re.Match[str]]:
     return list(re.finditer(r"(?mi)^Título\s*:\s*(.+?)\s*$", text))
 
 
+def stable_news_id(*, title: str, source: str, url: str, item_index: int) -> str:
+    """Create an opaque selection identifier that cannot be confused with item dates.
+
+    The identifier intentionally excludes the source filename so a timestamped source and
+    its transient canonical Actions alias produce the same ID. It is not a provenance key;
+    ``source_file`` and ``source_locator`` retain that role.
+    """
+    normalized = "\x1f".join(
+        (
+            " ".join(title.casefold().split()),
+            " ".join(source.casefold().split()),
+            url.strip(),
+            str(item_index),
+        )
+    )
+    digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+    return f"n_{digest}"
+
+
 def _build_item(
     *,
     path: Path,
@@ -122,14 +142,19 @@ def _build_item(
         raise ValueError(f"News item {item_index} in {path} has no Fuente field")
 
     url = _field(block, "Enlace")
-    stable_source_id = file_date or path.stem
     source_file = path.name
+    clean_title = title.strip()
     return NewsItem(
-        news_id=f"{stable_source_id}:{item_index}",
+        news_id=stable_news_id(
+            title=clean_title,
+            source=source,
+            url=url,
+            item_index=item_index,
+        ),
         source_file=source_file,
         source_locator=f"{source_file}#item-{item_index}",
         item_index=item_index,
-        title=title.strip(),
+        title=clean_title,
         date=date_value,
         date_origin="field" if explicit_date else "source_file",
         source=source,
