@@ -82,11 +82,11 @@ jobs:
       - name: Build retroactive episode
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          OPENAI_MODEL: ${{ vars.BACKFILL_OPENAI_MODEL || 'gpt-5.6-terra' }}
           SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
           JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
-          MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.BACKFILL_MAX_REFINEMENT_ITERATIONS || '7' }}
           MAX_SELECTED_NEWS: "8"
           DOWNLOAD_MULTIMEDIA: "false"
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
@@ -106,6 +106,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${OPENAI_API_KEY:-}" || { echo "OPENAI_API_KEY is not configured"; exit 1; }
+          echo "Backfill editorial model: $OPENAI_MODEL; refinement budget: $MAX_REFINEMENT_ITERATIONS"
           python -m pipeline.run_hardened \
             --target-date "$TARGET_DATE" \
             --scripts-dir "$RUN_ROOT/scripts" \
