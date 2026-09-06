@@ -1,0 +1,115 @@
+name: Experiment — YouTube clips as artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      clip_seconds:
+        description: "Seconds retained from the start of each video (1-60)"
+        required: false
+        default: "15"
+        type: string
+      workers:
+        description: "Concurrent downloads (1-4)"
+        required: false
+        default: "2"
+        type: string
+  push:
+    branches:
+      - experiment/youtube-artifacts
+    paths:
+      - "experiments/youtube_artifacts/**"
+      - "tests/test_youtube_artifact_experiment.py"
+      - ".github/workflows/youtube-artifact-experiment.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: youtube-artifact-experiment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  download-ten-samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLIP_SECONDS: ${{ inputs.clip_seconds || '15' }}
+      DOWNLOAD_WORKERS: ${{ inputs.workers || '2' }}
+      OUTPUT_DIR: youtube-artifact-output
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install pinned downloader
+        run: python -m pip install --disable-pip-version-check "yt-dlp[default]==2026.8.19"
+
+      - name: Verify runtime
+        run: |
+          yt-dlp --version
+          ffmpeg -version
+          ffprobe -version
+          node --version
+
+      - name: Download and validate ten clips
+        id: download
+        continue-on-error: true
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          python -m experiments.youtube_artifacts.download \
+            --catalog experiments/youtube_artifacts/catalog.json \
+            --output "$OUTPUT_DIR" \
+            --clip-seconds "$CLIP_SECONDS" \
+            --workers "$DOWNLOAD_WORKERS" \
+            --required-successes 10
+
+      - name: Show experiment summary
+        if: always()
+        run: |
+          if [ -f "$OUTPUT_DIR/SUMMARY.md" ]; then
+            cat "$OUTPUT_DIR/SUMMARY.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Experiment did not produce a summary." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload short-lived video artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-sample-clips-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Enforce 10-of-10 gate after preserving diagnostics
+        if: always()
+        env:
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          manifest_path = Path(os.environ["OUTPUT_DIR"]) / "manifest.json"
+          if not manifest_path.is_file():
+              raise SystemExit("manifest.json was not produced")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          summary = manifest.get("summary", {})
+          if os.environ["DOWNLOAD_OUTCOME"] != "success" or not summary.get("gate_passed"):
+              raise SystemExit(
+                  f"YouTube artifact gate failed: {summary.get('succeeded', 0)}/"
+                  f"{summary.get('requested', 10)} clips succeeded"
+              )
+          if summary.get("succeeded") != 10:
+              raise SystemExit(f"Expected exactly 10 clips, got {summary.get('succeeded')}")
+          print("YouTube artifact gate passed: 10/10 clips are present.")
+          PY
