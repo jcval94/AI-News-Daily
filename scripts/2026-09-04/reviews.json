@@ -1,0 +1,223 @@
+{
+  "approved_for_multimedia": true,
+  "gate": {
+    "approved": true,
+    "duration_seconds": 904,
+    "checks": {
+      "script_present": true,
+      "duration_ok": true,
+      "editorial_approved": true,
+      "editorial_score_ok": true,
+      "factuality_low": true,
+      "seo_approved": true,
+      "seo_score_ok": true,
+      "attention_approved": true,
+      "attention_score_ok": true,
+      "voice_approved": true,
+      "voice_score_ok": true,
+      "ai_smell_low": true
+    },
+    "voice_dimension_observations": {
+      "voice_fidelity": 9.2,
+      "intellectual_depth": 9.4,
+      "human_relevance": 9.3,
+      "analogy_quality": 9.0,
+      "enforced": false,
+      "reason": "Human calibration baseline is not yet balanced enough for deterministic dimension floors"
+    }
+  },
+  "refinement_iterations": [
+    {
+      "iteration": 1,
+      "script_sha256": "69009f801d3d4831877443df9e183f82d94f962c06c57cddd96e35f6557baace",
+      "selected_as_best_so_far": true,
+      "duration_seconds": 908,
+      "approved": false,
+      "checks": {
+        "script_present": true,
+        "duration_ok": true,
+        "editorial_approved": true,
+        "editorial_score_ok": true,
+        "factuality_low": true,
+        "seo_approved": true,
+        "seo_score_ok": true,
+        "attention_approved": true,
+        "attention_score_ok": true,
+        "voice_approved": false,
+        "voice_score_ok": false,
+        "ai_smell_low": false
+      },
+      "editorial_score": 9.1,
+      "seo_score": 9.2,
+      "attention_score": 9.1,
+      "voice_score": 8.5,
+      "voice_fidelity": 8.7,
+      "intellectual_depth": 9.2,
+      "human_relevance": 9.1,
+      "analogy_quality": 8.8,
+      "ai_smell_risk": "medium",
+      "factuality_risk": "low",
+      "next_refinement_phase": "voice"
+    },
+    {
+      "iteration": 2,
+      "script_sha256": "fcdeae37b5dc499b7d8b532f59bb7dd40d4ae850c85ab98595a46b56ca891ad9",
+      "selected_as_best_so_far": true,
+      "duration_seconds": 904,
+      "approved": true,
+      "checks": {
+        "script_present": true,
+        "duration_ok": true,
+        "editorial_approved": true,
+        "editorial_score_ok": true,
+        "factuality_low": true,
+        "seo_approved": true,
+        "seo_score_ok": true,
+        "attention_approved": true,
+        "attention_score_ok": true,
+        "voice_approved": true,
+        "voice_score_ok": true,
+        "ai_smell_low": true
+      },
+      "editorial_score": 9.2,
+      "seo_score": 9.2,
+      "attention_score": 8.7,
+      "voice_score": 9.1,
+      "voice_fidelity": 9.2,
+      "intellectual_depth": 9.4,
+      "human_relevance": 9.3,
+      "analogy_quality": 9.0,
+      "ai_smell_risk": "low",
+      "factuality_risk": "low",
+      "next_refinement_phase": null
+    }
+  ],
+  "best_candidate": {
+    "iteration": 2,
+    "script_sha256": "fcdeae37b5dc499b7d8b532f59bb7dd40d4ae850c85ab98595a46b56ca891ad9",
+    "judged_unique_script_count": 2
+  },
+  "editorial": {
+    "score": 9.2,
+    "approved": true,
+    "factuality_risk": "low",
+    "strengths": [
+      "La arquitectura argumental es muy sólida: parte de una experiencia reconocible, introduce una tensión, usa el paralelo de Platón con prudencia, incorpora evidencia actual y llega a una tesis más precisa que la inicial.",
+      "El guion maneja especialmente bien las fronteras de evidencia. Sobre la APA aclara que se trata de una síntesis y recomendaciones expertas, no de un experimento universal; sobre CW-Net distingue los resultados experimentales de una demostración de seguridad vial real; y sobre SB 574 precisa que estaba pendiente de la firma del gobernador.",
+      "Las afirmaciones sobre las tres piezas de evidencia son trazables a las fuentes seleccionadas: el informe de la APA sobre desempeño inmediato frente a aprendizaje transferible, el estudio de Nature sobre CW-Net y predicción de comportamientos sorprendentes, y la medida californiana sobre responsabilidades de abogados y árbitros.",
+      "Evita varias exageraciones explícitamente prohibidas por el ledger. No afirma que la IA impida aprender, que CW-Net haya hecho más segura la conducción autónoma en vías reales, ni que la ley californiana ya estuviera vigente o prohibiera el uso profesional de IA.",
+      "La distinción conceptual entre independencia absoluta y calibración es clara y valiosa. El giro desde “hacer tareas sin máquina” hacia “conservar criterio para evaluar la ayuda” da al ensayo una conclusión propia y no meramente tecnófoba.",
+      "Las analogías son accesibles y funcionales: seguir indicaciones frente a aprender una ruta, las ruedas de entrenamiento, escuchar señales de un automóvil y aceptar términos y condiciones sin leerlos. No sustituyen la evidencia: la hacen comprensible.",
+      "El motivo de “apagar la pantalla” reaparece con evolución real: comienza como prueba de capacidad independiente y termina como prueba de juicio residual. Eso aporta cohesión y buen payoff editorial.",
+      "El lenguaje es mayormente oral, claro y no depende de jerga técnica. Incluso conceptos como explicabilidad, supervisión o modelo mental se aterrizan antes o durante su uso."
+    ],
+    "problems": [
+      "La frase “Esta semana apareció un marco útil” es temporalmente frágil: funciona si el episodio se publica inmediatamente después de la difusión de la APA, pero envejece rápido. No es una inexactitud con el material dado, aunque reduce la durabilidad editorial.",
+      "Al describir CW-Net, el guion dice que “no buscaba abrir por completo la caja negra y traducir cada cálculo interno”. Es una caracterización razonable del enfoque según el resumen disponible, pero formula una intención metodológica más específica que la evidencia resumida. Conviene mantener ese tipo de explicación claramente como interpretación del narrador.",
+      "Hay cierta repetición de la misma oposición —resultado asistido frente a comprensión, aprobación frente a juicio, firma frente a supervisión— en el tramo medio y final. La repetición es útil como motivo, pero podría percibirse como una ligera insistencia antes del cierre.",
+      "El caso legal es eficaz, pero la formulación “la intuición institucional es correcta” pasa de describir una medida pendiente a emitir un juicio normativo contundente. Es válido como opinión editorial, aunque podría distinguirse aún más explícitamente de una conclusión empírica sobre la eficacia de la norma.",
+      "La duración parece adecuada para el rango previsto, pero está cerca del extremo largo de un ensayo de 12 minutos planificados. El texto conserva interés, aunque algunos pasajes reflexivos podrían sentirse más densos en locución si no se apoyan en edición visual y pausas."
+    ],
+    "improvements": [
+      "Sustituir o evitar referencias de caducidad como “esta semana” si el video puede publicarse después; el resto del guion tiene una vigencia mucho mayor.",
+      "En el pasaje de CW-Net, marcar con una fórmula más subjetiva cualquier inferencia sobre lo que cuenta como una explicación útil, en lugar de atribuir intenciones completas al estudio. La evidencia ya basta para sostener que las explicaciones mejoraron predicción y modelos mentales en las pruebas descritas.",
+      "Conservar el núcleo de las repeticiones, pero reducir una o dos reformulaciones previas al cierre para que la pregunta final tenga todavía más fuerza y no parezca anticipada varias veces.",
+      "Separar de forma ligeramente más visible la evaluación normativa de la descripción legal: la medida puede ilustrar una intuición institucional importante sin que ello sugiera que su diseño o implementación ya hayan sido validados.",
+      "En producción, usar las escenas hipotéticas y las analogías como respiraciones visuales entre segmentos conceptuales; eso ayudaría a sostener el ritmo del tramo final sin necesidad de añadir más ejemplos ni noticias."
+    ]
+  },
+  "seo_master": {
+    "score": 9.2,
+    "approved": true,
+    "strengths": [
+      "El tema central es claro, memorable y altamente descubrible: la diferencia entre rendimiento asistido por IA y la capacidad de conservar juicio, transferencia y supervisión real.",
+      "Integra entidades buscables de forma natural y pertinente —American Psychological Association, Nature, CW-Net, California y SB 574— sin convertir el texto en un resumen de noticias ni forzar nombres en la apertura.",
+      "La estructura semántica conecta educación, explicabilidad de sistemas autónomos y responsabilidad profesional bajo una misma pregunta, lo que amplía descubrimiento por intención de búsqueda sin diluir la tesis.",
+      "Mantiene un nivel de cautela poco común y valioso: diferencia explícitamente entre evidencia experimental, síntesis de expertos, propuesta legislativa y extrapolaciones todavía no demostradas.",
+      "Las formulaciones sobre ‘supervisión humana’, ‘aprendizaje transferible’, ‘calibración’, ‘explicabilidad’ y ‘responsabilidad profesional’ corresponden a conceptos que lectores interesados probablemente buscarían, y aparecen en un contexto inteligible.",
+      "El cierre recupera con precisión el motivo de ‘apagar la pantalla’, ofreciendo una formulación distintiva que puede funcionar bien como idea editorial sin recurrir a clickbait."
+    ],
+    "problems": [
+      "La pieza es muy sólida para descubrimiento temático, pero su formato puramente ensayístico no incluye un título, subtítulo, descripción ni encabezados visibles; esos elementos externos serían importantes para que plataformas y buscadores interpreten rápidamente el foco antes de procesar todo el texto.",
+      "‘Esta semana apareció un marco útil’ es una referencia temporal débil para lectores que lleguen después. La mención posterior de la APA compensa el problema, pero una presentación editorial externa debería fechar o contextualizar claramente la evidencia.",
+      "CW-Net se explica bien, aunque algunos lectores que busquen directamente ‘explicabilidad en conducción autónoma’ podrían tardar en llegar a ese término porque aparece después de un tramo reflexivo considerable. Esto no exige alterar la apertura, pero sí conviene atenderlo en los metadatos o la presentación.",
+      "La relación con medicina se usa eficazmente en la apertura y como ejemplo, pero no se desarrolla con una fuente clínica en el cuerpo. No es engañosa, pero no debería promocionarse como un ensayo principalmente sobre IA médica."
+    ],
+    "improvements": [
+      "Acompañar el ensayo con un título y una descripción editorial que nombren con naturalidad la IA, el aprendizaje transferible, la supervisión humana y la responsabilidad, sin prometer que el texto demuestra causalidades universales.",
+      "Usar un subtítulo o resumen breve que sitúe las tres bases empíricas: la advertencia de la APA sobre desempeño y aprendizaje, el estudio de Nature/CW-Net sobre anticipación de fallos y la medida SB 574 de California sobre responsabilidad legal.",
+      "Si se publica en web, añadir encabezados descriptivos y sobrios para los grandes movimientos argumentales —por ejemplo, aprendizaje asistido, explicaciones que ayudan a anticipar fallos y supervisión profesional—. Esto mejoraría indexación y navegación sin modificar la voz del ensayo.",
+      "Mantener la promoción centrada en la pregunta honesta que ya formula el texto: no si la IA debe sustituirnos o prohibirse, sino qué comprensión debe permanecer en la persona para poder confiar, corregir e intervenir."
+    ]
+  },
+  "youtube_attention_master": {
+    "score": 8.7,
+    "approved": true,
+    "strengths": [
+      "La apertura parte de una tensión humana inmediata y reconocible —la diferencia entre entregar algo excelente y poder actuar cuando se apaga la pantalla—, no de una noticia ni de una tesis abstracta.",
+      "La escena de la estudiante vuelve tangible el problema antes de entrar en evidencia. Es una buena miniatura de la pregunta mayor sobre médicos, abogados y operadores.",
+      "El espejo de Platón no es decorativo: amplía la intuición inicial sobre conocimiento externalizado y, además, el guion limita explícitamente el paralelo para no equiparar escritura e IA de manera simplista.",
+      "La evidencia llega en un orden de descubrimiento eficaz: primero se establece que rendimiento no equivale a aprendizaje; después se evita la salida fácil de retirar toda ayuda; luego el caso de conducción introduce una alternativa más rica; finalmente, el ejemplo legal muestra por qué la distinción importa institucionalmente.",
+      "La complicación es genuina. El ensayo no se resuelve con una defensa nostálgica de hacer todo sin herramientas, y eso mantiene abierta la investigación más allá de la primera revelación.",
+      "El giro hacia la calibración funciona como un verdadero reencuadre: el problema deja de ser independencia total frente a dependencia y pasa a ser la capacidad de saber cuándo confiar, intervenir y justificar una decisión.",
+      "El motivo de “apagar la pantalla” cambia de significado: empieza como prueba de competencia independiente y termina como prueba mental de juicio residual. Esa evolución da unidad al cierre.",
+      "El pico emocional de la firma humana es concreto, sobrio y relevante. La comparación con aceptar términos y condiciones sin leer comunica el riesgo de una supervisión ritual sin exagerar las consecuencias.",
+      "La pregunta final está ganada por el recorrido previo. No opera como una CTA artificial ni repite una consigna; devuelve al espectador al gancho con una comprensión más exigente.",
+      "La ausencia de CTA explícita no es un defecto aquí: el cierre reflexivo deja el espacio adecuado para que la capa de producción determinista inserte subscribe/comment CTA sin romper el tono."
+    ],
+    "problems": [
+      "La tesis de que una buena respuesta asistida no prueba comprensión aparece muy pronto y con bastante claridad. Aunque la idea de calibración la enriquece después, algunos espectadores podrían sentir que ya conocen la dirección normativa principal antes del minuto dos.",
+      "El tramo histórico es sólido, pero su extensión relativa al comienzo puede retrasar ligeramente la llegada de la primera evidencia contemporánea. En una audiencia menos predispuesta, existe un riesgo moderado de que perciba una pausa ensayística antes de que el misterio avance.",
+      "El bloque sobre APA formula varias aclaraciones metodológicas seguidas. Son necesarias y responsables, pero concentradas en ese punto pueden reducir impulso narrativo si la locución no introduce variación, ejemplos visuales o respiración.",
+      "La sección de California cumple bien como consecuencia, pero no añade un nuevo hallazgo empírico sobre supervisión real; confirma la importancia institucional de la tesis. Si se presenta con demasiado énfasis, podría sentirse más como ilustración normativa que como segundo descubrimiento.",
+      "Hay algunas formulaciones de síntesis cercanas entre sí —“no basta con…”, “no se trata de…”, “la pregunta es…”—. No son un problema grave, pero una ejecución vocal plana podría hacer visible la arquitectura argumental y dar sensación de checklist."
+    ],
+    "improvements": [
+      "Mantener la tesis inicial como sospecha, no como respuesta casi cerrada: preservar hasta el estudio de conducción una duda más activa sobre si toda delegación cognitiva debilita necesariamente el criterio humano.",
+      "Asegurar que el paso de Platón al informe de la APA tenga una bisagra dramática clara: la preocupación antigua no debe sentirse como antecedente cultural, sino como la razón por la que ahora importa distinguir producto visible y capacidad transferible.",
+      "En edición, dar aire al bloque de matices de la APA mediante el regreso breve a la estudiante, la metáfora de las ruedas de entrenamiento o una pregunta visual; así la cautela metodológica no frena la retención.",
+      "Presentar California como una prueba de estrés para la idea, no sólo como un ejemplo legal: la pregunta debe sentirse como “¿qué tendría que poder hacer realmente quien firma para que esa firma signifique algo?”. Eso refuerza el pago del misterio central.",
+      "Reservar la formulación más memorable y completa de “autonomía” para el cierre. El guion ya lo hace razonablemente bien, pero conviene que las síntesis intermedias se sientan provisionales para que la conclusión final conserve mayor fuerza.",
+      "La CTA posterior debería ser mínima y conectada con la prueba mental final —por ejemplo, invitar a comentar qué habilidad no querrían perder al usar IA—, evitando una interrupción promocional después de una pregunta reflexiva bien ganada."
+    ]
+  },
+  "voice_humanity": {
+    "score": 9.1,
+    "approved": true,
+    "voice_fidelity": 9.2,
+    "intellectual_depth": 9.4,
+    "human_relevance": 9.3,
+    "analogy_quality": 9.0,
+    "ai_smell_risk": "low",
+    "strengths": [
+      "La apertura parte de una tensión humana clara y concreta —la diferencia entre producir una buena respuesta y comprender— sin abrir con una noticia, empresa o producto.",
+      "La voz se siente reflexiva y situada: usa dudas, matices y reacciones personales moderadas como “la verdad, me parece fascinante”, sin inventar experiencias autobiográficas.",
+      "El ensayo tiene un verdadero movimiento intelectual. Empieza con la posible pérdida de independencia, pero evoluciona hacia una idea más precisa: la calibración humana y la capacidad de juzgar la asistencia.",
+      "Las noticias no aparecen como bloques de cobertura. El informe de la APA funciona como evidencia, el estudio de conducción como complicación o contraejemplo, y la medida californiana como consecuencia institucional.",
+      "Hay rigor en los límites: distingue repetidamente entre lo que los estudios o la propuesta legal muestran y lo que todavía no demuestran.",
+      "Las implicaciones humanas son reales y específicas: estudiantes, operadores, abogados, clientes, médicos y personas afectadas por decisiones difíciles de reconstruir.",
+      "Las analogías son accesibles y estructuralmente útiles: seguir indicaciones frente a aprender un camino, ruedas de entrenamiento, escuchar un motor y aceptar términos y condiciones sin leerlos.",
+      "El paralelo con Platón está bien usado: ilumina una preocupación sobre memoria y apariencia de saber sin afirmar falsamente que la IA sea sólo otra forma de escritura.",
+      "El cierre recupera “apagar la pantalla” con un significado más profundo y deja una pregunta abierta que no se siente decorativa.",
+      "El español es neutral, oral y claro; no hay voseo, jerga innecesaria ni tono de mesa de noticias."
+    ],
+    "problems": [
+      "Por momentos la prosa está tan cuidadosamente equilibrada que roza una cadencia algo ensayística y programada, especialmente en secuencias como “No demuestra X. Tampoco demuestra Y.” Esto no llega a ser plástico, pero sí puede sentirse ligeramente diseñado.",
+      "Algunas ideas centrales reaparecen varias veces con formulaciones cercanas: rendimiento frente a comprensión, firma frente a supervisión, y ayuda que sustituye frente a ayuda que entrena. La repetición sostiene el motivo, pero podría comprimirse un poco.",
+      "La lista de preguntas sobre cómo diseñar herramientas —fuentes, incertidumbres, hipótesis, información usada— es pertinente, aunque tiene un ritmo más enumerativo que el resto del ensayo.",
+      "La sección de la norma californiana es sólida, pero concentra varias obligaciones legales seguidas. En voz puede sentirse más densa que las secciones anteriores si no se interpreta con pausas."
+    ],
+    "improvements": [
+      "Recortar una o dos reiteraciones de la oposición entre “resultado” y “capacidad” para que el giro hacia la calibración llegue con todavía más fuerza.",
+      "Variar algunas construcciones negativas paralelas; conservar los límites empíricos, pero integrarlos a frases más orgánicas para evitar una sensación de checklist de cautelas.",
+      "En la parte legal, priorizar una sola imagen concreta de responsabilidad —la firma que no puede explicar lo firmado— y dejar que esa imagen cargue más peso que la enumeración normativa.",
+      "Mantener el final tal como está en espíritu: es el punto más logrado del guion, porque no propone nostalgia tecnológica ni una solución fácil, sino una prueba humana de criterio residual."
+    ]
+  },
+  "source_files": [
+    "2026-09-01-08-23-09.txt",
+    "2026-09-02-08-35-24.txt",
+    "2026-09-03-08-45-35.txt"
+  ],
+  "missing_dates": []
+}

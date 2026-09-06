@@ -1,0 +1,252 @@
+{
+  "schema_version": 2,
+  "episode_date": "2026-09-04",
+  "agent_calls": [
+    {
+      "step": "select_news",
+      "agent": "news_relevance_selector",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 13.446,
+      "usage": {
+        "prompt_tokens": 44430,
+        "output_tokens": 841,
+        "reasoning_tokens": 242,
+        "total_tokens": 45271
+      }
+    },
+    {
+      "step": "plan_episode",
+      "agent": "editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 40.786,
+      "usage": {
+        "prompt_tokens": 37420,
+        "output_tokens": 4211,
+        "reasoning_tokens": 202,
+        "total_tokens": 41631
+      }
+    },
+    {
+      "step": "write_script",
+      "agent": "essay_script_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 36.232,
+      "usage": {
+        "prompt_tokens": 40481,
+        "output_tokens": 3061,
+        "reasoning_tokens": 35,
+        "total_tokens": 43542
+      }
+    },
+    {
+      "step": "editorial_judge",
+      "agent": "script_critic",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 16.569,
+      "usage": {
+        "prompt_tokens": 18509,
+        "output_tokens": 1270,
+        "reasoning_tokens": 449,
+        "total_tokens": 19779
+      }
+    },
+    {
+      "step": "seo_judge",
+      "agent": "seo_master",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 9.304,
+      "usage": {
+        "prompt_tokens": 14454,
+        "output_tokens": 679,
+        "reasoning_tokens": 48,
+        "total_tokens": 15133
+      }
+    },
+    {
+      "step": "attention_judge",
+      "agent": "youtube_attention_master",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 13.994,
+      "usage": {
+        "prompt_tokens": 7126,
+        "output_tokens": 1080,
+        "reasoning_tokens": 69,
+        "total_tokens": 8206
+      }
+    },
+    {
+      "step": "voice_judge",
+      "agent": "voice_humanity_critic",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 12.889,
+      "usage": {
+        "prompt_tokens": 12609,
+        "output_tokens": 1123,
+        "reasoning_tokens": 249,
+        "total_tokens": 13732
+      }
+    },
+    {
+      "step": "refine_voice",
+      "agent": "voice_script_refiner",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 22.005,
+      "usage": {
+        "prompt_tokens": 9582,
+        "output_tokens": 3077,
+        "reasoning_tokens": 61,
+        "total_tokens": 12659
+      }
+    },
+    {
+      "step": "editorial_judge",
+      "agent": "script_critic",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 17.131,
+      "usage": {
+        "prompt_tokens": 18499,
+        "output_tokens": 1311,
+        "reasoning_tokens": 343,
+        "total_tokens": 19810
+      }
+    },
+    {
+      "step": "seo_judge",
+      "agent": "seo_master",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 11.16,
+      "usage": {
+        "prompt_tokens": 14444,
+        "output_tokens": 767,
+        "reasoning_tokens": 75,
+        "total_tokens": 15211
+      }
+    },
+    {
+      "step": "attention_judge",
+      "agent": "youtube_attention_master",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 15.31,
+      "usage": {
+        "prompt_tokens": 7116,
+        "output_tokens": 1102,
+        "reasoning_tokens": 110,
+        "total_tokens": 8218
+      }
+    },
+    {
+      "step": "voice_judge",
+      "agent": "voice_humanity_critic",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 12.057,
+      "usage": {
+        "prompt_tokens": 12599,
+        "output_tokens": 921,
+        "reasoning_tokens": 190,
+        "total_tokens": 13520
+      }
+    },
+    {
+      "step": "plan_multimedia",
+      "agent": "multimedia_editor_master",
+      "iteration": null,
+      "attempt": 0,
+      "status": "skipped",
+      "elapsed_seconds": 0.0,
+      "usage": {},
+      "reason": "dedicated_dense_media_stage"
+    }
+  ],
+  "refinement_iterations": [
+    {
+      "iteration": 1,
+      "script_sha256": "69009f801d3d4831877443df9e183f82d94f962c06c57cddd96e35f6557baace",
+      "selected_as_best_so_far": true,
+      "duration_seconds": 908,
+      "approved": false,
+      "checks": {
+        "script_present": true,
+        "duration_ok": true,
+        "editorial_approved": true,
+        "editorial_score_ok": true,
+        "factuality_low": true,
+        "seo_approved": true,
+        "seo_score_ok": true,
+        "attention_approved": true,
+        "attention_score_ok": true,
+        "voice_approved": false,
+        "voice_score_ok": false,
+        "ai_smell_low": false
+      },
+      "editorial_score": 9.1,
+      "seo_score": 9.2,
+      "attention_score": 9.1,
+      "voice_score": 8.5,
+      "voice_fidelity": 8.7,
+      "intellectual_depth": 9.2,
+      "human_relevance": 9.1,
+      "analogy_quality": 8.8,
+      "ai_smell_risk": "medium",
+      "factuality_risk": "low",
+      "next_refinement_phase": "voice"
+    },
+    {
+      "iteration": 2,
+      "script_sha256": "fcdeae37b5dc499b7d8b532f59bb7dd40d4ae850c85ab98595a46b56ca891ad9",
+      "selected_as_best_so_far": true,
+      "duration_seconds": 904,
+      "approved": true,
+      "checks": {
+        "script_present": true,
+        "duration_ok": true,
+        "editorial_approved": true,
+        "editorial_score_ok": true,
+        "factuality_low": true,
+        "seo_approved": true,
+        "seo_score_ok": true,
+        "attention_approved": true,
+        "attention_score_ok": true,
+        "voice_approved": true,
+        "voice_score_ok": true,
+        "ai_smell_low": true
+      },
+      "editorial_score": 9.2,
+      "seo_score": 9.2,
+      "attention_score": 8.7,
+      "voice_score": 9.1,
+      "voice_fidelity": 9.2,
+      "intellectual_depth": 9.4,
+      "human_relevance": 9.3,
+      "analogy_quality": 9.0,
+      "ai_smell_risk": "low",
+      "factuality_risk": "low",
+      "next_refinement_phase": null
+    }
+  ],
+  "validation_warnings": [],
+  "finished_at_utc": "2026-09-06T22:19:07.223996+00:00"
+}

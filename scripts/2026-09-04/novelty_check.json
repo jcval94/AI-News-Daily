@@ -1,0 +1,18 @@
+{
+  "history_days": 120,
+  "previous_essay_count": 0,
+  "threshold": 0.42,
+  "max_novelty_replans": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "topic_signature": "La diferencia entre usar una IA para rendir mejor y conservar la capacidad humana de saber cuándo confiar, intervenir o actuar sin ella",
+      "narrative_lens": "cognición, aprendizaje y responsabilidad",
+      "novelty_angle": "El episodio no pregunta si la IA reemplaza empleos ni si las personas deben mantener control humano sobre una máquina. Investiga una frontera más precisa: la capacidad de conservar un modelo mental propio de la tarea y del sistema, de modo que la supervisión no sea una firma automática. El foco une educación, explicabilidad y responsabilidad profesional mediante el problema de la calibración, no a",
+      "nearest_previous_essay": null,
+      "similarity": 0.0,
+      "threshold": 0.42,
+      "duplicate": false
+    }
+  ]
+}
