@@ -78,15 +78,19 @@ def _item_blocks(text: str) -> list[tuple[int, str, int, int]]:
         ]
 
     titled = list(re.finditer(r"(?mi)^Título\s*:\s*(.+?)\s*$", text))
-    return [
-        (
-            position + 1,
-            match.group(1).strip(),
-            match.start(),
-            titled[position + 1].start() if position + 1 < len(titled) else len(text),
-        )
-        for position, match in enumerate(titled)
-    ]
+    blocks: list[tuple[int, str, int, int]] = []
+    for position, match in enumerate(titled):
+        start = match.start()
+        end = titled[position + 1].start() if position + 1 < len(titled) else len(text)
+        block = text[start:end].strip()
+        # A bare "Título:" line is not enough to establish the ingestion contract.
+        # Require substantive metadata so malformed/unstructured files still fail closed.
+        if not _field(block, "Fuente") or not (
+            _field(block, "Resumen", "Resumen breve") or _field(block, "Por qué importa")
+        ):
+            return []
+        blocks.append((position + 1, match.group(1).strip(), start, end))
+    return blocks
 
 
 def _source_file_date(path: Path) -> str:
@@ -104,7 +108,7 @@ def parse_news_file(path: Path) -> list[NewsItem]:
     blocks = _item_blocks(text)
     if not blocks:
         raise ValueError(
-            f"No structured news items found in {path}; expected numbered headings or repeated 'Título:' blocks"
+            f"No structured news items found in {path}; expected numbered headings or complete repeated 'Título:' blocks"
         )
 
     file_date = _source_file_date(path)
