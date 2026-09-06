@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.core import expected_news_dates
-from pipeline.news import parse_news_file
+from pipeline.news_resolution import load_news_for_date
 
 
 def _utc_now() -> str:
@@ -28,12 +28,8 @@ def evaluate_source_coverage(
     item_count = 0
 
     for current in expected:
-        path = news_dir / f"{current.isoformat()}.txt"
-        if not path.exists() or not path.read_text(encoding="utf-8").strip():
-            missing_dates.append(current.isoformat())
-            continue
-        parsed = parse_news_file(path)
-        if not parsed:
+        path, parsed = load_news_for_date(news_dir, current)
+        if path is None:
             missing_dates.append(current.isoformat())
             continue
         available_files.append(path.name)
