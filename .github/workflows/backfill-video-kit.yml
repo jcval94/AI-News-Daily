@@ -1,0 +1,156 @@
+name: Build AI News Video Kit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/backfill-target.txt"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-news-video-backfill
+  cancel-in-progress: false
+
+jobs:
+  build-video-kit-backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+
+      - name: Resolve backfill target
+        id: target
+        run: |
+          set -euo pipefail
+          TARGET_DATE="$(tr -d '[:space:]' < .github/backfill-target.txt)"
+          python - "$TARGET_DATE" <<'PY'
+          import sys
+          from datetime import datetime
+          value = sys.argv[1]
+          day = datetime.strptime(value, "%Y-%m-%d").date()
+          if day.weekday() not in {1, 4}:
+              raise SystemExit(f"Backfill target must be Tuesday or Friday for scheduled_window: {value}")
+          print(f"Validated backfill target: {value}")
+          PY
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+
+      - name: Validate deterministic contracts
+        run: |
+          python -m compileall app pipeline
+          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage; print('backfill runtime imports ok')"
+          python -m unittest discover -s tests -v
+
+      - name: Prepare isolated workspace
+        id: workspace
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          RUN_ROOT=".pipeline-runs/$TARGET_DATE/$GITHUB_RUN_ID"
+          mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE" "$RUN_ROOT/multimedia"
+          echo "run_root=$RUN_ROOT" >> "$GITHUB_OUTPUT"
+
+      - name: Validate scheduled source coverage
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          NEWS_SOURCE_MODE: scheduled_window
+          NEWS_LOOKBACK_DAYS: "4"
+          MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
+        run: |
+          python -m pipeline.source_coverage \
+            --target-date "$TARGET_DATE" \
+            --news-dir news \
+            --output "$RUN_ROOT/source_coverage.json" \
+            --state-out "$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
+
+      - name: Build retroactive episode
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
+          MAX_SELECTED_NEWS: "8"
+          DOWNLOAD_MULTIMEDIA: "false"
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
+          MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
+          ESSAY_DUPLICATE_THRESHOLD: ${{ vars.ESSAY_DUPLICATE_THRESHOLD || '0.42' }}
+          MAX_NOVELTY_REPLANS: ${{ vars.MAX_NOVELTY_REPLANS || '2' }}
+          TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
+          AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          NEWS_SOURCE_MODE: scheduled_window
+          NEWS_LOOKBACK_DAYS: "4"
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          test -n "${OPENAI_API_KEY:-}" || { echo "OPENAI_API_KEY is not configured"; exit 1; }
+          python -m pipeline.run_hardened \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --history-scripts-dir scripts \
+            --editorial-dir editorial \
+            --max-media-downloads 0 \
+            --no-download-multimedia
+
+      - name: Require approved script
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          STATE="$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
+          SCRIPT="$RUN_ROOT/scripts/$TARGET_DATE/script.txt"
+          test -s "$STATE"
+          test -s "$SCRIPT"
+          STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE")"
+          echo "Backfill episode status: $STATUS"
+          test "$STATUS" = "approved"
+
+      - name: Promote approved script to main
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+          rm -rf "scripts/$TARGET_DATE"
+          mkdir -p "scripts/$TARGET_DATE"
+          cp -a "$RUN_ROOT/scripts/$TARGET_DATE/." "scripts/$TARGET_DATE/"
+          git add "scripts/$TARGET_DATE"
+          if ! git diff --cached --quiet; then
+            git commit -m "backfill: promote approved episode $TARGET_DATE"
+            git push origin HEAD:main
+          fi
+
+      - name: Upload production-compatible artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-news-run-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/
+          if-no-files-found: error
+          retention-days: 30
