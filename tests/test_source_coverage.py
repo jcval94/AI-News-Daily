@@ -6,7 +6,11 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from pipeline.source_coverage import evaluate_source_coverage, materialize_canonical_sources
+from pipeline.source_coverage import (
+    evaluate_source_coverage,
+    materialize_canonical_sources,
+    suppress_unusable_canonical_sources,
+)
 
 
 NEWS_TEMPLATE = """## 1. Example AI development
@@ -107,6 +111,31 @@ class SourceCoverageTests(unittest.TestCase):
             )
             for value in ("2026-09-01", "2026-09-02", "2026-09-03"):
                 self.assertTrue((root / f"{value}.txt").exists())
+
+    def test_malformed_canonical_source_is_suppressed_from_runtime_view(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(
+            os.environ,
+            {"NEWS_SOURCE_MODE": "recent_window", "NEWS_LOOKBACK_DAYS": "4"},
+            clear=False,
+        ):
+            root = Path(tmp)
+            self._write_day(root, "2026-08-21")
+            self._write_day(root, "2026-08-22")
+            (root / "2026-08-23.txt").write_text(
+                "1) malformed item without a Fuente field\n", encoding="utf-8"
+            )
+            self._write_day(root, "2026-08-24")
+
+            result = evaluate_source_coverage(
+                target_date="2026-08-24",
+                news_dir=root,
+                min_ratio=0.75,
+            )
+            self.assertTrue(result["sufficient"])
+            self.assertEqual(result["missing_dates"], ["2026-08-23"])
+            suppressed = suppress_unusable_canonical_sources(root, result)
+            self.assertEqual(suppressed, ["2026-08-23.txt"])
+            self.assertFalse((root / "2026-08-23.txt").exists())
 
     def test_live_repository_sep4_window_is_now_sufficient(self) -> None:
         with patch.dict(os.environ, {"NEWS_SOURCE_MODE": "scheduled_window"}, clear=False):
