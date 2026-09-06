@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.news import parse_news_file
+from pipeline.news import parse_news_file, resolve_news_file, source_date_from_path
 
 
 class NewsParserTests(unittest.TestCase):
@@ -53,6 +53,47 @@ class NewsParserTests(unittest.TestCase):
             self.assertEqual(items[0].source_locator, "2026-08-20.txt#item-1")
             self.assertEqual(items[0].url_quality, "article")
 
+    def test_current_timestamped_digest_blocks_are_parsed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "2026-09-01-08-23-09.txt"
+            path.write_text(
+                "# Noticias de Inteligencia Artificial — 2026-09-01 08:23:09 America/Mexico_City\n\n"
+                "Título: Primer caso\n"
+                "Fecha: 2026-09-01\n"
+                "Fuente: Reuters\n"
+                "Enlace: https://example.com/one\n"
+                "Resumen breve: Resumen uno.\n"
+                "Por qué importa: Importa uno.\n"
+                "Categoría: agentes\n\n---\n\n"
+                "Título: Segundo caso\n"
+                "Fecha: 2026-09-01\n"
+                "Fuente: Nature\n"
+                "Enlace: https://example.com/two\n"
+                "Resumen breve: Resumen dos.\n"
+                "Por qué importa: Importa dos.\n"
+                "Categoría: investigación\n",
+                encoding="utf-8",
+            )
+            items = parse_news_file(path)
+            self.assertEqual([item.news_id for item in items], ["2026-09-01:1", "2026-09-01:2"])
+            self.assertEqual(items[0].title, "Primer caso")
+            self.assertEqual(items[0].source_file, "2026-09-01-08-23-09.txt")
+            self.assertEqual(items[0].date, "2026-09-01")
+            self.assertEqual(items[1].summary, "Resumen dos.")
+            self.assertEqual(source_date_from_path(path), "2026-09-01")
+
+    def test_resolver_prefers_canonical_then_latest_timestamped(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            early = root / "2026-09-01-08-00-00.txt"
+            late = root / "2026-09-01-09-00-00.txt"
+            early.write_text("early", encoding="utf-8")
+            late.write_text("late", encoding="utf-8")
+            self.assertEqual(resolve_news_file(root, "2026-09-01"), late)
+            canonical = root / "2026-09-01.txt"
+            canonical.write_text("canonical", encoding="utf-8")
+            self.assertEqual(resolve_news_file(root, "2026-09-01"), canonical)
+
     def test_duplicate_item_indices_fail_closed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "2026-08-21.txt"
@@ -66,7 +107,14 @@ class NewsParserTests(unittest.TestCase):
     def test_unstructured_file_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "2026-08-21.txt"
-            path.write_text("Título: sin heading estructurado", encoding="utf-8")
+            path.write_text("Texto libre sin contrato editorial", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                parse_news_file(path)
+
+    def test_title_block_without_source_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "2026-09-01-08-23-09.txt"
+            path.write_text("Título: incompleto\nFecha: 2026-09-01\n", encoding="utf-8")
             with self.assertRaises(ValueError):
                 parse_news_file(path)
 
