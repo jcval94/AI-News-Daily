@@ -55,6 +55,7 @@ class YouTubeArtifactExperimentTests(unittest.TestCase):
         self.assertIn("retention-days: 7", workflow)
         self.assertIn("compression-level: 0", workflow)
         self.assertIn("--required-successes 10", workflow)
+        self.assertIn("inputs.runner || 'macos-15'", workflow)
         self.assertNotIn("pipeline.footage", workflow)
         self.assertNotIn("git push", workflow)
         self.assertNotIn("scripts/$TARGET_DATE", workflow)

@@ -40,8 +40,10 @@ The workflow `.github/workflows/youtube-artifact-experiment.yml`:
 7. retains the artifact for seven days and never commits MP4 files.
 
 Run it from **Actions → Experiment — YouTube clips as artifacts → Run workflow**.
-The manual inputs can vary clip duration (1–60 seconds) and concurrency (1–4) without
-changing the ten-video catalog.
+The manual inputs can vary clip duration (1–60 seconds), concurrency (1–4), and the
+runner fleet without changing the ten-video catalog. The default is `macos-15` because
+the shared Ubuntu Actions egress range currently receives YouTube's pre-authentication
+bot challenge; `ubuntu-latest` remains selectable to reproduce that failure mode.
 
 The artifact contains:
 

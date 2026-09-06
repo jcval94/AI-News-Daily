@@ -13,6 +13,14 @@ on:
         required: false
         default: "2"
         type: string
+      runner:
+        description: "Runner network used for the live download"
+        required: false
+        default: "macos-15"
+        type: choice
+        options:
+          - macos-15
+          - ubuntu-latest
   push:
     branches:
       - experiment/youtube-artifacts
@@ -30,7 +38,10 @@ concurrency:
 
 jobs:
   download-ten-samples:
-    runs-on: ubuntu-latest
+    # YouTube currently challenges the shared Ubuntu Actions egress range before
+    # player extraction. macOS uses a separate runner fleet; the manual input keeps
+    # the Ubuntu failure mode reproducible without weakening the 10/10 gate.
+    runs-on: ${{ inputs.runner || 'macos-15' }}
     timeout-minutes: 30
     env:
       CLIP_SECONDS: ${{ inputs.clip_seconds || '15' }}
@@ -50,8 +61,12 @@ jobs:
 
       - name: Install pinned downloader and media tools
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends ffmpeg
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update
+            sudo apt-get install --yes --no-install-recommends ffmpeg
+          elif ! command -v ffmpeg >/dev/null 2>&1; then
+            brew install ffmpeg
+          fi
           python -m pip install --disable-pip-version-check "yt-dlp[default]==2026.8.19"
 
       - name: Verify runtime
