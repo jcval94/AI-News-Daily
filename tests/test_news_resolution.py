@@ -80,6 +80,48 @@ class NewsResolutionTests(unittest.TestCase):
             self.assertEqual(path, newest)
             self.assertIn("newest", items[0].url)
 
+    def test_prefixed_suffixed_and_separator_variants_are_supported(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            older = self._write(
+                root,
+                "ai-news_2026-09-05_08-15-00_capture.txt",
+                "2026-09-05",
+                "older",
+            )
+            newest = self._write(
+                root,
+                "daily.2026.09.05T09-45-30.final.TXT",
+                "2026-09-05",
+                "newest",
+            )
+            candidates = candidate_news_files(root, date(2026, 9, 5))
+            self.assertEqual(candidates[:2], [newest, older])
+            path, items = load_news_for_date(root, date(2026, 9, 5))
+            self.assertEqual(path, newest)
+            self.assertIn("newest", items[0].url)
+
+    def test_arbitrary_filename_can_resolve_day_from_unambiguous_content(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            expected = self._write(root, "captura-final.txt", "2026-09-05", "content-date")
+            path, items = load_news_for_date(root, date(2026, 9, 5))
+            self.assertEqual(path, expected)
+            self.assertEqual(len(items), 1)
+
+    def test_file_with_mixed_content_dates_is_not_assigned_to_a_day(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "mixed-source.txt"
+            path.write_text(
+                CURRENT_DAILY_TEMPLATE.format(date="2026-09-05")
+                + "\n"
+                + CURRENT_DAILY_TEMPLATE.format(date="2026-09-06"),
+                encoding="utf-8",
+            )
+            self.assertEqual(candidate_news_files(root, date(2026, 9, 5)), [])
+            self.assertEqual(candidate_news_files(root, date(2026, 9, 6)), [])
+
     def test_empty_or_malformed_latest_source_falls_back(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -120,6 +162,17 @@ class NewsResolutionTests(unittest.TestCase):
             self.assertEqual(item.date, "2026-09-06")
             self.assertEqual(item.date_origin, "source_file")
 
+    def test_prefixed_filename_supplies_date_when_field_is_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ai-news_capture_2026-09-06T08-20-02_final.txt"
+            path.write_text(
+                """Título: Story without explicit date\nFuente: Example\nEnlace: https://example.com/story\nResumen breve: Summary.\nPor qué importa: Interpretation.\nCategoría: investigación\n""",
+                encoding="utf-8",
+            )
+            item = parse_news_file(path)[0]
+            self.assertEqual(item.date, "2026-09-06")
+            self.assertEqual(item.date_origin, "source_file")
+
     def test_source_coverage_counts_timestamped_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, patch.dict(
             os.environ,
@@ -138,6 +191,25 @@ class NewsResolutionTests(unittest.TestCase):
             self.assertEqual(result["available_day_count"], 3)
             self.assertEqual(result["missing_dates"], ["2026-09-02"])
             self.assertTrue(all(name.endswith("-08-00-00.txt") for name in result["available_files"]))
+
+    def test_source_coverage_accepts_mixed_filename_contracts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(
+            os.environ,
+            {"NEWS_SOURCE_MODE": "recent_window", "NEWS_LOOKBACK_DAYS": "4"},
+            clear=False,
+        ):
+            root = Path(tmp)
+            self._write(root, "news_2026-09-03_final.txt", "2026-09-03", "a")
+            self._write(root, "2026.09.04T08-00-00.TXT", "2026-09-04", "b")
+            self._write(root, "captura-del-dia.txt", "2026-09-05", "c")
+            result = evaluate_source_coverage(
+                target_date="2026-09-05",
+                news_dir=root,
+                min_ratio=0.75,
+            )
+            self.assertTrue(result["sufficient"])
+            self.assertEqual(result["available_day_count"], 3)
+            self.assertEqual(result["item_count"], 3)
 
     def test_runtime_install_replaces_legacy_collector(self) -> None:
         base = SimpleNamespace(collect_available_news=lambda *_: "legacy")
