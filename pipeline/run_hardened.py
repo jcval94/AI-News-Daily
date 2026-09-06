@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pipeline.editorial_review_hardening import install as install_editorial_review_hardening
 from pipeline.news_resolution import install as install_news_resolution
+from pipeline.refinement_hardening import install as install_refinement_hardening
 from pipeline.runtime_hardening import install as install_runtime_hardening
 from pipeline.writer_hardening import install as install_writer_hardening
 
@@ -11,6 +12,7 @@ def main() -> None:
     base = install_news_resolution(base)
     base = install_editorial_review_hardening(base)
     base = install_writer_hardening(base)
+    base = install_refinement_hardening(base)
     base.main()
 
 
