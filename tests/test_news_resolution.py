@@ -8,6 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from pipeline.news import parse_news_file
 from pipeline.news_resolution import (
     candidate_news_files,
     collect_available_news,
@@ -24,6 +25,25 @@ Enlace: https://example.com/{slug}
 Categoría: investigación
 Resumen breve: Example structured news item.
 Por qué importa: It is useful for testing timestamped source resolution.
+"""
+
+CURRENT_DAILY_TEMPLATE = """# AI News Daily — {date}
+
+Título: First current-format story
+Fecha: {date}
+Fuente: Primary Source
+Enlace: https://example.com/first
+Resumen breve: First factual summary.
+Por qué importa: First editorial interpretation.
+Categoría: investigación
+
+Título: Second current-format story
+Fecha: {date}
+Fuente: Official Documentation
+Enlace: https://example.com/second
+Resumen breve: Second factual summary.
+Por qué importa: Second editorial interpretation.
+Categoría: producto
 """
 
 
@@ -74,6 +94,31 @@ class NewsResolutionTests(unittest.TestCase):
             path, items = load_news_for_date(root, date(2026, 9, 5))
             self.assertEqual(path, fallback)
             self.assertEqual(len(items), 1)
+
+    def test_current_titulo_contract_parses_multiple_items(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "2026-09-06-08-20-02.txt"
+            path.write_text(
+                CURRENT_DAILY_TEMPLATE.format(date="2026-09-06"),
+                encoding="utf-8",
+            )
+            items = parse_news_file(path)
+            self.assertEqual(len(items), 2)
+            self.assertEqual(items[0].title, "First current-format story")
+            self.assertEqual(items[1].category, "producto")
+            self.assertEqual(items[0].source_file, path.name)
+
+    def test_timestamped_filename_supplies_date_when_field_is_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "2026-09-06-08-20-02.txt"
+            path.write_text(
+                """Título: Story without explicit date\nFuente: Example\nEnlace: https://example.com/story\nResumen breve: Summary.\nPor qué importa: Interpretation.\nCategoría: investigación\n""",
+                encoding="utf-8",
+            )
+            item = parse_news_file(path)[0]
+            self.assertEqual(item.date, "2026-09-06")
+            self.assertEqual(item.date_origin, "source_file")
 
     def test_source_coverage_counts_timestamped_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, patch.dict(
