@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
-from pipeline.news import parse_news_file, resolve_news_file
+from pipeline.news import parse_news_file, resolve_news_file, source_date_from_path
 
 
 class LiveNewsContractTests(unittest.TestCase):
@@ -20,9 +20,11 @@ class LiveNewsContractTests(unittest.TestCase):
                 self.assertIsNotNone(path)
                 assert path is not None
                 self.assertEqual(path.name, filename)
+                self.assertEqual(source_date_from_path(path), editorial_date)
                 items = parse_news_file(path)
                 self.assertGreater(len(items), 0)
-                self.assertTrue(all(item.date == editorial_date for item in items))
+                self.assertTrue(all(item.source_file == filename for item in items))
+                self.assertTrue(all(item.date for item in items))
                 self.assertTrue(all(item.source for item in items))
 
 
