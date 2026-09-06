@@ -48,8 +48,11 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Install pinned downloader
-        run: python -m pip install --disable-pip-version-check "yt-dlp[default]==2026.8.19"
+      - name: Install pinned downloader and media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install --disable-pip-version-check "yt-dlp[default]==2026.8.19"
 
       - name: Verify runtime
         run: |
