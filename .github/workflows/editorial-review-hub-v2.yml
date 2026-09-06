@@ -1,0 +1,410 @@
+name: Editorial Review Hub Robust
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Optional source run ID; otherwise discover the newest valid production artifact by content"
+        required: false
+        default: ""
+        type: string
+      target_date:
+        description: "Optional episode date; otherwise infer it from the extracted episode"
+        required: false
+        default: ""
+        type: string
+      max_media_downloads:
+        description: "Maximum review multimedia assets"
+        required: true
+        default: "54"
+        type: string
+      episode_budget_usd:
+        description: "Optional episode budget in USD"
+        required: false
+        default: ""
+        type: string
+      history_episode_limit:
+        description: "Maximum distinct episodes retained in Pages"
+        required: true
+        default: "8"
+        type: string
+  workflow_run:
+    workflows:
+      - Build AI News Video Kit
+      - Backfill AI News Video Kit
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/editorial-review-hub-v2.yml"
+      - "scripts/**"
+      - "pipeline/review_source.py"
+      - "pipeline/review_hub*.py"
+      - "pipeline/review_media*.py"
+      - "pipeline/evidence_reconciliation.py"
+      - "pipeline/editorial_regression.py"
+      - "pipeline/run_journey.py"
+      - "pipeline/architecture_manifest.py"
+      - "config/cost_rates.json"
+      - "evals/editorial/**"
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: editorial-review-hub-robust-main
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      target_date: ${{ steps.source.outputs.target_date }}
+      source_run_id: ${{ steps.source.outputs.run_id }}
+      source_head_branch: ${{ steps.source.outputs.source_head_branch }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+
+      - name: Resolve a valid production artifact by content
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_RUN_ID: ${{ inputs.source_run_id }}
+          INPUT_TARGET_DATE: ${{ inputs.target_date }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID }}
+        run: |
+          set -euo pipefail
+          rm -rf .review-source .review-candidates
+          mkdir -p .review-source .review-candidates
+
+          declare -A VISITED_RUNS
+          SELECTED_RUN_ID=""
+          SELECTED_ARTIFACT_NAME=""
+          SELECTED_EPISODE_DIR=""
+          SELECTED_TARGET_DATE=""
+
+          inspect_run() {
+            local run_id="$1"
+            [ -n "$run_id" ] || return 1
+            [ -z "${VISITED_RUNS[$run_id]:-}" ] || return 1
+            VISITED_RUNS[$run_id]=1
+
+            while IFS=$'\t' read -r artifact_id artifact_name; do
+              [ -n "$artifact_id" ] || continue
+              local candidate_dir=".review-candidates/${run_id}-${artifact_id}"
+              rm -rf "$candidate_dir"
+              mkdir -p "$candidate_dir"
+              if ! gh run download "$run_id" --name "$artifact_name" --dir "$candidate_dir" >/dev/null 2>&1; then
+                continue
+              fi
+
+              local resolved="$candidate_dir/resolved.json"
+              if python -m pipeline.review_source \
+                --root "$candidate_dir" \
+                --target-date "${INPUT_TARGET_DATE:-}" \
+                --output "$resolved" >/dev/null 2>&1; then
+                SELECTED_RUN_ID="$run_id"
+                SELECTED_ARTIFACT_NAME="$artifact_name"
+                SELECTED_EPISODE_DIR="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["episode_dir"])' "$resolved")"
+                SELECTED_TARGET_DATE="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["episode_date"])' "$resolved")"
+                rm -rf .review-source
+                mkdir -p .review-source
+                cp -a "$candidate_dir/." .review-source/
+                SELECTED_EPISODE_DIR="${SELECTED_EPISODE_DIR/$candidate_dir/.review-source}"
+                echo "Accepted run=$run_id artifact=$artifact_name episode=$SELECTED_TARGET_DATE"
+                return 0
+              fi
+            done < <(
+              gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/artifacts?per_page=100" \
+                --jq '.artifacts
+                  | map(select(.expired == false))
+                  | sort_by([((.name | test("ai-news|video-kit|production"; "i")) | if . then 1 else 0 end), .created_at])
+                  | reverse
+                  | .[]
+                  | [(.id|tostring), .name]
+                  | @tsv' 2>/dev/null || true
+            )
+            return 1
+          }
+
+          if [ -n "${INPUT_RUN_ID:-}" ]; then
+            if ! inspect_run "$INPUT_RUN_ID"; then
+              echo "::error::Explicit run $INPUT_RUN_ID contains no artifact with a valid episode script."
+              exit 1
+            fi
+          else
+            inspect_run "${WORKFLOW_RUN_ID:-}" || true
+            [ -n "$SELECTED_RUN_ID" ] || inspect_run "${DEFAULT_RUN_ID:-}" || true
+
+            if [ -z "$SELECTED_RUN_ID" ]; then
+              while IFS= read -r candidate_run; do
+                [ -n "$candidate_run" ] || continue
+                if inspect_run "$candidate_run"; then
+                  break
+                fi
+              done < <(
+                gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=main&status=completed&per_page=100" \
+                  --jq '.workflow_runs | sort_by(.updated_at) | reverse | .[].id' 2>/dev/null || true
+              )
+            fi
+          fi
+
+          test -n "$SELECTED_RUN_ID" || { echo "::error::No recent Actions artifact contains a valid episode script"; exit 1; }
+          test -s "$SELECTED_EPISODE_DIR/script.txt" || { echo "::error::Resolved episode lost script.txt during promotion"; exit 1; }
+
+          SOURCE_HEAD_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SELECTED_RUN_ID" --jq '.head_branch // ""')"
+          REGRESSION_PATH=".review-source/editorial-regression.json"
+
+          echo "run_id=$SELECTED_RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$SELECTED_ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+          echo "episode_dir=$SELECTED_EPISODE_DIR" >> "$GITHUB_OUTPUT"
+          echo "target_date=$SELECTED_TARGET_DATE" >> "$GITHUB_OUTPUT"
+          echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
+          echo "source_head_branch=$SOURCE_HEAD_BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Validate resolved source contract
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          test -s "$EPISODE_DIR/script.txt"
+          python -m pipeline.review_source --root .review-source --target-date "$TARGET_DATE" >/dev/null
+
+      - name: Build deterministic regression snapshot
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.editorial_regression --episode-dir "$EPISODE_DIR" --output "$REGRESSION_PATH"
+          test -s "$REGRESSION_PATH"
+
+      - name: Reconcile evidence references for review
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+        run: python -m pipeline.evidence_reconciliation --episode-dir "$EPISODE_DIR" --write
+
+      - name: Build dense review multimedia
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          MAX_MEDIA: ${{ inputs.max_media_downloads || '54' }}
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          MAX_MEDIA="${MAX_MEDIA:-54}"
+          rm -rf review-media review-downloads
+          mkdir -p review-media review-downloads
+          ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
+
+          run_offline() {
+            rm -rf "review-media/$TARGET_DATE" "$ZIP"
+            python -m pipeline.review_media_offline_dense \
+              --episode-dir "$EPISODE_DIR" \
+              --output-dir "review-media/$TARGET_DATE" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA"
+          }
+
+          if [ -n "${OPENAI_API_KEY:-}" ]; then
+            set +e
+            python -m pipeline.review_media_dense_hardened \
+              --episode-dir "$EPISODE_DIR" \
+              --output-dir "review-media/$TARGET_DATE" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/review-media.log
+            STATUS=${PIPESTATUS[0]}
+            set -e
+            if [ "$STATUS" -ne 0 ]; then
+              echo "::warning::Model/media review path failed; using deterministic dense fallback"
+              run_offline
+            fi
+          else
+            run_offline
+          fi
+
+          test -s "review-media/$TARGET_DATE/manifest.json"
+          test -s "$ZIP"
+
+      - name: Build static editorial review site
+        env:
+          EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
+          REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          REVIEW_HUB_EPISODE_BUDGET_USD: ${{ inputs.episode_budget_usd || vars.REVIEW_HUB_EPISODE_BUDGET_USD }}
+        run: |
+          set -euo pipefail
+          ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
+          rm -rf review-site
+          python -m pipeline.review_hub \
+            --episode-dir "$EPISODE_DIR" \
+            --media-dir "review-media/$TARGET_DATE" \
+            --media-zip "$ZIP" \
+            --regression "$REGRESSION_PATH" \
+            --cases evals/editorial/cases.json \
+            --output-dir review-site \
+            --run-id "$RUN_ID"
+          test -s review-site/index.html
+          test -s review-site/downloads/cost_snapshot.json
+          grep -q 'id="globalSearch"' review-site/index.html
+          grep -q 'data-tab="overview"' review-site/index.html
+          grep -q 'data-tab="budget"' review-site/index.html
+          grep -q 'data-tab="technical"' review-site/index.html
+
+      - name: Upload reusable Review Hub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-review-hub-${{ steps.source.outputs.target_date }}-${{ steps.source.outputs.run_id }}
+          path: |
+            review-site/
+            review-media/
+            review-downloads/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Assemble multi-episode Pages catalog from valid review artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_DATE: ${{ steps.source.outputs.target_date }}
+          HISTORY_LIMIT: ${{ inputs.history_episode_limit || vars.REVIEW_HUB_HISTORY_LIMIT || '8' }}
+        run: |
+          set -euo pipefail
+          HISTORY_LIMIT="${HISTORY_LIMIT:-8}"
+          if ! [[ "$HISTORY_LIMIT" =~ ^[0-9]+$ ]] || [ "$HISTORY_LIMIT" -lt 1 ]; then HISTORY_LIMIT=8; fi
+
+          rm -rf pages-site .review-archive
+          mkdir -p "pages-site/episodes/$TARGET_DATE" .review-archive
+          cp -a review-site/. "pages-site/episodes/$TARGET_DATE/"
+
+          declare -A SEEN
+          SEEN["$TARGET_DATE"]=1
+          EPISODE_COUNT=1
+
+          while IFS=$'\t' read -r artifact_id artifact_name artifact_run_id; do
+            [ "$EPISODE_COUNT" -lt "$HISTORY_LIMIT" ] || break
+            [ -n "$artifact_id" ] || continue
+            archive_dir=".review-archive/${artifact_run_id}-${artifact_id}"
+            rm -rf "$archive_dir"
+            mkdir -p "$archive_dir"
+            if ! gh run download "$artifact_run_id" --name "$artifact_name" --dir "$archive_dir" >/dev/null 2>&1; then
+              continue
+            fi
+            archived_index="$(find "$archive_dir" -type f -path '*/review-site/index.html' -print -quit)"
+            [ -n "$archived_index" ] || continue
+            archived_site="$(dirname "$archived_index")"
+
+            episode_date="$(python - "$artifact_name" "$archived_index" <<'PY'
+          import re, sys
+          from pathlib import Path
+          name, index = sys.argv[1], Path(sys.argv[2])
+          pattern = re.compile(r"(?<!\d)(20\d{2}-\d{2}-\d{2})(?!\d)")
+          match = pattern.search(name)
+          if not match:
+              try:
+                  match = pattern.search(index.read_text(encoding="utf-8", errors="ignore")[:200000])
+              except OSError:
+                  match = None
+          print(match.group(1) if match else "")
+          PY
+            )"
+            [ -n "$episode_date" ] || continue
+            [ -z "${SEEN[$episode_date]:-}" ] || continue
+
+            mkdir -p "pages-site/episodes/$episode_date"
+            cp -a "$archived_site/." "pages-site/episodes/$episode_date/"
+            SEEN["$episode_date"]=1
+            EPISODE_COUNT=$((EPISODE_COUNT + 1))
+            echo "Recovered historical episode $episode_date from artifact '$artifact_name'"
+          done < <(
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+              --jq '.artifacts
+                | map(select(.expired == false))
+                | sort_by([((.name | test("review|hub|editorial"; "i")) | if . then 1 else 0 end), .created_at])
+                | reverse
+                | .[]
+                | [(.id|tostring), .name, (.workflow_run.id|tostring)]
+                | @tsv' 2>/dev/null || true
+          )
+
+          python -m pipeline.review_hub_catalog \
+            --episodes-root pages-site/episodes \
+            --output-dir pages-site \
+            --current "$TARGET_DATE"
+
+          test -s pages-site/index.html
+          test -s pages-site/episodes.json
+          test -s "pages-site/episodes/$TARGET_DATE/index.html"
+          grep -q 'class="episode-sidebar"' pages-site/index.html
+          grep -q 'id="episodeFrame"' pages-site/index.html
+          grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
+          echo "Pages catalog contains $EPISODE_COUNT episode(s)"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: pages-site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify deployed catalog and episode
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          TARGET_DATE: ${{ needs.build.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          ROOT_URL="${PAGE_URL%/}/"
+          EPISODE_URL="${ROOT_URL}episodes/${TARGET_DATE}/"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/catalog.html \
+              && grep -q 'class="episode-sidebar"' /tmp/catalog.html \
+              && grep -q 'id="episodeFrame"' /tmp/catalog.html \
+              && curl -fsSL --max-time 20 "$EPISODE_URL" -o /tmp/episode.html \
+              && grep -q 'id="globalSearch"' /tmp/episode.html \
+              && grep -q 'data-tab="overview"' /tmp/episode.html; then
+              echo "Pages smoke test passed: $ROOT_URL"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Deployed Pages failed smoke test: $ROOT_URL"
+          exit 1
