@@ -1,13 +1,19 @@
 from __future__ import annotations
 
+import re
 import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.news import parse_news_file, resolve_news_file, source_date_from_path
+from pipeline.news import parse_news_file, resolve_news_file, source_date_from_path, stable_news_id
 
 
 class NewsParserTests(unittest.TestCase):
+    def assertOpaqueIds(self, items) -> None:  # noqa: N802 - unittest helper style
+        for item in items:
+            self.assertRegex(item.news_id, r"^n_[0-9a-f]{16}$")
+            self.assertNotIn(item.date.split(",", 1)[0], item.news_id)
+
     def test_parser_owns_provenance_and_flags_generic_urls(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "2026-08-21.txt"
@@ -16,7 +22,8 @@ class NewsParserTests(unittest.TestCase):
                 encoding="utf-8",
             )
             items = parse_news_file(path)
-            self.assertEqual([item.news_id for item in items], ["2026-08-21:1", "2026-08-21:2"])
+            self.assertOpaqueIds(items)
+            self.assertEqual(len({item.news_id for item in items}), 2)
             self.assertEqual(items[0].source_locator, "2026-08-21.txt#item-1")
             self.assertEqual(items[0].url_quality, "generic")
             self.assertEqual(items[1].url_quality, "article")
@@ -45,7 +52,7 @@ class NewsParserTests(unittest.TestCase):
                 encoding="utf-8",
             )
             items = parse_news_file(path)
-            self.assertEqual([item.news_id for item in items], ["2026-08-20:1", "2026-08-20:2"])
+            self.assertOpaqueIds(items)
             self.assertEqual(items[0].title, "Caso real del repositorio")
             self.assertEqual(items[0].date, "19/08/2026, 12:10 ET")
             self.assertEqual(items[0].date_origin, "field")
@@ -75,12 +82,42 @@ class NewsParserTests(unittest.TestCase):
                 encoding="utf-8",
             )
             items = parse_news_file(path)
-            self.assertEqual([item.news_id for item in items], ["2026-09-01:1", "2026-09-01:2"])
+            self.assertOpaqueIds(items)
             self.assertEqual(items[0].title, "Primer caso")
             self.assertEqual(items[0].source_file, "2026-09-01-08-23-09.txt")
             self.assertEqual(items[0].date, "2026-09-01")
             self.assertEqual(items[1].summary, "Resumen dos.")
             self.assertEqual(source_date_from_path(path), "2026-09-01")
+
+    def test_news_id_is_stable_across_timestamped_and_canonical_aliases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body = (
+                "Título: El mismo caso\n"
+                "Fecha: 2026-09-01\n"
+                "Fuente: Reuters\n"
+                "Enlace: https://example.com/same\n"
+                "Resumen breve: Mismo contenido.\n"
+                "Por qué importa: Prueba identidad.\n"
+            )
+            timestamped = root / "2026-09-01-08-23-09.txt"
+            canonical = root / "2026-09-01.txt"
+            timestamped.write_text(body, encoding="utf-8")
+            canonical.write_text(body, encoding="utf-8")
+            self.assertEqual(
+                parse_news_file(timestamped)[0].news_id,
+                parse_news_file(canonical)[0].news_id,
+            )
+
+    def test_stable_news_id_does_not_encode_reported_date(self) -> None:
+        first = stable_news_id(
+            title="Caso",
+            source="Fuente",
+            url="https://example.com/case",
+            item_index=1,
+        )
+        self.assertRegex(first, r"^n_[0-9a-f]{16}$")
+        self.assertFalse(re.search(r"\d{4}-\d{2}-\d{2}", first))
 
     def test_resolver_prefers_canonical_then_latest_timestamped(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
