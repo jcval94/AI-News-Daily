@@ -96,6 +96,8 @@ jobs:
       target_date: ${{ steps.source.outputs.target_date }}
       source_run_id: ${{ steps.source.outputs.run_id }}
       source_head_branch: ${{ steps.source.outputs.source_head_branch }}
+      skip_review_hub: ${{ steps.source.outputs.skip_review_hub }}
+      source_status: ${{ steps.source.outputs.source_status }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -160,27 +162,59 @@ jobs:
           mkdir -p .review-source
           gh run download "$RUN_ID" --name "$ARTIFACT_NAME" --dir .review-source
 
+          SOURCE_HEAD_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.head_branch // ""')"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+          echo "source_head_branch=$SOURCE_HEAD_BRANCH" >> "$GITHUB_OUTPUT"
+
           EPISODE_DIR=""
           if [ -n "${INPUT_TARGET_DATE:-}" ] && [ -f ".review-source/scripts/$INPUT_TARGET_DATE/script.txt" ]; then
             EPISODE_DIR=".review-source/scripts/$INPUT_TARGET_DATE"
           else
             SCRIPT_PATH="$(find .review-source -type f -path '*/scripts/*/script.txt' | sort | tail -1)"
-            test -n "$SCRIPT_PATH" || { echo "Production artifact contains no scripts/*/script.txt"; exit 1; }
-            EPISODE_DIR="$(dirname "$SCRIPT_PATH")"
+            if [ -n "$SCRIPT_PATH" ]; then
+              EPISODE_DIR="$(dirname "$SCRIPT_PATH")"
+            fi
           fi
+
+          if [ -z "$EPISODE_DIR" ]; then
+            STATE_PATH="$(find .review-source -type f -path '*/scripts/*/run_state.json' | sort | tail -1)"
+            if [ -z "$STATE_PATH" ]; then
+              echo "Production artifact contains neither script.txt nor run_state.json"
+              exit 1
+            fi
+            SOURCE_STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("status", ""))' "$STATE_PATH")"
+            TARGET_DATE="$(basename "$(dirname "$STATE_PATH")")"
+            case "$SOURCE_STATUS" in
+              no_source_news|no_relevant_news|no_novel_essay_angle|missing_openai_secret)
+                echo "skip_review_hub=true" >> "$GITHUB_OUTPUT"
+                echo "source_status=$SOURCE_STATUS" >> "$GITHUB_OUTPUT"
+                echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+                echo "episode_dir=" >> "$GITHUB_OUTPUT"
+                echo "regression_path=" >> "$GITHUB_OUTPUT"
+                echo "Review Hub no-op: production run $RUN_ID ended as $SOURCE_STATUS for $TARGET_DATE."
+                exit 0
+                ;;
+              *)
+                echo "Production artifact has no script.txt and terminal status '$SOURCE_STATUS' is not a graceful skip state."
+                exit 1
+                ;;
+            esac
+          fi
+
           TARGET_DATE="$(basename "$EPISODE_DIR")"
           REGRESSION_PATH=".review-source/editorial-regression.json"
-          SOURCE_HEAD_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.head_branch // ""')"
+          SOURCE_STATUS="$(python -c 'import json,sys,pathlib; p=pathlib.Path(sys.argv[1])/"run_state.json"; print(json.load(open(p, encoding="utf-8")).get("status", "") if p.exists() else "legacy")' "$EPISODE_DIR")"
 
-          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
-          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+          echo "skip_review_hub=false" >> "$GITHUB_OUTPUT"
+          echo "source_status=$SOURCE_STATUS" >> "$GITHUB_OUTPUT"
           echo "episode_dir=$EPISODE_DIR" >> "$GITHUB_OUTPUT"
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "regression_path=$REGRESSION_PATH" >> "$GITHUB_OUTPUT"
-          echo "source_head_branch=$SOURCE_HEAD_BRANCH" >> "$GITHUB_OUTPUT"
-          echo "Using production run $RUN_ID / $TARGET_DATE / $ARTIFACT_NAME / branch=$SOURCE_HEAD_BRANCH"
+          echo "Using production run $RUN_ID / $TARGET_DATE / $ARTIFACT_NAME / branch=$SOURCE_HEAD_BRANCH / status=$SOURCE_STATUS"
 
       - name: Build deterministic regression snapshot from production episode
+        if: steps.source.outputs.skip_review_hub != 'true'
         env:
           EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
           REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
@@ -192,6 +226,7 @@ jobs:
           test -s "$REGRESSION_PATH"
 
       - name: Reconcile high-confidence evidence/source references for review
+        if: steps.source.outputs.skip_review_hub != 'true'
         env:
           EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
         run: |
@@ -199,6 +234,7 @@ jobs:
           python -m pipeline.evidence_reconciliation --episode-dir "$EPISODE_DIR" --write
 
       - name: Reuse canonical production multimedia or rebuild legacy package
+        if: steps.source.outputs.skip_review_hub != 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -310,6 +346,7 @@ jobs:
           PY
 
       - name: Build static editorial review site
+        if: steps.source.outputs.skip_review_hub != 'true'
         env:
           EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
           REGRESSION_PATH: ${{ steps.source.outputs.regression_path }}
@@ -350,6 +387,7 @@ jobs:
           grep -q 'data-media-filter="image"' review-site/index.html
 
       - name: Upload review hub + multimedia artifact
+        if: steps.source.outputs.skip_review_hub != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: editorial-review-hub-${{ steps.source.outputs.target_date }}-${{ steps.source.outputs.run_id }}
@@ -361,6 +399,7 @@ jobs:
           retention-days: 30
 
       - name: Assemble multi-episode Pages catalog
+        if: steps.source.outputs.skip_review_hub != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_DATE: ${{ steps.source.outputs.target_date }}
@@ -442,17 +481,17 @@ jobs:
           grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
 
       - name: Configure Pages
-        if: steps.source.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
+        if: steps.source.outputs.skip_review_hub != 'true' && steps.source.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: steps.source.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
+        if: steps.source.outputs.skip_review_hub != 'true' && steps.source.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: pages-site
 
   deploy:
-    if: needs.build.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
+    if: needs.build.outputs.skip_review_hub != 'true' && needs.build.outputs.source_head_branch == 'main' && github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
