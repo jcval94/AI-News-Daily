@@ -108,6 +108,19 @@ class SourceCoverageTests(unittest.TestCase):
             for value in ("2026-09-01", "2026-09-02", "2026-09-03"):
                 self.assertTrue((root / f"{value}.txt").exists())
 
+    def test_live_repository_sep4_window_is_now_sufficient(self) -> None:
+        with patch.dict(os.environ, {"NEWS_SOURCE_MODE": "scheduled_window"}, clear=False):
+            result = evaluate_source_coverage(
+                target_date="2026-09-04",
+                news_dir=Path("news"),
+                min_ratio=0.75,
+            )
+        self.assertTrue(result["sufficient"])
+        self.assertEqual(result["available_day_count"], 3)
+        self.assertEqual(result["expected_day_count"], 3)
+        self.assertEqual(result["coverage_ratio"], 1.0)
+        self.assertGreater(result["item_count"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()
