@@ -55,44 +55,67 @@ def _field(block: str, *labels: str) -> str:
     return ""
 
 
-def _item_matches(text: str) -> list[re.Match[str]]:
-    """Parse both the canonical Markdown contract and the repository's existing report format.
+def _item_blocks(text: str) -> list[tuple[int, str, int, int]]:
+    """Return deterministic item boundaries for every supported news contract.
 
-    Supported headings:
-    - ``## 1. Title`` (canonical going forward)
-    - ``1) Title`` (existing 2026 source corpus)
-
-    Metadata remains deterministic in both cases; the LLM never reconstructs it.
+    Supported forms:
+    - ``## 1. Title``
+    - ``1) Title``
+    - repeated ``Título: Title`` blocks used by the daily ingestion prompt
     """
-    pattern = re.compile(
-        r"(?m)^(?:##\s+)?(\d+)(?:\.|\))\s+(.+?)\s*$"
+    numbered = list(
+        re.finditer(r"(?m)^(?:##\s+)?(\d+)(?:\.|\))\s+(.+?)\s*$", text)
     )
-    return list(pattern.finditer(text))
+    if numbered:
+        return [
+            (
+                int(match.group(1)),
+                match.group(2).strip(),
+                match.start(),
+                numbered[position + 1].start() if position + 1 < len(numbered) else len(text),
+            )
+            for position, match in enumerate(numbered)
+        ]
+
+    titled = list(re.finditer(r"(?mi)^Título\s*:\s*(.+?)\s*$", text))
+    return [
+        (
+            position + 1,
+            match.group(1).strip(),
+            match.start(),
+            titled[position + 1].start() if position + 1 < len(titled) else len(text),
+        )
+        for position, match in enumerate(titled)
+    ]
+
+
+def _source_file_date(path: Path) -> str:
+    match = re.fullmatch(
+        r"(?P<date>\d{4}-\d{2}-\d{2})(?:-\d{2}-\d{2}-\d{2})?",
+        path.stem,
+    )
+    return match.group("date") if match else ""
 
 
 def parse_news_file(path: Path) -> list[NewsItem]:
     text = path.read_text(encoding="utf-8").strip()
     if not text:
         return []
-    matches = _item_matches(text)
-    if not matches:
+    blocks = _item_blocks(text)
+    if not blocks:
         raise ValueError(
-            f"No structured news items found in {path}; expected headings like '## 1. Title' or '1) Title'"
+            f"No structured news items found in {path}; expected numbered headings or repeated 'Título:' blocks"
         )
 
-    file_date = path.stem if re.fullmatch(r"\d{4}-\d{2}-\d{2}", path.stem) else ""
+    file_date = _source_file_date(path)
     items: list[NewsItem] = []
     seen_indices: set[int] = set()
-    for position, match in enumerate(matches):
-        item_index = int(match.group(1))
+    for item_index, title, start, end in blocks:
         if item_index in seen_indices:
             raise ValueError(f"Duplicate news item index {item_index} in {path}")
         seen_indices.add(item_index)
 
-        start = match.start()
-        end = matches[position + 1].start() if position + 1 < len(matches) else len(text)
         block = text[start:end].strip()
-        title = match.group(2).strip()
         explicit_date = _field(block, "Fecha")
         date_value = explicit_date or file_date
         date_origin: Literal["field", "source_file"] = "field" if explicit_date else "source_file"
