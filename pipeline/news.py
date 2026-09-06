@@ -7,6 +7,8 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field
 
+from pipeline.source_naming import filename_date
+
 
 class NewsItem(BaseModel):
     news_id: str
@@ -83,8 +85,6 @@ def _item_blocks(text: str) -> list[tuple[int, str, int, int]]:
         start = match.start()
         end = titled[position + 1].start() if position + 1 < len(titled) else len(text)
         block = text[start:end].strip()
-        # A bare "Título:" line is not enough to establish the ingestion contract.
-        # Require substantive metadata so malformed/unstructured files still fail closed.
         if not _field(block, "Fuente") or not (
             _field(block, "Resumen", "Resumen breve") or _field(block, "Por qué importa")
         ):
@@ -94,11 +94,8 @@ def _item_blocks(text: str) -> list[tuple[int, str, int, int]]:
 
 
 def _source_file_date(path: Path) -> str:
-    match = re.fullmatch(
-        r"(?P<date>\d{4}-\d{2}-\d{2})(?:-\d{2}-\d{2}-\d{2})?",
-        path.stem,
-    )
-    return match.group("date") if match else ""
+    value = filename_date(path)
+    return value.isoformat() if value is not None else ""
 
 
 def parse_news_file(path: Path) -> list[NewsItem]:
