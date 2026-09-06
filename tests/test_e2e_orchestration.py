@@ -9,11 +9,18 @@ from pathlib import Path
 from unittest.mock import patch
 
 from pipeline import run as pipeline_run
+from pipeline.news import stable_news_id
 
 
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
     async def test_approved_episode_reaches_multimedia_without_external_calls(self) -> None:
         script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:beat:evidence-->" + " ".join(["noticia"] * 500) + " <!--SECTION:beat:turn-->" + " ".join(["noticia"] * 100) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
+        fixture_id = stable_news_id(
+            title="Noticia importante",
+            source="Fuente primaria",
+            url="https://example.com/story",
+            item_index=1,
+        )
 
         async def fake_run_agent(agent, initial_state, prompt, *, step, trace, iteration=None):
             trace.append(
@@ -32,7 +39,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                     "selected_news": {
                         "items": [
                             {
-                                "news_id": "2026-08-20:1",
+                                "news_id": fixture_id,
                                 "selection_reason": "Evidencia útil para el ensayo",
                             }
                         ],
@@ -192,6 +199,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(episode_plan["claim_ledger"][0]["evidence_id"], "case")
             self.assertTrue((result / "script_sections.json").exists())
             selected_payload = json.loads((result / "selected_news.json").read_text(encoding="utf-8"))
+            self.assertEqual(selected_payload["items"][0]["news_id"], fixture_id)
             self.assertEqual(selected_payload["items"][0]["source_locator"], "2026-08-20.txt#item-1")
             self.assertEqual(selected_payload["items"][0]["url"], "https://example.com/story")
             self.assertEqual(novelty["previous_essay_count"], 0)
