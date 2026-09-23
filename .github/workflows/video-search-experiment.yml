@@ -32,7 +32,7 @@ permissions:
 
 concurrency:
   group: video-search-experiment-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   requests:
@@ -70,7 +70,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 2
       matrix: ${{ fromJSON(needs.requests.outputs.matrix) }}
     env:
       VIDEO_DESCRIPTION: ${{ matrix.description }}

@@ -20,7 +20,8 @@ Workflow: **Experiment — Description to video artifacts**.
 Mientras este workflow viva únicamente en la rama `experiment/youtube-artifacts`,
 puedes ejecutarlo editando `live-request.json` en esa rama desde GitHub y haciendo
 commit. Cambiar `request_id` también inicia una prueba. El archivo admite 1-3 casos
-independientes. Los cambios de código por sí solos no inician descargas.
+independientes, con un máximo de dos casos en paralelo. Una nueva petición cancela
+la prueba anterior de la misma rama. Los cambios de código por sí solos no inician descargas.
 
 Cuando el workflow exista en la rama por defecto, usa **Actions → Run workflow**
 y escribe la descripción en el formulario. El experimento no se fusiona con `main`
