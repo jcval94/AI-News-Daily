@@ -29,8 +29,10 @@ automáticamente y no tiene cron ni disparadores de producción.
 
 Secrets usados: `OPENAI_API_KEY` para interpretación semántica y, opcionalmente,
 `YOUTUBE_API_KEY` para la búsqueda oficial. Sin la segunda clave usa la búsqueda
-pública de yt-dlp. Se reutiliza `vars.OPENAI_MODEL` o el modelo ya configurado en
-el repo, `gpt-5.4-nano`. Todo el cómputo ocurre en Actions; consulta las APIs de los
+pública de yt-dlp. Usa `vars.VIDEO_SEARCH_MODEL` o `gpt-5.4-mini`, con configuración
+propia del experimento. Las primeras pruebas con nano dejaron falsos positivos de
+relevancia; el selector actual usa un modelo más capaz y búsqueda por título/materia.
+Todo el cómputo ocurre en Actions; consulta las APIs de los
 proveedores y no necesita un servidor propio. El uso de esas APIs puede tener coste.
 
 ## Cómo generaliza
@@ -42,14 +44,15 @@ proveedores y no necesita un servidor propio. El uso de esas APIs puede tener co
    usuario. Una frase amplia sobre inversionistas se convierte en consultas sobre
    prácticas financieras; no se convierte en una acusación comprobada ni se inventa
    una empresa para completar la lista.
-3. Busca primero los eventos y después el tema, con hasta ocho consultas únicas y
-   quince resultados por consulta y proveedor. Archive usa los grupos de términos
-   centrales, porque exigir todas las palabras de una consulta natural reduce mucho
-   su cobertura. Deduplica por proveedor e ID.
+3. Busca primero los eventos y después el tema, con hasta ocho consultas por proveedor,
+   quince resultados por consulta en YouTube y treinta en Archive. Archive busca
+   nombres y conceptos en títulos/materias, excluye elementos marcados como restringidos
+   y evita usar transcripciones extensas para descubrir coincidencias incidentales.
+   Deduplica por proveedor e ID.
 4. Compara títulos/descripciones con alias del tema y evento. Una segunda llamada
    semántica evalúa hasta 25 candidatos por proveedor y propone hasta 30 alternativas:
    descarta menciones incidentales en biografías, etiquetas o temas ajenos. Pydantic
-   y el código exigen IDs conocidos, eventos presentes y ausencia de duplicados.
+   y el código exigen IDs conocidos, eventos del plan y ausencia de duplicados.
    Prioriza eventos y procura diversidad de autores. Esta selección sigue siendo una
    evaluación de metadatos, no verificación visual ni factual.
 5. Descarga solo fuentes seleccionadas. Un desafío de YouTube o un límite de cuota

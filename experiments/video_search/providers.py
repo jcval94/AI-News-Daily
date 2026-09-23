@@ -112,8 +112,9 @@ def youtube_search(query: str, limit: int) -> list[dict]:
 def archive_search(query: str, limit: int) -> list[dict]:
     # Escape user/model syntax rather than allowing arbitrary Lucene expressions.
     terms = re.findall(r"[^\W_]+", query, re.UNICODE)
-    search = "mediatype:movies AND (" + " AND ".join(f'"{t}"' for t in terms) + ")"
-    params = [("q", search), ("rows", str(limit)), ("output", "json")]
+    phrase = '"' + " ".join(terms) + '"'
+    search = f"mediatype:movies AND NOT access-restricted-item:true AND (title:{phrase} OR subject:{phrase})"
+    params = [("q", search), ("rows", str(min(30, limit * 2))), ("output", "json"), ("sort[]", "downloads desc")]
     params += [("fl[]", f) for f in ("identifier", "title", "description", "creator", "licenseurl", "rights")]
     data = request_json("https://archive.org/advancedsearch.php?" + urllib.parse.urlencode(params))
     return [candidate("archive", v["identifier"], v.get("title"), v.get("description"),
@@ -127,10 +128,8 @@ def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[d
     tasks = []
     for topic in [*plan.events, plan.theme]:
         for source in sources:
-            # Archive ANDs every term: Google's natural-language query ("Enron
-            # collapse scandal video") over-constrains it. Use the plan's core
-            # matching groups; semantic assessment still rejects incidental hits.
-            queries = topic.queries if source == "youtube" else [" ".join(g) for g in topic.match_groups[:2]]
+            # Title/subject discovery avoids incidental mentions in long transcripts.
+            queries = topic.queries if source == "youtube" else topic.archive_terms
             tasks.extend((source, query) for query in queries)
     for source, query in dict.fromkeys(tasks):
         row = {"source": source, "query": query}
@@ -155,8 +154,8 @@ def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[d
         text = item["title"] + " " + item["description"]
         item["events"] = [event.mention for event in plan.events if matches(event, text)]
         item["relevant"] = bool(item["events"] or matches(plan.theme, text))
-        item["score"] = 100 * len(item["events"]) + 10 * sum(matches(e, item["title"]) for e in plan.events)
-        item["score"] += 5 * matches(plan.theme, item["title"])
+        item["score"] = 10 * len(item["events"]) + 100 * sum(matches(e, item["title"]) for e in plan.events)
+        item["score"] += 50 * matches(plan.theme, item["title"])
         item["relation"] = "event_metadata_match" if item["events"] else "topic_context"
     ordered = sorted(candidates.values(), key=lambda v: (-v["score"], v["source"] != "youtube", v["key"]))
     return ordered, attempts

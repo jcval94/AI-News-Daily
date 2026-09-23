@@ -13,8 +13,10 @@ from experiments.video_search import plan, providers, run
 def sample_plan():
     return plan.validate_plan({
         "theme": {"mention": "malas prácticas financieras", "queries": ["financial misconduct"],
+                  "archive_terms": ["financial fraud"],
                   "match_groups": [["financial", "fraud"]]},
         "events": [{"mention": "caída de Enron", "queries": ["Enron collapse", "Enron scandal"],
+                    "archive_terms": ["Enron", "Enron scandal"],
                     "match_groups": [["enron", "collapse"], ["enron", "fraud"]]}],
     }, "Malas prácticas financieras y la caída de Enron")
 
@@ -114,12 +116,26 @@ class VideoSearchTests(unittest.TestCase):
         self.assertNotIn("secret-test", text)
         self.assertNotIn("signed", text)
 
+    def test_interrupted_download_never_enters_artifact_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'artifact'
+            output.mkdir()
+            def interrupt(argv, **kwargs):
+                Path(argv[-1]).write_bytes(b'partial video')
+                raise KeyboardInterrupt()
+            with patch.object(run, 'archive_media', return_value=('https://archive.org/download/test/test.mp4', {})):
+                with patch.object(run, 'command', side_effect=interrupt), self.assertRaises(KeyboardInterrupt):
+                    run.download({'source': 'archive', 'id': 'test'}, output, 'clip', 15)
+            self.assertEqual(list(output.rglob('*')), [])
+            self.assertEqual(list(Path(directory).glob('video-download-*')), [])
+
     def test_semantic_selection_rejects_incidental_matches_and_unknown_ids(self):
         candidates = [dict(providers.candidate("archive", ident, title, "Enron fraud", "A", "unknown", "q"),
                            relevant=True, events=["caída de Enron"])
                       for ident, title in [("focused", "Enron collapse"), ("incidental", "Football in 2001")]]
         selections = {"selected": [{"key": "c001", "event_mentions": ["caída de Enron"],
                                     "reason": "Trata específicamente el colapso de Enron."}]}
+        candidates[0]['events'] = []  # A lexical miss can still receive grounded semantic coverage.
         def response(*args, **kwargs):
             enum = kwargs['body']['text']['format']['schema']['$defs']['Selection']['properties']['key']['enum']
             self.assertIn('c001', enum)
@@ -132,9 +148,13 @@ class VideoSearchTests(unittest.TestCase):
             self.assertEqual(assessment["duplicate_proposals_dropped"], 1)
             self.assertEqual(assessment["selected"], 1)
             self.assertTrue(candidates[0]["relevant"])
+            self.assertEqual(candidates[0]["events"], ['caída de Enron'])
             self.assertFalse(candidates[1]["relevant"])
             selections["selected"][0]["key"] = "c999"
             with self.assertRaisesRegex(ValueError, "Unknown"):
+                plan.assess_candidates(sample_plan(), candidates, response)
+            selections['selected'][0].update(key='c001', event_mentions=['Watergate'])
+            with self.assertRaisesRegex(ValueError, 'invented event'):
                 plan.assess_candidates(sample_plan(), candidates, response)
 
 

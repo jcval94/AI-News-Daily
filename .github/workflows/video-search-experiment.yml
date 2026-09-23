@@ -96,7 +96,7 @@ jobs:
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          VIDEO_SEARCH_MODEL: ${{ vars.VIDEO_SEARCH_MODEL || 'gpt-5.4-mini' }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           python -m experiments.video_search.run \

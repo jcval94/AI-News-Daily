@@ -67,8 +67,10 @@ def validate_media(path: Path, mode: str, seconds: int, expected_duration=None) 
 
 
 def download(item: dict, output: Path, mode: str, seconds: int) -> dict:
-    folder = output / "videos" / (item["source"] + "_" + item["id"])
-    folder.mkdir(parents=True, exist_ok=False)
+    destination = output / "videos" / (item["source"] + "_" + item["id"])
+    # Work outside the uploaded directory, then atomically publish verified media.
+    # Cancellation can never upload an in-progress raw download as a video asset.
+    folder = Path(tempfile.mkdtemp(prefix="video-download-", dir=output.parent))
     try:
         expected_duration = None
         if item["source"] == "youtube":
@@ -121,13 +123,15 @@ def download(item: dict, output: Path, mode: str, seconds: int) -> dict:
         media = validate_media(media_path, mode, seconds, expected_duration)
         metadata_path = folder / "metadata.json"
         metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        return {"status": "downloaded", "path": str(media_path.relative_to(output)),
+        result = {"status": "downloaded", "path": str((destination / media_path.name).relative_to(output)),
                 "sha256": sha256_file(media_path), "media": media, "metadata": metadata,
                 "segment": {"mode": mode, "start_seconds": 0,
                             "end_seconds": media["duration_seconds"]}}
-    except Exception:
-        shutil.rmtree(folder)
-        raise
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        folder.rename(destination)
+        return result
+    finally:
+        shutil.rmtree(folder, ignore_errors=True)
 
 
 def next_candidate(candidates, attempted, successful, events, blocked_sources):
