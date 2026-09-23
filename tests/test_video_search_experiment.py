@@ -76,6 +76,22 @@ class VideoSearchTests(unittest.TestCase):
                 with self.assertRaises((ValueError, RuntimeError)):
                     providers.archive_media(item)
 
+    def test_archive_title_results_are_not_crowded_out_by_subject_tags(self):
+        from urllib.parse import parse_qs, urlsplit
+        requested = []
+        def search(url):
+            query = parse_qs(urlsplit(url).query)['q'][0]
+            requested.append(query)
+            ids = ['focused'] if 'title:' in query else ['focused', 'popular-interview']
+            return {'response': {'docs': [{'identifier': i, 'title': i} for i in ids]}}
+        with patch.object(providers, 'request_json', side_effect=search):
+            rows = providers.archive_search('Enron', 1)
+            self.assertEqual([r['id'] for r in rows], ['focused'])
+            self.assertEqual(len(requested), 1)
+            rows = providers.archive_search('Enron', 2)
+            self.assertEqual([r['id'] for r in rows], ['focused', 'popular-interview'])
+            self.assertIn('subject:', requested[-1])
+
     def test_missing_event_cannot_pass_count_gate(self):
         with tempfile.TemporaryDirectory() as directory:
             manifest = {"config": {"count": 1, "mode": "clip", "sources": ["youtube"]},

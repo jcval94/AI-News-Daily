@@ -113,13 +113,22 @@ def archive_search(query: str, limit: int) -> list[dict]:
     # Escape user/model syntax rather than allowing arbitrary Lucene expressions.
     terms = re.findall(r"[^\W_]+", query, re.UNICODE)
     phrase = '"' + " ".join(terms) + '"'
-    search = f"mediatype:movies AND NOT access-restricted-item:true AND (title:{phrase} OR subject:{phrase})"
-    params = [("q", search), ("rows", str(min(30, limit * 2))), ("output", "json"), ("sort[]", "downloads desc")]
-    params += [("fl[]", f) for f in ("identifier", "title", "description", "creator", "licenseurl", "rights")]
-    data = request_json("https://archive.org/advancedsearch.php?" + urllib.parse.urlencode(params))
+    # Title results must not be crowded out by popular, hour-long programmes
+    # carrying the topic only as one subject tag. Broaden only for sparse titles.
+    docs = {}
+    budget = min(30, limit * 2)
+    for field in ("title", "subject"):
+        search = f"mediatype:movies AND NOT access-restricted-item:true AND {field}:{phrase}"
+        params = [("q", search), ("rows", str(budget)), ("output", "json"), ("sort[]", "downloads desc")]
+        params += [("fl[]", f) for f in ("identifier", "title", "description", "creator", "licenseurl", "rights")]
+        data = request_json("https://archive.org/advancedsearch.php?" + urllib.parse.urlencode(params))
+        for item in data.get("response", {}).get("docs", []):
+            docs.setdefault(item["identifier"], item)
+        if len(docs) >= limit:
+            break
     return [candidate("archive", v["identifier"], v.get("title"), v.get("description"),
                       v.get("creator"), v.get("licenseurl") or v.get("rights"), query)
-            for v in data.get("response", {}).get("docs", [])]
+            for v in list(docs.values())[:budget]]
 
 
 def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[dict]]:

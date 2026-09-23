@@ -48,7 +48,7 @@ proveedores y no necesita un servidor propio. El uso de esas APIs puede tener co
    una empresa para completar la lista.
 3. Busca primero los eventos y después el tema, con hasta ocho consultas por proveedor,
    quince resultados por consulta en YouTube y treinta en Archive. Archive busca
-   nombres y conceptos en títulos/materias, excluye elementos marcados como restringidos
+   nombres y conceptos primero en títulos (amplía a materias si hay pocos resultados), excluye elementos marcados como restringidos
    y evita usar transcripciones extensas para descubrir coincidencias incidentales.
    Deduplica por proveedor e ID.
 4. Compara títulos/descripciones con alias del tema y evento. Una segunda llamada
