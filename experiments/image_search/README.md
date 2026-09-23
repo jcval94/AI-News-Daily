@@ -89,7 +89,8 @@ APIs externas, cuyo uso puede tener coste. No necesita un servidor propio.
 - Hasta 80 candidatos y 40 intentos; quince minutos de presupuesto global comprobado
   entre intentos y veinticinco de timeout del job.
 - Hosts HTTPS permitidos por proveedor, validación de redirecciones y contenido real.
-- Deduplicación por bytes, píxeles y hash perceptual conservador. Puede descartar
+- Deduplicación por bytes, píxeles, hash perceptual y nombres de versiones
+  recortadas/restauradas del mismo archivo en Commons. Puede descartar
   imágenes distintas muy parecidas; se conserva el motivo.
 - Imágenes de tamaño completo cuando el proveedor lo facilita dentro del presupuesto;
   Commons y IIIF pueden entregar derivados oficiales, etiquetados como tales.

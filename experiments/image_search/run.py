@@ -80,8 +80,21 @@ def inspect_file(path):
                     "dhash": f"{dhash:016x}"}
 
 
+def catalogue_family(item):
+    if item['source'] != 'commons':
+        return None
+    title = item['metadata'].get('title', '')
+    title = re.sub(r'^File:', '', title, flags=re.I)
+    title = re.sub(r'\.(jpg|jpeg|png|webp)$', '', title, flags=re.I)
+    title = re.sub(r'\b(cleaned|restored|restoration|cropped|crop|retouched|colorized|colourised|colorised)\b',
+                   '', title, flags=re.I)
+    normalized = sources.normalize(title)
+    return 'commons:' + normalized if len(normalized.split()) >= 3 else None
+
+
 def is_duplicate(media, previous):
-    return any(media["sha256"] == p["sha256"] or media["pixel_sha256"] == p["pixel_sha256"] or
+    return any((media.get('catalogue_family') and media['catalogue_family'] == p.get('catalogue_family')) or
+               media["sha256"] == p["sha256"] or media["pixel_sha256"] == p["pixel_sha256"] or
                (int(media["dhash"], 16) ^ int(p["dhash"], 16)).bit_count() <= 3 for p in previous)
 
 
@@ -181,6 +194,7 @@ def execute(args, output):
                         time.sleep(1)
                     path.write_bytes(sources.fetch(item["image_url"], domains=sources.MEDIA_HOSTS[item["source"]], max_bytes=MAX_BYTES))
                     media = inspect_file(path)
+                    media['catalogue_family'] = catalogue_family(item)
                     if is_duplicate(media, previous):
                         raise ValueError("Duplicate or near-duplicate image")
                     visual, call = model.inspect_visual(path, sources.request_json)

@@ -102,6 +102,17 @@ class ImageSearchTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(log[0]['status'], 'blocked')
 
+    def test_catalogue_variants_are_deduplicated_despite_crop_hash_changes(self):
+        original = item('File:Albert Einstein Head.jpg')
+        restored = item('File:Albert Einstein Head cleaned.jpg')
+        cropped = item('File:Albert Einstein Head (cropped).jpg')
+        self.assertEqual(run.catalogue_family(original), run.catalogue_family(restored))
+        self.assertEqual(run.catalogue_family(original), run.catalogue_family(cropped))
+        a = dict(sha256='a', pixel_sha256='a', dhash='0000000000000000', catalogue_family=run.catalogue_family(original))
+        b = dict(sha256='b', pixel_sha256='b', dhash='ffffffffffffffff', catalogue_family=run.catalogue_family(restored))
+        self.assertTrue(run.is_duplicate(a, [b]))
+        self.assertNotEqual(run.catalogue_family(original), run.catalogue_family(item('File:Albert Einstein 1916.jpg')))
+
     def test_met_uses_paginated_api_and_actual_public_domain_flag(self):
         seen = []
         def request(url, **kwargs):
