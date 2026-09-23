@@ -1,0 +1,130 @@
+name: Experiment — Description to video artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: "Tema y eventos que deben aparecer en los videos"
+        required: true
+        type: string
+      count:
+        description: "Cantidad de videos (1-25)"
+        default: "10"
+        type: string
+      sources:
+        description: "Fuentes permitidas; Archive es opcional"
+        default: youtube
+        type: choice
+        options: [youtube, archive, "youtube,archive"]
+      mode:
+        description: "Video completo (hasta 30 min/128 MiB) o fragmento de 15 s"
+        default: full
+        type: choice
+        options: [full, clip]
+  # Branch-only entry point before the workflow exists on main. Changing this
+  # request file is an explicit live trial; ordinary code pushes do not download.
+  push:
+    branches: [experiment/youtube-artifacts]
+    paths: [experiments/video_search/live-request.json]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: video-search-experiment-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  requests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.requests.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: requests
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DESCRIPTION: ${{ inputs.description }}
+          COUNT: ${{ inputs.count }}
+          SOURCES: ${{ inputs.sources }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          if os.environ['EVENT_NAME'] == 'workflow_dispatch':
+              matrix = {'include': [dict(id='manual', description=os.environ['DESCRIPTION'],
+                  count=os.environ['COUNT'], sources=os.environ['SOURCES'], mode=os.environ['MODE'])]}
+          else:
+              matrix = json.loads(Path('experiments/video_search/live-request.json').read_text())['matrix']
+          if not 1 <= len(matrix['include']) <= 3:
+              raise SystemExit('Expected 1-3 independent requests')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('matrix=' + json.dumps(matrix, ensure_ascii=True) + '\n')
+          PY
+
+  search-and-download:
+    needs: requests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.requests.outputs.matrix) }}
+    env:
+      VIDEO_DESCRIPTION: ${{ matrix.description }}
+      VIDEO_COUNT: ${{ matrix.count }}
+      VIDEO_SOURCES: ${{ matrix.sources }}
+      VIDEO_MODE: ${{ matrix.mode }}
+      OUTPUT_DIR: video-search-output/run
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install isolated experiment dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install -r experiments/video_search/requirements.txt
+      - name: Plan, discover, download and verify
+        id: experiment
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python -m experiments.video_search.run \
+            --count "$VIDEO_COUNT" --sources "$VIDEO_SOURCES" \
+            --mode "$VIDEO_MODE" --output "$OUTPUT_DIR"
+      - name: Publish diagnostics and any verified media
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-search-${{ matrix.id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.OUTPUT_DIR }}/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+      - name: Require requested count and explicit-event coverage
+        if: always()
+        env:
+          EXPERIMENT_OUTCOME: ${{ steps.experiment.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          output = Path(os.environ['OUTPUT_DIR'])
+          summary = output / 'SUMMARY.md'
+          if summary.exists():
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+                  f.write(summary.read_text())
+          manifest = json.loads((output / 'manifest.json').read_text())
+          if os.environ['EXPERIMENT_OUTCOME'] != 'success' or not manifest['summary']['gate_passed']:
+              raise SystemExit('Incomplete experiment: ' + json.dumps(manifest['summary']))
+          PY
