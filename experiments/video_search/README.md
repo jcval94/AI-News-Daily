@@ -42,7 +42,9 @@ proveedores y no necesita un servidor propio. El uso de esas APIs puede tener co
    prácticas financieras; no se convierte en una acusación comprobada ni se inventa
    una empresa para completar la lista.
 3. Busca primero los eventos y después el tema, con hasta ocho consultas únicas y
-   quince resultados por consulta y proveedor. Deduplica por proveedor e ID.
+   quince resultados por consulta y proveedor. Archive usa los grupos de términos
+   centrales, porque exigir todas las palabras de una consulta natural reduce mucho
+   su cobertura. Deduplica por proveedor e ID.
 4. Compara títulos/descripciones con alias del tema y evento. Una segunda llamada
    semántica evalúa hasta 25 candidatos por proveedor y propone hasta 30 alternativas:
    descarta menciones incidentales en biografías, etiquetas o temas ajenos. Pydantic
@@ -93,8 +95,9 @@ El directorio de salida debe ser nuevo y estar dentro de `video-search-output/`.
 `--planner literal` permite búsquedas sin OpenAI, pero exige coincidencia de la frase
 y **no** ofrece reconocimiento semántico de eventos; queda identificado en el manifiesto.
 
-Prueba inicial de la generalización: dos casos de cinco fragmentos (Segunda Guerra
-Mundial y Enron), con ambas fuentes habilitadas. Los resultados reales se registran
+Pruebas de la generalización: dos casos de cinco videos (Segunda Guerra Mundial y
+Enron), con ambas fuentes habilitadas, primero en modo fragmento y luego completo.
+Los resultados reales se registran
 en `RESULTS.md` después de inspeccionar Actions. El experimento anterior encontró
 desafíos de verificación humana desde runners de GitHub; no se promete acceso a
 cualquier video de YouTube por el hecho de ser público.

@@ -124,27 +124,33 @@ def archive_search(query: str, limit: int) -> list[dict]:
 def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[dict]]:
     candidates, attempts, stopped = {}, [], set()
     # Explicit events first; every query is retained even when a provider fails.
-    queries = list(dict.fromkeys(q for topic in [*plan.events, plan.theme] for q in topic.queries))
-    for query in queries:
+    tasks = []
+    for topic in [*plan.events, plan.theme]:
         for source in sources:
-            row = {"source": source, "query": query}
-            if source in stopped:
-                attempts.append({**row, "status": "skipped_provider_blocked"})
-                continue
-            try:
-                results = {"youtube": youtube_search, "archive": archive_search}[source](query, per_query)
-                attempts.append({**row, "status": "ok", "count": len(results)})
-                for item in results:
-                    if item["key"] in candidates:
-                        candidates[item["key"]]["queries"] = list(dict.fromkeys(
-                            candidates[item["key"]]["queries"] + item["queries"]))
-                    else:
-                        candidates[item["key"]] = item
-            except Exception as error:
-                if isinstance(error, ProviderBlocked):
-                    stopped.add(source)
-                attempts.append({**row, "status": "blocked" if source in stopped else "error",
-                                 "error": safe_error(error)})
+            # Archive ANDs every term: Google's natural-language query ("Enron
+            # collapse scandal video") over-constrains it. Use the plan's core
+            # matching groups; semantic assessment still rejects incidental hits.
+            queries = topic.queries if source == "youtube" else [" ".join(g) for g in topic.match_groups[:2]]
+            tasks.extend((source, query) for query in queries)
+    for source, query in dict.fromkeys(tasks):
+        row = {"source": source, "query": query}
+        if source in stopped:
+            attempts.append({**row, "status": "skipped_provider_blocked"})
+            continue
+        try:
+            results = {"youtube": youtube_search, "archive": archive_search}[source](query, per_query)
+            attempts.append({**row, "status": "ok", "count": len(results)})
+            for item in results:
+                if item["key"] in candidates:
+                    candidates[item["key"]]["queries"] = list(dict.fromkeys(
+                        candidates[item["key"]]["queries"] + item["queries"]))
+                else:
+                    candidates[item["key"]] = item
+        except Exception as error:
+            if isinstance(error, ProviderBlocked):
+                stopped.add(source)
+            attempts.append({**row, "status": "blocked" if source in stopped else "error",
+                             "error": safe_error(error)})
     for item in candidates.values():
         text = item["title"] + " " + item["description"]
         item["events"] = [event.mention for event in plan.events if matches(event, text)]
