@@ -177,7 +177,18 @@ def archive_media(item: dict) -> tuple[str, dict]:
     if ".." in filename.split("/") or filename.startswith("/"):
         raise ValueError("Invalid archive filename")
     url = f"https://archive.org/download/{item['id']}/" + urllib.parse.quote(filename, safe="/")
+    stem = filename.removesuffix(".mp4").removesuffix(".ia")
+    captions = []
+    for file in payload.get("files", []):
+        name = str(file.get("name", ""))
+        ext = name.rsplit(".", 1)[-1].lower()
+        if file.get("private") or ext not in {"vtt", "srt"} or ".." in name.split("/") or name.startswith("/"):
+            continue
+        if not name.startswith(stem) and len(files) != 1:
+            continue
+        captions.append({"url": f"https://archive.org/download/{item['id']}/" + urllib.parse.quote(name, safe="/"), "ext": ext})
     return url, {"id": item["id"], "title": clean_text(metadata.get("title")),
                  "creator": clean_text(metadata.get("creator")), "file": filename,
                  "source_size_bytes": int(chosen["size"]),
-                 "license": clean_text(metadata.get("licenseurl") or metadata.get("rights")) or "unknown"}
+                 "license": clean_text(metadata.get("licenseurl") or metadata.get("rights")) or "unknown",
+                 "_captions": captions}

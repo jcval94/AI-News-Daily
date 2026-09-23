@@ -21,6 +21,11 @@ on:
         default: full
         type: choice
         options: [full, clip]
+      transcript:
+        description: "auto: subtítulos o transcripción del audio; source: solo subtítulos publicados"
+        default: auto
+        type: choice
+        options: [auto, source, off]
   # Branch-only entry point before the workflow exists on main. Changing this
   # request file is an explicit live trial; ordinary code pushes do not download.
   push:
@@ -49,13 +54,15 @@ jobs:
           COUNT: ${{ inputs.count }}
           SOURCES: ${{ inputs.sources }}
           MODE: ${{ inputs.mode }}
+          TRANSCRIPT: ${{ inputs.transcript }}
         run: |
           python - <<'PY'
           import json, os
           from pathlib import Path
           if os.environ['EVENT_NAME'] == 'workflow_dispatch':
               matrix = {'include': [dict(id='manual', description=os.environ['DESCRIPTION'],
-                  count=os.environ['COUNT'], sources=os.environ['SOURCES'], mode=os.environ['MODE'])]}
+                  count=os.environ['COUNT'], sources=os.environ['SOURCES'], mode=os.environ['MODE'],
+                  transcript=os.environ['TRANSCRIPT'])]}
           else:
               matrix = json.loads(Path('experiments/video_search/live-request.json').read_text())['matrix']
           if not 1 <= len(matrix['include']) <= 3:
@@ -77,6 +84,7 @@ jobs:
       VIDEO_COUNT: ${{ matrix.count }}
       VIDEO_SOURCES: ${{ matrix.sources }}
       VIDEO_MODE: ${{ matrix.mode }}
+      TRANSCRIPT_MODE: ${{ matrix.transcript || 'auto' }}
       OUTPUT_DIR: video-search-output/run
     steps:
       - uses: actions/checkout@v4
@@ -101,7 +109,7 @@ jobs:
         run: |
           python -m experiments.video_search.run \
             --count "$VIDEO_COUNT" --sources "$VIDEO_SOURCES" \
-            --mode "$VIDEO_MODE" --output "$OUTPUT_DIR"
+            --mode "$VIDEO_MODE" --transcript "$TRANSCRIPT_MODE" --output "$OUTPUT_DIR"
       - name: Publish diagnostics and any verified media
         if: always()
         uses: actions/upload-artifact@v4

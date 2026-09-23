@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 from experiments.video_search.plan import assess_candidates, make_plan
+from experiments.video_search.enrichment import enrich
 from experiments.video_search.providers import (
     ProviderBlocked, archive_media, blocked, discover, request_json, safe_error,
 )
@@ -66,13 +67,14 @@ def validate_media(path: Path, mode: str, seconds: int, expected_duration=None) 
     return media
 
 
-def download(item: dict, output: Path, mode: str, seconds: int) -> dict:
+def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode="auto") -> dict:
     destination = output / "videos" / (item["source"] + "_" + item["id"])
     # Work outside the uploaded directory, then atomically publish verified media.
     # Cancellation can never upload an in-progress raw download as a video asset.
     folder = Path(tempfile.mkdtemp(prefix="video-download-", dir=output.parent))
     try:
         expected_duration = None
+        raw = {}
         if item["source"] == "youtube":
             base = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist",
                     "--js-runtimes", "node", "--retries", "0", "--fragment-retries", "0",
@@ -103,6 +105,7 @@ def download(item: dict, output: Path, mode: str, seconds: int) -> dict:
             media_path = media_files[0]
         else:
             url, metadata = archive_media(item)
+            raw["archive_captions"] = metadata.pop("_captions", [])
             media_path = folder / "source.mp4"
             if mode == "full":
                 remote_probe = json.loads(command([
@@ -121,10 +124,12 @@ def download(item: dict, output: Path, mode: str, seconds: int) -> dict:
                      "-maxrate", "600k", "-bufsize", "1200k", "-c:a", "aac", "-b:a", "64k",
                      "-movflags", "+faststart", "-y", str(media_path)], timeout=240, directory=folder)
         media = validate_media(media_path, mode, seconds, expected_duration)
+        companions = enrich(media_path, folder, raw, media, item["source"], mode, transcript_mode, command)
         metadata_path = folder / "metadata.json"
         metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         result = {"status": "downloaded", "path": str((destination / media_path.name).relative_to(output)),
                 "sha256": sha256_file(media_path), "media": media, "metadata": metadata,
+                "companions": companions,
                 "segment": {"mode": mode, "start_seconds": 0,
                             "end_seconds": media["duration_seconds"]}}
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -158,6 +163,8 @@ def write_report(output: Path, manifest: dict):
     manifest["summary"] = {"requested": count, "downloaded": len(successes),
                            "failed_attempts": sum(v["status"] == "failed" for v in manifest["items"]),
                            "missing_events": missing, "gate_passed": passed,
+                           "transcripts_available": sum(v.get("companions", {}).get("transcript", {}).get("status") == "available" for v in successes),
+                           "most_replayed_available": sum(v.get("companions", {}).get("most_replayed", {}).get("status") == "available" for v in successes),
                            "by_source": {s: sum(v["source"] == s for v in successes)
                                          for s in manifest["config"]["sources"]}}
     (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -169,6 +176,8 @@ def write_report(output: Path, manifest: dict):
              "", f"Mode: {manifest['config']['mode']}. Sources: {', '.join(manifest['config']['sources'])}.",
              "", "Event coverage is a title/description match, not visual verification or proof of a claim.",
              "Public availability does not establish permission to republish; consult each source's license.", ""]
+    lines += [f"Transcripts: {manifest['summary']['transcripts_available']}; Most Replayed datasets: {manifest['summary']['most_replayed_available']}.",
+              "Generated ASR is labelled separately from source captions. Missing replay data is never estimated.", ""]
     if missing:
         lines += ["Missing events: " + md(", ".join(missing)), ""]
     if manifest.get("fatal_error"):
@@ -191,6 +200,7 @@ def execute(args, output: Path) -> bool:
     manifest = {"schema_version": 1, "started_at": utc_now(), "description": args.description,
                 "config": {"count": args.count, "sources": args.sources.split(","),
                            "mode": args.mode, "clip_seconds": args.clip_seconds,
+                           "transcript": getattr(args, "transcript", "auto"),
                            "max_bytes_per_video": MAX_BYTES, "max_full_seconds": MAX_DURATION},
                 "github": {k: os.environ.get(k) for k in ("GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")},
                 "items": [], "discovery": [], "blocked_sources": {}}
@@ -218,7 +228,8 @@ def execute(args, output: Path) -> bool:
             result = dict(item)
             print(f"Attempt {len(attempted)}: {item['source']} {item['id']}", flush=True)
             try:
-                result.update(download(item, output, args.mode, args.clip_seconds))
+                result.update(download(item, output, args.mode, args.clip_seconds,
+                                       transcript_mode=getattr(args, "transcript", "auto")))
                 successes.append(result)
             except Exception as error:
                 result.update(status="failed", error=safe_error(error))
@@ -244,6 +255,7 @@ def main() -> int:
     parser.add_argument("--mode", choices=["full", "clip"], default="full")
     parser.add_argument("--clip-seconds", type=int, default=15)
     parser.add_argument("--planner", choices=["semantic", "literal"], default="semantic")
+    parser.add_argument("--transcript", choices=["auto", "source", "off"], default="auto")
     parser.add_argument("--output", default="video-search-output/run")
     args = parser.parse_args()
     if not 1 <= args.count <= 25 or not 1 <= args.clip_seconds <= 60 or not 1 <= len(args.description.strip()) <= 4000:

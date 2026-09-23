@@ -6,7 +6,7 @@ import os
 import re
 import unicodedata
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 def normalize(text: str) -> str:
@@ -17,16 +17,16 @@ def normalize(text: str) -> str:
 class Topic(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     mention: str
-    queries: list[str]
-    archive_terms: list[str]
+    queries: list[str] = Field(min_length=1, max_length=2)
+    archive_terms: list[str] = Field(min_length=1, max_length=2)
     # OR between groups, AND between phrases inside each group.
-    match_groups: list[list[str]]
+    match_groups: list[list[str]] = Field(min_length=1, max_length=6)
 
 
 class SearchPlan(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     theme: Topic
-    events: list[Topic]
+    events: list[Topic] = Field(max_length=3)
 
 
 def validate_plan(raw: dict, description: str) -> SearchPlan:
@@ -112,13 +112,13 @@ def matches(topic: Topic, text: str) -> bool:
 class Selection(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     key: str
-    event_mentions: list[str]
-    reason: str
+    event_mentions: list[str] = Field(max_length=3)
+    reason: str = Field(min_length=1, max_length=600)
 
 
 class Selections(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    selected: list[Selection]
+    selected: list[Selection] = Field(max_length=50)
 
 
 def assess_candidates(plan: SearchPlan, candidates: list[dict], request_json) -> dict:
@@ -152,7 +152,7 @@ or an explicit event. An incidental mention in a creator biography, long transcr
 historical aside is insufficient. Reject unrelated sports, family videos and travelogues with
 incidental references. Prefer archival recordings or factual explainers. Exclude obvious
 conspiracy/denialist propaganda when the requested topic is historical footage or education.
-Select at most 30 entries, across ALL supplied providers, retaining multiple good alternatives.
+Select suitable entries from the supplied pool (at most 50), across ALL supplied providers.
 Do not prefer YouTube over Archive. Each key must come from this input. event_mentions must be
 a subset of plan.events' mention values, and only when the event is a substantive subject.
 Candidate events are preliminary lexical hints, not a restriction on your assessment. A video
@@ -171,8 +171,6 @@ the event. Omit unsuitable entries; do not pad the list to meet a count.""",
     selections = Selections.model_validate_json(text)
     seen = set()
     validated = []
-    if len(selections.selected) > 30:
-        raise ValueError("Too many semantic selections")
     for s in selections.selected:
         if s.key not in available:
             raise ValueError("Unknown selected candidate")

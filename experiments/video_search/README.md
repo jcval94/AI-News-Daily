@@ -16,6 +16,8 @@ Workflow: **Experiment — Description to video artifacts**.
 - `mode`: `full` descarga el video completo dentro del presupuesto; `clip` conserva
   los primeros 15 segundos como prueba de acceso. No busca automáticamente el mejor
   instante dentro del video.
+- `transcript`: `auto` intenta subtítulos publicados y, si faltan, transcribe el audio
+  descargado; `source` solo consulta subtítulos; `off` desactiva la transcripción.
 
 Mientras este workflow viva únicamente en la rama `experiment/youtube-artifacts`,
 puedes ejecutarlo editando `live-request.json` en esa rama desde GitHub y haciendo
@@ -50,7 +52,7 @@ proveedores y no necesita un servidor propio. El uso de esas APIs puede tener co
    y evita usar transcripciones extensas para descubrir coincidencias incidentales.
    Deduplica por proveedor e ID.
 4. Compara títulos/descripciones con alias del tema y evento. Una segunda llamada
-   semántica evalúa hasta 25 candidatos por proveedor y propone hasta 30 alternativas:
+   semántica evalúa hasta 25 candidatos por proveedor y propone hasta 50 alternativas:
    descarta menciones incidentales en biografías, etiquetas o temas ajenos. Pydantic
    y el código exigen IDs conocidos, eventos del plan y ausencia de duplicados.
    Prioriza eventos y procura diversidad de autores. Esta selección sigue siendo una
@@ -79,6 +81,26 @@ El ZIP contiene `plan.json`, `candidates.json`, `manifest.json`, `SUMMARY.md`,
 `ATTRIBUTION.md`, `SHA256SUMS` y `videos/<proveedor>_<id>/`. `manifest.json` conserva
 la descripción, consultas, selección, errores, proveedor, cobertura por evento y
 conteos reales. Nunca incluye claves ni URLs firmadas de streams de YouTube.
+
+Cada video también incluye `transcript.json` con segmentos y marcas de tiempo y,
+cuando hay texto, `transcript.txt`. Primero intenta subtítulos del autor o automáticos
+de la plataforma (preferencia español/inglés); en modo `auto`, si no existen, usa
+`whisper-1` con el audio descargado. La transcripción generada está etiquetada como
+`generated_asr`, puede contener errores y consume la API de OpenAI. No se confunde
+con una transcripción publicada. En modo fragmento, el ASR cubre solo ese fragmento;
+los subtítulos publicados pueden cubrir el original completo, indicado en `scope`.
+
+`most_replayed.json` conserva los intervalos y valores normalizados publicados por
+YouTube a través de `yt-dlp.heatmap`. Si están disponibles genera `most_replayed.svg`
+y registra los cinco intervalos de mayor intensidad. Son intensidades relativas, no
+conteos de espectadores ni una medida de retención. El eje temporal corresponde al
+video original completo. Si YouTube no expone datos, se registra `unavailable`; en
+Archive, `not_applicable`. Nunca se genera una curva ficticia ni se infiere del audio.
+La ausencia de estos complementos se informa por separado y no convierte un video
+descargado correctamente en un fallo de descarga.
+
+Los archivos se preparan fuera del directorio que se sube y se incorporan únicamente
+tras validar el video, para que una cancelación no publique una descarga parcial.
 
 Las URLs de candidatos son referencias; solo una entrada `status=downloaded` con
 archivo de video validado cuenta como descarga. El workflow sube diagnósticos incluso
@@ -111,4 +133,6 @@ Referencias de implementación:
 [YouTube search.list](https://developers.google.com/youtube/v3/docs/search/list),
 [Internet Archive metadata](https://archive.org/developers/md-read.html),
 [yt-dlp](https://github.com/yt-dlp/yt-dlp),
+[transcripción de audio](https://developers.openai.com/api/docs/guides/speech-to-text),
+[Most Replayed de YouTube](https://support.google.com/youtube/answer/12825599),
 [GitHub workflow_dispatch](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch).
