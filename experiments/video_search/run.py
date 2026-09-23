@@ -102,6 +102,15 @@ def download(item: dict, output: Path, mode: str, seconds: int) -> dict:
         else:
             url, metadata = archive_media(item)
             media_path = folder / "source.mp4"
+            if mode == "full":
+                remote_probe = json.loads(command([
+                    "ffprobe", "-v", "error", "-rw_timeout", "20000000",
+                    "-show_entries", "format=duration", "-of", "json", url,
+                ], timeout=45))
+                expected_duration = float(remote_probe.get("format", {}).get("duration") or 0)
+                if not 0 < expected_duration <= MAX_DURATION:
+                    raise RuntimeError("Archive video exceeds 30-minute limit or has unknown duration")
+                metadata["source_duration_seconds"] = expected_duration
             # Archive exposes downloadable derivatives. Re-encode at bounded resolution/bitrate.
             command(["ffmpeg", "-nostdin", "-v", "error", "-rw_timeout", "20000000",
                      "-i", url, "-t", str(seconds if mode == "clip" else MAX_DURATION + 1),
