@@ -1,0 +1,112 @@
+name: Experiment — Precise image search artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: "Persona, lugar, época o tema exacto de las imágenes"
+        required: true
+        type: string
+      count:
+        description: "Cantidad deseada (1-20); no se completa con resultados dudosos"
+        default: "5"
+        type: string
+      sources:
+        description: "Catálogos: commons,met,artic,loc separados por comas"
+        default: "commons,met,artic,loc"
+        type: string
+  push:
+    branches: [experiment/youtube-artifacts]
+    paths: [experiments/image_search/live-request.json]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: image-search-experiment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  requests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.requests.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: requests
+        env:
+          EVENT: ${{ github.event_name }}
+          DESCRIPTION: ${{ inputs.description }}
+          COUNT: ${{ inputs.count }}
+          SOURCES: ${{ inputs.sources }}
+        run: |
+          python - <<'PY'
+          import os, json
+          from pathlib import Path
+          if os.environ['EVENT'] == 'workflow_dispatch':
+              matrix = {'include': [dict(id='manual', description=os.environ['DESCRIPTION'],
+                  count=os.environ['COUNT'], sources=os.environ['SOURCES'])]}
+          else:
+              matrix = json.loads(Path('experiments/image_search/live-request.json').read_text())['matrix']
+          if not 1 <= len(matrix['include']) <= 3:
+              raise SystemExit('Expected 1-3 requests')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write('matrix=' + json.dumps(matrix, ensure_ascii=True) + '\n')
+          PY
+
+  search-images:
+    needs: requests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      # Sequential cases respect museum API guidance against parallel scrapers.
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.requests.outputs.matrix) }}
+    env:
+      IMAGE_DESCRIPTION: ${{ matrix.description }}
+      IMAGE_COUNT: ${{ matrix.count }}
+      IMAGE_SOURCES: ${{ matrix.sources || 'commons,met,artic,loc' }}
+      OUTPUT_DIR: image-search-output/run
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install independent image dependencies
+        run: python -m pip install -r experiments/image_search/requirements.txt
+      - name: Search catalogues, inspect and download images
+        id: experiment
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          IMAGE_SEARCH_MODEL: ${{ vars.IMAGE_SEARCH_MODEL || 'gpt-5.4-mini' }}
+        run: |
+          python -m experiments.image_search.run \
+            --count "$IMAGE_COUNT" --sources "$IMAGE_SOURCES" --output "$OUTPUT_DIR"
+      - name: Preserve images, provenance and rejected candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-search-${{ matrix.id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.OUTPUT_DIR }}/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+      - name: Require requested count with all precision checks
+        if: always()
+        env:
+          OUTCOME: ${{ steps.experiment.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(os.environ['OUTPUT_DIR'])
+          if (p / 'SUMMARY.md').exists():
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+                  f.write((p / 'SUMMARY.md').read_text())
+          m = json.loads((p / 'manifest.json').read_text())
+          if os.environ['OUTCOME'] != 'success' or not m['summary']['gate_passed']:
+              raise SystemExit('Incomplete image search: ' + json.dumps(m['summary']))
+          PY
