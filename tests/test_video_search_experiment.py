@@ -118,16 +118,22 @@ class VideoSearchTests(unittest.TestCase):
         candidates = [dict(providers.candidate("archive", ident, title, "Enron fraud", "A", "unknown", "q"),
                            relevant=True, events=["caída de Enron"])
                       for ident, title in [("focused", "Enron collapse"), ("incidental", "Football in 2001")]]
-        selections = {"selected": [{"key": "archive:focused", "event_mentions": ["caída de Enron"],
+        selections = {"selected": [{"key": "c001", "event_mentions": ["caída de Enron"],
                                     "reason": "Trata específicamente el colapso de Enron."}]}
         def response(*args, **kwargs):
+            enum = kwargs['body']['text']['format']['schema']['$defs']['Selection']['properties']['key']['enum']
+            self.assertIn('c001', enum)
+            self.assertNotIn('archive:focused', enum)
             return {"status": "completed", "output": [{"content": [{"type": "output_text",
                                                                        "text": json.dumps(selections)}]}]}
         with patch.dict("os.environ", {"OPENAI_API_KEY": "test"}):
-            plan.assess_candidates(sample_plan(), candidates, response)
+            selections["selected"].append(dict(selections["selected"][0]))
+            assessment = plan.assess_candidates(sample_plan(), candidates, response)
+            self.assertEqual(assessment["duplicate_proposals_dropped"], 1)
+            self.assertEqual(assessment["selected"], 1)
             self.assertTrue(candidates[0]["relevant"])
             self.assertFalse(candidates[1]["relevant"])
-            selections["selected"][0]["key"] = "archive:invented"
+            selections["selected"][0]["key"] = "c999"
             with self.assertRaisesRegex(ValueError, "Unknown"):
                 plan.assess_candidates(sample_plan(), candidates, response)
 

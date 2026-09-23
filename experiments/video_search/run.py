@@ -190,6 +190,7 @@ def execute(args, output: Path) -> bool:
         if len(plan.events) > args.count:
             raise ValueError("Video count must cover every explicit event")
         candidates, manifest["discovery"] = discover(plan, manifest["config"]["sources"])
+        (output / "candidates.json").write_text(json.dumps(candidates, ensure_ascii=False, indent=2) + "\n")
         if args.planner == "semantic":
             manifest["relevance_assessment"] = assess_candidates(plan, candidates, request_json)
         (output / "candidates.json").write_text(json.dumps(candidates, ensure_ascii=False, indent=2) + "\n")
