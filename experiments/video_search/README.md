@@ -51,7 +51,8 @@ proveedores y no necesita un servidor propio. El uso de esas APIs puede tener co
    nombres y conceptos primero en títulos (amplía a materias si hay pocos resultados), excluye elementos marcados como restringidos
    y evita usar transcripciones extensas para descubrir coincidencias incidentales.
    Deduplica por proveedor e ID.
-4. Compara títulos/descripciones con alias del tema y evento. Una segunda llamada
+4. Compara títulos/descripciones con alias del tema y evento para ordenar candidatos;
+   una falta de coincidencia léxica no los excluye automáticamente. Una segunda llamada
    semántica evalúa hasta 25 candidatos por proveedor y propone hasta 50 alternativas:
    descarta menciones incidentales en biografías, etiquetas o temas ajenos. Pydantic
    y el código exigen IDs conocidos, eventos del plan y ausencia de duplicados.
@@ -69,7 +70,8 @@ el límite de intentos. El éxito requiere cantidad **y** cobertura de todos los
 
 ## Presupuestos y resultados
 
-- Hasta tres eventos explícitos, 25 videos y 45 intentos de descarga.
+- Hasta tres eventos explícitos y 25 videos. Presupuesto de intentos:
+  `min(max(3 × count, 10), 45)`, para permitir alternativas también al pedir un solo video.
 - Máximo 360p, 128 MiB por video final y 30 minutos para videos completos.
 - Tiempo máximo por descarga: cuatro minutos; presupuesto del bucle: veinte minutos;
   timeout del job: treinta minutos. Los procesos hijos se terminan al exceder límites.

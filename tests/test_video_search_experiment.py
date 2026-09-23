@@ -151,7 +151,7 @@ class VideoSearchTests(unittest.TestCase):
                       for ident, title in [("focused", "Enron collapse"), ("incidental", "Football in 2001")]]
         selections = {"selected": [{"key": "c001", "event_mentions": ["caída de Enron"],
                                     "reason": "Trata específicamente el colapso de Enron."}]}
-        candidates[0]['events'] = []  # A lexical miss can still receive grounded semantic coverage.
+        candidates[0].update(events=[], relevant=False)  # Lexical misses still reach the semantic judge.
         def response(*args, **kwargs):
             enum = kwargs['body']['text']['format']['schema']['$defs']['Selection']['properties']['key']['enum']
             self.assertIn('c001', enum)

@@ -218,7 +218,7 @@ def execute(args, output: Path) -> bool:
             manifest["relevance_assessment"] = assess_candidates(plan, candidates, request_json)
         (output / "candidates.json").write_text(json.dumps(candidates, ensure_ascii=False, indent=2) + "\n")
         attempted, successes = set(), []
-        for _ in range(min(args.count * 3, 45)):
+        for _ in range(min(max(args.count * 3, 10), 45)):
             if len(successes) == args.count or time.monotonic() - started > 1200:
                 break
             item = next_candidate(candidates, attempted, successes, plan.events, manifest["blocked_sources"])

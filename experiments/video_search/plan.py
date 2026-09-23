@@ -126,7 +126,9 @@ def assess_candidates(plan: SearchPlan, candidates: list[dict], request_json) ->
     # Reserve room for each provider so a blocked provider cannot crowd out another.
     shortlist = []
     for source in dict.fromkeys(c["source"] for c in candidates):
-        shortlist.extend([c for c in candidates if c["source"] == source and c["relevant"]][:25])
+        # A lexical miss is not a semantic rejection. Discovery has already
+        # bounded and ranked the pool using topic and explicit-event queries.
+        shortlist.extend([c for c in candidates if c["source"] == source][:25])
     if not shortlist:
         return {"selected": 0, "considered": 0}
     key = os.environ.get("OPENAI_API_KEY", "")

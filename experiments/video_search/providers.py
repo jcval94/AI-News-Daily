@@ -11,7 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from experiments.video_search.plan import matches
+from experiments.video_search.plan import matches, normalize
 
 
 class ProviderBlocked(RuntimeError):
@@ -164,6 +164,12 @@ def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[d
         item["events"] = [event.mention for event in plan.events if matches(event, text)]
         item["relevant"] = bool(item["events"] or matches(plan.theme, text))
         item["score"] = 10 * len(item["events"]) + 100 * sum(matches(e, item["title"]) for e in plan.events)
+        # Keep event titles in the semantic pool even when the planner omitted a
+        # synonym from its AND groups (e.g. "caída" versus "bankruptcy"). This
+        # affects discovery priority only; the semantic judge still owns relevance.
+        title = f" {normalize(item['title'])} "
+        item["score"] += 75 * sum(any(f" {normalize(term)} " in title for term in e.archive_terms)
+                                  for e in plan.events)
         item["score"] += 50 * matches(plan.theme, item["title"])
         item["relation"] = "event_metadata_match" if item["events"] else "topic_context"
     ordered = sorted(candidates.values(), key=lambda v: (-v["score"], v["source"] != "youtube", v["key"]))
