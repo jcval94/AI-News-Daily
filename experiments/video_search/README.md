@@ -43,9 +43,12 @@ proveedores y no necesita un servidor propio. El uso de esas APIs puede tener co
    una empresa para completar la lista.
 3. Busca primero los eventos y después el tema, con hasta ocho consultas únicas y
    quince resultados por consulta y proveedor. Deduplica por proveedor e ID.
-4. Compara títulos/descripciones con alias del tema y evento, prioriza coincidencias
-   de evento y procura diversidad de autores. Reserva cobertura para cada evento.
-   Es una heurística de relevancia sobre metadatos, no verificación visual ni factual.
+4. Compara títulos/descripciones con alias del tema y evento. Una segunda llamada
+   semántica evalúa hasta 25 candidatos por proveedor y propone hasta 30 alternativas:
+   descarta menciones incidentales en biografías, etiquetas o temas ajenos. Pydantic
+   y el código exigen IDs conocidos, eventos presentes y ausencia de duplicados.
+   Prioriza eventos y procura diversidad de autores. Esta selección sigue siendo una
+   evaluación de metadatos, no verificación visual ni factual.
 5. Descarga solo fuentes seleccionadas. Un desafío de YouTube o un límite de cuota
    detiene ese proveedor; no usa cookies, proxies de evasión ni autenticación privada.
    Archive, cuando se selecciona, conserva su identidad: no se presenta como YouTube.

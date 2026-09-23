@@ -91,7 +91,7 @@ class VideoSearchTests(unittest.TestCase):
                                   clip_seconds=15, planner="semantic")
         with tempfile.TemporaryDirectory() as directory:
             with patch.object(run, "make_plan", return_value=(p, {})), patch.object(run, "discover", return_value=([item], [])):
-                with patch.object(run, "download", side_effect=providers.ProviderBlocked("not a bot")) as download:
+                with patch.object(run, "assess_candidates", return_value={}), patch.object(run, "download", side_effect=providers.ProviderBlocked("not a bot")) as download:
                     self.assertFalse(run.execute(args, Path(directory)))
             manifest = json.loads((Path(directory) / "manifest.json").read_text())
             self.assertEqual(download.call_count, 1)
@@ -113,6 +113,23 @@ class VideoSearchTests(unittest.TestCase):
             text = providers.safe_error("secret-test https://example.com?token=signed")
         self.assertNotIn("secret-test", text)
         self.assertNotIn("signed", text)
+
+    def test_semantic_selection_rejects_incidental_matches_and_unknown_ids(self):
+        candidates = [dict(providers.candidate("archive", ident, title, "Enron fraud", "A", "unknown", "q"),
+                           relevant=True, events=["caída de Enron"])
+                      for ident, title in [("focused", "Enron collapse"), ("incidental", "Football in 2001")]]
+        selections = {"selected": [{"key": "archive:focused", "event_mentions": ["caída de Enron"],
+                                    "reason": "Trata específicamente el colapso de Enron."}]}
+        def response(*args, **kwargs):
+            return {"status": "completed", "output": [{"content": [{"type": "output_text",
+                                                                       "text": json.dumps(selections)}]}]}
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "test"}):
+            plan.assess_candidates(sample_plan(), candidates, response)
+            self.assertTrue(candidates[0]["relevant"])
+            self.assertFalse(candidates[1]["relevant"])
+            selections["selected"][0]["key"] = "archive:invented"
+            with self.assertRaisesRegex(ValueError, "Unknown"):
+                plan.assess_candidates(sample_plan(), candidates, response)
 
 
 if __name__ == "__main__":
