@@ -140,6 +140,53 @@ class EditingStyleTests(unittest.TestCase):
         self.assertNotIn("continuous_media_too_long", codes)
 
 
+
+    def test_split_timeline_fragments_are_linted_as_one_media_cue(self):
+        timeline = [
+            {
+                "segment_id": "seg_001",
+                "cue_id": "slot_001",
+                "mode": "media",
+                "start_seconds": 10,
+                "end_seconds": 12,
+                "duration_seconds": 2,
+                "director": {
+                    "visual_role": "evidence",
+                    "transition_in": "hard_cut",
+                    "transition_out": "hard_cut",
+                },
+            },
+            {
+                "segment_id": "seg_002",
+                "cue_id": "slot_001",
+                "mode": "media",
+                "start_seconds": 12,
+                "end_seconds": 16,
+                "duration_seconds": 4,
+                "director": {
+                    "visual_role": "evidence",
+                    "transition_in": "hard_cut",
+                    "transition_out": "hard_cut",
+                },
+            },
+            {
+                "segment_id": "seg_003",
+                "mode": "presenter",
+                "start_seconds": 16,
+                "end_seconds": 30,
+                "duration_seconds": 14,
+                "director": {
+                    "visual_role": "presenter",
+                    "transition_in": "hard_cut",
+                    "transition_out": "none",
+                },
+            },
+        ]
+        warnings = lint_timeline(timeline, self.style, duration_seconds=30)
+        short = [item for item in warnings if item["code"] == "media_segment_short"]
+        self.assertEqual(short, [])
+
+
     def test_real_pre_style_replay_exposes_opening_regressions(self):
         payload = json.loads(REAL_EDIT_REPLAY.read_text(encoding="utf-8"))
         warnings = lint_timeline(
