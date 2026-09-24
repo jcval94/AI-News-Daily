@@ -57,10 +57,10 @@ def main():
     if args.modality=='images':
         description += (' Solo fotografías reales de esta persona, identificada expresamente en la ficha.' if case['kind']=='person' else
                         ' Solo documentos visuales identificados expresamente con este evento exacto. No lugares, personas, objetos o mapas meramente relacionados; no recreaciones modernas ni imágenes generadas.')
-        images.execute(SimpleNamespace(description=description,count=1,sources='commons,met,artic,loc'),output)
+        images.execute(SimpleNamespace(description=description,count=1,sources='commons,wikipedia,openverse,met,artic,loc'),output)
     else:
         description += ' Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.'
-        videos.execute(SimpleNamespace(description=description,count=1,sources='youtube,archive',mode='full',
+        videos.execute(SimpleNamespace(description=description,count=1,sources='youtube,archive,commons,peertube,nasa',mode='full',
                                        clip_seconds=15,planner='semantic',transcript='off'),output)
     manifest=json.loads((output/'manifest.json').read_text())
     candidates=json.loads((output/'candidates.json').read_text()) if (output/'candidates.json').exists() else []

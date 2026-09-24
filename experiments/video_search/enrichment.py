@@ -178,7 +178,7 @@ def replay_data(raw, source):
     result = {"status": "unavailable", "provider": "youtube", "scope": "original_full_video",
               "unit": "relative_replay_intensity", "bins": []}
     if source != "youtube":
-        result.update(status="not_applicable", reason="Archive does not expose YouTube Most Replayed data")
+        result.update(status="not_applicable", reason="This provider does not expose YouTube Most Replayed data")
         return result
     if not raw.get("heatmap"):
         result["reason"] = "YouTube did not expose a replay heatmap to the extractor"

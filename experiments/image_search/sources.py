@@ -14,9 +14,12 @@ import urllib.request
 
 USER_AGENT = "AI-News-Daily-image-research/1.0 (https://github.com/jcval94/AI-News-Daily)"
 MEDIA_HOSTS = {"commons": ("upload.wikimedia.org", "thumb.wikimedia.org"), "met": ("images.metmuseum.org",),
-               "artic": ("www.artic.edu",), "loc": ("loc.gov",)}
+               "artic": ("www.artic.edu",), "loc": ("loc.gov",),
+               "wikipedia": ("upload.wikimedia.org", "thumb.wikimedia.org"),
+               "openverse": ("upload.wikimedia.org", "staticflickr.com", "images.metmuseum.org", "loc.gov")}
 API_HOSTS = ("commons.wikimedia.org", "www.wikidata.org", "collectionapi.metmuseum.org",
-             "api.artic.edu", "www.loc.gov", "api.openai.com")
+             "api.artic.edu", "www.loc.gov", "api.openai.com", "en.wikipedia.org", "es.wikipedia.org",
+             "api.openverse.org")
 
 
 def normalize(text):
@@ -127,7 +130,9 @@ def candidate(source, ident, url, image_url, metadata, **extra):
         raise ValueError("Unsafe catalogue identifier")
     validate_url(image_url, MEDIA_HOSTS[source])
     validate_url(url, {"commons": ("commons.wikimedia.org",), "met": ("metmuseum.org",),
-                       "artic": ("artic.edu",), "loc": ("loc.gov",)}[source])
+                       "artic": ("artic.edu",), "loc": ("loc.gov",),
+                       "wikipedia": ("wikipedia.org", "commons.wikimedia.org"),
+                       "openverse": ("openverse.org",)}[source])
     return {"key": f"{source}:{ident}", "source": source, "id": str(ident), "url": url,
             "image_url": image_url, "metadata": {k: clean(v) for k, v in metadata.items()}, **extra}
 
@@ -254,14 +259,19 @@ PROVIDERS = {"commons": commons, "met": met, "artic": artic, "loc": loc}
 
 
 def discover(plan, providers, entity):
+    from experiments.image_search.alternatives import PROVIDERS as alternatives
+    registry = {**PROVIDERS, **alternatives}
     candidates, diagnostics = [], []
     for name in providers:
         try:
-            rows = PROVIDERS[name](plan, entity)
+            rows = registry[name](plan, entity)
             candidates.extend(rows)
             diagnostics.append({"source": name, "status": "ok", "count": len(rows)})
         except Exception as error:
             diagnostics.append({"source": name, "status": "blocked" if isinstance(error, Blocked) else "failed",
                                 "error": safe_error(error)})
     unique = {c["key"]: c for c in candidates}
-    return list(unique.values()), diagnostics
+    # Bound the semantic call without letting large catalogues crowd out others.
+    grouped = [[c for c in unique.values() if c["source"] == p] for p in providers]
+    balanced = [g[i] for i in range(max(map(len, grouped), default=0)) for g in grouped if i < len(g)]
+    return balanced[:80], diagnostics

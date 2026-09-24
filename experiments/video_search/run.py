@@ -103,7 +103,7 @@ def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode=
             if len(media_files) != 1:
                 raise RuntimeError("Downloader did not produce exactly one media file")
             media_path = media_files[0]
-        else:
+        elif item["source"] == "archive":
             url, metadata = archive_media(item)
             raw["archive_captions"] = metadata.pop("_captions", [])
             media_path = folder / "source.mp4"
@@ -123,6 +123,44 @@ def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode=
                      "-c:v", "libx264", "-preset", "veryfast", "-crf", "28",
                      "-maxrate", "600k", "-bufsize", "1200k", "-c:a", "aac", "-b:a", "64k",
                      "-movflags", "+faststart", "-y", str(media_path)], timeout=240, directory=folder)
+        else:
+            from experiments import public_media
+            from experiments.image_search.sources import fetch, Blocked
+            from experiments.video_search.alternatives import direct_media
+            try:
+                url, metadata, hosts = direct_media(item)
+            except ProviderBlocked as error:
+                if item["source"] == "peertube":
+                    raise RuntimeError(str(error)) from None
+                raise
+            stated = metadata.get("source_duration_seconds")
+            if mode == "full" and stated and float(stated) > MAX_DURATION:
+                raise ValueError("Public video exceeds 30-minute limit")
+            local_source = folder / "download.bin"
+            try:
+                data = (fetch(url, domains=hosts, max_bytes=256 * 1024 * 1024, timeout=40)
+                        if hosts else public_media.fetch(url, max_bytes=256 * 1024 * 1024, timeout=30))
+                local_source.write_bytes(data)
+                del data
+            except (public_media.AccessDenied, Blocked) as error:
+                # One blocked federated instance must not disable all PeerTube.
+                if item["source"] == "peertube":
+                    raise RuntimeError(str(error)) from None
+                raise ProviderBlocked(str(error)) from None
+            # Probe/transcode local bytes only: remote media cannot introduce
+            # arbitrary network reads through nested playlist manifests.
+            expected_duration = probe_media(local_source, runner=lambda argv, **kwargs: subprocess.run(
+                [argv[0], "-protocol_whitelist", "file,pipe", *argv[1:]], **kwargs))["duration_seconds"]
+            if mode == "full" and not 0 < expected_duration <= MAX_DURATION:
+                raise ValueError("Public video exceeds 30-minute limit or has unknown duration")
+            media_path = folder / "source.mp4"
+            command(["ffmpeg", "-nostdin", "-v", "error", "-protocol_whitelist", "file,pipe",
+                     "-i", str(local_source), "-t", str(seconds if mode == "clip" else MAX_DURATION + 1),
+                     "-map", "0:v:0", "-map", "0:a:0?", "-vf", "scale=-2:360",
+                     "-c:v", "libx264", "-preset", "veryfast", "-crf", "28", "-maxrate", "600k",
+                     "-bufsize", "1200k", "-c:a", "aac", "-b:a", "64k", "-movflags", "+faststart",
+                     "-y", str(media_path)], timeout=240)
+            local_source.unlink()
         media = validate_media(media_path, mode, seconds, expected_duration)
         companions = enrich(media_path, folder, raw, media, item["source"], mode, transcript_mode, command)
         metadata_path = folder / "metadata.json"
@@ -259,13 +297,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--description", default=os.environ.get("VIDEO_DESCRIPTION", ""))
     parser.add_argument("--count", type=int, default=10)
-    parser.add_argument("--sources", choices=["youtube", "archive", "youtube,archive"], default="youtube")
+    parser.add_argument("--sources", default="youtube,archive,commons,peertube,nasa")
     parser.add_argument("--mode", choices=["full", "clip"], default="full")
     parser.add_argument("--clip-seconds", type=int, default=15)
     parser.add_argument("--planner", choices=["semantic", "literal"], default="semantic")
     parser.add_argument("--transcript", choices=["auto", "source", "off"], default="off")
     parser.add_argument("--output", default="video-search-output/run")
     args = parser.parse_args()
+    providers = args.sources.split(",")
+    if len(set(providers)) != len(providers) or set(providers) - {"youtube", "archive", "commons", "peertube", "nasa"}:
+        parser.error("Choose unique sources from youtube,archive,commons,peertube,nasa")
     if not 1 <= args.count <= 25 or not 1 <= args.clip_seconds <= 60 or not 1 <= len(args.description.strip()) <= 4000:
         parser.error("Provide a description (1-4000 characters), count 1-25, and clip-seconds 1-60")
     output = Path(args.output).resolve()

@@ -50,7 +50,7 @@ def request_json(url: str, *, body=None, headers=None, timeout=40) -> dict:
     except urllib.error.HTTPError as error:
         # Never persist response bodies or signed/credential-bearing URLs.
         detail = error.read(4096).decode(errors="replace")
-        if error.code == 429 or blocked(detail):
+        if error.code in (401, 403, 429) or blocked(detail):
             raise ProviderBlocked(f"Provider quota/rate limit (HTTP {error.code})") from None
         raise RuntimeError(f"Provider HTTP {error.code}") from None
 
@@ -154,6 +154,8 @@ def archive_search(query: str, limit: int) -> list[dict]:
 
 
 def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[dict]]:
+    from experiments.video_search.alternatives import PROVIDERS as alternatives
+    providers = {"youtube": youtube_search, "archive": archive_search, **alternatives}
     candidates, attempts, stopped = {}, [], set()
     # Explicit events first; every query is retained even when a provider fails.
     tasks = []
@@ -168,7 +170,7 @@ def discover(plan, sources: list[str], per_query=15) -> tuple[list[dict], list[d
             attempts.append({**row, "status": "skipped_provider_blocked"})
             continue
         try:
-            results = {"youtube": youtube_search, "archive": archive_search}[source](query, per_query)
+            results = providers[source](query, per_query)
             attempts.append({**row, "status": "ok", "count": len(results)})
             for item in results:
                 if item["key"] in candidates:

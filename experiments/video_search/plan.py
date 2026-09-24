@@ -156,11 +156,9 @@ def identity_matches(plan, candidate):
 def assess_candidates(plan: SearchPlan, candidates: list[dict], request_json) -> dict:
     """Model proposes relevance; code validates known IDs/events and owns every side effect."""
     # Reserve room for each provider so a blocked provider cannot crowd out another.
-    shortlist = []
-    for source in dict.fromkeys(c["source"] for c in candidates):
-        # A lexical miss is not a semantic rejection. Discovery has already
-        # bounded and ranked the pool using topic and explicit-event queries.
-        shortlist.extend([c for c in candidates if c["source"] == source][:25])
+    grouped = [[c for c in candidates if c["source"] == source][:25]
+               for source in dict.fromkeys(c["source"] for c in candidates)]
+    shortlist = [group[i] for i in range(25) for group in grouped if i < len(group)][:50]
     if not shortlist:
         return {"selected": 0, "considered": 0}
     key = os.environ.get("OPENAI_API_KEY", "")
@@ -187,7 +185,7 @@ historical aside is insufficient. Reject unrelated sports, family videos and tra
 incidental references. Prefer archival recordings or factual explainers. Exclude obvious
 conspiracy/denialist propaganda when the requested topic is historical footage or education.
 Select suitable entries from the supplied pool (at most 50), across ALL supplied providers.
-Do not prefer YouTube over Archive. Each key must come from this input. event_mentions must be
+Do not prefer any provider. Each key must come from this input. event_mentions must be
 a subset of plan.events' mention values, and only when the event is a substantive subject.
 Candidate events are preliminary lexical hints, not a restriction on your assessment. A video
 about World War II need not contain words like 'documentary' to cover that event.

@@ -241,14 +241,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--description", default=os.environ.get("IMAGE_DESCRIPTION", ""))
     parser.add_argument("--count", type=int, default=5)
-    parser.add_argument("--sources", default="commons,met,artic,loc")
+    parser.add_argument("--sources", default="commons,wikipedia,openverse,met,artic,loc")
     parser.add_argument("--output", default="image-search-output/run")
     args = parser.parse_args()
     providers = args.sources.split(",")
     if not 1 <= args.count <= 20 or not 1 <= len(args.description.strip()) <= 2000:
         parser.error("Description 1-2000 characters; count 1-20")
-    if not providers or len(set(providers)) != len(providers) or set(providers) - set(sources.PROVIDERS):
-        parser.error("Choose unique sources from commons,met,artic,loc")
+    from experiments.image_search.alternatives import PROVIDERS as alternatives
+    if not providers or len(set(providers)) != len(providers) or set(providers) - (set(sources.PROVIDERS) | set(alternatives)):
+        parser.error("Choose unique sources from commons,wikipedia,openverse,met,artic,loc")
     output = Path(args.output).resolve()
     if not output.is_relative_to(ROOT / "image-search-output") or output == ROOT / "image-search-output":
         parser.error("Output must be a new child of image-search-output/")

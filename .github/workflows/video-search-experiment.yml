@@ -12,10 +12,9 @@ on:
         default: "10"
         type: string
       sources:
-        description: "Fuentes permitidas; Archive es opcional"
-        default: youtube
-        type: choice
-        options: [youtube, archive, "youtube,archive"]
+        description: "Fuentes separadas por comas: youtube,archive,commons,peertube,nasa"
+        default: "youtube,archive,commons,peertube,nasa"
+        type: string
       mode:
         description: "Video completo (hasta 30 min/128 MiB) o fragmento de 15 s"
         default: full

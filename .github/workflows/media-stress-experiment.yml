@@ -7,6 +7,29 @@ on:
 permissions:
   contents: read
 jobs:
+  source-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated control dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install -r experiments/video_search/requirements.txt -r experiments/image_search/requirements.txt
+      - name: Test public downloads without model calls
+        run: python -m experiments.media_stress.source_controls
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: alternative-source-controls-${{ github.run_id }}
+          path: video-search-output/source-controls/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
   cases:
     runs-on: ubuntu-latest
     outputs:

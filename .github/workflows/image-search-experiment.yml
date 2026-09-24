@@ -12,8 +12,8 @@ on:
         default: "5"
         type: string
       sources:
-        description: "Catálogos: commons,met,artic,loc separados por comas"
-        default: "commons,met,artic,loc"
+        description: "Catálogos: commons,wikipedia,openverse,met,artic,loc separados por comas"
+        default: "commons,wikipedia,openverse,met,artic,loc"
         type: string
   push:
     branches: [experiment/youtube-artifacts]
