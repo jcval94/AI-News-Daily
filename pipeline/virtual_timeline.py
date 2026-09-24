@@ -241,6 +241,18 @@ def build_virtual_timeline(
     script_duration = float(
         (edit_manifest.get("timing", {}) or {}).get("duration_seconds", 0) or 0
     )
+    capture = (
+        recording_pack.get("capture_recommendation", {})
+        if isinstance(recording_pack.get("capture_recommendation"), dict)
+        else {}
+    )
+    frame_rate = int(capture.get("frame_rate_fps", 30) or 30)
+    if frame_rate <= 0:
+        raise ValueError("Recording Pack frame_rate_fps must be positive")
+    resolution = str(capture.get("resolution", "") or "3840x2160")
+    audio_sample_rate = int(capture.get("audio_sample_rate_hz", 48000) or 48000)
+    if audio_sample_rate <= 0:
+        raise ValueError("Recording Pack audio_sample_rate_hz must be positive")
     blockers: set[str] = {
         "recorded_media_required",
         "recording_retime_required",
@@ -255,6 +267,30 @@ def build_virtual_timeline(
         if isinstance(recording_pack.get("editing_style"), dict)
         else {"applied": False}
     )
+
+    markers: list[dict[str, Any]] = []
+    seen_sections: set[str] = set()
+    for take in takes:
+        take_id = str(take.get("take_id", "") or "")
+        start = _round(float(take.get("estimated_start_seconds", 0) or 0))
+        markers.append({
+            "marker_id": f"take_{take_id}",
+            "kind": "take",
+            "timeline_seconds": start,
+            "label": take_id,
+            "take_id": take_id,
+        })
+        section_key = str(take.get("section_key", "") or "")
+        if section_key and section_key not in seen_sections:
+            seen_sections.add(section_key)
+            markers.append({
+                "marker_id": f"section_{len(seen_sections):02d}",
+                "kind": "section",
+                "timeline_seconds": start,
+                "label": str(take.get("section_label", "") or section_key),
+                "section_key": section_key,
+            })
+    markers.sort(key=lambda item: (float(item["timeline_seconds"]), 0 if item["kind"] == "section" else 1))
 
     tracks = [
         {
@@ -316,7 +352,7 @@ def build_virtual_timeline(
             "duration_seconds": _round(duration),
             "approved_script_duration_seconds": _round(script_duration),
             "post_script_duration_seconds": _round(max(0.0, duration - script_duration)),
-            "frame_rate_fps": 30,
+            "frame_rate_fps": frame_rate,
             "frame_accurate": False,
             "requires_recording_retime": True,
         },
@@ -327,6 +363,13 @@ def build_virtual_timeline(
             "edit_manifest_sha256": _json_sha256(edit_manifest),
         },
         "editing_style": style,
+        "format": {
+            "resolution": resolution,
+            "frame_rate_fps": frame_rate,
+            "audio_sample_rate_hz": audio_sample_rate,
+            "aspect_ratio": str(capture.get("aspect_ratio", "") or "16:9"),
+        },
+        "markers": markers,
         "replacement_contract": {
             "virtual_a_roll_authority": "take_id",
             "strategy": "replace_and_retime_after_alignment",
