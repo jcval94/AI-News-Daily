@@ -689,17 +689,44 @@ async def build(
         )
         previous_essays_json = json.dumps(previous_essays, ensure_ascii=False)
 
-        selection_state = await run_agent(
-            selector_agent,
-            {"news_text": news_text, "previous_selected_news": previous_selected_news},
-            "Select the unique, high-value AI developments for this episode.",
-            step="select_news",
-            trace=agent_trace,
-        )
-        selection_decision = SelectionResult.model_validate(
-            selection_state.get("selected_news", {})
-        ).model_dump()
-        selection = materialize_selection(selection_decision, source_items)
+        valid_news_ids = [item.news_id for item in source_items]
+        valid_news_ids_json = json.dumps(valid_news_ids, ensure_ascii=False)
+        selection: dict[str, Any] | None = None
+        selector_contract_error = ""
+        for selector_contract_attempt in range(1, 3):
+            selector_prompt = (
+                "Select the unique, high-value AI developments for this episode. "
+                "Every returned news_id MUST be copied exactly from valid_news_ids."
+            )
+            if selector_contract_error:
+                selector_prompt += (
+                    " Your previous selection violated the deterministic ID contract: "
+                    f"{selector_contract_error}. Return only IDs from valid_news_ids."
+                )
+            selection_state = await run_agent(
+                selector_agent,
+                {
+                    "news_text": news_text,
+                    "valid_news_ids": valid_news_ids_json,
+                    "previous_selected_news": previous_selected_news,
+                },
+                selector_prompt,
+                step="select_news",
+                trace=agent_trace,
+                iteration=selector_contract_attempt,
+            )
+            selection_decision = SelectionResult.model_validate(
+                selection_state.get("selected_news", {})
+            ).model_dump()
+            try:
+                selection = materialize_selection(selection_decision, source_items)
+                break
+            except ValueError as exc:
+                selector_contract_error = str(exc)
+                if selector_contract_attempt >= 2:
+                    raise
+        if selection is None:
+            raise RuntimeError("Selector did not produce a contract-valid selection")
         write_json(episode_scripts_dir / "selected_news.json", selection)
         if not selection["items"]:
             write_json(
