@@ -1,0 +1,218 @@
+schema_version: 1
+style_id: jc_reflective_essay_v1
+name: "JC Reflective Video Essay"
+status: active
+authority: deterministic_policy
+
+intent:
+  primary_format: "presenter-led reflective video essay"
+  principle: "Story before motion. The presenter is home base; every cutaway must earn the cut."
+  non_goals:
+    - "Do not imitate high-frequency Shorts/TikTok editing."
+    - "Do not add motion, transitions, or B-roll merely to avoid a static frame."
+    - "Do not let visual style imply evidence that the sources do not establish."
+
+references:
+  - id: youtube_retention
+    source: "YouTube Help — Key moments for audience retention"
+    url: "https://support.google.com/youtube/answer/9314415"
+    adopted_principle: "Treat the first 30 seconds as a measurable retention window and test opening styles."
+  - id: adobe_transitions
+    source: "Adobe — Types of film transitions"
+    url: "https://www.adobe.com/creativecloud/video/discover/types-of-film-transitions.html"
+    adopted_principle: "Use straight cuts as the default; keep transitions consistent, sparse, and purposeful."
+  - id: adobe_broll
+    source: "Adobe — B-roll footage"
+    url: "https://www.adobe.com/creativecloud/video/discover/b-roll.html"
+    adopted_principle: "B-roll supports the main footage/story and can cover edits; it is not filler."
+  - id: adobe_split_edits
+    source: "Adobe — J cuts and L cuts"
+    url: "https://www.adobe.com/creativecloud/video/post-production/cuts-in-film/l-and-j-cut.html"
+    adopted_principle: "Prefer audio continuity and split edits over conspicuous visual transitions when possible."
+  - id: blackmagic_training
+    source: "Blackmagic Design — The Editor's Guide to DaVinci Resolve 20"
+    url: "https://www.blackmagicdesign.com/products/davinciresolve/training"
+    adopted_principle: "Keep the grammar NLE-neutral but compatible with documentary/interview workflows."
+
+enforcement:
+  default: advisory
+  fail_closed:
+    - invalid_transition
+    - unknown_visual_role
+    - invalid_duration_rule
+  principle: "Creative suggestions may deviate, but deterministic lint must make every deviation visible."
+
+presenter:
+  home_base: true
+  target_visual_share:
+    min: 0.55
+    max: 0.85
+  minimum_return_run_seconds: 6.0
+  maximum_uninterrupted_seconds: 45.0
+  default_treatment: clean_a_roll
+  jump_cuts:
+    allowed: true
+    purpose:
+      - remove_error
+      - remove_dead_air
+      - compress_time
+    hide_with_relevant_broll_when_available: true
+    never_require_broll_for_every_jump_cut: true
+
+opening:
+  retention_measurement_window_seconds: 30.0
+  dense_visual_window_seconds: 20.0
+  presenter_anchor_deadline_seconds: 6.0
+  presenter_anchor_min_seconds: 3.0
+  maximum_continuous_media_seconds: 9.0
+  rhythm_shot_seconds:
+    min: 2.5
+    preferred: 3.5
+    max: 4.5
+  rule: "Hook first. Visual density may rise, but the presenter should appear early enough to establish identity and continuity."
+
+transitions:
+  default: hard_cut
+  allowed:
+    - hard_cut
+    - none
+    - cross_dissolve
+    - dip_to_black
+  rare:
+    cross_dissolve:
+      use_for:
+        - passage_of_time
+        - memory
+        - gentle_scene_change
+    dip_to_black:
+      use_for:
+        - chapter_boundary
+        - major_emotional_reset
+  prohibited_by_default:
+    - wipe
+    - spin
+    - zoom_transition
+    - glitch
+    - whip
+    - morph
+  maximum_visible_transitions_per_minute: 1.0
+  prefer_audio_split_edits: true
+
+media:
+  global_duration_seconds:
+    min: 2.5
+    preferred: 5.0
+    max: 10.0
+  maximum_continuous_media_seconds: 12.0
+  generic_stock_is_last_resort: true
+  prefer_specificity_over_polish: true
+  image_default_treatment: subtle_push_in
+  video_default_treatment: natural_motion
+  motion:
+    rule: "Movement should reveal or preserve attention, not advertise the edit."
+    avoid_repeated_push_ins: true
+
+visual_roles:
+  evidence:
+    presenter_preference: low
+    duration_seconds: {min: 4.0, preferred: 6.0, max: 10.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: highlight_crop
+    video_treatment: natural_motion
+    note: "Prioritize source material, documents, charts, screenshots, or truthful domain footage over decorative stock."
+
+  explanation:
+    presenter_preference: medium
+    duration_seconds: {min: 4.0, preferred: 5.5, max: 8.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: subtle_push_in
+    video_treatment: natural_motion
+    note: "The visual should make a mechanism or relationship easier to understand."
+
+  context:
+    presenter_preference: medium
+    duration_seconds: {min: 3.0, preferred: 5.0, max: 7.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: subtle_push_in
+    video_treatment: natural_motion
+    note: "Establish place, object, institution, or situation; avoid generic technology filler."
+
+  historical_mirror:
+    presenter_preference: low
+    duration_seconds: {min: 5.0, preferred: 7.0, max: 10.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: slow_push_in
+    video_treatment: natural_motion
+    note: "Let archival material breathe; preserve context and source integrity."
+
+  analogy:
+    presenter_preference: medium
+    duration_seconds: {min: 4.0, preferred: 6.0, max: 8.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: subtle_push_in
+    video_treatment: natural_motion
+    note: "Clarify the analogy without turning it into a literal factual claim."
+
+  contrast:
+    presenter_preference: medium
+    duration_seconds: {min: 3.0, preferred: 5.0, max: 7.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: static
+    video_treatment: natural_motion
+    note: "Use visual juxtaposition only when the contrast is already supported by narration."
+
+  emotional_grounding:
+    presenter_preference: high
+    duration_seconds: {min: 5.0, preferred: 7.0, max: 10.0}
+    preferred_asset_type: image_or_video
+    default_transition: hard_cut
+    image_treatment: slow_push_in
+    video_treatment: natural_motion
+    note: "Prefer the presenter or restrained human-scale imagery; avoid melodramatic stock."
+
+  rhythm:
+    presenter_preference: low
+    duration_seconds: {min: 2.5, preferred: 3.5, max: 4.5}
+    preferred_asset_type: video
+    default_transition: hard_cut
+    image_treatment: subtle_push_in
+    video_treatment: natural_motion
+    note: "Use primarily in the opening or a deliberate montage; do not turn the whole essay into montage."
+
+titles:
+  philosophy: "Text on screen should clarify, label, or emphasize; never duplicate full narration."
+  maximum_words_per_title: 12
+  maximum_simultaneous_lines: 2
+  lower_third_seconds: {min: 3.0, preferred: 4.5, max: 7.0}
+  avoid_full_sentence_captions_as_graphics: true
+
+captions:
+  mode: optional
+  maximum_lines: 2
+  preserve_punctuation: true
+  speaker_label: false
+
+audio:
+  dialogue_is_primary: true
+  prefer_j_l_cuts_for_flow: true
+  music:
+    default: subtle
+    duck_under_dialogue: true
+    avoid_emotional_overstatement: true
+
+learning:
+  mutable_from_post_publish_data: true
+  metrics:
+    - intro_retention_30s
+    - audience_retention_dips
+    - audience_retention_spikes
+    - presenter_share
+    - average_media_duration
+    - continuous_media_max
+  rule: "Change numeric defaults only after repeated evidence across multiple published episodes; do not optimize one video in isolation."
