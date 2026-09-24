@@ -6,6 +6,7 @@ from pipeline.script_sections import SectionAlignmentError, parse_sectioned_scri
 
 
 PLAN = {
+    "opening_memory_id": "memory-case",
     "beats": [
         {"beat_id": "first-reveal", "kind": "reveal", "evidence_ids": ["case-a", "case-b"]},
         {"beat_id": "turn", "kind": "turn", "evidence_ids": []},
@@ -16,13 +17,16 @@ PLAN = {
 class ScriptSectionTests(unittest.TestCase):
     def test_markers_follow_idea_beats_not_news_items(self) -> None:
         marked = (
-            "<!--SECTION:opening-->Inicio intrigante. "
+            "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio intrigante. "
             "<!--SECTION:beat:first-reveal-->Dos casos se comparan dentro del mismo argumento. "
             "<!--SECTION:beat:turn-->Aquí cambia la pregunta sin introducir otra noticia. "
             "<!--SECTION:synthesis-->Cierre que transforma el inicio."
         )
         clean, payload = parse_sectioned_script(marked, PLAN)
         self.assertNotIn("SECTION", clean)
+        self.assertNotIn("MEMORY", clean)
+        self.assertEqual(payload["schema_version"], 3)
+        self.assertEqual(payload["narrative_memory"]["opening_memory_id"], "memory-case")
         self.assertEqual(
             [item["section_key"] for item in payload["sections"]],
             ["opening", "beat:first-reveal", "beat:turn", "synthesis"],
@@ -32,7 +36,7 @@ class ScriptSectionTests(unittest.TestCase):
 
     def test_trailing_marker_only_debris_is_ignored(self) -> None:
         marked = (
-            "<!--SECTION:opening-->Inicio. "
+            "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio. "
             "<!--SECTION:beat:first-reveal-->Revelación. "
             "<!--SECTION:beat:turn-->Giro. "
             "<!--SECTION:synthesis-->Cierre. "
@@ -44,7 +48,7 @@ class ScriptSectionTests(unittest.TestCase):
 
     def test_trailing_duplicate_with_spoken_text_is_rejected(self) -> None:
         marked = (
-            "<!--SECTION:opening-->Inicio. "
+            "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio. "
             "<!--SECTION:beat:first-reveal-->Revelación. "
             "<!--SECTION:beat:turn-->Giro. "
             "<!--SECTION:synthesis-->Cierre. "
@@ -53,8 +57,39 @@ class ScriptSectionTests(unittest.TestCase):
         with self.assertRaises(SectionAlignmentError):
             parse_sectioned_script(marked, PLAN)
 
+    def test_missing_memory_marker_is_rejected(self) -> None:
+        marked = (
+            "<!--SECTION:opening-->Inicio. "
+            "<!--SECTION:beat:first-reveal-->Revelación. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre."
+        )
+        with self.assertRaises(SectionAlignmentError):
+            parse_sectioned_script(marked, PLAN)
+
+    def test_wrong_memory_id_is_rejected(self) -> None:
+        marked = (
+            "<!--SECTION:opening--><!--MEMORY:other-case-->Inicio. "
+            "<!--SECTION:beat:first-reveal-->Revelación. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre."
+        )
+        with self.assertRaises(SectionAlignmentError):
+            parse_sectioned_script(marked, PLAN)
+
+    def test_memory_marker_too_late_is_rejected(self) -> None:
+        prefix = " ".join(["palabra"] * 121)
+        marked = (
+            f"<!--SECTION:opening-->{prefix} <!--MEMORY:memory-case-->Historia. "
+            "<!--SECTION:beat:first-reveal-->Revelación. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre."
+        )
+        with self.assertRaises(SectionAlignmentError):
+            parse_sectioned_script(marked, PLAN)
+
     def test_missing_beat_marker_is_rejected(self) -> None:
-        marked = "<!--SECTION:opening-->Inicio. <!--SECTION:beat:first-reveal-->Caso. <!--SECTION:synthesis-->Cierre."
+        marked = "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio. <!--SECTION:beat:first-reveal-->Caso. <!--SECTION:synthesis-->Cierre."
         with self.assertRaises(SectionAlignmentError):
             parse_sectioned_script(marked, PLAN)
 

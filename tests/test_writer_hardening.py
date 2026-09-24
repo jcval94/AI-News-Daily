@@ -11,6 +11,8 @@ class WriterHardeningTests(unittest.TestCase):
         self.assertIn("appears exactly once", MARKER_GUARD)
         self.assertIn("No beat marker may be repeated", MARKER_GUARD)
         self.assertIn("len(episode_plan.beats) + 2", MARKER_GUARD)
+        self.assertIn("<!--MEMORY:OPENING_MEMORY_ID-->", MARKER_GUARD)
+        self.assertIn("first 120 spoken words", MARKER_GUARD)
         self.assertIn("Return one draft only", MARKER_GUARD)
 
     def test_install_replaces_only_writer_reference(self) -> None:

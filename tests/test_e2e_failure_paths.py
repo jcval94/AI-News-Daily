@@ -19,6 +19,13 @@ def plan_payload() -> dict:
         "narrative_lens": "cognicion",
         "novelty_angle": "Cambia el foco desde capacidad a cierre de decisiones.",
         "historical_mirror": "Espejo histórico verificable.",
+        "narrative_parallels": [{
+            "memory_id": "electrification-organizational-redesign",
+            "role": "historical_mirror",
+            "purpose": "Abrir con un caso de tecnología que exigió rediseñar procesos.",
+            "limits": "No asumir que la IA seguirá la misma trayectoria que la electrificación.",
+        }],
+        "opening_memory_id": "electrification-organizational-redesign",
         "evidence_strategy": "Un caso prueba y otro complica.",
         "central_question": "¿Qué delegamos cuando dejamos que el sistema cierre el ciclo?",
         "thesis": "Parece un problema de verificación.",
@@ -62,7 +69,7 @@ def plan_payload() -> dict:
 
 def marked_script() -> str:
     return (
-        "<!--SECTION:opening-->" + " ".join(["inicio"] * 250) +
+        "<!--SECTION:opening--><!--MEMORY:electrification-organizational-redesign-->" + " ".join(["inicio"] * 250) +
         " <!--SECTION:beat:evidence-->" + " ".join(["desarrollo"] * 500) +
         " <!--SECTION:beat:turn-->" + " ".join(["giro"] * 100) +
         " <!--SECTION:synthesis-->" + " ".join(["cierre"] * 200)

@@ -316,7 +316,7 @@ table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:lef
 </section>
 <section class="kpis">
 <div class="kpi"><span>Biblioteca</span><b>{_esc(metrics.get("approved_items"))}</b><small>casos aprobados</small></div>
-<div class="kpi"><span>Disponibles</span><b>{_esc(metrics.get("available_items"))}</b><small>elegibles hoy</small></div>
+<div class="kpi"><span>Sin cooldown</span><b>{_esc(metrics.get("available_items"))}</b><small>preferidos hoy</small></div>
 <div class="kpi"><span>En cooldown</span><b>{_esc(metrics.get("cooldown_items"))}</b><small>anti-repetición</small></div>
 <div class="kpi"><span>Usados</span><b>{_esc(metrics.get("used_items"))}</b><small>en episodios aprobados</small></div>
 <div class="kpi"><span>Mecanismos</span><b>{_esc(metrics.get("unique_mechanisms"))}</b><small>estructuras distintas</small></div>
@@ -334,7 +334,7 @@ table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:lef
 <div class="panel"><span class="eyebrow">Uso real</span><h2>Qué paralelos utilizó cada episodio</h2><table><thead><tr><th>Episodio</th><th>Paralelos</th><th>Total</th></tr></thead><tbody>{episode_rows if episode_rows else '<tr><td colspan="3" class="empty">Aún no hay usos aprobados registrados.</td></tr>'}</tbody></table></div>
 </section>
 {issues_block}
-<p class="footer-note">La biblioteca es contexto verificado, no autoridad editorial. El Director puede elegir 0–2 casos recuperados y el Writer recibe solo esos registros. Un episodio rechazado no cuenta como uso. Este dashboard es un snapshot: se refresca con el siguiente despliegue normal del Editorial Review Hub, no con cada alta diaria de la biblioteca.</p>
+<p class="footer-note">La biblioteca es contexto verificado, no autoridad factual sobre noticias actuales. El Director debe elegir 1–2 casos recuperados; uno debe ser el gancho de apertura y el Writer recibe solo esos registros. Un episodio rechazado no cuenta como uso. Este dashboard es un snapshot: se refresca con el siguiente despliegue normal del Editorial Review Hub, no con cada alta diaria de la biblioteca.</p>
 </main>
 <script>
 const cards=[...document.querySelectorAll('[data-memory-card]')];

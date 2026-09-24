@@ -22,7 +22,7 @@ TEST_NEWS_ID = stable_news_id(
 
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
     async def test_approved_episode_reaches_multimedia_without_external_calls(self) -> None:
-        script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:beat:evidence-->" + " ".join(["noticia"] * 500) + " <!--SECTION:beat:turn-->" + " ".join(["noticia"] * 100) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
+        script = ("<!--SECTION:opening--><!--MEMORY:electrification-organizational-redesign-->" + " ".join(["noticia"] * 250) + " <!--SECTION:beat:evidence-->" + " ".join(["noticia"] * 500) + " <!--SECTION:beat:turn-->" + " ".join(["noticia"] * 100) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
 
         async def fake_run_agent(agent, initial_state, prompt, *, step, trace, iteration=None):
             trace.append(
@@ -55,7 +55,14 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                         "topic_signature": "delegacion de criterio y aprendizaje con IA",
                         "narrative_lens": "cognicion y educacion",
                         "novelty_angle": "Explora el cambio de hábitos de verificación, no solo capacidad del modelo.",
-                        "historical_mirror": "La discusión histórica sobre herramientas que externalizan memoria.",
+                        "historical_mirror": "La electrificación rindió más cuando cambió la organización.",
+                        "narrative_parallels": [{
+                            "memory_id": "electrification-organizational-redesign",
+                            "role": "historical_mirror",
+                            "purpose": "Abrir con el rediseño organizacional exigido por una tecnología general.",
+                            "limits": "No asumir que la IA repetirá la curva histórica de la electrificación.",
+                        }],
+                        "opening_memory_id": "electrification-organizational-redesign",
                         "evidence_strategy": "Usar el caso actual como evidencia de cómo cambia el criterio humano.",
                         "central_question": "¿Qué cambia cuando delegamos parte de nuestro razonamiento?",
                         "thesis": "La herramienta importa menos que la forma en que reorganiza nuestro criterio.",
@@ -198,6 +205,10 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(reviews["voice_humanity"]["ai_smell_risk"], "low")
             self.assertTrue(episode_plan["central_question"])
             self.assertTrue(episode_plan["topic_signature"])
+            self.assertEqual(episode_plan["opening_memory_id"], "electrification-organizational-redesign")
+            self.assertEqual(episode_plan["narrative_parallels"][0]["memory_id"], "electrification-organizational-redesign")
+            alignment = json.loads((result / "script_sections.json").read_text(encoding="utf-8"))
+            self.assertEqual(alignment["narrative_memory"]["opening_memory_id"], "electrification-organizational-redesign")
             self.assertEqual(episode_plan["claim_ledger"][0]["evidence_id"], "case")
             self.assertTrue((result / "script_sections.json").exists())
             selected_payload = json.loads((result / "selected_news.json").read_text(encoding="utf-8"))

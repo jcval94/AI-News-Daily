@@ -69,7 +69,7 @@ class NarrativeMemoryTests(unittest.TestCase):
             self.assertTrue(any("quarantined:weak-case" in issue for issue in issues))
             self.assertTrue(any("invalid_line" in issue for issue in issues))
 
-    def test_recently_used_item_is_on_cooldown(self) -> None:
+    def test_cooldown_is_soft_and_available_items_rank_first(self) -> None:
         items = [
             NarrativeMemoryItem.model_validate(_item("recent")),
             NarrativeMemoryItem.model_validate(_item("fresh", "technology_requires_redesign")),
@@ -78,7 +78,18 @@ class NarrativeMemoryTests(unittest.TestCase):
             "recent": {"times_used": 1, "last_used_at": "2026-09-01", "episodes_used": ["2026-09-01"]}
         }
         ranked = rank_candidates(items, "technology redesign small systems", usage, date(2026, 9, 24))
-        self.assertEqual([item["id"] for item in ranked], ["fresh"])
+        self.assertEqual(ranked[0]["id"], "fresh")
+        self.assertEqual(ranked[1]["id"], "recent")
+        self.assertTrue(ranked[1]["retrieval"]["cooldown_active"])
+
+    def test_cooldown_candidate_remains_available_as_fallback(self) -> None:
+        items = [NarrativeMemoryItem.model_validate(_item("recent"))]
+        usage = {
+            "recent": {"times_used": 1, "last_used_at": "2026-09-20", "episodes_used": ["2026-09-20"]}
+        }
+        ranked = rank_candidates(items, "small systems", usage, date(2026, 9, 24))
+        self.assertEqual([item["id"] for item in ranked], ["recent"])
+        self.assertTrue(ranked[0]["retrieval"]["cooldown_active"])
 
     def test_usage_is_derived_only_from_approved_episodes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -102,9 +113,14 @@ class NarrativeMemoryTests(unittest.TestCase):
             self.assertEqual(usage["case-a"]["times_used"], 1)
             self.assertNotIn("case-b", usage)
 
+    def test_plan_requires_at_least_one_selection(self) -> None:
+        with self.assertRaises(ValueError):
+            resolve_selected_memory({"narrative_parallels": []}, [_item("allowed")])
+
     def test_plan_can_only_select_from_retrieved_set(self) -> None:
         candidates = [_item("allowed")]
         plan = {
+            "opening_memory_id": "outside",
             "narrative_parallels": [
                 {"memory_id": "outside", "role": "analogy", "purpose": "x", "limits": "y"}
             ]

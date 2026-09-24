@@ -707,17 +707,44 @@ async def build(
         )
         previous_essays_json = json.dumps(previous_essays, ensure_ascii=False)
 
-        selection_state = await run_agent(
-            selector_agent,
-            {"news_text": news_text, "previous_selected_news": previous_selected_news},
-            "Select the unique, high-value AI developments for this episode.",
-            step="select_news",
-            trace=agent_trace,
-        )
-        selection_decision = SelectionResult.model_validate(
-            selection_state.get("selected_news", {})
-        ).model_dump()
-        selection = materialize_selection(selection_decision, source_items)
+        valid_news_ids = [item.news_id for item in source_items]
+        valid_news_ids_json = json.dumps(valid_news_ids, ensure_ascii=False)
+        selection: dict[str, Any] | None = None
+        selector_contract_error = ""
+        for selector_contract_attempt in range(1, 3):
+            selector_prompt = (
+                "Select the unique, high-value AI developments for this episode. "
+                "Every returned news_id MUST be copied exactly from valid_news_ids."
+            )
+            if selector_contract_error:
+                selector_prompt += (
+                    " Your previous selection violated the deterministic ID contract: "
+                    f"{selector_contract_error}. Return only IDs from valid_news_ids."
+                )
+            selection_state = await run_agent(
+                selector_agent,
+                {
+                    "news_text": news_text,
+                    "valid_news_ids": valid_news_ids_json,
+                    "previous_selected_news": previous_selected_news,
+                },
+                selector_prompt,
+                step="select_news",
+                trace=agent_trace,
+                iteration=selector_contract_attempt,
+            )
+            selection_decision = SelectionResult.model_validate(
+                selection_state.get("selected_news", {})
+            ).model_dump()
+            try:
+                selection = materialize_selection(selection_decision, source_items)
+                break
+            except ValueError as exc:
+                selector_contract_error = str(exc)
+                if selector_contract_attempt >= 2:
+                    raise
+        if selection is None:
+            raise RuntimeError("Selector did not produce a contract-valid selection")
         write_json(episode_scripts_dir / "selected_news.json", selection)
         if not selection["items"]:
             write_json(
@@ -743,6 +770,11 @@ async def build(
             target_date,
             top_k=6,
         )
+        if not memory_candidates:
+            raise RuntimeError(
+                "Narrative Memory is mandatory but no valid candidates are available; "
+                "repair editorial/narrative_memory.jsonl before spending model tokens"
+            )
         memory_candidates_json = json.dumps(
             {"schema_version": 1, "items": memory_candidates},
             ensure_ascii=False,
@@ -899,29 +931,61 @@ async def build(
         write_json(episode_scripts_dir / "episode_plan.json", episode_plan)
         episode_plan_json = json.dumps(episode_plan, ensure_ascii=False)
 
-        writer_state = await run_agent(
-            writer_agent,
-            {
-                "news_text": news_text,
-                "selected_news": selected_json,
-                "episode_plan": episode_plan_json,
-                "voice_profile": voice_profile,
-                "discourse_profile": discourse_profile,
-                "selected_narrative_memory": selected_narrative_memory_json,
-            },
-            "Write the finished 7-20 minute Spanish reflective AI essay.",
-            step="write_script",
-            trace=agent_trace,
-        )
-        sectioned_draft_script = str(writer_state.get("draft_script", "")).strip()
-        if not sectioned_draft_script:
-            raise RuntimeError("Writer did not produce draft_script")
-        try:
-            draft_script, script_alignment = parse_sectioned_script(
-                sectioned_draft_script, episode_plan
+        writer_context = {
+            "news_text": news_text,
+            "selected_news": selected_json,
+            "episode_plan": episode_plan_json,
+            "voice_profile": voice_profile,
+            "discourse_profile": discourse_profile,
+            "selected_narrative_memory": selected_narrative_memory_json,
+        }
+        opening_memory_id = str(episode_plan.get("opening_memory_id", "") or "")
+        sectioned_draft_script = ""
+        draft_script = ""
+        script_alignment: dict[str, Any] = {}
+        writer_structure_error = ""
+
+        for writer_attempt in range(1, 3):
+            writer_prompt = (
+                "Write the finished 7-20 minute Spanish reflective AI essay."
+                if writer_attempt == 1
+                else (
+                    "Rewrite the same planned essay because the previous draft violated only the hidden "
+                    f"structure contract: {writer_structure_error}. Do not change the episode plan or factual "
+                    "claims merely to repair metadata. Return narration only. The first non-whitespace characters "
+                    f"MUST be <!--SECTION:opening--><!--MEMORY:{opening_memory_id}-->. Preserve exactly one "
+                    "SECTION marker for every planned section in order and exactly one MEMORY marker."
+                )
             )
-        except SectionAlignmentError as exc:
-            raise RuntimeError(f"Writer section alignment invalid: {exc}") from exc
+            writer_state = await run_agent(
+                writer_agent,
+                writer_context,
+                writer_prompt,
+                step="write_script",
+                trace=agent_trace,
+                iteration=writer_attempt,
+            )
+            sectioned_draft_script = str(writer_state.get("draft_script", "")).strip()
+            if not sectioned_draft_script:
+                writer_structure_error = "Writer did not produce draft_script"
+            else:
+                try:
+                    draft_script, script_alignment = parse_sectioned_script(
+                        sectioned_draft_script, episode_plan
+                    )
+                    writer_structure_error = ""
+                    break
+                except SectionAlignmentError as exc:
+                    writer_structure_error = str(exc)
+            if writer_attempt == 1:
+                validation_warnings.append(
+                    "Writer structure retry triggered: " + writer_structure_error
+                )
+
+        if writer_structure_error:
+            raise RuntimeError(
+                f"Writer section alignment invalid after bounded retry: {writer_structure_error}"
+            )
 
         final_editorial: dict[str, Any] = {}
         final_seo: dict[str, Any] = {}

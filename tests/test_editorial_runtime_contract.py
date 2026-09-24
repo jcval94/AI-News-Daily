@@ -15,6 +15,13 @@ def valid_plan() -> dict:
         "narrative_lens": "cognicion",
         "novelty_angle": "Investiga el cierre de tareas, no la capacidad bruta.",
         "historical_mirror": "Una herramienta histórica cambia qué consideramos saber.",
+        "narrative_parallels": [{
+            "memory_id": "plato-writing-memory",
+            "role": "historical_mirror",
+            "purpose": "Abrir con una preocupación histórica sobre delegar memoria.",
+            "limits": "No equiparar escritura e IA como tecnologías idénticas.",
+        }],
+        "opening_memory_id": "plato-writing-memory",
         "evidence_strategy": "Casos actuales complican una creencia inicial.",
         "central_question": "¿Cuándo deja de ser ayuda y empieza a ser delegación?",
         "thesis": "Al principio parece que el problema es verificar a la máquina.",
@@ -87,11 +94,26 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         for field in fields:
             self.assertIn(field, director)
             self.assertIn(field, writer)
+        self.assertIn("opening_memory_id", director)
+        self.assertIn("opening_memory_id", writer)
+        self.assertIn("mandatory", director)
+        self.assertIn("micro-story", writer)
         self.assertIn("copy that exact selected_news_index", director)
         self.assertIn("never use the source `item_index`", director)
         self.assertIn("selected_news_count", director)
         self.assertIn("1..selected_news_count", director)
         self.assertIn("if selected_news_count is 1", director)
+
+    def test_episode_plan_requires_narrative_memory_opening(self) -> None:
+        plan = valid_plan()
+        plan["narrative_parallels"] = []
+        with self.assertRaises(ValidationError):
+            EpisodePlan.model_validate(plan)
+
+        mismatch = valid_plan()
+        mismatch["opening_memory_id"] = "not-selected"
+        with self.assertRaises(ValidationError):
+            EpisodePlan.model_validate(mismatch)
 
     def test_episode_plan_requires_complete_narrative_arc(self) -> None:
         plan = valid_plan()

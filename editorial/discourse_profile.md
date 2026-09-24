@@ -12,7 +12,7 @@ Pregunta guía del canal:
 
 Regla central:
 
-> Experiencia humana → tensión → espejo histórico → tesis → noticias como evidencia.
+> Micro-historia verificada de Narrative Memory → mecanismo sorprendente → tensión humana → tesis → noticias como evidencia.
 
 Regla de dramaturgia:
 
@@ -48,10 +48,10 @@ No existe obligación de utilizar todas las noticias seleccionadas. Es preferibl
 
 La estructura preferida es:
 
-1. **Observación humana o imagen intrigante.** Algo reconocible, extraño o contraintuitivo que exista aunque el espectador no conozca las noticias de la semana.
-2. **Tensión.** La parte que no termina de cuadrar.
-3. **Misterio central.** La pregunta cuya respuesta todavía no conocemos.
-4. **Espejo histórico.** Un precedente real que cambie la forma de mirar el presente.
+1. **Micro-historia verificada de Narrative Memory.** Un caso recuperado de la biblioteca debe abrir el episodio y ser interesante incluso sin conocer las noticias de la semana.
+2. **Mecanismo sorprendente.** Explicar qué estructura hace útil al caso; no basta con que sea raro.
+3. **Tensión humana.** Conectar ese mecanismo con una experiencia, contradicción o preocupación reconocible.
+4. **Misterio central.** La pregunta cuya respuesta todavía no conocemos.
 5. **Tesis provisional.** Una lectura inicial, deliberadamente incompleta.
 6. **Escena concreta.** Una situación imaginable que haga visible el problema.
 7. **Evidencia actual.** Una noticia entra porque ayuda a investigar el misterio.
@@ -64,16 +64,19 @@ La estructura preferida es:
 
 Esto es una gramática, no una plantilla. Los episodios deben variar su recorrido.
 
-## Apertura: experiencia → tensión → historia → pregunta
+## Apertura: historia verificada → mecanismo → tensión → pregunta
 
 La apertura NO debe comportarse como una introducción de noticias.
 
-La secuencia ideal puede ser:
+La secuencia preferida es:
 
-1. **Algo humano y reconocible** o una imagen extremadamente intrigante.
-2. **Una incomodidad, paradoja o detalle que no encaja.**
-3. **Un referente histórico inesperado pero real**, cuando ayude.
-4. **La pregunta del ensayo.** Solo entonces queda claro qué vamos a investigar.
+1. **Un caso de Narrative Memory inesperado pero real.**
+2. **Una escena y uno o más hechos verificados suficientes para entender por qué sorprende.**
+3. **El mecanismo transferible que revela el caso.**
+4. **Una tensión humana o contemporánea que tenga la misma estructura.**
+5. **La pregunta del ensayo.** Solo entonces queda claro qué vamos a investigar.
+
+El Director debe seleccionar 1–2 registros de Narrative Memory por episodio y uno debe quedar identificado como `opening_memory_id`. El Writer debe desarrollarlo como micro-historia; mencionarlo en una frase no cumple el contrato. Como guía, el caso de apertura puede ocupar aproximadamente 45–90 segundos cuando tenga sustancia suficiente, sin convertir el episodio en una clase de historia.
 
 La noticia puede aparecer después, como evidencia. No existe obligación de mencionar una empresa, modelo, paper o producto en los primeros segundos.
 
@@ -236,8 +239,9 @@ Estos ejemplos pueden usarse como **fuente factual editorial adicional**. El Wri
 
 ## Uso de historia durante el episodio
 
-- Usar un paralelo histórico fuerte cerca de la apertura cuando exista una conexión honesta.
-- Incluir normalmente uno o dos paralelos adicionales durante el desarrollo si ayudan a explicar una dimensión diferente.
+- Usar exactamente un paralelo de Narrative Memory como apertura obligatoria.
+- Incluir como máximo un segundo paralelo de Narrative Memory durante el desarrollo si ayuda a explicar una dimensión diferente.
+- Los referentes históricos curados de este documento pueden complementar, pero no sustituir, el paralelo obligatorio recuperado de Narrative Memory.
 - No convertir el guion en clase de historia.
 - Una referencia histórica debe revelar algo: una preocupación antigua, un resultado contraintuitivo, un cambio institucional o una analogía humana útil.
 - Si la relación es débil, no usarla.

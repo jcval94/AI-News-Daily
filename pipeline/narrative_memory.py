@@ -214,15 +214,16 @@ def rank_candidates(
                 days_since_use = (target_date - date.fromisoformat(str(last_used_raw))).days
             except ValueError:
                 days_since_use = None
-        if days_since_use is not None and days_since_use < cooldown_days:
-            continue
+        cooldown_active = days_since_use is not None and days_since_use < cooldown_days
+        cooldown_remaining = max(0, cooldown_days - days_since_use) if cooldown_active and days_since_use is not None else 0
 
         c_tokens = _tokens(_candidate_text(item))
         overlap = len(q_tokens & c_tokens)
         lexical = overlap / math.sqrt(max(1, len(q_tokens)) * max(1, len(c_tokens)))
         quality = _quality(item)
         use_penalty = min(0.20, 0.05 * int(history.get("times_used", 0) or 0))
-        score = (0.78 * lexical) + (0.22 * quality) - use_penalty
+        cooldown_penalty = 0.35 if cooldown_active else 0.0
+        score = (0.78 * lexical) + (0.22 * quality) - use_penalty - cooldown_penalty
 
         scored.append(
             (
@@ -235,11 +236,20 @@ def rank_candidates(
                     "times_used": int(history.get("times_used", 0) or 0),
                     "last_used_at": last_used_raw,
                     "cooldown_days": cooldown_days,
+                    "cooldown_active": cooldown_active,
+                    "cooldown_remaining_days": cooldown_remaining,
                 },
             )
         )
 
-    scored.sort(key=lambda row: (row[0], _quality(row[1])), reverse=True)
+    scored.sort(
+        key=lambda row: (
+            not bool(row[2].get("cooldown_active")),
+            row[0],
+            _quality(row[1]),
+        ),
+        reverse=True,
+    )
 
     # Greedy diversity: avoid filling the candidate set with the same primary mechanism.
     selected: list[dict[str, Any]] = []
@@ -267,11 +277,19 @@ def resolve_selected_memory(
     plan: dict[str, Any],
     candidates: list[dict[str, Any]],
     *,
+    min_selected: int = 1,
     max_selected: int = 2,
 ) -> list[dict[str, Any]]:
     refs = plan.get("narrative_parallels", []) if isinstance(plan, dict) else []
+    if len(refs) < min_selected:
+        raise ValueError(f"episode_plan must select at least {min_selected} narrative parallel")
     if len(refs) > max_selected:
         raise ValueError(f"episode_plan selects more than {max_selected} narrative parallels")
+
+    opening_memory_id = str(plan.get("opening_memory_id", "") or "").strip()
+    ref_ids = [str(ref.get("memory_id", "") or "").strip() for ref in refs if isinstance(ref, dict)]
+    if not opening_memory_id or opening_memory_id not in ref_ids:
+        raise ValueError("episode_plan.opening_memory_id must reference a selected narrative parallel")
 
     catalog = {str(item.get("id", "")): item for item in candidates}
     selected: list[dict[str, Any]] = []

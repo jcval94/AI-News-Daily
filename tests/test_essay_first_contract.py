@@ -7,7 +7,7 @@ class EssayFirstContractTests(unittest.TestCase):
         agent = Path("app/agent.py").read_text(encoding="utf-8")
 
         self.assertIn(
-            "HUMAN EXPERIENCE -> TENSION -> HISTORICAL MIRROR -> CENTRAL QUESTION -> PROVISIONAL THESIS -> CURRENT NEWS AS EVIDENCE",
+            "NARRATIVE MEMORY MICRO-STORY -> HUMAN TENSION -> CENTRAL QUESTION -> PROVISIONAL THESIS -> CURRENT NEWS AS EVIDENCE",
             agent,
         )
         self.assertIn("Formulate the central question BEFORE deciding which selected stories will appear", agent)
@@ -15,12 +15,14 @@ class EssayFirstContractTests(unittest.TestCase):
         self.assertIn("Prefer 2-4 strong pieces of evidence when available", agent)
         self.assertIn("1 strong piece is valid when selected_news_count is 1", agent)
         self.assertIn("never invent evidence to satisfy a target count", agent)
+        self.assertIn("This is mandatory", agent)
+        self.assertIn("opening_memory_id", agent)
 
     def test_writer_rejects_news_desk_opening(self) -> None:
         agent = Path("app/agent.py").read_text(encoding="utf-8")
 
         self.assertIn("The essay is the product. The news is evidence.", agent)
-        self.assertIn("Begin from the human observation/tension in episode_plan.hook and narrative_arc.opening_belief / central_mystery, not from a headline", agent)
+        self.assertIn("Begin with the Narrative Memory record identified by episode_plan.opening_memory_id, not from a current headline", agent)
         self.assertIn("Do NOT default to “hoy salió una noticia”", agent)
         self.assertIn("Never announce “la segunda noticia”", agent)
         self.assertIn("Connect evidence through ideas, not through artificial transitions between headlines", agent)
@@ -29,7 +31,7 @@ class EssayFirstContractTests(unittest.TestCase):
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
         voice = Path("editorial/voice_profile.md").read_text(encoding="utf-8").lower()
 
-        self.assertIn("experiencia humana → tensión → espejo histórico → tesis → noticias como evidencia", discourse)
+        self.assertIn("micro-historia verificada de narrative memory → mecanismo sorprendente → tensión humana → tesis → noticias como evidencia", discourse)
         self.assertIn("la noticia no es el producto", voice)
         self.assertIn("el ensayo es el producto", voice)
         self.assertIn("40% información y 60% reflexión", voice)
@@ -39,8 +41,8 @@ class EssayFirstContractTests(unittest.TestCase):
         contract = Path("docs/essay_first_contract.md").read_text(encoding="utf-8").lower()
 
         self.assertIn("the essay is the product. the news is evidence.", contract)
-        self.assertIn("human observation", contract)
-        self.assertIn("historical mirror", contract)
+        self.assertIn("narrative memory micro-story", contract)
+        self.assertIn("human tension", contract)
         self.assertIn("evidence strategy", contract)
         self.assertIn("counterexample", contract)
         self.assertIn("limit_case", contract)
