@@ -35,12 +35,13 @@ references:
     adopted_principle: "Keep the grammar NLE-neutral but compatible with documentary/interview workflows."
 
 enforcement:
+  mode: observe
   default: advisory
-  fail_closed:
+  promotion_blocking: false
+  future_fail_closed_candidates:
     - invalid_transition
     - unknown_visual_role
-    - invalid_duration_rule
-  principle: "Creative suggestions may deviate, but deterministic lint must make every deviation visible."
+  principle: "Creative suggestions may deviate, but deterministic lint must make every deviation visible. Promote only after real retention data justifies hard gates."
 
 presenter:
   home_base: true
@@ -64,7 +65,7 @@ opening:
   dense_visual_window_seconds: 20.0
   presenter_anchor_deadline_seconds: 6.0
   presenter_anchor_min_seconds: 3.0
-  maximum_continuous_media_seconds: 9.0
+  maximum_continuous_media_seconds: 18.0
   rhythm_shot_seconds:
     min: 2.5
     preferred: 3.5
@@ -76,9 +77,14 @@ transitions:
   allowed:
     - hard_cut
     - none
+    - match_cut
     - cross_dissolve
     - dip_to_black
   rare:
+    match_cut:
+      use_for:
+        - visual_analogy
+        - meaningful_shape_or_motion_match
     cross_dissolve:
       use_for:
         - passage_of_time
