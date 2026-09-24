@@ -62,6 +62,17 @@ class RealVirtualTimelineReplayTests(unittest.TestCase):
         self.assertIn("recorded_media_required", readiness["blockers_for_final"])
         self.assertIn("recording_retime_required", readiness["blockers_for_final"])
 
+
+    def test_real_replay_carries_capture_format_and_markers(self):
+        self.assertEqual(self.payload["format"]["resolution"], "3840x2160")
+        self.assertEqual(self.payload["format"]["frame_rate_fps"], 30)
+        self.assertEqual(self.payload["format"]["audio_sample_rate_hz"], 48000)
+        take_markers = [item for item in self.payload["markers"] if item["kind"] == "take"]
+        self.assertEqual(len(take_markers), 25)
+        self.assertEqual(take_markers[0]["take_id"], "opening_t01")
+        self.assertEqual(take_markers[-1]["take_id"], "cta_t01")
+
+
     def test_preview_is_standalone_and_exposes_track_ids(self):
         lower = self.preview.lower()
         self.assertIn("<!doctype html>", lower)
