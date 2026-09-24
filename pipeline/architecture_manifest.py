@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 
-ARCHITECTURE_VERSION = 9
+ARCHITECTURE_VERSION = 10
 
 LAYERS = [
     {
@@ -67,7 +67,8 @@ STAGES: list[dict[str, Any]] = [
     {"id": "edit_manifest", "kind": "deterministic", "title": "Contrato de edición pre-recording", "summary": "Convierte guion, secciones y multimedia en un timeline presenter-first con cues de director separados de la narración. Declara readiness explícito y nunca finge frame accuracy antes de grabar.", "inputs": "script.txt + script_sections.json + multimedia plan/manifest", "outputs": "multimedia/<date>/edit_manifest.json", "authority": "Python; señales de dirección son sugerencias y no pueden cambiar hechos ni narración", "code": "pipeline/edit_manifest.py · config/edit_manifest.schema.json", "trace_steps": []},
     {"id": "recording_pack", "kind": "deterministic", "title": "Recording Pack + teleprompter", "summary": "Parte el ensayo aprobado en takes grabables de ~20–60 s sin alterar la narración, añade claquetas estables y contexto de edición, y genera un teleprompter HTML autónomo.", "inputs": "script aprobado + script_sections + production_script + edit_manifest opcional", "outputs": "recording_pack.json + camera_script.md + teleprompter.html (standalone offline)", "authority": "Python; script.txt permanece autoridad editorial", "code": "pipeline/recording_pack.py · config/recording_pack.schema.json · build-video-kit.yml", "trace_steps": []},
     {"id": "virtual_timeline", "kind": "deterministic", "title": "Virtual A-roll + timeline abstracto", "summary": "Materializa V1/A1 como placeholders reemplazables por take_id y superpone V2 con assets o placeholders explícitos. Permite revisar el montaje antes de grabar sin fingir timecode real.", "inputs": "recording_pack.json + edit_manifest.json", "outputs": "virtual_timeline.json + timeline_preview.html", "authority": "Python; timeline estimado, NLE-neutral y not frame-accurate", "code": "pipeline/virtual_timeline.py · config/virtual_timeline.schema.json · build-video-kit.yml", "trace_steps": []},
-    {"id": "report_promote", "kind": "deterministic", "title": "Estado, trazas, reporte y promoción", "summary": "Persiste evidencia del run y solo promueve si script, Production Script, Recording Pack, Virtual Timeline, reporte y —cuando se pidió— multimedia densa terminaron correctamente.", "inputs": "artefactos + gate final + resultado multimedia + recording/edit handoff", "outputs": "run_state + execution_trace + run_report + canon opcional", "authority": "Python/GitHub Actions", "code": "pipeline/report.py · build-video-kit.yml", "trace_steps": []},
+    {"id": "otio_export", "kind": "deterministic", "title": "OpenTimelineIO nativo", "summary": "Serializa el timeline abstracto a OTIO 0.18.1 con tracks, gaps, markers, MissingReference/ExternalReference y metadata de reemplazo; vuelve a leer el archivo y valida duración, orden, clips y markers antes de promover.", "inputs": "virtual_timeline.json", "outputs": "timeline.otio + timeline_otio_validation.json", "authority": "OpenTimelineIO otio_json + Python; intercambio lossless del contrato usado, todavía pre-recording", "code": "pipeline/otio_export.py · docs/otio_export.md · build-video-kit.yml", "trace_steps": []},
+    {"id": "report_promote", "kind": "deterministic", "title": "Estado, trazas, reporte y promoción", "summary": "Persiste evidencia del run y solo promueve si script, Production Script, Recording Pack, Virtual Timeline, OTIO round-trip, reporte y —cuando se pidió— multimedia densa terminaron correctamente.", "inputs": "artefactos + gate final + resultado multimedia + recording/edit handoff", "outputs": "run_state + execution_trace + run_report + canon opcional", "authority": "Python/GitHub Actions", "code": "pipeline/report.py · build-video-kit.yml", "trace_steps": []},
     {"id": "narrative_memory_observability", "kind": "deterministic", "title": "Observabilidad de Narrative Memory", "summary": "Pages cruza biblioteca verificada con episodios aprobados para mostrar cobertura, calidad, uso real, disponibilidad y cooldown sin nuevas llamadas de modelo.", "inputs": "editorial/narrative_memory.jsonl + scripts/ aprobados", "outputs": "pages-site/memory/index.html + narrative-memory.json", "authority": "Python determinista", "code": "pipeline/narrative_memory_dashboard.py · editorial-review-hub.yml", "trace_steps": []},
     {"id": "pages", "kind": "pages", "title": "Artifact productivo → Review Hub → GitHub Pages", "summary": "Pages consume el ai-news-run real como fuente canónica. Editorial Regression queda como lane separada de QA; Review Hub reutiliza multimedia productiva válida y solo reconstruye artifacts legacy/sparse.", "inputs": "ai-news-run-* + pricing + historia de Review Hub", "outputs": "review-site + cost_snapshot + pages-site + health + Narrative Memory", "authority": "Workflows deterministas", "code": "editorial-review-hub.yml · editorial-regression.yml", "trace_steps": []},
 ]
@@ -91,8 +92,9 @@ DECISION_FLOW = [
     "Guion + multimedia → editing_style versionado → edit_manifest pre-recording + style_warnings",
     "Production Script → Recording Pack + camera script + teleprompter autónomo",
     "Recording Pack + edit_manifest → Virtual A-roll + timeline_preview",
-    "¿Multimedia solicitada no cumple su gate o falla Recording Pack/Virtual Timeline? → se preserva el run, no se promueve",
-    "¿Script + Production Script + Recording Pack + Virtual Timeline + report + media solicitada pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
+    "Virtual Timeline → timeline.otio → read-back/round-trip validation",
+    "¿Multimedia solicitada no cumple su gate o falla Recording Pack/Virtual Timeline/OTIO? → se preserva el run, no se promueve",
+    "¿Script + Production Script + Recording Pack + Virtual Timeline + OTIO + report + media solicitada pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
 ]
 
 DESIGN_DECISIONS = [
@@ -106,6 +108,7 @@ DESIGN_DECISIONS = [
     ("Estilo observable antes de gatearlo", "La gramática audiovisual empieza como defaults + lint. Sus umbrales numéricos solo deberían endurecerse después de comparar varios episodios publicados con retención real."),
     ("Takes estables antes de alinear", "La grabación se divide determinísticamente en bloques cortos con IDs/claquetas reutilizables para que el futuro ingest pueda identificar retakes sin depender de un agente."),
     ("A-roll virtual antes de A-roll real", "Cada take existe primero como placeholder reemplazable en V1/A1; los cues de B-roll se superponen sin borrar esa continuidad. La grabación real reemplaza y retemporiza, no redefine la arquitectura."),
+    ("OTIO como frontera de intercambio", "virtual_timeline.json conserva semántica de producto; timeline.otio traduce a un modelo editorial estándar y round-trip validado. Los detalles de Resolve permanecen fuera de esta capa."),
     ("Discovery separado de derechos", "YouTube se usa para encontrar y rankear candidatos; metadata, atribución o duración breve no se tratan como permiso de descarga, edición, publicación o fair use."),
     ("Producción es la fuente de verdad de Pages", "Review Hub observa el artifact que realmente salió de Build AI News Video Kit; Regression queda como QA independiente."),
     ("Sin LLM como controlador", "Python decide routing, retries, límites, estado y publicación."),
