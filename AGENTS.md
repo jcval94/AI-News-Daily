@@ -159,6 +159,8 @@ Every model-backed attempted episode should preserve:
 
 `pipeline/architecture_manifest.py` is the living architecture source consumed by the E2E teaching view. `pipeline/run_journey.py` reconstructs observed execution from persisted production artifacts and must not treat Review Hub-only media reconstruction as production provenance.
 
+`pipeline/narrative_memory_dashboard.py` is deterministic observability only. It may summarize the verified library and approved usage history for Pages, but it must not mutate Narrative Memory, select parallels for an episode, or create a second usage ledger. Its usage metrics must be derived from approved episode plans.
+
 ## Output isolation
 
 GitHub Actions must generate into `.pipeline-runs/<date>/<run-id>/` first. Only an approved run may replace canonical episode directories. Never write a partial/unapproved attempt directly over canonical outputs.
