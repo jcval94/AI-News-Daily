@@ -10,6 +10,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from pipeline import run as pipeline_run
+from pipeline.news import stable_news_id
 
 
 def plan_payload() -> dict:
@@ -68,6 +69,14 @@ def marked_script() -> str:
     )
 
 
+TEST_NEWS_ID = stable_news_id(
+    title="Caso",
+    source="Primaria",
+    url="https://example.com/case",
+    item_index=1,
+)
+
+
 def write_news(news: Path) -> None:
     (news / "2026-08-20.txt").write_text(
         "# Noticias\n\n## 1. Caso\nFecha: 2026-08-20\nFuente: Primaria\nEnlace: https://example.com/case\nCategoría: agentes\nResumen: Caso verificable\nPor qué importa: Impacto\n",
@@ -82,7 +91,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":
-                return {"selected_news": {"items": [{"news_id": "2026-08-20:1", "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
+                return {"selected_news": {"items": [{"news_id": TEST_NEWS_ID, "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
             if step == "plan_episode":
                 return {"episode_plan": plan_payload()}
             if step == "write_script":
@@ -112,7 +121,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":
-                return {"selected_news": {"items": [{"news_id": "2026-08-20:1", "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
+                return {"selected_news": {"items": [{"news_id": TEST_NEWS_ID, "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
             if step in {"plan_episode", "replan_episode_novelty"}:
                 return {"episode_plan": plan_payload()}
             self.fail(f"Unexpected step {step}")
