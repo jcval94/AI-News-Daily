@@ -175,10 +175,10 @@ def _build_track(
             )
         )
         cursor = end
-    if cursor < timeline_duration - 0.02:
-        track.append(_gap(timeline_duration - cursor, rate, reason="tail gap"))
     if not clips and timeline_duration > 0:
         track.append(_gap(timeline_duration, rate, reason="empty reserved track"))
+    elif cursor < timeline_duration - 0.02:
+        track.append(_gap(timeline_duration - cursor, rate, reason="tail gap"))
     return track
 
 
