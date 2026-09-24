@@ -183,6 +183,7 @@ def lint_timeline(
     run_start = 0.0
     run_end = 0.0
     run_ids: list[str] = []
+    media_cues: dict[str, dict[str, Any]] = {}
 
     def finish_run(mode: str | None, start: float, end: float, ids: list[str]) -> None:
         if not mode:
@@ -234,40 +235,69 @@ def lint_timeline(
         if mode != "media":
             continue
         role = str(director.get("visual_role", "") or "")
+        cue_key = str(item.get("cue_id", "") or segment_id)
+        existing = media_cues.get(cue_key)
+        if existing is None:
+            media_cues[cue_key] = {
+                "role": role,
+                "start_seconds": start,
+                "end_seconds": end,
+                "segment_ids": [segment_id],
+                "transition_in": str(director.get("transition_in", "") or ""),
+            }
+        else:
+            existing["start_seconds"] = min(float(existing["start_seconds"]), start)
+            existing["end_seconds"] = max(float(existing["end_seconds"]), end)
+            existing["segment_ids"].append(segment_id)
+            if role and existing.get("role") and role != existing.get("role"):
+                warnings.append({
+                    "code": "cue_role_inconsistent",
+                    "severity": "warning",
+                    "message": f"{cue_key} changes visual role across timeline fragments.",
+                    "segment_ids": list(existing["segment_ids"]),
+                })
+
+    finish_run(current_mode, run_start, run_end, run_ids)
+
+    for cue_key, cue in media_cues.items():
+        role = str(cue.get("role", "") or "")
+        segment_ids = list(cue.get("segment_ids", []) or [])
         if role not in roles:
             warnings.append({
                 "code": "unknown_visual_role",
                 "severity": "error",
-                "message": f"{segment_id} uses unknown visual_role={role!r}.",
-                "segment_ids": [segment_id],
+                "message": f"{cue_key} uses unknown visual_role={role!r}.",
+                "segment_ids": segment_ids,
             })
             continue
         duration_rule = roles[role].get("duration_seconds", {})
         minimum = float(duration_rule.get("min", 0) or 0)
         maximum = float(duration_rule.get("max", 0) or 0)
-        length = max(0.0, end - start)
+        length = max(
+            0.0,
+            float(cue.get("end_seconds", 0) or 0)
+            - float(cue.get("start_seconds", 0) or 0),
+        )
         if minimum and length < minimum - 0.05:
             warnings.append({
                 "code": "media_segment_short",
                 "severity": "info",
-                "message": f"{segment_id} ({role}) is {length:.1f}s, below preferred style floor {minimum:.1f}s.",
-                "segment_ids": [segment_id],
+                "message": f"{cue_key} ({role}) is {length:.1f}s, below preferred style floor {minimum:.1f}s.",
+                "segment_ids": segment_ids,
             })
         if maximum and length > maximum + 0.05:
             warnings.append({
                 "code": "media_segment_long",
                 "severity": "warning",
-                "message": f"{segment_id} ({role}) is {length:.1f}s, above style ceiling {maximum:.1f}s.",
-                "segment_ids": [segment_id],
+                "message": f"{cue_key} ({role}) is {length:.1f}s, above style ceiling {maximum:.1f}s.",
+                "segment_ids": segment_ids,
             })
-
-    finish_run(current_mode, run_start, run_end, run_ids)
 
     rare = {"none", "hard_cut"}
     visible_count = sum(
         1
-        for item in timeline
-        if str((item.get("director") or {}).get("transition_in", "") or "") not in rare
+        for cue in media_cues.values()
+        if str(cue.get("transition_in", "") or "") not in rare
     )
     per_minute = visible_count / max(float(duration_seconds) / 60.0, 0.01)
     maximum_visible = float(style.get("transitions", {}).get("maximum_visible_transitions_per_minute", 0) or 0)
