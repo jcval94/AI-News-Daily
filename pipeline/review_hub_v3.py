@@ -4,6 +4,7 @@ from pathlib import Path
 
 from pipeline.review_hub_v2 import build_site as _build_site_v2
 from pipeline.review_hub_v2 import parse_args
+from pipeline.review_video_preview import upgrade_lazy_video_previews
 
 
 def _replace_once(document: str, needle: str, replacement: str, *, label: str) -> str:
@@ -77,7 +78,7 @@ details.diagnostic>summary{display:flex;align-items:center;justify-content:space
         '<span id="searchCount" class="search-count" aria-live="polite">',
         label="search count",
     )
-    return document
+    return upgrade_lazy_video_previews(document)
 
 
 def build_site(

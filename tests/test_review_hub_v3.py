@@ -14,7 +14,7 @@ class ReviewHubV3Tests(unittest.TestCase):
 </head><body><main class=\"wrap\">
 <input id=\"globalSearch\" type=\"search\" autocomplete=\"off\">
 <span id=\"searchCount\" class=\"search-count\">Busca en todo el hub</span>
-<video controls preload='metadata'></video>
+<article class='media-card'><video controls preload='metadata'><source src='clip.mp4' type='video/mp4'></video></article>
 <a href='asset.jpg' target='_blank'><img src='asset.jpg' loading='lazy' alt='asset'></a>
 </main></body></html>"""
 
@@ -32,6 +32,10 @@ class ReviewHubV3Tests(unittest.TestCase):
         self.assertIn("prefers-reduced-motion", upgraded)
         self.assertIn("content-visibility:auto", upgraded)
         self.assertIn('name="description"', upgraded)
+        self.assertIn('data-lazy-video-preview="v1"', upgraded)
+        self.assertIn("IntersectionObserver", upgraded)
+        self.assertIn("MAX_CONCURRENT_PREVIEWS = 2", upgraded)
+        self.assertIn("video.currentTime = target", upgraded)
 
 
 if __name__ == "__main__":

@@ -66,6 +66,30 @@ class PagesHistoryTests(unittest.TestCase):
             self.assertEqual(added, 2)
             self.assertEqual(len(seen), 3)
 
+    def test_historical_episode_video_preview_is_lazy_and_backfilled(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            snapshot = self._snapshot(root / "snapshot", ["2026-09-04"])
+            episode_index = snapshot / "episodes" / "2026-09-04" / "index.html"
+            document = episode_index.read_text(encoding="utf-8").replace(
+                "</body>",
+                "<article class='media-card'><video controls preload='none'><source src='media/clip.mp4' type='video/mp4'></video></article></body>",
+            )
+            episode_index.write_text(document, encoding="utf-8")
+
+            output = root / "pages"
+            (output / "episodes").mkdir(parents=True)
+            seen = {"2026-09-05"}
+            added = merge_catalog_snapshot(snapshot, output, seen, limit=2)
+
+            self.assertEqual(added, 1)
+            recovered = (output / "episodes" / "2026-09-04" / "index.html").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn('data-lazy-video-preview="v1"', recovered)
+            self.assertIn("MAX_CONCURRENT_PREVIEWS = 2", recovered)
+            self.assertIn("IntersectionObserver", recovered)
+
     def test_artifact_rank_prefers_lightweight_review_hint_but_names_are_not_required(self) -> None:
         artifacts = [
             ArtifactMeta(1, "random-heavy", 1, 200_000_000, "2026-09-06T10:00:00Z"),

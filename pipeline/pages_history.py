@@ -12,6 +12,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
+from pipeline.review_video_preview import upgrade_lazy_video_previews
+
 _DATE_RE = re.compile(r"(?<!\d)(20\d{2}-\d{2}-\d{2})(?!\d)")
 _EPISODE_MARKERS = ('id="globalSearch"', 'data-tab="overview"')
 _CATALOG_MARKERS = ('class="episode-sidebar"', 'id="episodeFrame"')
@@ -129,6 +131,18 @@ def discover_episode_sites(root: Path, artifact_name: str = "") -> list[tuple[st
     return found
 
 
+def _patch_episode_site(site_root: Path) -> None:
+    """Upgrade recovered historical HTML without rebuilding or eagerly loading its videos."""
+    index = site_root / "index.html"
+    try:
+        document = index.read_text(encoding="utf-8")
+    except OSError:
+        return
+    upgraded = upgrade_lazy_video_previews(document)
+    if upgraded != document:
+        index.write_text(upgraded, encoding="utf-8")
+
+
 def merge_catalog_snapshot(
     snapshot_root: Path,
     output_root: Path,
@@ -150,6 +164,7 @@ def merge_catalog_snapshot(
             continue
         destination = output_root / "episodes" / episode_dir.name
         shutil.copytree(episode_dir, destination, dirs_exist_ok=True)
+        _patch_episode_site(destination)
         seen_dates.add(episode_dir.name)
         added += 1
     return added
@@ -166,6 +181,7 @@ def merge_episode_site(
         return False
     destination = output_root / "episodes" / episode_date
     shutil.copytree(site_root, destination, dirs_exist_ok=True)
+    _patch_episode_site(destination)
     seen_dates.add(episode_date)
     return True
 
@@ -219,7 +235,9 @@ def recover_history(
     output_root.mkdir(parents=True, exist_ok=True)
     episodes_root = output_root / "episodes"
     episodes_root.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(current_site, episodes_root / current_date, dirs_exist_ok=True)
+    current_destination = episodes_root / current_date
+    shutil.copytree(current_site, current_destination, dirs_exist_ok=True)
+    _patch_episode_site(current_destination)
     seen_dates = {current_date}
 
     payload = artifact_payload if artifact_payload is not None else _gh_json(repository)
