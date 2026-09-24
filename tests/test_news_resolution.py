@@ -16,6 +16,7 @@ from pipeline.news_resolution import (
     load_news_for_date,
 )
 from pipeline.source_coverage import evaluate_source_coverage
+from pipeline.source_naming import latest_source_date
 
 
 NEWS_TEMPLATE = """## 1. Example AI development
@@ -67,6 +68,47 @@ class NewsResolutionTests(unittest.TestCase):
             path, items = load_news_for_date(root, date(2026, 9, 5))
             self.assertEqual(path, expected)
             self.assertEqual(len(items), 1)
+
+    def test_latest_source_date_accepts_hour_minute_second_filenames(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._write(root, "2026-09-22-23-59-59.txt", "2026-09-22", "older-day")
+            self._write(root, "2026-09-23-00-00-01.txt", "2026-09-23", "latest-day")
+            self._write(root, "2026-09-21.txt", "2026-09-21", "legacy")
+            self.assertEqual(latest_source_date(root), date(2026, 9, 23))
+
+    def test_latest_source_date_accepts_prefixed_timestamp_and_content_only_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._write(
+                root,
+                "ai-news_2026-09-24_14-03-59_capture.txt",
+                "2026-09-24",
+                "timestamped",
+            )
+            self._write(root, "captura-final.txt", "2026-09-23", "content-only")
+            self.assertEqual(latest_source_date(root), date(2026, 9, 24))
+
+    def test_news_ids_are_opaque_and_stable_across_timestamped_filenames(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            first = self._write(
+                root,
+                "2026-09-23-08-00-00.txt",
+                "2026-09-23",
+                "same-story",
+            )
+            second = self._write(
+                root,
+                "2026-09-23-14-43-00.txt",
+                "2026-09-23",
+                "same-story",
+            )
+            first_id = parse_news_file(first)[0].news_id
+            second_id = parse_news_file(second)[0].news_id
+            self.assertRegex(first_id, r"^n_[0-9a-f]{16}$")
+            self.assertEqual(first_id, second_id)
+            self.assertNotIn("2026-09-23", first_id)
 
     def test_latest_timestamped_source_wins_over_legacy(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
