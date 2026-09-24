@@ -208,9 +208,28 @@ def enforce_opening_dense_media(
     if not opening_numbers or max_media_downloads <= 0:
         return [by_slot[number] for number in sorted(by_slot)]
 
-    # With the default budget, fill every ~3.5s opening slot; five is the minimum guardrail.
-    required = min(len(opening_numbers), max_media_downloads)
-    current_opening = [number for number in opening_numbers if by_slot.get(number, {}).get("mode") == "media"]
+    # Preserve an early human anchor when the slot cadence leaves at least five
+    # additional media opportunities in the first 20 seconds. With fewer slots,
+    # preserve the historical five-media minimum instead of creating a false choice.
+    preserve_presenter_anchor = len(opening_numbers) >= 6
+    anchor_number = opening_numbers[0] if preserve_presenter_anchor else None
+    if anchor_number is not None:
+        by_slot[anchor_number] = {
+            **by_slot[anchor_number],
+            "mode": "presenter",
+            "visual_query": "",
+            "on_screen_text": "",
+            "reason": "Editing style: establish presenter before dense cold-open montage",
+        }
+    opening_media_numbers = [
+        number for number in opening_numbers if number != anchor_number
+    ]
+    required = min(len(opening_media_numbers), max_media_downloads)
+    current_opening = [
+        number
+        for number in opening_media_numbers
+        if by_slot.get(number, {}).get("mode") == "media"
+    ]
     if len(current_opening) >= required:
         return [by_slot[number] for number in sorted(by_slot)]
 
@@ -225,7 +244,7 @@ def enforce_opening_dense_media(
         if item.get("mode") == "media" and int(item.get("slot_number", 0) or 0) not in opening_numbers
     ]
 
-    for index, number in enumerate(opening_numbers):
+    for index, number in enumerate(opening_media_numbers):
         if by_slot.get(number, {}).get("mode") == "media":
             continue
         while total_media >= max_media_downloads and late_media:
@@ -387,7 +406,7 @@ def write_bundle_readme(output_dir: Path, *, target_date: str, manifest: list[di
         "",
         "This bundle is for editorial review only; it does not imply episode approval.",
         "",
-        "Cold-open rule: the first 20 seconds prioritize motion/video with cuts every ~3–4 seconds.",
+        "Cold-open rule: establish the presenter early, then prioritize motion/video through the first 20 seconds with purposeful ~3–4 second shots.",
         "",
         "Folders are associated to narrative beats, not news order:",
         "`B##_beat-id__E_evidence-id/...`.",
