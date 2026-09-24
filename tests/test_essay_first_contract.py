@@ -12,7 +12,9 @@ class EssayFirstContractTests(unittest.TestCase):
         )
         self.assertIn("Formulate the central question BEFORE deciding which selected stories will appear", agent)
         self.assertIn("News is supporting evidence, never the product itself", agent)
-        self.assertIn("Prefer 2-4 strong pieces of evidence to 6-8 shallow mentions", agent)
+        self.assertIn("Prefer 2-4 strong pieces of evidence when available", agent)
+        self.assertIn("1 strong piece is valid when selected_news_count is 1", agent)
+        self.assertIn("never invent evidence to satisfy a target count", agent)
 
     def test_writer_rejects_news_desk_opening(self) -> None:
         agent = Path("app/agent.py").read_text(encoding="utf-8")
