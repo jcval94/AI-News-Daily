@@ -42,8 +42,13 @@ class OfflineReviewMediaTests(unittest.TestCase):
         )
         media = [item for item in plan if item.get("mode") == "media"]
         opening_media = [item for item in media if float(item["start_seconds"]) < 20]
-        self.assertEqual(len(opening_media), 6)
+        self.assertEqual(len(opening_media), 5)
         self.assertTrue(all(item["preferred_asset_type"] == "video" for item in opening_media))
+        opening_presenter = [
+            item for item in plan
+            if item.get("mode") == "presenter" and float(item["start_seconds"]) < 6
+        ]
+        self.assertEqual(len(opening_presenter), 1)
         self.assertEqual({item["section_key"] for item in media if item["start_seconds"] >= 20}, {"beat:b1", "beat:b2", "beat:b3", "synthesis"})
         self.assertGreater(max(float(item["end_seconds"]) for item in media), 600)
         b1 = next(item for item in media if item["section_key"] == "beat:b1")
