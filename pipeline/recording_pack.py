@@ -397,6 +397,12 @@ def build_recording_pack(
             "edit_manifest": f"multimedia/{episode_date}/edit_manifest.json",
             "script_sha256": _script_sha256(script),
         },
+        "editing_style": (
+            dict(edit_manifest.get("editing_style", {}))
+            if isinstance(edit_manifest, dict)
+            and isinstance(edit_manifest.get("editing_style"), dict)
+            else {"applied": False}
+        ),
         "take_policy": {
             "min_seconds": float(min_take_seconds),
             "target_seconds": float(target_take_seconds),
