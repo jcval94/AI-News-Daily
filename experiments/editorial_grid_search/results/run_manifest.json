@@ -1,10 +1,27 @@
 {
-  "schema_version": 1,
-  "generated_at_utc": "2026-09-24T23:43:12.208623+00:00",
+  "schema_version": 2,
+  "generated_at_utc": "2026-09-24T23:51:05.642380+00:00",
+  "source_workflow_run_id": 36073833346,
   "configuration_count": 20,
   "fold_count": 3,
   "expected_scripts": 60,
-  "completed_scripts": 41,
-  "error_cells": 19,
-  "complete": false
+  "completed_scripts": 60,
+  "error_cells": 0,
+  "complete": true,
+  "length_compliant_scripts": 44,
+  "factuality_risk_counts": {
+    "low": 1,
+    "medium": 59,
+    "high": 0
+  },
+  "ai_smell_risk_counts": {
+    "low": 37,
+    "medium": 23,
+    "high": 0
+  },
+  "top_config": "g19_turn_minimal_5b",
+  "baseline_config": "g00_current_like",
+  "top_mean_balanced_score": 7.2833,
+  "baseline_mean_balanced_score": 6.7267,
+  "paired_delta_vs_baseline": 0.5567
 }
