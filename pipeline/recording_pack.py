@@ -141,13 +141,28 @@ def split_recording_takes(
     if current:
         chunks.append(current)
 
-    # Avoid a tiny final take when it can be safely merged with the previous take.
-    if len(chunks) >= 2:
-        tail_words = sum(word_count(item) for item in chunks[-1])
-        prev_words = sum(word_count(item) for item in chunks[-2])
-        if tail_words < min_words and prev_words + tail_words <= max_words:
-            chunks[-2].extend(chunks[-1])
-            chunks.pop()
+    # Avoid tiny tails. Merge when possible; otherwise rebalance whole sentence/clause
+    # units from the previous take without crossing min/max bounds.
+    for index in range(len(chunks) - 1, 0, -1):
+        current_words = sum(word_count(item) for item in chunks[index])
+        if current_words >= min_words:
+            continue
+        previous_words = sum(word_count(item) for item in chunks[index - 1])
+        if previous_words + current_words <= max_words:
+            chunks[index - 1].extend(chunks[index])
+            chunks.pop(index)
+            continue
+        while current_words < min_words and len(chunks[index - 1]) > 1:
+            candidate = chunks[index - 1][-1]
+            candidate_words = word_count(candidate)
+            if previous_words - candidate_words < min_words:
+                break
+            if current_words + candidate_words > max_words:
+                break
+            chunks[index - 1].pop()
+            chunks[index].insert(0, candidate)
+            previous_words -= candidate_words
+            current_words += candidate_words
 
     result = [" ".join(chunk).strip() for chunk in chunks if chunk]
     if _normalize_text(" ".join(result)) != _normalize_text(text):
@@ -257,6 +272,10 @@ def _edit_cues_for_take(
 
 
 def _cta_section(production_script: dict[str, Any]) -> dict[str, Any] | None:
+    # An existing CTA already belongs to the approved script and therefore to
+    # script_sections.json. Append only a production-injected CTA; never duplicate narration.
+    if isinstance(production_script, dict) and production_script.get("cta_injected") is False:
+        return None
     sections = production_script.get("sections", []) if isinstance(production_script, dict) else []
     for section in reversed(sections):
         if isinstance(section, dict) and str(section.get("kind", "") or "") == "cta":
