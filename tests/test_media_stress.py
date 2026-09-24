@@ -20,6 +20,25 @@ class MediaStressTests(unittest.TestCase):
         self.assertEqual(result['downloaded'],0)
         self.assertIsNone(result['exact_success'])
 
+    def test_person_cannot_be_replaced_by_associated_event(self):
+        from experiments.video_search.plan import IdentityConstraint, identity_matches
+        from types import SimpleNamespace
+        plan = SimpleNamespace(required_identity=IdentityConstraint(mention='Tsutomu Yamaguchi', aliases=['Tsutomu Yamaguchi']))
+        self.assertFalse(identity_matches(plan, {'title':'Hiroshima and Nagasaki, Japan', 'description':'Produced in 1946'}))
+        self.assertTrue(identity_matches(plan, {'title':'Tsutomu Yamaguchi: surviving both bombings'}))
+
+    def test_off_never_fetches_captions_or_calls_asr(self):
+        from unittest.mock import patch
+        from experiments.video_search import enrichment
+        from experiments.video_search.run import download
+        import inspect
+        self.assertEqual(inspect.signature(download).parameters['transcript_mode'].default, 'off')
+        with patch.object(enrichment, 'fetch_caption') as captions, patch.object(enrichment, 'transcribe_audio') as asr:
+            result = enrichment.transcript(None, None, {'subtitles': {}}, {'audio_codec': 'aac'}, 'full', 'off', None)
+        self.assertEqual(result['status'], 'disabled')
+        captions.assert_not_called()
+        asr.assert_not_called()
+
     def test_duration_formats_and_preference(self):
         for value in ('00:02:10','PT2M10S','130',130):
             self.assertEqual(duration_seconds(value),130)
