@@ -26,6 +26,8 @@ on:
       - "pipeline/news.py"
       - "pipeline/script_sections.py"
       - "pipeline/source_coverage.py"
+      - "pipeline/source_naming.py"
+      - "pipeline/news_resolution.py"
       - "pipeline/editorial_regression.py"
       - "editorial/**"
   push:
@@ -41,6 +43,8 @@ on:
       - "pipeline/news.py"
       - "pipeline/script_sections.py"
       - "pipeline/source_coverage.py"
+      - "pipeline/source_naming.py"
+      - "pipeline/news_resolution.py"
       - "pipeline/editorial_regression.py"
       - "editorial/**"
 
@@ -72,9 +76,15 @@ jobs:
           if [ -n "$INPUT_DATE" ]; then
             TARGET_DATE="$INPUT_DATE"
           else
-            LATEST_FILE="$(find news -maxdepth 1 -type f -name '????-??-??.txt' | sort | tail -1)"
-            test -n "$LATEST_FILE" || { echo "No dated news files available"; exit 1; }
-            TARGET_DATE="$(basename "$LATEST_FILE" .txt)"
+            TARGET_DATE="$(python - <<'PY'
+          from pathlib import Path
+          from pipeline.source_naming import latest_source_date
+          value = latest_source_date(Path("news"))
+          if value is None:
+              raise SystemExit("No dated news files available")
+          print(value.isoformat())
+          PY
+          )"
           fi
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "lookback_days=${INPUT_LOOKBACK:-4}" >> "$GITHUB_OUTPUT"
