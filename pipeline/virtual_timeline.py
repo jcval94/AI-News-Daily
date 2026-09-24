@@ -164,11 +164,12 @@ def _media_track(edit_manifest: dict[str, Any]) -> list[dict[str, Any]]:
         director = cue.get("director", {}) if isinstance(cue.get("director"), dict) else {}
         usable = bool(media.get("usable_for_edit") is True)
         file_path = str(media.get("file", "") or "").strip()
-        if usable and file_path:
+        normalized_file_path = file_path.replace("\\", "/")
+        if usable and normalized_file_path:
             logical_media_path = (
-                file_path.replace("\\", "/")
-                if file_path.replace("\\", "/").startswith("multimedia/")
-                else f"multimedia/{episode_date}/{file_path.replace('\\\\', '/')}"
+                normalized_file_path
+                if normalized_file_path.startswith("multimedia/")
+                else f"multimedia/{episode_date}/{normalized_file_path}"
             )
         else:
             logical_media_path = ""
