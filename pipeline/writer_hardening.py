@@ -18,7 +18,9 @@ The output is invalid unless ALL of these are true:
 4. <!--SECTION:synthesis--> appears exactly once and is last.
 5. The total number of SECTION markers must equal len(episode_plan.beats) + 2.
 6. If you want to revisit an earlier idea, do so in prose under the current section; NEVER repeat its marker.
-7. Do not emit a second pass, alternate draft, recap, appendix, or continuation containing section markers.
+7. Exactly one <!--MEMORY:OPENING_MEMORY_ID--> marker must appear inside the opening section, using the exact episode_plan.opening_memory_id, within the first 120 spoken words.
+8. Do not emit any other MEMORY marker.
+9. Do not emit a second pass, alternate draft, recap, appendix, or continuation containing section markers.
 Return one draft only.
 """
 

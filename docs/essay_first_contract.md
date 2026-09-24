@@ -10,10 +10,10 @@ The north star remains:
 
 ## Required planning sequence
 
-1. Human observation or intriguing image — something recognizable, strange, or counterintuitive.
-2. Deeper tension — why that observation is not trivial.
-3. Central mystery — what we genuinely do not understand yet.
-4. Historical mirror — a verified precedent that changes how the present is understood when useful.
+1. Narrative Memory micro-story — one verified retrieved case is mandatory and should normally carry the cold open.
+2. Surprising mechanism — explain what makes the case structurally interesting rather than merely strange.
+3. Human tension — bridge that mechanism into something recognizable in the present.
+4. Central mystery — what we genuinely do not understand yet.
 5. Provisional thesis — the narrator's current reading, intentionally incomplete.
 6. Concrete scene — a real, historical, or clearly hypothetical situation that makes the abstraction visible.
 7. Evidence strategy — which recent developments can test, support, complicate, or limit the thesis.
@@ -55,7 +55,7 @@ This ordering is designed to prevent the previous oscillation where a factual re
 
 ## Intrigue contract
 
-An opening may start from something extremely intriguing when the material earns it. Valid mechanisms include:
+The opening must use the record named by `EpisodePlan.opening_memory_id` as a verified micro-story. It should normally be developed for roughly 45–90 seconds when the material supports that depth, then bridge into the essay's human tension. Valid ways to make that story intriguing include:
 
 - an unexplained concrete scene;
 - a counterintuitive claim that can be supported or qualified;
@@ -65,7 +65,7 @@ An opening may start from something extremely intriguing when the material earns
 - a recurring image or phrase whose meaning will change;
 - a clearly labeled hypothetical or future scene.
 
-Intrigue must never become dishonest clickbait. The viewer should understand the core mystery roughly within the first minute, and every major open loop must receive a real payoff.
+The Narrative Memory case must not be reduced to a title, trivia fact, or decorative name-drop. Intrigue must never become dishonest clickbait. The viewer should understand the core mystery roughly within the first minute, and every major open loop must receive a real payoff.
 
 ## Movement requirement
 
@@ -111,7 +111,7 @@ Reject spoken structures such as:
 - mechanically repeated mini-conclusions;
 - a conclusion that merely restates the opening thesis.
 
-Reject openings that default to:
+Reject openings that omit the required Narrative Memory case, use it only decoratively, or default to:
 
 - “Hoy salió una noticia…”
 - company/model/product names before the human idea is clear;

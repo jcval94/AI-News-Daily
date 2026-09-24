@@ -30,11 +30,12 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 5)
+        self.assertEqual(data["version"], 6)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
-        self.assertIn("0–2", stages["narrative_memory"]["summary"])
+        self.assertIn("1–2", stages["narrative_memory"]["summary"])
+        self.assertIn("abrir el ensayo", stages["narrative_memory"]["summary"])
         self.assertIn("pages-site/memory", stages["narrative_memory_observability"]["outputs"])
         self.assertIn("pipeline/narrative_memory.py", stages["narrative_memory"]["code"])
         self.assertIn("75%", stages["source_coverage"]["summary"])

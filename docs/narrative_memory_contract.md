@@ -12,7 +12,7 @@ Scheduled research task
 editorial/narrative_memory.jsonl
     ↓ deterministic validation + retrieval
 Editorial Director
-    ↓ may select 0–2
+    ↓ MUST select 1–2; one owns the opening hook
 episode_plan.narrative_parallels
     ↓ exact selected records only
 Writer + factual critic/refiner
@@ -70,7 +70,7 @@ verified_claims != []
 sources != []
 ```
 
-Malformed or sub-threshold rows are quarantined from runtime context and surfaced as warnings. Narrative Memory is optional enrichment, so a bad memory row must not take down the core news pipeline.
+Malformed or sub-threshold rows are quarantined from runtime context and surfaced as warnings. Narrative Memory is now a required editorial input: a production episode must have at least one valid retrieved record available for the Director.
 
 ## Retrieval
 
@@ -81,16 +81,18 @@ It combines:
 - lexical relevance to the selected-news context;
 - editorial quality scores;
 - a usage penalty;
-- a 90-day default cooldown;
+- a 90-day default soft cooldown;
 - greedy diversity over the primary mechanism.
+
+The cooldown is a preference, not an absolute veto. Candidates outside cooldown rank first. If the library is temporarily exhausted, recently used candidates remain eligible with a strong penalty so the mandatory opening contract can still be satisfied.
 
 Only a small candidate set reaches the Editorial Director. The full library never enters model context.
 
-The Director may select **zero, one or two** records. Zero is a valid and often preferable answer.
+The Director must select **one or two** records. Exactly one selected record is also named by `episode_plan.opening_memory_id` and must carry the opening hook. A second record is optional and should be used only when it explains a different dimension.
 
 ## Factual boundary
 
-The Writer and factual repair/judge receive only records explicitly selected by the Director.
+The Writer and factual repair/judge receive only records explicitly selected by the Director. The Writer must develop the `opening_memory_id` record as a genuine opening micro-story, not a decorative mention.
 
 They may paraphrase `verified_claims`. They must preserve `uncertainties` and `analogy_limits`. They may not invent precision beyond the record or silently turn a structural analogy into a causal equivalence.
 
@@ -122,3 +124,32 @@ The daily scheduled research task should:
 7. never edit scripts or episode artifacts.
 
 The production loader revalidates everything even when the scheduled task claims a record passed.
+
+
+## Opening-use contract
+
+Narrative Memory is not satisfied by mentioning a title or dropping a historical fact into the middle of the essay.
+
+For every publishable episode:
+
+1. `episode_plan.narrative_parallels` contains 1–2 retrieved records.
+2. `episode_plan.opening_memory_id` points to one of those records.
+3. The Writer places `<!--MEMORY:<opening_memory_id>-->` inside the opening section within the first 120 spoken words, immediately before the narration grounded in that case.
+4. The parser removes the marker from spoken output and fails alignment if it is missing, duplicated, points to another ID, or appears too late.
+5. Editorial and Voice/Humanity judges must reject a script that name-drops the case without explaining the transferable mechanism or that violates its analogy limits.
+
+The preferred opening shape is:
+
+```text
+verified micro-story
+    ↓
+surprising mechanism
+    ↓
+human tension
+    ↓
+central question
+    ↓
+provisional thesis
+    ↓
+current news as evidence
+```

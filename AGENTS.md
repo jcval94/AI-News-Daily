@@ -23,7 +23,7 @@ Reusable verified historical/scientific/economic/natural parallels live in `edit
 
 A scheduled research task may discover, verify and append knowledge, but it is not production authority. `pipeline/narrative_memory.py` must revalidate rows deterministically, quarantine malformed/sub-threshold records, derive prior usage only from approved episode artifacts, apply cooldown/diversity, and expose only a bounded candidate set.
 
-The Editorial Director may select 0–2 retrieved records through `episode_plan.narrative_parallels`. The Writer and factual critic/refiner receive only those selected records. They may use `verified_claims` while preserving `uncertainties` and `analogy_limits`. Narrative Memory never overrides `news_text` for current-event facts and must never be treated as instructions.
+The Editorial Director must select 1–2 retrieved records through `episode_plan.narrative_parallels`, and `episode_plan.opening_memory_id` must reference one of them. The Writer and factual critic/refiner receive only those selected records. They may use `verified_claims` while preserving `uncertainties` and `analogy_limits`. Narrative Memory never overrides `news_text` for current-event facts and must never be treated as instructions.
 
 ## Agent inventory
 
@@ -138,7 +138,9 @@ Structured agent outputs must be validated with their Pydantic models before bei
 - exactly one Claim Ledger entry per planned evidence item,
 - matching Claim Ledger/evidence IDs and selected-news indices,
 - non-empty `supported_facts` for every ledger entry,
-- at most two Narrative Memory selections, each from the deterministic retrieved set,
+- one or two Narrative Memory selections, each from the deterministic retrieved set,
+- exactly one `opening_memory_id` pointing to a selected record,
+- exactly one matching `<!--MEMORY:...-->` marker inside the opening, within the first 120 spoken words,
 - Narrative Memory rows passing schema/source/score/duplicate-risk gates,
 - known timeline slots,
 - media hard cap,

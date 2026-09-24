@@ -68,11 +68,11 @@ The system intentionally keeps probabilistic generation separate from determinis
 The preferred hierarchy is:
 
 ```text
-human experience
+verified Narrative Memory micro-story
    ↓
-tension / discomfort / paradox
+surprising mechanism
    ↓
-verified historical mirror
+human tension / discomfort / paradox
    ↓
 central question
    ↓
@@ -157,11 +157,11 @@ If a story has no distinct function, the Director should omit it. Prefer three s
 The preferred opening is:
 
 ```text
-recognizable human observation
+verified Narrative Memory micro-story
    ↓
-unease / contradiction
+surprising mechanism
    ↓
-verified historical mirror
+recognizable human tension / contradiction
    ↓
 central question
    ↓
@@ -200,7 +200,7 @@ Useful clarity test:
 
 Historical references are used as mirrors for the present, not as decoration. The original curated references remain in `editorial/discourse_profile.md`; reusable verified parallels also live in `editorial/narrative_memory.jsonl`.
 
-Production never sends the whole library to the Writer. It retrieves a small candidate set for the Director, allows the plan to select at most two, and sends only those exact records to the Writer and factual critic/refiner. The Writer may paraphrase only `verified_claims`, must preserve `uncertainties` and `analogy_limits`, and must not turn structural similarity into causal equivalence.
+Production never sends the whole library to the Writer. It retrieves a small candidate set for the Director, requires the plan to select 1–2, requires one exact `opening_memory_id`, and sends only those selected records to the Writer and factual critic/refiner. The Writer may paraphrase only `verified_claims`, must preserve `uncertainties` and `analogy_limits`, and must not turn structural similarity into causal equivalence. The opening record is developed as a verified micro-story before current news enters; a hidden `<!--MEMORY:...-->` marker lets Python verify that the required case actually appears near the start.
 
 Usage is derived from approved `episode_plan.narrative_parallels` rather than a mutable global `used=true` flag, so rejected attempts never consume a parallel.
 
