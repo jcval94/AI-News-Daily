@@ -1,17 +1,72 @@
 import hashlib
+import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
+from contextlib import ExitStack
 
 from PIL import Image
 
 from experiments.image_search.run import inspect_file
-from experiments.media_pack.run import Pack, asset_name, quality_tier
+from experiments.media_pack.run import Pack, asset_name, quality_tier, literal_decision
+from tests.test_image_search_experiment import plan, item, decision
 
 
 class MediaPackTests(unittest.TestCase):
+    def test_quote_wrapper_repair_still_requires_verbatim_source_evidence(self):
+        row = item()
+        for quote in ['"Albert Einstein"', '“Albert Einstein”', '«Albert Einstein»']:
+            self.assertEqual(literal_decision(row, decision(quote))['evidence_quote'], 'Albert Einstein')
+        for quote in ['"Elsa Einstein"', '"albert einstein"', '"Albert  Einstein"']:
+            self.assertEqual(literal_decision(row, decision(quote))['evidence_quote'], quote)
+
+    def test_standard_first_and_exact_lowres_before_context(self):
+        rows = [item(), {**item(), 'key': 'commons:2', 'id': '2',
+                        'url': 'https://commons.wikimedia.org/wiki/File:2.jpg',
+                        'metadata': {**item()['metadata'], 'title': 'Albert Einstein outdoors'}}]
+        data = []
+        for dims, direction in [((408, 244), 1), ((800, 600), -1)]:
+            im = Image.new('RGB', dims)
+            im.putdata([(int(255*x/(dims[0]-1)) if direction == 1 else int(255*(1-x/(dims[0]-1))), 0, 0)
+                        for y in range(dims[1]) for x in range(dims[0])])
+            buffer = io.BytesIO()
+            im.save(buffer, format='JPEG')
+            data.append(buffer.getvalue())
+        for quota, expected in [(1, ['standard']), (2, ['standard', 'lowres'])]:
+            with self.subTest(quota=quota), tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+                pack = Pack(Path(tmp), 'Albert Einstein', quota, 0)
+                stack.enter_context(patch('experiments.media_pack.run.model.make_plan', return_value=(plan(), {})))
+                stack.enter_context(patch('experiments.media_pack.run.sources.resolve_entity', return_value={}))
+                stack.enter_context(patch('experiments.media_pack.run.sources.discover', return_value=(rows, [])))
+                stack.enter_context(patch('experiments.media_pack.run.model.assess', return_value=({r['key']: decision('Albert Einstein') for r in rows}, {})))
+                stack.enter_context(patch('experiments.media_pack.run.sources.fetch', side_effect=data))
+                stack.enter_context(patch('experiments.media_pack.run.model.inspect_visual', return_value=(
+                    {'kind': 'person_photo', 'usable': True, 'obvious_synthetic_or_meme': False}, {})))
+                need = {'description': 'Albert Einstein', 'subject': 'Albert Einstein', 'suggested_use': 'Portrait', 'limitation': 'Review'}
+                pack.image_search(need, 'exact', quota)
+                self.assertEqual([a['quality'] for a in pack.manifest['assets']], expected)
+                self.assertTrue(all(a['relation'] == 'exact' for a in pack.manifest['assets']))
+
+    def test_replay_graph_and_json_are_preserved_as_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / 'source'
+            source.mkdir()
+            output = Path(tmp) / 'out'
+            output.mkdir()
+            path = source / 'source.mp4'
+            path.write_bytes(b'already verified video fixture')
+            (source / 'most_replayed.svg').write_text('<svg></svg>')
+            (source / 'most_replayed.json').write_text('{"status":"available"}')
+            pack = Pack(output, 'Subject', 1, 1)
+            pack.publish(path, {'key': 'youtube:x', 'id': 'x', 'source': 'youtube',
+                'url': 'https://youtube.com/watch?v=x', 'media': {'width': 640, 'height': 360}},
+                {'subject': 'Subject', 'suggested_use': 'Review', 'limitation': 'Proxy'}, 'exact', 'video')
+            asset = pack.manifest['assets'][0]
+            for name in ['most_replayed.svg', 'most_replayed.json']:
+                self.assertEqual((output / asset['sidecar_paths'][name]).read_bytes(), (source / name).read_bytes())
+
     def test_low_resolution_is_opt_in_not_a_benchmark_relaxation(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'small.jpg'

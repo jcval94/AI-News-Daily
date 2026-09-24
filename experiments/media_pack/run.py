@@ -14,7 +14,7 @@ import tempfile
 import time
 import unicodedata
 
-from pydantic import Field
+from pydantic import Field, ValidationError
 
 from experiments.image_search import model, sources
 from experiments.image_search import run as images
@@ -79,6 +79,19 @@ def json_file(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def literal_decision(item, decision):
+    """Remove quote delimiters only if the unchanged interior exists in the source."""
+    if not decision:
+        return decision
+    quote = decision.get("evidence_quote", "")
+    field = item["metadata"].get(decision.get("evidence_field"), "")
+    if quote not in field and len(quote) > 2 and (quote[0], quote[-1]) in {
+        ('"', '"'), ("'", "'"), ('“', '”'), ('«', '»')
+    } and quote[1:-1] in field:
+        return {**decision, "evidence_quote": quote[1:-1], "original_evidence_quote": quote}
+    return decision
+
+
 class Pack:
     def __init__(self, output, description, image_count, video_count, allow_context=True):
         self.output = output
@@ -114,10 +127,19 @@ class Pack:
         destination = self.output / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, destination)
+        sidecar_paths = {}
+        if kind == "video":
+            sidecar_dir = self.output / "metadata" / ("asset-" + digest[:16])
+            sidecar_dir.mkdir(parents=True, exist_ok=True)
+            for sidecar in sorted(path.parent.iterdir()):
+                if sidecar.is_file() and sidecar != path and sidecar.suffix in {".json", ".svg", ".txt", ".vtt", ".srt"}:
+                    target = sidecar_dir / sidecar.name
+                    shutil.copyfile(sidecar, target)
+                    sidecar_paths[sidecar.name] = target.relative_to(self.output).as_posix()
         asset = {**row, "asset_id": "asset-" + digest[:16], "kind": kind, "path": relative.as_posix(),
             "size_bytes": path.stat().st_size, "relation": relation, "quality": quality,
             "need": need, "license": row.get("metadata", {}).get("license") or row.get("license") or "unknown",
-            "license_validated": False, "review_required": True,
+            "license_validated": False, "review_required": True, "sidecar_paths": sidecar_paths,
             "suggested_treatment": "Recuadro sin ampliar; conservar resolución original" if kind == "image" and quality == "lowres"
                 else "Proxy 360p; revisar fragmento y buscar original si hace falta" if kind == "video"
                 else "Revisar encuadre y atribución antes de montar"}
@@ -132,7 +154,13 @@ class Pack:
         self.manifest["searches"].append(search)
         before = self.count("image")
         try:
-            plan, search["planning"] = model.make_plan(need["description"], sources.request_json)
+            try:
+                plan, search["planning"] = model.make_plan(need["description"], sources.request_json)
+            except ValidationError as error:
+                # One bounded repair for malformed structured output, not a network/quota retry.
+                search["plan_validation_error"] = sources.safe_error(error)
+                plan, search["planning"] = model.make_plan(need["description"], sources.request_json,
+                    validation_feedback=search["plan_validation_error"])
             need["subject"] = plan.subject
             search["plan"] = plan.model_dump()
             try:
@@ -141,7 +169,7 @@ class Pack:
                 entity = {"status": "unavailable", "reason": sources.safe_error(error)}
             search["entity"] = entity
             candidates, search["discovery"] = sources.discover(plan, [s for s in IMAGE_SOURCES if s not in self.blocked_images], entity)
-            decisions, search["assessment_call"] = model.assess(plan, candidates, entity, sources.request_json)
+            decisions, search["assessment_call"] = model.assess(plan, candidates, entity, sources.request_json, editorial_pack=True)
             search["candidates"], search["decisions"] = candidates, decisions
             with tempfile.TemporaryDirectory(prefix="pack-images-", dir=self.output.parent) as temporary:
                 deferred = []
@@ -160,7 +188,7 @@ class Pack:
                 for index, item in enumerate(candidates):
                     if self.count("image") - before >= quota or not self.room():
                         break
-                    row = {**item, "assessment": decisions.get(item["key"])}
+                    row = {**item, "assessment": literal_decision(item, decisions.get(item["key"]))}
                     reason = images.metadata_gate(plan, item, row["assessment"])
                     if reason or item["source"] in self.blocked_images or item["url"] in self.seen_urls:
                         search["attempts"].append({"key": item["key"], "status": "skipped", "reason": reason or "Blocked/duplicate"})
@@ -230,12 +258,6 @@ class Pack:
                         result = videos.download(item, output, mode, 30, transcript_mode="off")
                         row = {**item, **result}
                         path = output / result["path"]
-                        # Preserve non-media companions using safe generated names.
-                        companions = {}
-                        for sidecar in sorted(path.parent.iterdir()):
-                            if sidecar.is_file() and sidecar != path:
-                                companions[sidecar.name] = sidecar.read_text(encoding="utf-8") if sidecar.suffix in {".json", ".txt", ".vtt", ".srt"} else None
-                        row["companion_contents"] = companions
                         self.publish(path, row, need, relation, "video")
                         successful.append(row)
                         attempt.update(status="accepted", segment=result["segment"])
