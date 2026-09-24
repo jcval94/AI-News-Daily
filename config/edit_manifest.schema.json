@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/edit-manifest-v1.json",
+  "title": "AI News Daily Edit Manifest",
+  "type": "object",
+  "required": ["schema_version", "episode_date", "status", "timing", "sources", "editing_defaults", "summary", "timeline"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "episode_date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "status": {"const": "pre_recording"},
+    "timing": {
+      "type": "object",
+      "required": ["basis", "words_per_second", "duration_seconds", "requires_recording_retime"],
+      "properties": {
+        "basis": {"const": "estimated_script_words"},
+        "words_per_second": {"type": "number", "exclusiveMinimum": 0},
+        "duration_seconds": {"type": "number", "minimum": 0},
+        "requires_recording_retime": {"const": true},
+        "warning": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "sources": {"type": "object"},
+    "editing_defaults": {"type": "object"},
+    "summary": {"type": "object"},
+    "validation_warnings": {"type": "array", "items": {"type": "string"}},
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["segment_id", "mode", "start_seconds", "end_seconds", "duration_seconds", "section", "script_anchor", "director", "media"],
+        "properties": {
+          "segment_id": {"type": "string"},
+          "mode": {"enum": ["presenter", "media"]},
+          "start_seconds": {"type": "number", "minimum": 0},
+          "end_seconds": {"type": "number", "minimum": 0},
+          "duration_seconds": {"type": "number", "minimum": 0},
+          "cue_id": {"type": ["string", "null"]},
+          "section": {"type": "object"},
+          "script_anchor": {"type": "object"},
+          "director": {
+            "type": "object",
+            "required": ["authority", "intent", "visual_role", "transition_in", "transition_out", "treatment", "pacing", "return_to_presenter", "note"],
+            "properties": {
+              "authority": {"const": "suggestion"},
+              "priority": {"type": "string"},
+              "intent": {"type": "string"},
+              "visual_role": {"type": "string"},
+              "transition_in": {"type": "string"},
+              "transition_out": {"type": "string"},
+              "treatment": {"type": "string"},
+              "pacing": {"type": "string"},
+              "return_to_presenter": {"type": "boolean"},
+              "note": {"type": "string"}
+            },
+            "additionalProperties": true
+          },
+          "media": {
+            "anyOf": [
+              {"type": "null"},
+              {"type": "object"}
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
