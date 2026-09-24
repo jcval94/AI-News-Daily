@@ -172,6 +172,7 @@ class RecordingPackTests(unittest.TestCase):
         self.assertIn("Pantalla completa", output)
         self.assertIn("Espejo", output)
         self.assertIn("countdown", output)
+        self.assertIn("clearInterval(countdownTimer)", output)
         self.assertIn("opening_t01", output)
 
     def test_write_recording_pack_emits_three_artifacts(self):
