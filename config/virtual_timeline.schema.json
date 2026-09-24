@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/virtual-timeline-v1.json",
+  "title": "AI News Daily Virtual Timeline",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "episode_date",
+    "status",
+    "timing",
+    "sources",
+    "editing_style",
+    "replacement_contract",
+    "readiness",
+    "summary",
+    "track_summaries",
+    "tracks"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "episode_date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "status": {"const": "pre_recording_virtual_timeline"},
+    "timing": {
+      "type": "object",
+      "required": [
+        "basis",
+        "duration_seconds",
+        "approved_script_duration_seconds",
+        "post_script_duration_seconds",
+        "frame_rate_fps",
+        "frame_accurate",
+        "requires_recording_retime"
+      ],
+      "properties": {
+        "duration_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "approved_script_duration_seconds": {"type": "number", "minimum": 0},
+        "post_script_duration_seconds": {"type": "number", "minimum": 0},
+        "frame_rate_fps": {"type": "integer", "minimum": 1},
+        "frame_accurate": {"const": false},
+        "requires_recording_retime": {"const": true}
+      },
+      "additionalProperties": true
+    },
+    "sources": {"type": "object"},
+    "editing_style": {"type": "object"},
+    "replacement_contract": {
+      "type": "object",
+      "required": [
+        "virtual_a_roll_authority",
+        "strategy",
+        "real_a_roll_may_change_duration",
+        "retime_b_roll_after_alignment",
+        "never_treat_estimated_seconds_as_source_timecode"
+      ],
+      "properties": {
+        "virtual_a_roll_authority": {"const": "take_id"},
+        "strategy": {"const": "replace_and_retime_after_alignment"},
+        "real_a_roll_may_change_duration": {"const": true},
+        "retime_b_roll_after_alignment": {"const": true},
+        "never_treat_estimated_seconds_as_source_timecode": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "readiness": {
+      "type": "object",
+      "required": [
+        "virtual_timeline_contract_valid",
+        "ready_for_virtual_preview",
+        "ready_for_real_a_roll_replace",
+        "ready_for_automated_nle_import",
+        "blockers_for_final"
+      ],
+      "properties": {
+        "virtual_timeline_contract_valid": {"const": true},
+        "ready_for_virtual_preview": {"const": true},
+        "ready_for_real_a_roll_replace": {"const": false},
+        "ready_for_automated_nle_import": {"const": false},
+        "blockers_for_final": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "summary": {"type": "object"},
+    "track_summaries": {"type": "object"},
+    "tracks": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["track_id", "kind", "name", "clips"],
+        "properties": {
+          "track_id": {"type": "string"},
+          "kind": {"type": "string"},
+          "name": {"type": "string"},
+          "clips": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "clip_id",
+                "kind",
+                "status",
+                "name",
+                "timeline_start_seconds",
+                "timeline_end_seconds",
+                "duration_seconds",
+                "source"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
