@@ -402,7 +402,7 @@ def build_virtual_timeline(
 
 
 def _safe_payload(payload: dict[str, Any]) -> str:
-    return json.dumps(payload, ensure_ascii=False).replace("</", "<\/")
+    return json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
 
 
 def render_timeline_preview(payload: dict[str, Any]) -> str:
