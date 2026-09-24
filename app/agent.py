@@ -231,7 +231,7 @@ Rules:
   and announcements that are mostly branding or AI-label marketing.
 - A model/product launch is useful only if it can illuminate a bigger question about capabilities,
   access, behavior, economics, safety, learning, work, judgment, or another consequential dimension.
-- The source catalog already owns title/date/source/URL provenance. Return ONLY news_id + selection_reason for each chosen item; never reconstruct metadata.
+- The source catalog already owns title/date/source/URL provenance. Return ONLY news_id + selection_reason for each chosen item; never reconstruct metadata. Copy news_id EXACTLY character-for-character from the catalog: valid IDs are opaque values beginning with `n_`; never substitute a date, title, item number, source_file, or source_locator.
 - Treat url_quality=generic or missing as weaker provenance. Never upgrade or invent a more specific URL.
 - Rank by potential value as ESSAY EVIDENCE, strongest first.
 - Never invent facts that are not supported by source material.
