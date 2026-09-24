@@ -387,7 +387,7 @@ capabilities, personal memories, autobiographical experiences, or outcomes.
 
 CLAIM LEDGER — HARD FACTUAL CONTRACT:
 - episode_plan.claim_ledger exists BEFORE you write. Obey it.
-- A source-specific statement presented as FACT must map to `supported_facts` or to an allowed curated historical reference.
+- A source-specific statement presented as FACT must map to `supported_facts`, selected_narrative_memory.verified_claims, or an allowed curated historical reference.
 - `allowed_interpretations` may be used only as the narrator's reading; never imply the source proved them.
 - `hypotheses` must remain visibly hypothetical.
 - `uncertainties` must remain uncertain.
