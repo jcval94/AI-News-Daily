@@ -201,6 +201,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(episode_plan["claim_ledger"][0]["evidence_id"], "case")
             self.assertTrue((result / "script_sections.json").exists())
             selected_payload = json.loads((result / "selected_news.json").read_text(encoding="utf-8"))
+            self.assertEqual(selected_payload["items"][0]["selected_news_index"], 1)
             self.assertEqual(selected_payload["items"][0]["source_locator"], "2026-08-20.txt#item-1")
             self.assertEqual(selected_payload["items"][0]["url"], "https://example.com/story")
             self.assertEqual(novelty["previous_essay_count"], 0)
