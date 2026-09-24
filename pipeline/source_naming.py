@@ -101,6 +101,20 @@ def source_sort_key(path: Path) -> tuple[int, datetime, str]:
     )
 
 
+def latest_source_date(news_dir: Path) -> date | None:
+    """Return the newest semantic source date across every supported filename shape."""
+    if not news_dir.exists():
+        return None
+    dates = [
+        value
+        for path in news_dir.iterdir()
+        if is_supported_source(path)
+        for value in [source_date(path)]
+        if value is not None
+    ]
+    return max(dates) if dates else None
+
+
 def files_for_date(news_dir: Path, news_date: date) -> list[Path]:
     if not news_dir.exists():
         return []
