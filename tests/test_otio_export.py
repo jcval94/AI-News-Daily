@@ -107,7 +107,9 @@ def virtual_payload():
                         "duration_seconds": 4,
                         "source": {
                             "type": "file",
-                            "media_file": "../../multimedia/2026-09-24/clip.mp4",
+                            "media_file": "assets/clip.mp4",
+                            "logical_media_path": "multimedia/2026-09-24/assets/clip.mp4",
+                            "reference_basis": "repo_root",
                             "asset_type": "video",
                             "usable_for_edit": True,
                             "blockers": [],
@@ -233,7 +235,7 @@ class OtioExportTests(unittest.TestCase):
         self.assertIsInstance(resolved.media_reference, otio.schema.ExternalReference)
         self.assertEqual(
             resolved.media_reference.target_url,
-            "../../multimedia/2026-09-24/clip.mp4",
+            "multimedia/2026-09-24/assets/clip.mp4",
         )
 
     def test_take_markers_live_on_timeline_stack(self):
