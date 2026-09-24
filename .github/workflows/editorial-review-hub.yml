@@ -266,6 +266,9 @@ jobs:
             --run-id "$RUN_ID"
           test -s review-site/index.html
           test -s review-site/downloads/cost_snapshot.json
+          if grep -q '<video' review-site/index.html; then
+            grep -q 'data-lazy-video-preview="v1"' review-site/index.html
+          fi
           grep -q 'id="globalSearch"' review-site/index.html
           grep -q 'data-tab="overview"' review-site/index.html
           grep -q 'data-tab="budget"' review-site/index.html
