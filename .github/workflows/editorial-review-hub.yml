@@ -41,6 +41,8 @@ on:
       - "pipeline/editorial_regression.py"
       - "pipeline/run_journey.py"
       - "pipeline/architecture_manifest.py"
+      - "pipeline/repo_health.py"
+      - "tests/test_repo_health.py"
       - "config/cost_rates.json"
       - "evals/editorial/**"
 
@@ -304,7 +306,23 @@ jobs:
           test -s "pages-site/episodes/$TARGET_DATE/index.html"
           grep -q 'class="episode-sidebar"' pages-site/index.html
           grep -q 'id="episodeFrame"' pages-site/index.html
+          grep -q 'id="repoHealthLink"' pages-site/index.html
           grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
+
+      - name: Build repository health dashboard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.repo_health \
+            --repo-root . \
+            --pages-root pages-site \
+            --repository "$GITHUB_REPOSITORY" \
+            --output-dir pages-site/health
+          test -s pages-site/health/index.html
+          test -s pages-site/health/repo-health.json
+          grep -q 'data-health-page="repo-health"' pages-site/health/index.html
+          grep -q '"status"' pages-site/health/repo-health.json
 
       - name: Upload lightweight Pages catalog snapshot
         uses: actions/upload-artifact@v4
@@ -346,13 +364,17 @@ jobs:
           set -euo pipefail
           ROOT_URL="${PAGE_URL%/}/"
           EPISODE_URL="${ROOT_URL}episodes/${TARGET_DATE}/"
+          HEALTH_URL="${ROOT_URL}health/"
           for attempt in 1 2 3 4 5 6; do
             if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/catalog.html \
               && grep -q 'class="episode-sidebar"' /tmp/catalog.html \
               && grep -q 'id="episodeFrame"' /tmp/catalog.html \
+              && grep -q 'id="repoHealthLink"' /tmp/catalog.html \
               && curl -fsSL --max-time 20 "$EPISODE_URL" -o /tmp/episode.html \
               && grep -q 'id="globalSearch"' /tmp/episode.html \
-              && grep -q 'data-tab="overview"' /tmp/episode.html; then
+              && grep -q 'data-tab="overview"' /tmp/episode.html \
+              && curl -fsSL --max-time 20 "$HEALTH_URL" -o /tmp/health.html \
+              && grep -q 'data-health-page="repo-health"' /tmp/health.html; then
               echo "Pages smoke test passed: $ROOT_URL"
               exit 0
             fi
