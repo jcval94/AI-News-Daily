@@ -12,6 +12,7 @@ from typing import Any
 from app.agent import MultimediaPlan, multimedia_editor_agent
 from pipeline.core import PipelineConfig, timeline_duration_seconds
 from pipeline.credits import write_credits
+from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset, download_video_shot_asset
 from pipeline.run import normalize_multimedia_plan, run_agent, write_json
 
@@ -592,6 +593,11 @@ async def build_review_media(
     )
     write_json(output_dir / "manifest.json", manifest)
     write_credits(manifest, output_dir)
+    write_edit_manifest(
+        episode_dir=episode_dir,
+        media_dir=output_dir,
+        words_per_second=CONFIG.words_per_second,
+    )
     write_bundle_readme(output_dir, target_date=target_date, manifest=manifest)
     create_zip(output_dir, zip_path)
     return {
