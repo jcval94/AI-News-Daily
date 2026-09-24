@@ -1,162 +1,78 @@
-# Editorial Grid Search — Results
+# Editorial Grid Search — Final 20 × 3 CV
 
-Completed scripts: **41/60**.
+**Estado:** completo. Se generaron y evaluaron **60/60 guiones**: 20 configuraciones × 3 ventanas temporales independientes.
 
-Ranking is cross-validated across three time-separated news folds. Balanced score = 0.30 Editorial + 0.30 Voice + 0.25 Attention + 0.15 SEO, with factuality/AI-smell penalties.
+## Resultado principal
 
-## Configuration ranking
+La señal más consistente no fue “quitar Narrative Memory”, sino **moverla fuera de la apertura obligatoria y reducir el número de casos actuales**. El mejor tratamiento fue `g19_turn_minimal_5b`: 1–2 evidencias actuales, Narrative Memory como giro narrativo intermedio, 5 beats y tesis descubierta progresivamente.
 
-| Rank | Config | CV score | Δ vs current-like | Worst fold | Editorial | Attention | Voice | SEO | Factual low | AI-smell low |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | g03_after_scene_5b | 7.25 | +0.20 | 6.75 | 7.57 | 7.77 | 8.20 | 7.00 | 0% | 67% |
-| 2 | g09_fit_minimal_4b | 7.12 | +0.06 | 6.76 | 7.13 | 7.70 | 7.87 | 6.93 | 0% | 100% |
-| 3 | g19_turn_minimal_5b | 7.07 | +0.02 | 6.55 | 7.50 | 7.40 | 7.97 | 6.97 | 0% | 67% |
-| 4 | g00_current_like | 7.05 | +0.00 | 6.78 | 7.63 | 7.73 | 7.60 | 6.77 | 0% | 67% |
-| 5 | g08_fit_dense_6b | 6.94 | -0.11 | 6.86 | 7.23 | 7.33 | 7.57 | 6.77 | 0% | 100% |
-| 6 | g12_callback_scene_5b | 6.92 | -0.13 | 6.44 | 7.17 | 7.60 | 7.33 | 6.80 | 0% | 100% |
-| 7 | g05_callback_tension_4b | 6.82 | -0.23 | 6.71 | 7.43 | 7.03 | 7.60 | 6.80 | 0% | 67% |
-| 8 | g07_forced_scene_fast | 6.70 | -0.35 | 6.42 | 7.67 | 6.97 | 7.47 | 6.67 | 0% | 33% |
-| 9 | g04_turn_paradox_5b | 7.08 | +0.03 | 7.04 | 7.30 | 7.60 | 7.80 | 6.70 | 0% | 100% |
-| 10 | g17_fit_early_thesis | 7.04 | -0.01 | 7.04 | 7.40 | 6.90 | 8.00 | 7.00 | 0% | 100% |
-| 11 | g11_turn_scene_4b | 6.99 | -0.07 | 6.99 | 7.60 | 6.90 | 7.70 | 6.80 | 0% | 100% |
-| 12 | g10_after_dense_6b | 6.88 | -0.17 | 6.88 | 7.60 | 6.80 | 7.20 | 7.30 | 0% | 100% |
-| 13 | g13_fit_spoken_5b | 6.83 | -0.23 | 6.24 | 7.65 | 7.20 | 7.35 | 7.00 | 0% | 50% |
-| 14 | g15_fit_no_counter | 6.82 | -0.23 | 6.73 | 6.90 | 7.15 | 7.80 | 6.50 | 0% | 100% |
-| 15 | g06_forced_short_4b | 6.78 | -0.27 | 6.51 | 7.15 | 7.45 | 7.55 | 6.90 | 0% | 50% |
-| 16 | g02_fit_tension_4b | 6.78 | -0.28 | 6.31 | 7.50 | 7.30 | 7.50 | 6.50 | 0% | 50% |
-| 17 | g01_fit_scene_5b | 6.72 | -0.33 | 6.71 | 7.30 | 7.20 | 7.45 | 6.80 | 0% | 50% |
-| 18 | g16_fit_more_evidence | 6.55 | -0.50 | 6.55 | 7.20 | 6.60 | 6.90 | 6.80 | 0% | 100% |
-| 19 | g18_after_paradox_4b | 6.40 | -0.65 | 6.40 | 7.20 | 6.80 | 7.50 | 6.60 | 0% | 0% |
-| 20 | g14_fit_discovery_4b | 0.00 | -7.05 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0% | 0% |
+Frente al brazo `g00_current_like` (historia obligatoria al abrir, 8 beats, 3–4 evidencias), `g19` mejoró el score balanceado medio en **+0.56 puntos**, y ganó en los tres folds (+0.95, +0.56 y +0.16). Su peor fold fue 6.89 vs 5.94 del baseline.
 
-## Factor signals
+## Ranking completo
 
-Effects are fold-centered. Positive means that factor level tended to score above the mean of the same news fold. Fractional-grid effects are directional, not isolated causal estimates.
+| # | Config | CV | Δ pareado vs baseline | Peor fold | Editorial | Attention | Voice | SEO | Longitud OK |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | `g19_turn_minimal_5b` | 7.28 | +0.56 | 6.89 | 7.77 | 7.23 | 8.17 | 6.97 | 100% |
+| 2 | `g12_callback_scene_5b` | 7.08 | +0.35 | 6.67 | 7.20 | 7.53 | 8.10 | 6.37 | 100% |
+| 3 | `g15_fit_no_counter` | 7.03 | +0.31 | 6.58 | 7.63 | 7.50 | 7.70 | 6.83 | 100% |
+| 4 | `g11_turn_scene_4b` | 7.03 | +0.30 | 6.79 | 7.20 | 7.37 | 7.83 | 6.83 | 100% |
+| 5 | `g10_after_dense_6b` | 6.97 | +0.24 | 6.23 | 7.47 | 7.33 | 7.60 | 7.20 | 33% |
+| 6 | `g06_forced_short_4b` | 6.92 | +0.19 | 5.86 | 7.60 | 7.23 | 7.60 | 6.77 | 100% |
+| 7 | `g09_fit_minimal_4b` | 6.88 | +0.15 | 6.71 | 7.23 | 7.17 | 7.63 | 6.50 | 100% |
+| 8 | `g17_fit_early_thesis` | 6.87 | +0.14 | 6.33 | 7.53 | 7.43 | 7.27 | 6.90 | 0% |
+| 9 | `g13_fit_spoken_5b` | 6.75 | +0.03 | 6.45 | 7.10 | 7.10 | 7.63 | 6.83 | 100% |
+| 10 | `g00_current_like` | 6.73 | +0.00 | 5.94 | 7.17 | 7.13 | 7.63 | 6.47 | 67% |
+| 11 | `g18_after_paradox_4b` | 6.65 | -0.08 | 6.61 | 7.13 | 7.50 | 7.40 | 6.63 | 67% |
+| 12 | `g14_fit_discovery_4b` | 6.65 | -0.08 | 6.45 | 7.13 | 7.03 | 7.37 | 6.70 | 100% |
+| 13 | `g07_forced_scene_fast` | 6.62 | -0.11 | 6.08 | 7.07 | 7.03 | 7.80 | 6.57 | 100% |
+| 14 | `g16_fit_more_evidence` | 6.59 | -0.14 | 6.29 | 7.17 | 6.83 | 7.33 | 6.63 | 33% |
+| 15 | `g02_fit_tension_4b` | 6.57 | -0.16 | 6.19 | 7.30 | 6.93 | 7.43 | 6.67 | 67% |
+| 16 | `g08_fit_dense_6b` | 6.56 | -0.17 | 6.22 | 7.20 | 6.97 | 7.43 | 6.73 | 33% |
+| 17 | `g03_after_scene_5b` | 6.56 | -0.17 | 6.34 | 7.17 | 6.70 | 7.70 | 6.70 | 67% |
+| 18 | `g04_turn_paradox_5b` | 6.42 | -0.31 | 5.75 | 6.93 | 6.97 | 7.37 | 6.47 | 67% |
+| 19 | `g05_callback_tension_4b` | 6.30 | -0.43 | 5.93 | 6.70 | 6.50 | 6.97 | 6.93 | 67% |
+| 20 | `g01_fit_scene_5b` | 6.20 | -0.53 | 4.82 | 6.27 | 6.77 | 7.20 | 6.23 | 67% |
 
-### beat_target
+## Qué parece mover la aguja
 
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| 8 | 3 | +0.137 | 7.052 |
-| 5 | 21 | +0.018 | 6.918 |
-| 6 | 4 | -0.025 | 6.925 |
-| 4 | 13 | -0.054 | 6.873 |
+- **memory_policy:** mejor señal `"narrative_turn"` (+0.178); peor `"fit_gated"` (-0.055).
+- **opening_style:** mejor señal `"memory_story"` (+0.090); peor `"paradox_question"` (-0.164).
+- **memory_word_budget:** mejor señal `70` (+0.185); peor `100` (-0.313).
+- **first_evidence_word_budget:** mejor señal `210` (+0.185); peor `220` (-0.531).
+- **beat_target:** mejor señal `6` (+0.031); peor `5` (-0.006).
+- **evidence_target:** mejor señal `"1-2"` (+0.088); peor `"3-4"` (-0.022).
+- **counterargument:** mejor señal `"optional"` (+0.041); peor `"required"` (-0.007).
+- **thesis_timing:** mejor señal `"delayed"` (+0.003); peor `"early"` (-0.014).
+- **cadence:** mejor señal `"discovery"` (+0.024); peor `"structured"` (-0.089).
+- **payoff_callback:** mejor señal `true` (+0.009); peor `false` (-0.173).
 
-### cadence
+## Lectura editorial
 
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| "structured" | 6 | +0.080 | 6.995 |
-| "discovery" | 29 | +0.030 | 6.944 |
-| "spoken" | 6 | -0.224 | 6.691 |
+- **Narrative Memory funciona mejor como giro que como obligación de apertura.** `narrative_turn` tuvo la señal agregada más positiva (+0.178); `g19` y `g11` están ambos en el top 4. Esto encaja con la hipótesis inicial: la historia aporta cuando reinterpreta algo ya concreto.
+- **Menos evidencia fue mejor.** El nivel `1-2` tuvo la mejor señal (+0.088). La amplitud de casos parece empujar al texto hacia dossier/lista.
+- **Discovery cadence ayudó; “spoken” por sí solo no.** No basta pedir frases respirables: la estructura debe producir descubrimiento real.
+- **4 vs 5 vs 6 beats no mostró una señal grande por sí solo.** El placement de la historia y la anchura de evidencia fueron más claros que el conteo bruto de beats.
+- **La apertura concreta ayuda, pero no domina por sí sola.** El mejor tratamiento (`g19`) abre desde tensión humana y reserva la historia para el giro; por eso no conviene convertir “concrete_scene” en una nueva regla rígida.
 
-### counterargument
+## Caveat importante de factualidad
 
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| "optional" | 8 | +0.055 | 6.952 |
-| "required" | 33 | -0.013 | 6.905 |
+El evaluador clasificó **59/60 guiones con riesgo factual `medium` y solo 1/60 como `low`**. Por eso este experimento es mucho más útil para comparar **arquitectura narrativa relativa** que para declarar que un guion ya está listo para publicación. El score balanceado penaliza ese riesgo, pero no debe interpretarse como sustituto del gate factual de producción.
 
-### evidence_target
+## Longitud
 
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| "1-2" | 9 | +0.087 | 7.002 |
-| "3-4" | 8 | +0.012 | 6.926 |
-| "2-3" | 24 | -0.037 | 6.878 |
+El control de longitud mejoró, pero no fue perfecto: **44/60** guiones quedaron dentro del rango objetivo tras un máximo de dos intentos. La longitud se reporta explícitamente y no se oculta en el ranking.
 
-### first_evidence_word_budget
+## Recomendación de promoción
 
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| 160 | 4 | +0.271 | 7.188 |
-| 520 | 3 | +0.137 | 7.052 |
-| 180 | 6 | +0.025 | 6.940 |
-| 300 | 3 | +0.024 | 6.938 |
-| 170 | 12 | -0.026 | 6.889 |
-| 190 | 3 | -0.058 | 6.857 |
-| 200 | 6 | -0.074 | 6.815 |
-| 220 | 2 | -0.191 | 6.720 |
-| 210 | 2 | -0.206 | 6.782 |
+Promovería primero una variante mínima basada en `g19`, no el prompt completo: **Narrative Memory obligatoria pero preferentemente como `narrative_turn`; 1–2 evidencias fuertes; 4–5 beats; primera evidencia temprano; tesis que evoluciona; callback final solo cuando esté ganado.** Después la validaría en el pipeline real con el juez factual actual y refinamiento normal.
 
-### memory_policy
+No recomiendo convertir ninguno de estos resultados en una nueva regla absoluta: con n=3 folds por configuración, las señales deben usarse como dirección de diseño y confirmarse con más episodios reales.
 
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| "narrative_turn" | 6 | +0.145 | 7.060 |
-| "after_first_evidence" | 5 | +0.066 | 7.010 |
-| "fit_gated" | 16 | -0.018 | 6.878 |
-| "closing_callback" | 6 | -0.044 | 6.871 |
-| "forced_opening" | 8 | -0.081 | 6.852 |
+## Trazabilidad
 
-### memory_word_budget
-
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| 100 | 2 | +0.174 | 7.085 |
-| 180 | 3 | +0.137 | 7.052 |
-| 90 | 13 | +0.048 | 6.973 |
-| 75 | 8 | +0.023 | 6.920 |
-| 80 | 4 | -0.015 | 6.901 |
-| 85 | 6 | -0.074 | 6.815 |
-| 70 | 2 | -0.206 | 6.782 |
-| 65 | 3 | -0.216 | 6.698 |
-
-### opening_style
-
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| "concrete_scene" | 19 | +0.021 | 6.928 |
-| "memory_story" | 5 | -0.000 | 6.944 |
-| "paradox_question" | 6 | -0.017 | 6.897 |
-| "human_tension" | 11 | -0.027 | 6.887 |
-
-### payoff_callback
-
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| false | 3 | +0.024 | 6.938 |
-| true | 38 | -0.002 | 6.912 |
-
-### thesis_timing
-
-| Level | N | Fold-centered Δ | Raw mean |
-| --- | ---: | ---: | ---: |
-| "early" | 7 | +0.068 | 7.002 |
-| "delayed" | 34 | -0.014 | 6.896 |
-
-## Promotion guardrail
-
-Current top configuration: **g03_after_scene_5b**. Treat it as provisional until all 60 scripts are complete and a human spot-check confirms evaluator alignment.
-
-Prefer the smallest factor-level changes that are robust across folds rather than copying an entire winning prompt wholesale.
-
-## Failures / incomplete cells
-
-- g01_fit_scene_5b / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 5 beats, got 6
-- g02_fit_tension_4b / fold_2026_09_24: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 7
-- g04_turn_paradox_5b / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 5 beats, got 8
-- g06_forced_short_4b / fold_2026_09_04: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 6
-- g10_after_dense_6b / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 6 beats, got 8
-- g10_after_dense_6b / fold_2026_09_04: RuntimeError — Director failed treatment contract: expected exactly 6 beats, got 7
-- g11_turn_scene_4b / fold_2026_09_04: RuntimeError — Director failed treatment contract: selected_memory_id not in candidate set: electrification-organizacional-redesign
-- g11_turn_scene_4b / fold_2026_09_24: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 6
-- g13_fit_spoken_5b / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 5 beats, got 8
-- g14_fit_discovery_4b / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 6
-- g14_fit_discovery_4b / fold_2026_09_04: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 6
-- g14_fit_discovery_4b / fold_2026_09_24: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 5
-- g15_fit_no_counter / fold_2026_09_24: RuntimeError — Director failed treatment contract: expected exactly 5 beats, got 7
-- g16_fit_more_evidence / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 5 beats, got 8
-- g16_fit_more_evidence / fold_2026_09_24: RuntimeError — Director failed treatment contract: expected exactly 5 beats, got 8
-- g17_fit_early_thesis / fold_2026_08_31: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 6
-- g17_fit_early_thesis / fold_2026_09_04: RuntimeError — Director failed treatment contract: evidence_indices outside selected news catalog
-- g18_after_paradox_4b / fold_2026_09_04: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 6
-- g18_after_paradox_4b / fold_2026_09_24: RuntimeError — Director failed treatment contract: expected exactly 4 beats, got 5
-
-## Method limitations
-
-- Three folds measure robustness across content, not random-seed variance.
-- The same model family writes and evaluates, so human review remains necessary.
-- Factor effects are partially confounded because this is a bounded fractional grid.
-- No refinement loop is used; architecture quality is measured before repair.
-
+- GitHub Actions run de la ejecución final: `36073833346`.
+- `scores.jsonl`: scorecard compacto de los 60 guiones.
+- `scripts_index.csv`: índice fold/configuración, longitud, score y artifact ID.
+- `scripts/`: tres guiones completos por configuración.
+- `summary.csv`: resumen CV por configuración.
+- `factor_effects.csv`: efectos fold-centered por nivel de factor.
