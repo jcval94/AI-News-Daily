@@ -10,11 +10,18 @@ from contextlib import ExitStack
 from PIL import Image
 
 from experiments.image_search.run import inspect_file
-from experiments.media_pack.run import Pack, asset_name, quality_tier, literal_decision
+from experiments.media_pack.run import Pack, asset_name, quality_tier, literal_decision, editorial_relation
 from tests.test_image_search_experiment import plan, item, decision
 
 
 class MediaPackTests(unittest.TestCase):
+    def test_later_memorial_is_context_unless_it_is_the_requested_subject(self):
+        p = plan('historical')
+        row = item('File:Event Memorial Bell Tower.jpg')
+        self.assertEqual(editorial_relation(p, {'description': 'Archive photos of the disaster'}, row, 'exact'), 'context')
+        self.assertEqual(editorial_relation(p, {'description': 'The Memorial Bell Tower'}, row, 'exact'), 'exact')
+        self.assertEqual(editorial_relation(p, {'description': 'Ancient Rome'}, item('Roman amphitheatre ruins'), 'exact'), 'exact')
+
     def test_quote_wrapper_repair_still_requires_verbatim_source_evidence(self):
         row = item()
         for quote in ['"Albert Einstein"', '“Albert Einstein”', '«Albert Einstein»']:

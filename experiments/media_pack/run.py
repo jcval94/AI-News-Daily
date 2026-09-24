@@ -92,6 +92,15 @@ def literal_decision(item, decision):
     return decision
 
 
+def editorial_relation(plan, need, item, relation):
+    memorial = r"\b(memorial|commemorat\w*|conmemorat\w*|cenotaph|cenotafio)\b"
+    if (relation == "exact" and plan.kind == "historical"
+            and re.search(memorial, sources.normalize(item["metadata"].get("title", "")))
+            and not re.search(memorial, sources.normalize(need["description"]))):
+        return "context"
+    return relation
+
+
 class Pack:
     def __init__(self, output, description, image_count, video_count, allow_context=True):
         self.output = output
@@ -172,7 +181,7 @@ class Pack:
             decisions, search["assessment_call"] = model.assess(plan, candidates, entity, sources.request_json, editorial_pack=True)
             search["candidates"], search["decisions"] = candidates, decisions
             with tempfile.TemporaryDirectory(prefix="pack-images-", dir=self.output.parent) as temporary:
-                deferred = []
+                deferred, deferred_context = [], []
 
                 def accept(path, row):
                     visual, call = model.inspect_visual(path, sources.request_json)
@@ -182,14 +191,21 @@ class Pack:
                         raise ValueError(reason)
                     if images.is_duplicate(row["media"], self.previous_images):
                         raise ValueError("Duplicate or near-duplicate image")
-                    self.publish(path, row, need, relation, "image")
+                    actual_relation = row["editorial_relation"]
+                    actual_need = need if actual_relation == relation else {**need,
+                        "suggested_use": "Contexto conmemorativo del acontecimiento",
+                        "limitation": "Es un memorial posterior; no es una fotografía del acontecimiento ni de sus consecuencias inmediatas"}
+                    self.publish(path, row, actual_need, actual_relation, "image")
                     self.previous_images.append(row["media"])
 
                 for index, item in enumerate(candidates):
                     if self.count("image") - before >= quota or not self.room():
                         break
                     row = {**item, "assessment": literal_decision(item, decisions.get(item["key"]))}
+                    row["editorial_relation"] = editorial_relation(plan, need, item, relation)
                     reason = images.metadata_gate(plan, item, row["assessment"])
+                    if row["editorial_relation"] == "context" and not self.manifest["config"]["allow_context"]:
+                        reason = "Commemorative context excluded by --no-context"
                     if reason or item["source"] in self.blocked_images or item["url"] in self.seen_urls:
                         search["attempts"].append({"key": item["key"], "status": "skipped", "reason": reason or "Blocked/duplicate"})
                         continue
@@ -205,7 +221,10 @@ class Pack:
                             raise ValueError("Duplicate or near-duplicate image")
                         extension = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}[media["format"]]
                         path = path.rename(path.with_suffix(extension))
-                        if quality_tier(media, "image") == "lowres":
+                        if row["editorial_relation"] != relation:
+                            deferred_context.append((path, row, attempt))
+                            attempt["status"] = "deferred_context"
+                        elif quality_tier(media, "image") == "lowres":
                             deferred.append((path, row, attempt))
                             attempt["status"] = "deferred_lowres"
                         else:
@@ -217,12 +236,12 @@ class Pack:
                         if isinstance(error, sources.Blocked):
                             self.blocked_images.add(item["source"])
                 # Exact low-resolution assets precede any contextual substitution.
-                for path, row, attempt in deferred:
+                for path, row, attempt in deferred + deferred_context:
                     if self.count("image") - before >= quota or not self.room():
                         break
                     try:
                         accept(path, row)
-                        attempt["status"] = "accepted_lowres"
+                        attempt["status"] = "accepted_context" if row["editorial_relation"] != relation else "accepted_lowres"
                     except Exception as error:
                         attempt.update(status="rejected", reason=sources.safe_error(error))
         except Exception as error:

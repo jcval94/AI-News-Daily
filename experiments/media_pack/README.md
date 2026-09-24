@@ -55,6 +55,7 @@ en curso conserva su propio timeout y el job completo tiene un límite de 40 min
 ```text
 media/images/<tema>__<titulo>__exact-o-context__standard-o-lowres__<fuente>__<id-estable>.jpg
 media/videos/<tema>__<titulo>__exact-o-context__lowres__<fuente>__<id-estable>.mp4
+metadata/<asset-id>/<metadatos, estado de transcripción y datos/gráfica de repetición>
 manifest.json
 gallery.html
 SUMMARY.md
@@ -74,6 +75,16 @@ no identidad facial ni una tasa de precisión medida. El manifiesto distingue
 cantidad exacta, contextual y faltantes. Todos los activos requieren revisar
 licencia y montaje antes de publicarse; `production_ready=false`.
 
+La evidencia conserva la cita original del modelo. Si añadió solo comillas
+envolventes, se retiran únicamente cuando el interior sin modificar está en el
+campo de catálogo citado; no se aceptan paráfrasis ni cambios de nombre. Un plan
+de imagen que incumpla el esquema tiene un único intento adicional de reparación,
+registrado en el manifiesto. Los benchmarks anteriores conservan sus defaults.
+
+Los archivos auxiliares del video se encuentran mediante `sidecar_paths`, incluida
+la gráfica Most Replayed cuando existe. Su eje temporal corresponde al video
+original, no al fragmento exportado. No se fabrica una gráfica para otras fuentes.
+
 ## GitHub Actions
 
 Workflow `.github/workflows/media-pack-experiment.yml`, despacho manual o cambio
@@ -84,4 +95,12 @@ solo indica que acabó la búsqueda. No significa que se cubrió la cantidad.
 Retención de los artefactos: 7 días. Las pruebas iniciales usan Halifax (12+3)
 y Tsutomu Yamaguchi (6+1), incluyendo el caso antes descartado por resolución.
 
+Mientras el workflow siga solo en esta rama experimental, el punto de entrada
+comprobado es editar `experiments/media_pack/live-request.json` en esa rama. Una
+única entrada `matrix.include` con `id`, `description`, `images` y `videos` basta;
+al guardar el commit, Actions hace la búsqueda y publica el artefacto. El botón
+de despacho manual dependerá de que GitHub registre el workflow en la rama por
+defecto; este experimento no lo instala en main automáticamente.
+
 La integración propuesta se documenta en [INTEGRATION.md](INTEGRATION.md).
+Los resultados de las ejecuciones reales se documentan en [RESULTS.md](RESULTS.md).
