@@ -18,6 +18,9 @@ class RepoHealthTests(unittest.TestCase):
         (root / "AGENTS.md").write_text("# agents\n", encoding="utf-8")
         (root / "requirements.lock").write_text("requests==2.34.2\n", encoding="utf-8")
         (root / ".gitignore").write_text(".env\n.pipeline-runs/\n", encoding="utf-8")
+        (root / ".github" / "dependabot.yml").write_text(
+            "version: 2\nupdates: []\n", encoding="utf-8"
+        )
         (root / "pyproject.toml").write_text(
             '[project]\nrequires-python = ">=3.11"\n',
             encoding="utf-8",
