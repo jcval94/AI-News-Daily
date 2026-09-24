@@ -23,7 +23,7 @@ class MediaStressTests(unittest.TestCase):
     def test_person_cannot_be_replaced_by_associated_event(self):
         from experiments.video_search.plan import IdentityConstraint, identity_matches
         from types import SimpleNamespace
-        plan = SimpleNamespace(required_identity=IdentityConstraint(mention='Tsutomu Yamaguchi', aliases=['Tsutomu Yamaguchi']))
+        plan = SimpleNamespace(required_identity=IdentityConstraint(mention='Tsutomu Yamaguchi', aliases=['Yamaguchi Tsutomu']))
         self.assertFalse(identity_matches(plan, {'title':'Hiroshima and Nagasaki, Japan', 'description':'Produced in 1946'}))
         self.assertTrue(identity_matches(plan, {'title':'Tsutomu Yamaguchi: surviving both bombings'}))
 

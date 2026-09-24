@@ -149,7 +149,8 @@ def identity_matches(plan, candidate):
     if plan.required_identity is None:
         return True
     return any(f" {normalize(alias)} " in f" {normalize(candidate.get(field, ''))} "
-               for alias in plan.required_identity.aliases for field in ("title", "description"))
+               for alias in [plan.required_identity.mention, *plan.required_identity.aliases]
+               for field in ("title", "description"))
 
 
 def assess_candidates(plan: SearchPlan, candidates: list[dict], request_json) -> dict:
