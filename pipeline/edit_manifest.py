@@ -5,8 +5,16 @@ import json
 from pathlib import Path
 from typing import Any
 
+from pipeline.editing_style import (
+    lint_timeline,
+    load_editing_style,
+    media_defaults,
+    public_style_metadata,
+)
+
 SCHEMA_VERSION = 1
 _EPSILON = 0.02
+_DEFAULT_STYLE_PATH = Path(__file__).resolve().parents[1] / "config" / "editing_style.yaml"
 
 
 def _read_json(path: Path, default: Any) -> Any:
@@ -230,28 +238,51 @@ def _treatment(item: dict[str, Any], asset: dict[str, Any] | None) -> str:
 
 
 def _media_director_signal(
-    item: dict[str, Any], section: dict[str, Any], asset: dict[str, Any] | None
+    item: dict[str, Any],
+    section: dict[str, Any],
+    asset: dict[str, Any] | None,
+    editing_style: dict[str, Any] | None,
 ) -> dict[str, Any]:
     priority = str(item.get("slot_priority", "") or "")
     default_pacing = "fast" if priority == "opening_dense_media" else "normal"
     note = str(item.get("director_note", "") or "").strip()
     if not note:
         note = str(item.get("reason", "") or "").strip()
+
+    role = _visual_role(item, section)
+    asset_type = str((asset or {}).get("asset_type", "") or "").strip()
+    if not asset_type:
+        asset_type = str(item.get("preferred_asset_type", "") or "").strip()
+    defaults = media_defaults(editing_style, role=role, asset_type=asset_type)
+    transition_default = str(defaults.get("transition", "") or "hard_cut")
+    treatment_default = str(defaults.get("treatment", "") or _treatment(item, asset))
+
     return {
         "authority": "suggestion",
         "priority": "high" if priority in {"opening_dense_media", "synthesis_payoff"} else "normal",
         "intent": str(item.get("reason", "") or "").strip() or "Support the spoken idea with a concrete visual.",
-        "visual_role": _visual_role(item, section),
-        "transition_in": str(item.get("transition_in", "") or "hard_cut"),
-        "transition_out": str(item.get("transition_out", "") or "hard_cut"),
-        "treatment": _treatment(item, asset),
+        "visual_role": role,
+        "transition_in": str(item.get("transition_in", "") or transition_default),
+        "transition_out": str(item.get("transition_out", "") or transition_default),
+        "treatment": str(item.get("treatment", "") or treatment_default),
         "pacing": str(item.get("pacing", "") or default_pacing),
         "return_to_presenter": bool(item.get("return_to_presenter", True)),
         "note": note,
     }
 
 
-def _presenter_director_signal(*, first: bool, after_media: bool) -> dict[str, Any]:
+def _presenter_director_signal(
+    *,
+    first: bool,
+    after_media: bool,
+    editing_style: dict[str, Any] | None,
+) -> dict[str, Any]:
+    presenter_style = (
+        editing_style.get("presenter", {})
+        if isinstance(editing_style, dict) and isinstance(editing_style.get("presenter"), dict)
+        else {}
+    )
+    treatment = str(presenter_style.get("default_treatment", "") or "clean_a_roll")
     return {
         "authority": "suggestion",
         "priority": "baseline",
@@ -259,7 +290,7 @@ def _presenter_director_signal(*, first: bool, after_media: bool) -> dict[str, A
         "visual_role": "presenter",
         "transition_in": "none" if first else ("hard_cut" if after_media else "none"),
         "transition_out": "none",
-        "treatment": "clean_a_roll",
+        "treatment": treatment,
         "pacing": "normal",
         "return_to_presenter": False,
         "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm.",
@@ -324,6 +355,7 @@ def build_edit_manifest(
     media_manifest: list[dict[str, Any]],
     words_per_second: float,
     source_paths: dict[str, str] | None = None,
+    editing_style: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     _validate_script_alignment(script, script_sections)
     ranges = _section_ranges(script_sections, words_per_second)
@@ -376,7 +408,7 @@ def build_edit_manifest(
         mode = "media" if active else "presenter"
         if active:
             asset = active.get("_asset")
-            director = _media_director_signal(active, section, asset)
+            director = _media_director_signal(active, section, asset, editing_style)
             media = _asset_payload(asset, active)
             cue_id = f"slot_{int(active.get('slot_number', 0)):03d}"
         else:
@@ -384,6 +416,7 @@ def build_edit_manifest(
             director = _presenter_director_signal(
                 first=not timeline,
                 after_media=last_mode == "media",
+                editing_style=editing_style,
             )
             media = None
             cue_id = None
@@ -414,6 +447,11 @@ def build_edit_manifest(
         last_mode = mode
 
     paths = source_paths or {}
+    style_warnings = (
+        lint_timeline(timeline, editing_style, duration_seconds=duration)
+        if editing_style
+        else []
+    )
     media_items = [item for item in timeline if item["mode"] == "media"]
     cue_status: dict[str, bool] = {}
     cue_blockers: set[str] = set()
@@ -465,6 +503,12 @@ def build_edit_manifest(
                 "context, emotional grounding, analogy, contrast, or intentional rhythm."
             ),
         },
+        "editing_style": (
+            public_style_metadata(editing_style)
+            if editing_style
+            else {"applied": False}
+        ),
+        "style_warnings": style_warnings,
         "readiness": {
             "pre_recording_contract_valid": True,
             "ready_for_recording": True,
@@ -495,6 +539,7 @@ def write_edit_manifest(
     episode_dir: Path,
     media_dir: Path,
     words_per_second: float,
+    editing_style_path: Path | None = None,
 ) -> Path:
     script = _read_text(episode_dir / "script.txt")
     if not script:
@@ -526,6 +571,7 @@ def write_edit_manifest(
 
     state = _read_json(episode_dir / "run_state.json", {})
     episode_date = str(state.get("episode_date", "") or episode_dir.name)
+    style = load_editing_style(editing_style_path or _DEFAULT_STYLE_PATH)
     payload = build_edit_manifest(
         episode_date=episode_date,
         script=script,
@@ -533,6 +579,7 @@ def write_edit_manifest(
         media_plan=media_plan,
         media_manifest=verified_manifest,
         words_per_second=words_per_second,
+        editing_style=style,
     )
     destination = media_dir / "edit_manifest.json"
     destination.write_text(
