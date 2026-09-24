@@ -799,7 +799,7 @@ body{{min-height:100vh}}.shell{{width:min(1180px,calc(100% - 32px));margin:0 aut
 </head>
 <body data-health-page="repo-health">
 <main class="shell">
-<div class="topbar"><div><span class="eyebrow">AI News Daily · Observabilidad</span></div><a class="back" href="../">← Episodios</a></div>
+<div class="topbar"><div><span class="eyebrow">AI News Daily · Observabilidad</span></div><a class="back" href="../" target="_top">← Episodios</a></div>
 <section class="hero">
 <span class="overall {status_class}">{_esc(label)}</span>
 <h1>Salud del repositorio</h1>
