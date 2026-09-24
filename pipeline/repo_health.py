@@ -186,6 +186,34 @@ def _lock_and_ignore(root: Path) -> list[HealthCheck]:
     return checks
 
 
+def _dependency_automation(root: Path) -> HealthCheck:
+    configured = any(
+        path.is_file()
+        for path in (
+            root / ".github" / "dependabot.yml",
+            root / ".github" / "dependabot.yaml",
+            root / "renovate.json",
+            root / ".github" / "renovate.json",
+        )
+    )
+    return HealthCheck(
+        "dependency-automation",
+        "Dependencias",
+        "ok" if configured else "warn",
+        "Actualizaciones de dependencias",
+        (
+            "Hay un bot de actualización de dependencias configurado."
+            if configured
+            else "No se detectó Dependabot ni Renovate."
+        ),
+        (
+            ""
+            if configured
+            else "Conviene automatizar PRs de actualización y dejar que CI valide el lockfile."
+        ),
+    )
+
+
 def _python_contract(root: Path) -> HealthCheck:
     pyproject = _read_text(root / "pyproject.toml")
     ci = _read_text(root / ".github/workflows/ci.yml")
@@ -658,6 +686,7 @@ def audit_repository(
         _required_files(repo_root),
         _repository_size(repo_root, github),
         *_lock_and_ignore(repo_root),
+        _dependency_automation(repo_root),
         _python_contract(repo_root),
         _action_pinning(repo_root),
         _editorial_regression_contract(repo_root),
