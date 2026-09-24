@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "description": "Three time-separated content folds; one independently generated script per configuration/fold.",
+  "folds": [
+    {"id":"fold_2026_09_24","date":"2026-09-24","news_file":"news/2026-09-24-12-43-40.txt","reason":"Latest dense window; includes agents, science, infrastructure and products."},
+    {"id":"fold_2026_09_04","date":"2026-09-04","news_file":"news/2026-09-04-08-42-59.txt","reason":"Earlier production-era window, separated in time."},
+    {"id":"fold_2026_08_31","date":"2026-08-31","news_file":"news/2026-08-31-08-34-19.txt","reason":"Independent window with regulation, human-AI interaction, education, agents and infrastructure."}
+  ]
+}
