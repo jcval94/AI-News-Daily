@@ -116,6 +116,70 @@ def _beat_query(
     return _KIND_QUERIES.get(kind, "researcher notes")
 
 
+def _director_fields(*, slot: dict[str, Any], beat: dict[str, Any] | None = None) -> dict[str, Any]:
+    priority = str(slot.get("slot_priority", "") or "")
+    beat_kind = str((beat or {}).get("kind", "") or slot.get("beat_kind", "") or "").strip().lower()
+
+    if priority == "opening_dense_media":
+        return {
+            "visual_role": "rhythm",
+            "transition_in": "hard_cut",
+            "transition_out": "hard_cut",
+            "treatment": "natural_motion",
+            "pacing": "fast",
+            "return_to_presenter": False,
+            "director_note": (
+                "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; "
+                "let adjacent opening cues form one visual sequence before returning to camera."
+            ),
+        }
+
+    if priority == "synthesis_payoff":
+        return {
+            "visual_role": "emotional_grounding",
+            "transition_in": "hard_cut",
+            "transition_out": "hard_cut",
+            "treatment": "subtle_push_in",
+            "pacing": "calm",
+            "return_to_presenter": True,
+            "director_note": (
+                "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea "
+                "to land, then return to the presenter."
+            ),
+        }
+
+    role_by_kind = {
+        "evidence": "evidence",
+        "reveal": "explanation",
+        "turn": "explanation",
+        "complication": "contrast",
+        "human_stakes": "emotional_grounding",
+        "scene": "context",
+        "reflection": "context",
+    }
+    note_by_kind = {
+        "evidence": "Show concrete documentary evidence or the closest truthful domain visual; never imply this is exact study footage unless verified.",
+        "reveal": "Use the visual to make the reveal legible, then return to the presenter before the next inference.",
+        "turn": "Support the conceptual turn with one clarifying visual; avoid adding a second idea through the image.",
+        "complication": "Use contrast only if it sharpens the complication; otherwise prefer staying on camera.",
+        "human_stakes": "Prefer a human-scale, restrained visual. Avoid melodrama or generic emotional stock.",
+        "scene": "Ground the narrated scene in a concrete place/object/action rather than an abstract technology metaphor.",
+        "reflection": "Use sparingly. The presenter should usually carry reflective passages unless a visual materially clarifies the thought.",
+    }
+    return {
+        "visual_role": role_by_kind.get(beat_kind, "context"),
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm" if beat_kind in {"reflection", "human_stakes"} else "normal",
+        "return_to_presenter": True,
+        "director_note": note_by_kind.get(
+            beat_kind,
+            "Use only if the visual materially clarifies the spoken idea; otherwise stay on the presenter.",
+        ),
+    }
+
+
 def build_deterministic_plan(
     *,
     episode_plan: dict[str, Any],
@@ -164,6 +228,7 @@ def build_deterministic_plan(
                 "slot_priority": "opening_dense_media",
                 "preferred_asset_type": "video",
                 "motion_preference": "high",
+                **_director_fields(slot=slot),
             })
             continue
 
@@ -177,6 +242,9 @@ def build_deterministic_plan(
                 "slot_priority": "synthesis_payoff",
                 "preferred_asset_type": "image_or_video",
                 "motion_preference": "normal",
+                **_director_fields(
+                    slot={**slot, "slot_priority": "synthesis_payoff"},
+                ),
             })
             used_sections.add(section_key)
             continue
@@ -202,6 +270,7 @@ def build_deterministic_plan(
             "slot_priority": "section_focus",
             "preferred_asset_type": "image_or_video",
             "motion_preference": "normal",
+            **_director_fields(slot=slot, beat=beat),
         })
         used_sections.add(section_key)
 
