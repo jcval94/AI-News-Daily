@@ -73,6 +73,11 @@ def asset_identity_keys(item: dict[str, Any], *, media_root: Path) -> list[str]:
     if source_url:
         keys.append(f"source:{source_url}")
 
+    # Avoid hashing large videos/images when the provider already gives us a stable
+    # identity. Hashing is a fallback for local/legacy assets with no upstream key.
+    if keys:
+        return keys
+
     digest = _file_sha256(_file_path(media_root, item))
     if digest:
         keys.append(f"sha256:{digest}")
