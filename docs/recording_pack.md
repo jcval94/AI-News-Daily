@@ -51,3 +51,8 @@ When `edit_manifest.json` exists, overlapping media cues are attached to each ta
 ## Capture defaults
 
 4K/30 fps, 16:9 and 48 kHz audio are recommendations, not hard requirements. The contract remains editor/camera neutral.
+
+
+## Style traceability
+
+The Recording Pack inherits the editing-style metadata from `edit_manifest.json`. This lets recording, virtual A-roll, and later NLE timelines prove which audiovisual grammar was active without reading mutable repository state.
