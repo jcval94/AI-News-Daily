@@ -212,6 +212,34 @@ class MultimediaSegment(BaseModel):
     visual_query: str = Field(min_length=1)
     on_screen_text: str = ""
     reason: str = ""
+    visual_role: Literal[
+        "evidence",
+        "explanation",
+        "context",
+        "historical_mirror",
+        "analogy",
+        "contrast",
+        "emotional_grounding",
+        "rhythm",
+    ] = "explanation"
+    preferred_asset_type: Literal["video", "image", "image_or_video"] = "image_or_video"
+    motion_preference: Literal["low", "normal", "high"] = "normal"
+    transition_in: Literal["hard_cut", "match_cut", "cross_dissolve", "dip_to_black", "none"] = "hard_cut"
+    transition_out: Literal["hard_cut", "match_cut", "cross_dissolve", "dip_to_black", "none"] = "hard_cut"
+    treatment: Literal[
+        "natural_motion",
+        "static",
+        "subtle_push_in",
+        "slow_push_in",
+        "slow_pull_out",
+        "subtle_pan",
+        "parallax",
+        "highlight_crop",
+        "none",
+    ] = "natural_motion"
+    pacing: Literal["fast", "normal", "calm"] = "normal"
+    return_to_presenter: bool = True
+    director_note: str = Field(default="", max_length=280)
 
 
 class MultimediaPlan(BaseModel):
@@ -757,6 +785,14 @@ Rules:
 - For historical parallels, prefer period-appropriate public-domain or Wikimedia-searchable concepts rather than generic modern stock.
 - visual_query must be a short ENGLISH query suitable for Pexels/Wikimedia Commons.
 - on_screen_text must be Spanish and at most 8 words.
+- For every media segment, separate narrative intent from editing technique:
+  - reason = why the cutaway exists in the argument;
+  - visual_role = evidence/explanation/context/historical_mirror/analogy/contrast/emotional_grounding/rhythm;
+  - preferred_asset_type + motion_preference = what material works best;
+  - transition_in/out + treatment + pacing = a restrained editing suggestion, not a mandate;
+  - director_note = one concise producer/editor note explaining what to preserve visually.
+- Prefer hard cuts. Use dissolves, dip-to-black, parallax, or other visible treatments only when the idea itself earns them.
+- return_to_presenter should normally be true: the narrator is the visual continuity.
 - Avoid copyrighted movie/TV footage and fabricated screenshots.
 - The first 15 seconds already contain deterministic 3-second slots; honor them.
 """,
