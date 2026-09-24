@@ -12,7 +12,7 @@ Transcripción desactivada; prioridad para videos cortos. No se generan imágene
 | Wikipedia/MediaWiki | Descubrir archivos de artículos en inglés y español, incluidos archivos locales | Pública, sin clave. La pertenencia al artículo no demuestra qué representa una foto. Se exige la ficha del archivo; P18 puede acreditar una transliteración. Las licencias se conservan. |
 | Openverse | Ampliar búsqueda de imágenes | API anónima, sin cuenta ni pago; una búsqueda/caso, 20 resultados. Solo descarga desde CDN/catálogos admitidos. 403/429 detiene el proveedor. La sonda local devolvió 403. |
 | Wikimedia Commons TimedMediaHandler | Videos con archivos originales/derivados públicos | API sin clave. Bytes limitados, copia local, comprobación con ffprobe/ffmpeg. |
-| Sepia Search + PeerTube | Descubrir videos en plataformas federadas | API pública sin clave; frases exactas para evitar el OR implícito. Se reconfirma público, no directo y `downloadEnabled=true`. MP4 progresivo o archivo MP4 fragmentado completo con audio explícito; no se siguen listas HLS/P2P. |
+| Sepia Search + PeerTube | Descubrir videos en plataformas federadas | API pública sin clave; frase exacta primero. Si no hay resultados, hasta 30 candidatos con exigencia local de todas las palabras. Se reconfirma público, no directo y `downloadEnabled=true`. MP4 progresivo o archivo MP4 fragmentado completo con audio explícito; no se siguen listas HLS/P2P. |
 | NASA Image and Video Library | Videos científicos e históricos del catálogo | API pública sin clave; se prioriza el derivado pequeño. Una coincidencia geográfica no acredita un desastre. |
 
 Se mantienen YouTube, Internet Archive, Commons de imágenes, Met, AIC y LoC.

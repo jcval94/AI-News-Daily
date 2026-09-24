@@ -65,7 +65,7 @@ Workflow: **Experiment — Precise image search artifacts**.
 
 - `description`: descripción libre, hasta 2000 caracteres.
 - `count`: cantidad deseada, 1–20; cinco por defecto.
-- `sources`: combinación de `commons,met,artic,loc`.
+- `sources`: combinación de `commons,wikipedia,openverse,met,artic,loc`.
 
 Mientras el workflow solo exista en `experiment/youtube-artifacts`, edita
 `experiments/image_search/live-request.json` en esa rama y haz commit. Cambiar

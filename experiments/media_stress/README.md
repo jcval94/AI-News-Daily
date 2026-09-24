@@ -4,8 +4,9 @@ Twelve frozen targets, each tested independently for images and videos (24 cases
 Run only on manual dispatch or an intentional change to `live-request.json` on
 `experiment/youtube-artifacts`. No production imports, schedule, or promotion.
 
-Each case requests one exact asset. Images use Commons, Met, Art Institute and
-Library of Congress; videos search YouTube and Internet Archive. Videos are full,
+Each case requests one exact asset. Images use Commons, Wikipedia, Openverse,
+Met, Art Institute and Library of Congress; videos search YouTube, Internet
+Archive, Commons, PeerTube and NASA. Videos are full,
 with short known durations preferred, and transcription explicitly **off**.
 The usual media size/duration/decoding and source-access gates remain enforced.
 
@@ -36,3 +37,7 @@ Outputs must be new directories. GitHub artifacts are retained for seven days;
 committed results retain run IDs, source URLs and review evidence afterward.
 
 Verified results and artifact links: [RESULTS.md](RESULTS.md), with machine-readable adjudication in [results-2026-09-24.json](results-2026-09-24.json). Review was performed by the assistant using catalogue evidence and downloaded files, not by a human reviewer.
+
+## Alternative-source repetition
+
+See [RESULTS-ALTERNATIVES.md](RESULTS-ALTERNATIVES.md) for the full 24-case repetition, targeted follow-ups, downloaded artifacts and independently reviewed matches. [ALTERNATIVES.md](ALTERNATIVES.md) documents the free public APIs and controls. The previous results remain in [RESULTS.md](RESULTS.md).

@@ -67,7 +67,7 @@ jobs:
     env:
       IMAGE_DESCRIPTION: ${{ matrix.description }}
       IMAGE_COUNT: ${{ matrix.count }}
-      IMAGE_SOURCES: ${{ matrix.sources || 'commons,met,artic,loc' }}
+      IMAGE_SOURCES: ${{ matrix.sources || 'commons,wikipedia,openverse,met,artic,loc' }}
       OUTPUT_DIR: image-search-output/run
     steps:
       - uses: actions/checkout@v4
