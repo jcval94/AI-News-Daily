@@ -43,3 +43,36 @@ The generated timeline therefore alternates explicit `presenter` and `media` int
 ## Local-editor future
 
 The manifest is deliberately NLE-neutral. Future adapters can translate it to OpenTimelineIO, DaVinci Resolve, CapCut handoff packages, or another editor without changing the editorial pipeline.
+
+## Readiness is explicit
+
+A valid pre-recording manifest is not the same thing as an import-ready timeline.
+
+The top-level `readiness` object must distinguish:
+
+- `pre_recording_contract_valid`: the script/section/media contract is internally coherent;
+- `ready_for_recording`: the episode can be recorded using these cues;
+- `asset_resolution_complete`: every planned media cue resolves to a usable, license-valid file;
+- `ready_for_automated_timeline_import`: remains false in v1 until real A-roll has been aligned;
+- `blockers`: machine-readable reasons such as `recording_retime_required`, `missing_manifest_asset`, `missing_file`, or `license_not_validated`.
+
+This prevents a structurally valid manifest from appearing production-ready too early.
+
+## Fail-closed integrity checks
+
+Generation must fail rather than emit a stale manifest when:
+
+- `script_sections.json` narration no longer matches `script.txt`;
+- a media plan declares a different episode date;
+- media cue slot numbers are duplicated;
+- asset manifest shot numbers are duplicated;
+- an asset path escapes the episode multimedia directory.
+
+Non-fatal timing drift and clipped cues remain visible as validation warnings.
+
+## Real regression fixture
+
+`docs/examples/edit_manifest/2026-09-04/edit_manifest.json` replays the latest canonical approved episode with a full modern essay structure through the current edit contract.
+
+The historical episode did not persist its downloaded multimedia files, so the example intentionally remains blocked for automated NLE import. CI asserts that this does not become a false green.
+
