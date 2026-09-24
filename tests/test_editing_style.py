@@ -1,4 +1,5 @@
 import copy
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,6 +15,7 @@ from pipeline.editing_style import (
 
 ROOT = Path(__file__).resolve().parents[1]
 STYLE_PATH = ROOT / "config" / "editing_style.yaml"
+REAL_EDIT_REPLAY = ROOT / "docs" / "examples" / "edit_manifest" / "2026-09-04" / "edit_manifest.json"
 
 
 class EditingStyleTests(unittest.TestCase):
@@ -136,6 +138,20 @@ class EditingStyleTests(unittest.TestCase):
         codes = {item["code"] for item in warnings}
         self.assertNotIn("opening_presenter_anchor_late", codes)
         self.assertNotIn("continuous_media_too_long", codes)
+
+
+    def test_real_pre_style_replay_exposes_opening_regressions(self):
+        payload = json.loads(REAL_EDIT_REPLAY.read_text(encoding="utf-8"))
+        warnings = lint_timeline(
+            payload["timeline"],
+            self.style,
+            duration_seconds=payload["timing"]["duration_seconds"],
+        )
+        codes = {item["code"] for item in warnings}
+        self.assertIn("opening_presenter_anchor_late", codes)
+        self.assertIn("continuous_media_too_long", codes)
+        self.assertIn("presenter_share_high", codes)
+
 
     def test_yaml_loader_rejects_non_mapping(self):
         with tempfile.TemporaryDirectory() as tmp:
