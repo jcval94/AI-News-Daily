@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 
-ARCHITECTURE_VERSION = 3
+ARCHITECTURE_VERSION = 4
 
 LAYERS = [
     {
@@ -50,6 +50,7 @@ STAGES: list[dict[str, Any]] = [
     {"id": "ingest", "kind": "deterministic", "title": "Ingesta y ventana editorial", "summary": "Con cobertura suficiente, materializa el catálogo estructurado que alimentará el runtime.", "inputs": "news/YYYY-MM-DD.txt", "outputs": "NewsItem[] + fechas disponibles", "authority": "Python", "code": "pipeline/news.py · pipeline/run.py", "trace_steps": []},
     {"id": "memory", "kind": "deterministic", "title": "Memoria aprobada", "summary": "Solo episodios aprobados alimentan memoria de historias y ensayos.", "inputs": "scripts/ históricos aprobados", "outputs": "previous_selected_news + previous_essays", "authority": "Python", "code": "pipeline/run.py", "trace_steps": []},
     {"id": "selection", "kind": "agent", "title": "Selector editorial", "summary": "Reduce ruido y devuelve referencias a historias reales con valor humano/editorial.", "inputs": "noticias + historial", "outputs": "selected_news.json", "authority": "Agente propone; Python valida", "code": "app/agent.py → news_relevance_selector", "trace_steps": ["select_news"]},
+    {"id": "narrative_memory", "kind": "deterministic", "title": "Narrative Memory verificada", "summary": "Valida la biblioteca externa, deriva uso desde episodios aprobados y recupera un contexto pequeño con cooldown/diversidad; el Director puede elegir 0–2.", "inputs": "editorial/narrative_memory.jsonl + selected_news + historial aprobado", "outputs": "narrative_memory_candidates.json + narrative_memory_selection.json", "authority": "Python valida/recupera; la tarea programada solo investiga y agrega conocimiento", "code": "pipeline/narrative_memory.py · docs/narrative_memory_contract.md", "trace_steps": []},
     {"id": "planning", "kind": "agent", "title": "Director editorial + Claim Ledger", "summary": "Diseña pregunta, tesis, evidencia, Claim Ledger y beats antes de la prosa.", "inputs": "selected_news + perfiles + memoria", "outputs": "episode_plan.json", "authority": "Agente diseña; Pydantic/Python validan", "code": "app/agent.py → editorial_director", "trace_steps": ["plan_episode", "replan_episode_novelty"]},
     {"id": "novelty", "kind": "gate", "title": "Gate de novedad", "summary": "Compara el ángulo contra ensayos aprobados recientes y permite replans acotados.", "inputs": "episode_plan + previous_essays", "outputs": "novelty_check.json", "authority": "Python", "code": "pipeline/core.py · pipeline/run.py", "trace_steps": []},
     {"id": "writing", "kind": "agent", "title": "Writer con frontera factual", "summary": "Escribe usando fuentes, plan, perfiles y el Claim Ledger como frontera factual.", "inputs": "news_text + selected_news + episode_plan + perfiles", "outputs": "draft_script", "authority": "Agente redacta; parser valida", "code": "app/agent.py → essay_script_writer", "trace_steps": ["write_script"]},
@@ -89,6 +90,7 @@ DECISION_FLOW = [
 DESIGN_DECISIONS = [
     ("Cobertura antes de tokens", "Una ventana insuficiente falla antes de cualquier llamada de modelo; evita aprobar episodios construidos sobre evidencia temporal demasiado incompleta."),
     ("Claim Ledger antes de la prosa", "Evita que marketing, inferencias o hipótesis se eleven silenciosamente a hechos."),
+    ("Narrative Memory fuera del hot path", "La investigación costosa se amortiza como biblioteca versionada; producción solo valida, recupera pocos candidatos y deriva uso de episodios aprobados."),
     ("Cuatro jueces en vez de uno", "Evita que un score promedio esconda factualidad débil, mala retención o voz artificial."),
     ("Tres refiners con contextos distintos", "Aísla responsabilidades y evita oscilaciones entre reparar hechos y estilo."),
     ("Multimedia después del gate editorial", "No se gastan búsquedas/assets ni se deja que lo visual convierta un script rechazado en publicable."),
