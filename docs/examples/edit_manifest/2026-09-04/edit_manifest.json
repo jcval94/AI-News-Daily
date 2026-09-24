@@ -1357,5 +1357,10 @@
       },
       "media": null
     }
-  ]
+  ],
+  "editing_style": {
+    "applied": false,
+    "note": "Historical real-episode replay created before editing_style.yaml was introduced."
+  },
+  "style_warnings": []
 }
