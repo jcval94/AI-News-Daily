@@ -190,7 +190,8 @@ def build_deterministic_plan(
     """Build a no-LLM visual plan from narrative beats and evidence.
 
     Policy:
-    - every candidate slot in the first 20 seconds is multimedia/video-first;
+    - establish the presenter in the first opening slot when at least five media slots remain;
+    - otherwise preserve the legacy five-media minimum in the first 20 seconds;
     - after 20 seconds, use one representative visual per narrative beat;
     - evidence-led beats use concrete documentary domains, not product-name stock searches;
     - always keep a synthesis visual payoff;
@@ -212,6 +213,12 @@ def build_deterministic_plan(
 
     used_sections: set[str] = set()
     plan: list[dict[str, Any]] = []
+    opening_slots = [
+        slot
+        for slot in candidate_slots
+        if float(slot.get("start_seconds", 0) or 0) < OPENING_DENSE_MEDIA_SECONDS
+    ]
+    preserve_presenter_anchor = len(opening_slots) >= 6
     opening_index = 0
     for slot in candidate_slots:
         start = float(slot.get("start_seconds", 0) or 0)
@@ -220,7 +227,7 @@ def build_deterministic_plan(
             # Keep the first opening slot on the presenter. This establishes the human
             # narrator before the dense visual sequence while preserving >=5 media
             # opportunities inside the first 20 seconds with the current slot cadence.
-            if opening_index == 0:
+            if opening_index == 0 and preserve_presenter_anchor:
                 opening_index += 1
                 plan.append({
                     **slot,
