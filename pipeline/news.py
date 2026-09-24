@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 from typing import Literal
@@ -93,6 +94,19 @@ def _item_blocks(text: str) -> list[tuple[int, str, int, int]]:
     return blocks
 
 
+def stable_news_id(*, title: str, source: str, url: str, item_index: int) -> str:
+    """Return an opaque ID stable across filename and timestamp variants."""
+    normalized = "\x1f".join(
+        (
+            " ".join(title.casefold().split()),
+            " ".join(source.casefold().split()),
+            url.strip(),
+            str(item_index),
+        )
+    )
+    return f"n_{hashlib.sha256(normalized.encode('utf-8')).hexdigest()[:16]}"
+
+
 def _source_file_date(path: Path) -> str:
     value = filename_date(path)
     return value.isoformat() if value is not None else ""
@@ -121,17 +135,23 @@ def parse_news_file(path: Path) -> list[NewsItem]:
         date_value = explicit_date or file_date
         date_origin: Literal["field", "source_file"] = "field" if explicit_date else "source_file"
         url = _field(block, "Enlace")
+        source = _field(block, "Fuente")
         source_file = path.name
         items.append(
             NewsItem(
-                news_id=f"{path.stem}:{item_index}",
+                news_id=stable_news_id(
+                    title=title,
+                    source=source,
+                    url=url,
+                    item_index=item_index,
+                ),
                 source_file=source_file,
                 source_locator=f"{source_file}#item-{item_index}",
                 item_index=item_index,
                 title=title,
                 date=date_value,
                 date_origin=date_origin,
-                source=_field(block, "Fuente"),
+                source=source,
                 url=url,
                 url_quality=classify_url(url),
                 category=_field(block, "Categoría"),
