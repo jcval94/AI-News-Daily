@@ -9,6 +9,15 @@ from pathlib import Path
 from unittest.mock import patch
 
 from pipeline import run as pipeline_run
+from pipeline.news import stable_news_id
+
+
+TEST_NEWS_ID = stable_news_id(
+    title="Noticia importante",
+    source="Fuente primaria",
+    url="https://example.com/story",
+    item_index=1,
+)
 
 
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
@@ -32,7 +41,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                     "selected_news": {
                         "items": [
                             {
-                                "news_id": "2026-08-20:1",
+                                "news_id": TEST_NEWS_ID,
                                 "selection_reason": "Evidencia útil para el ensayo",
                             }
                         ],
