@@ -52,6 +52,7 @@ from pipeline.core import (
     timeline_duration_seconds,
 )
 from pipeline.credits import write_credits
+from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset
 from pipeline.narrative_memory import (
     load_memory,
@@ -590,6 +591,23 @@ def normalize_multimedia_plan(
             "visual_query": query,
             "on_screen_text": str(raw.get("on_screen_text", "")).strip()[:80],
             "reason": str(raw.get("reason", "")).strip(),
+            "visual_role": str(raw.get("visual_role", "") or "explanation"),
+            "preferred_asset_type": str(
+                raw.get("preferred_asset_type", "")
+                or slot.get("preferred_asset_type", "")
+                or "image_or_video"
+            ),
+            "motion_preference": str(
+                raw.get("motion_preference", "")
+                or slot.get("motion_preference", "")
+                or "normal"
+            ),
+            "transition_in": str(raw.get("transition_in", "") or "hard_cut"),
+            "transition_out": str(raw.get("transition_out", "") or "hard_cut"),
+            "treatment": str(raw.get("treatment", "") or "natural_motion"),
+            "pacing": str(raw.get("pacing", "") or "normal"),
+            "return_to_presenter": bool(raw.get("return_to_presenter", True)),
+            "director_note": str(raw.get("director_note", "") or "").strip()[:280],
         }
 
     selected_numbers = sorted(normalized_by_slot)[: max(0, max_media_downloads)]
@@ -1208,6 +1226,11 @@ async def build(
                 )
         write_json(episode_media_dir / "manifest.json", manifest)
         write_credits(manifest, episode_media_dir)
+        write_edit_manifest(
+            episode_dir=episode_scripts_dir,
+            media_dir=episode_media_dir,
+            words_per_second=CONFIG.words_per_second,
+        )
         write_json(
             episode_scripts_dir / "narrative_memory_usage.json",
             {
