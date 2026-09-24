@@ -76,3 +76,19 @@ Non-fatal timing drift and clipped cues remain visible as validation warnings.
 
 The historical episode did not persist its downloaded multimedia files, so the example intentionally remains blocked for automated NLE import. CI asserts that this does not become a false green.
 
+
+
+## Editing style policy
+
+`config/editing_style.yaml` supplies deterministic audiovisual defaults and lint.
+
+Every newly written manifest records:
+
+- the applied `style_id`;
+- a SHA-256 fingerprint of the exact style file;
+- the logical source path `config/editing_style.yaml`;
+- `style_warnings[]` describing observable deviations.
+
+The policy currently runs in `observe` mode. Style warnings do not block episode promotion. This is deliberate until multiple published episodes provide enough retention evidence to justify hard aesthetic gates.
+
+Explicit director suggestions are preserved when valid; the style file supplies defaults when the planner leaves transition/treatment unspecified. Factual/editorial authority remains outside the style layer.
