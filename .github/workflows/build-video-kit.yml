@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
