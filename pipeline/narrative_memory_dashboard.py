@@ -334,7 +334,7 @@ table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:lef
 <div class="panel"><span class="eyebrow">Uso real</span><h2>Qué paralelos utilizó cada episodio</h2><table><thead><tr><th>Episodio</th><th>Paralelos</th><th>Total</th></tr></thead><tbody>{episode_rows if episode_rows else '<tr><td colspan="3" class="empty">Aún no hay usos aprobados registrados.</td></tr>'}</tbody></table></div>
 </section>
 {issues_block}
-<p class="footer-note">La biblioteca es contexto verificado, no autoridad editorial. El Director puede elegir 0–2 casos recuperados y el Writer recibe solo esos registros. Un episodio rechazado no cuenta como uso.</p>
+<p class="footer-note">La biblioteca es contexto verificado, no autoridad editorial. El Director puede elegir 0–2 casos recuperados y el Writer recibe solo esos registros. Un episodio rechazado no cuenta como uso. Este dashboard es un snapshot: se refresca con el siguiente despliegue normal del Editorial Review Hub, no con cada alta diaria de la biblioteca.</p>
 </main>
 <script>
 const cards=[...document.querySelectorAll('[data-memory-card]')];
