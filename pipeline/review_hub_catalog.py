@@ -203,7 +203,7 @@ def catalog_document(episodes: list[dict[str, Any]], *, current_id: str) -> str:
 body{{overflow:hidden}}.catalog-shell{{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);height:100vh}}
 .episode-sidebar{{position:relative;z-index:3;height:100vh;border-right:1px solid var(--line);background:linear-gradient(180deg,#0e1721 0%,#091019 100%);display:flex;flex-direction:column;min-width:0}}
 .sidebar-head{{padding:22px 18px 14px;border-bottom:1px solid var(--line)}}.brand{{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800}}.sidebar-head h1{{font-size:22px;line-height:1.08;margin:7px 0 5px}}.sidebar-head p{{margin:0;color:var(--muted);font-size:12px;line-height:1.45}}
-.health-nav-wrap{{padding:10px 10px 0}}.repo-health-link{{display:grid;gap:3px;text-decoration:none;color:var(--text);padding:11px;border:1px solid #28445b;border-radius:12px;background:#102131}}.repo-health-link:hover,.repo-health-link.active{{background:#153047;border-color:#3d7897;box-shadow:inset 3px 0 0 var(--accent)}}.repo-health-link span{{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:850}}.repo-health-link strong{{font-size:12px}}.repo-health-link small{{font-size:10px;color:var(--muted)}}
+.health-nav-wrap{{padding:10px 10px 0;display:grid;gap:7px}}.repo-health-link{{display:grid;gap:3px;text-decoration:none;color:var(--text);padding:11px;border:1px solid #28445b;border-radius:12px;background:#102131}}.repo-health-link:hover,.repo-health-link.active{{background:#153047;border-color:#3d7897;box-shadow:inset 3px 0 0 var(--accent)}}.repo-health-link span{{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:850}}.repo-health-link strong{{font-size:12px}}.repo-health-link small{{font-size:10px;color:var(--muted)}}
 .episode-search-wrap{{padding:12px 12px 7px}}.episode-search{{width:100%;border:1px solid var(--line);border-radius:11px;background:#0a1119;color:var(--text);padding:10px 11px;outline:none}}.episode-search:focus{{border-color:#3f8daf;box-shadow:0 0 0 3px #17405a55}}
 .episode-list{{overflow:auto;padding:5px 8px 18px;display:grid;gap:5px}}.episode-item{{position:relative;display:grid;grid-template-columns:1fr auto;gap:3px 9px;text-decoration:none;color:var(--text);padding:12px 11px;border:1px solid transparent;border-radius:12px;background:transparent;transition:background .15s,border-color .15s}}.episode-item:hover{{background:#121d29;border-color:#213348}}.episode-item.active{{background:#132434;border-color:#2f5f7b;box-shadow:inset 3px 0 0 var(--accent)}}.episode-item[hidden]{{display:none}}
 .episode-date{{grid-column:1;font-size:12px;font-weight:850;color:#c8d9e8;letter-spacing:.02em}}.episode-item strong{{grid-column:1 / -1;font-size:12px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}.episode-item small{{grid-column:1;color:var(--muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}.episode-cost{{grid-column:2;grid-row:1;font-size:10px;color:#9cd8ef;font-variant-numeric:tabular-nums}}
@@ -218,13 +218,13 @@ body{{overflow:hidden}}.catalog-shell{{display:grid;grid-template-columns:var(--
 <div class="catalog-shell">
   <aside class="episode-sidebar" aria-label="Selector de episodios">
     <div class="sidebar-head"><div class="brand">AI News Daily</div><h1>Episodios</h1><p>Selecciona un episodio y conserva el mismo Review Hub.</p></div>
-    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a></div>
+    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Narrative Memory</strong><small>casos · mecanismos · uso · cooldown</small></a></div>
     <div class="episode-search-wrap"><input id="episodeSearch" class="episode-search" type="search" placeholder="Buscar episodio…" aria-label="Buscar episodio"></div>
     <nav id="episodeList" class="episode-list" aria-label="Episodios disponibles">{items}<div id="emptyFilter" class="empty-filter">No hay episodios que coincidan.</div></nav>
     <div class="sidebar-foot"><span id="episodeCount">{len(episodes)} episodio{'s' if len(episodes) != 1 else ''}</span> · artifacts disponibles</div>
   </aside>
   <main class="episode-stage">
-    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option>{options}</select></div>
+    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option><option value="__memory__">Narrative Memory</option>{options}</select></div>
     <iframe id="episodeFrame" class="episode-frame" src="{frame_src}" title="{frame_title}" loading="eager"></iframe>
   </main>
 </div>
@@ -238,10 +238,12 @@ const links=[...document.querySelectorAll('[data-episode-id]')];
 const search=document.getElementById('episodeSearch');
 const emptyFilter=document.getElementById('emptyFilter');
 const healthLink=document.getElementById('repoHealthLink');
+const memoryLink=document.getElementById('memoryLink');
 
 function selectedFromUrl(){{
   const params=new URLSearchParams(window.location.search);
   if(params.get('view')==='health') return '__health__';
+  if(params.get('view')==='memory') return '__memory__';
   const value=params.get('episode');
   return byId.has(value) ? value : DEFAULT_EPISODE;
 }}
@@ -253,6 +255,7 @@ function setEpisode(id,{{push=true}}={{}}){{
   frame.title=`Review Hub — ${{episode.date}}`;
   if(select) select.value=id;
   if(healthLink) healthLink.classList.remove('active');
+  if(memoryLink) memoryLink.classList.remove('active');
   links.forEach(link=>{{
     const active=link.dataset.episodeId===id;
     link.classList.toggle('active',active);
@@ -281,12 +284,30 @@ function setHealth({{push=true}}={{}}){{
     history.pushState({{view:'health'}},'',url);
   }}
 }}
+function setMemory({{push=true}}={{}}){{
+  const expected=new URL('memory/index.html',window.location.href).href;
+  if(frame.src!==expected) frame.src='memory/index.html';
+  frame.title='Narrative Memory';
+  if(select) select.value='__memory__';
+  links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
+  if(healthLink) healthLink.classList.remove('active');
+  if(memoryLink) memoryLink.classList.add('active');
+  document.title='Narrative Memory · AI News Daily';
+  if(push){{
+    const url=new URL(window.location.href);
+    url.searchParams.delete('episode');
+    url.searchParams.set('view','memory');
+    history.pushState({{view:'memory'}},'',url);
+  }}
+}}
 function setSelection(value,options={{}}){{
   if(value==='__health__') setHealth(options);
+  else if(value==='__memory__') setMemory(options);
   else setEpisode(value,options);
 }}
 links.forEach(link=>link.addEventListener('click',event=>{{event.preventDefault();setSelection(link.dataset.episodeId);}}));
 if(healthLink) healthLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__health__');}});
+if(memoryLink) memoryLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__memory__');}});
 if(select) select.addEventListener('change',()=>setSelection(select.value));
 window.addEventListener('popstate',()=>setSelection(selectedFromUrl(),{{push:false}}));
 if(search) search.addEventListener('input',()=>{{
