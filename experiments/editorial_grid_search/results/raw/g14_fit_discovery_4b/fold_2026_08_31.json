@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "error",
+  "config": {
+    "id": "g14_fit_discovery_4b",
+    "label": "Fit gate + strongest discovery mode",
+    "hypothesis": "Four-beat investigation with explicit uncertainty should feel more like live thinking.",
+    "memory_policy": "fit_gated",
+    "opening_style": "paradox_question",
+    "memory_word_budget": 80,
+    "first_evidence_word_budget": 180,
+    "beat_target": 4,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.14,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_08_31",
+    "date": "2026-08-31",
+    "news_file": "news/2026-08-31-08-34-19.txt",
+    "reason": "Independent window with regulation, human-AI interaction, education, agents and infrastructure."
+  },
+  "error_type": "RuntimeError",
+  "error": "Director failed treatment contract: expected exactly 4 beats, got 6"
+}

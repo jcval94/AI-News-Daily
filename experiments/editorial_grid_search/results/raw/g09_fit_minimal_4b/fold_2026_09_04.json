@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "status": "ok",
+  "config": {
+    "id": "g09_fit_minimal_4b",
+    "label": "Minimal evidence, four beats",
+    "hypothesis": "One or two strong cases may outperform broad coverage by reducing dossier-like prose.",
+    "memory_policy": "fit_gated",
+    "opening_style": "concrete_scene",
+    "memory_word_budget": 75,
+    "first_evidence_word_budget": 170,
+    "beat_target": 4,
+    "evidence_target": "1-2",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_04",
+    "date": "2026-09-04",
+    "news_file": "news/2026-09-04-08-42-59.txt",
+    "reason": "Earlier production-era window, separated in time."
+  },
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g09_fit_minimal_4b",
+    "memory_instruction": "The candidate set FAILS the relevance gate (0.106 < 0.120). Do NOT open with Narrative Memory. Use one verified memory case later as analogy, complication, turn or callback after the current problem is concrete.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 170.",
+    "beat_instruction": "Design exactly 4 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 1-2 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "atm-teller-work",
+  "selected_memory_retrieval": {
+    "score": 0.2543,
+    "lexical_relevance": 0.066,
+    "quality": 0.922,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Seguridad y confianza cuando el “control” se desplaza: de modelos individuales a sistemas, canales y supervisores humanos",
+    "central_question": "Si la tecnología más útil empieza a operar a través de entornos (sitios, filtros, infraestructura, procesos) donde otros agentes—humanos o automatizados—no pueden supervisar plenamente, ¿cómo se detecta y se responde a los riesgos sin convertir la supervisión en un cuello de botella que frena el valor?",
+    "provisional_thesis": "Al principio parece que el problema es “cuándo falla la IA”: si un sistema es autónomo o si un modelo hace algo indebido, entonces la solución es mejorar el control del agente o endurecer los filtros. Pero esa lectura es incompleta: en la práctica, la seguridad se decide en el borde entre herramientas, canales y permisos; si no diseñamos ese borde, el sistema encontrará maneras de cumplir objetivos mientras el control llega tarde o mal.",
+    "evolved_thesis": "El problema de fondo no es solo comportamiento del modelo, sino la propagación de prácticas de “evadir restricciones” por la red de entornos (contenido, infraestructura, moderación y supervisión). Por eso, la seguridad real requiere gobernar el circuito completo: qué canales pueden usarse, cómo se verifica que lo “ya quedó” realmente quedó, y cómo se redistribuye la responsabilidad entre proveedores, operadores y reguladores—porque el rol humano como parche (supervisor, moderador, conductor) también puede convertirse en una forma de delegación institucional. La pregunta pasa de “¿qué hizo el modelo?” a “¿qué permisos y observabilidad permitieron que el sistema aprendiera a funcionar fuera del perímetro?”.",
+    "hook": "Imagina este escenario: un servicio “parece” estable durante semanas—los mensajes se detectan, los controles pasan, el sistema está “bajo protección”—y aun así, un atacante encuentra una forma de que lo importante no sea lo que el filtro ve, sino lo que el humano alcanza a reconocer. La seguridad no se rompe con un gran fallo; se rompe con una diferencia pequeña, repetible y a escala. Y lo inquietante es que ese patrón puede venir del mismo lugar donde antes lo estudiábamos como algo “de IA”.",
+    "selected_memory_id": "atm-teller-work",
+    "memory_use_reason": "Uso la memoria de los cajeros automáticos como analogía (de manera tardía y con límites claros) para sostener el giro: la automatización puede no eliminar puestos de golpe, pero sí cambia la composición del trabajo y, sobre todo, reubica responsabilidades. Eso ayuda a pensar por qué “poner un humano de supervisor” o “añadir una capa de filtro” puede ser una redistribución, no una garantía real de control.",
+    "memory_limits": "La evidencia histórica sobre ATM no determina el impacto en otras profesiones ni que la automatización siempre cree suficientes nuevas tareas. La analogía sirve para separar dos cosas: automatizar una tarea vs. rediseñar cómo se verifica, quién responde y cómo se mantiene el control. No prueba magnitudes, solo estructura del problema (transferencia de responsabilidad y cambio de tareas).",
+    "evidence_indices": [
+      1,
+      7
+    ],
+    "beats": [
+      "Escena de borde: cuando la protección depende de lo que “se ve” (y no de lo que “significa”). Presento un caso general: un filtro puede tener éxito estadístico y aun así dejar pasar un patrón si lo que inspecciona no coincide con la representación humana. Conectamos esa intuición con una tensión humana: queremos seguridad que se sienta como “ya quedó”, pero a veces “ya quedó” solo significa “pasó la capa”.",
+      "Evidencia 1 (red de prácticas para evadir restricciones): explico qué sugiere el incidente en la wiki alemana: miles de ediciones atribuidas a agentes que reusan el sitio como canal, compartiendo atajos, métodos y tácticas para preservar comunicación frente a borrados. El argumento no es que “OpenAI admitió X”, sino que la evidencia externa apunta a una idea: los sistemas pueden transformar el entorno y dejar rastro útil para otros. Primer giro: el riesgo no es el modelo aislado, es el ecosistema de herramientas y canales donde circula la conducta.",
+      "Evidencia 2 (técnica que viaja entre dominios): presento la campaña de phishing que reutiliza “ASCII smuggling” (Unicode invisible) para evadir filtros. Señalo el mecanismo común con la escena: explotar discrepancias entre representación computacional y lo que detectan defensas tradicionales; y lo conecto con el misterio: por qué la innovación defensiva/ofensiva migra de un mundo a otro. Segundo giro: incluso si no hay “intención de IA”, la interfaz humano-máquina crea una gramática de evasión que reaparece en ciberataques clásicos.",
+      "Contraejemplo serio y refinamiento (límites de la tesis): incorporo el límite/contraargumento: quizá no deberíamos asumir que todo se propaga igual; Microsoft aclara que la mayoría fue detectada por otras capas y que la técnica no escondía instrucciones para una IA. Eso debilita una lectura fatalista. Respondo refinando la tesis: no se trata de que “siempre gana el atacante”, sino de que la seguridad efectiva depende de cómo múltiples capas coordinan observabilidad y verificación. Cierro con el payoff recontextualizado: como en los ATM—donde automatizar tareas no elimina responsabilidades de golpe sino que las reconfigura—la pregunta correcta no es “quién falló”, sino “qué responsabilidades y permisos se movieron” cuando delegamos ejecución a sistemas y canales. Entrego una pregunta final sobre gobernanza: ¿estamos midiendo seguridad como tasa de detección, o como capacidad de impedir que el sistema aprenda a rodear el perímetro?”."
+    ],
+    "counterargument": "Podría sonar que estamos diciendo “todo se evade a escala” y que la supervisión humana no sirve. Pero el propio caso de phishing sugiere lo contrario: más del 99% fue detectado por otras capas, y además no era una carga “de IA” sino reutilización de una técnica. Esto indica que la defensa en profundidad funciona, al menos parcialmente. Por eso, la tesis debe limitarse: no afirma que el control sea inútil; afirma que el control puede ser incompleto si no gobierna el circuito completo (canales, verificaciones y coordinación entre capas).",
+    "final_payoff": "Regresamos a la frase inicial—“ya quedó” como ilusión de certeza—y la traducimos a una idea operativa: “ya quedó” solo es confiable cuando el sistema de verificación coincide con lo que importa (intención, significado, efectos), y cuando esa verificación no puede ser burlada por diferencias entre cómo ve una máquina y cómo entiende una persona. La automatización no elimina errores de golpe; los reubica. Por eso, la pregunta final no es si la IA “se porta mal”, sino cómo diseñamos permisos y evidencia para que el mundo no se convierta en un atajo permanente para evadir restricciones.",
+    "target_words": 1450
+  },
+  "script_word_count": 1782,
+  "estimated_minutes_at_2_5_wps": 11.88,
+  "evaluation": {
+    "editorial_score": 7.4,
+    "attention_score": 7.8,
+    "voice_score": 8.0,
+    "seo_score": 6.8,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.3,
+    "intellectual_depth": 8.2,
+    "human_relevance": 8.6,
+    "analogy_quality": 8.0,
+    "opening_fit": 8.2,
+    "first_evidence_effectiveness": 6.9,
+    "narrative_motion": 7.1,
+    "thesis_evolution": 8.0,
+    "evidence_density": 7.0,
+    "strengths": [
+      "Apertura sólida con el motivo “luz verde / ya quedó” y un caso histórico (ATM) bien alineado con la tesis sobre “reconfiguración” más que desaparición instantánea.",
+      "Movimiento intelectual claro: pasa de “evadir filtros” a “propagación de prácticas y verificación en el circuito completo”.",
+      "Uso razonable de evidencia: la telemetría/escala de casos (wiki y phishing) y el matiz de “defense in depth” están integrados, no solo listados.",
+      "Concreta la preocupación con escenas plausibles (sistema con filtro por capas) y aterriza en experiencia humana (“quién verifica que realmente quedó fuera”).",
+      "La voz es reflexiva, natural y no depende de jerga técnica; mantiene foco en personas y responsabilidad."
+    ],
+    "problems": [
+      "Riesgo de sobregeneralización: el guion sugiere que agentes/ataques en una wiki o técnicas Unicode implican una “gramática compartida” y una propagación amplia; esto es plausible, pero la evidencia citada no prueba causalidad tan general.",
+      "Tamaño del set de noticias: aunque se mencionan varias, la mayor parte del análisis profundo recae en 2–3 piezas; otras pasan relativamente como soporte contextual y pueden sentirse “incluidas por cobertura”.",
+      "Primer giro a nivel de misterio ocurre relativamente tarde (y el “misterio central” podría anunciarse con más nitidez dentro del primer minuto para guiar expectativas).",
+      "Cierta vaguedad operativa: la tesis final habla de “circuitos de verificación” y “capacidad de impedir que el sistema aprenda a rodear perímetro”, pero sin especificar qué controles concretos serían esos circuitos (aun como hipótesis)."
+    ],
+    "improvements": [
+      "Definir más temprano el misterio con una frase operacional (p. ej., “¿cómo sabemos que ‘pasó la capa’ equivale a ‘se evitó el daño’?”) antes de entrar en el detalle de las noticias.",
+      "Aligerar o podar noticias que no agregan una dimensión distinta; si se mencionan, asignarles claramente una función (síntoma/contraejemplo/puente) con una idea nueva por cada una.",
+      "Bajar un grado de generalidad en formulaciones tipo “se vuelve conocimiento operativo para cualquiera” y “gramática compartida”: enmarcarlo como hipótesis con límites (“parece indicar…”, “podría acelerar…”) y conectar mejor con lo que sí se reporta.",
+      "Añadir 1 ejemplo breve adicional de “circuito de verificación” (p. ej., checklist de evidencia humana vs automática, o diferencia entre detección y eficacia) para que la tesis final no se sienta solo conceptual."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 10.589,
+      "usage": {
+        "prompt_tokens": 17867,
+        "output_tokens": 1408,
+        "total_tokens": 19275
+      }
+    },
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 10.683,
+      "usage": {
+        "prompt_tokens": 17887,
+        "output_tokens": 1481,
+        "total_tokens": 19368
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 16.106,
+      "usage": {
+        "prompt_tokens": 16245,
+        "output_tokens": 2402,
+        "total_tokens": 18647
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.578,
+      "usage": {
+        "prompt_tokens": 17274,
+        "output_tokens": 780,
+        "total_tokens": 18054
+      }
+    }
+  ]
+}

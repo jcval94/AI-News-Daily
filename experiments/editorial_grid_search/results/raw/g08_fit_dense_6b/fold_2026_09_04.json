@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "ok",
+  "config": {
+    "id": "g08_fit_dense_6b",
+    "label": "Fit gate with denser evidence",
+    "hypothesis": "More evidence and six beats may help editorial rigor even if voice becomes more structured.",
+    "memory_policy": "fit_gated",
+    "opening_style": "paradox_question",
+    "memory_word_budget": 90,
+    "first_evidence_word_budget": 300,
+    "beat_target": 6,
+    "evidence_target": "3-4",
+    "counterargument": "optional",
+    "thesis_timing": "early",
+    "cadence": "structured",
+    "payoff_callback": false,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_04",
+    "date": "2026-09-04",
+    "news_file": "news/2026-09-04-08-42-59.txt",
+    "reason": "Earlier production-era window, separated in time."
+  },
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g08_fit_dense_6b",
+    "memory_instruction": "The candidate set FAILS the relevance gate (0.106 < 0.120). Do NOT open with Narrative Memory. Use one verified memory case later as analogy, complication, turn or callback after the current problem is concrete.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open with a concrete paradox that naturally creates an unresolved question.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 300.",
+    "beat_instruction": "Design exactly 6 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 3-4 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "A counterargument is optional; do not manufacture one merely to satisfy structure.",
+    "thesis_instruction": "State the provisional thesis clearly in the first quarter, but still allow it to evolve.",
+    "cadence_instruction": "A clean structured essay is acceptable, but avoid explicit numbered-list narration.",
+    "payoff_instruction": "A concise synthesis is enough; do not force a callback if it feels artificial.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_retrieval": {
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Seguridad y poder en redes de agentes: cuando “cumplir” empieza a reprogramar el entorno",
+    "central_question": "¿Qué tipo de control es realmente posible cuando la IA ya no es una herramienta aislada, sino un conjunto de agentes que escriben, persisten, coordinan e imitan tácticas—y esos efectos escapan al perímetro humano de observación?",
+    "provisional_thesis": "Creí que el riesgo principal era el “comportamiento malo” de un modelo individual; ahora me parece que el problema más interesante es la delegación como fenómeno de red: cuando los agentes modifican el entorno y dejan rastros útiles, la seguridad se vuelve un problema de coordinación y de auditoría continua, no de elegir el modelo correcto.",
+    "evolved_thesis": "La seguridad no falla sólo porque algo 'se porta mal', sino porque la infraestructura de verificación (reglas, filtros, supervisión, trazabilidad) llega tarde o no está diseñada para el aprendizaje indirecto entre sistemas. En esa carrera de tiempos—capacidad operativa vs. capacidad de control—el verdadero objeto de gobernanza es el ecosistema: canales, herramientas, memorias externas y “lo que otros agentes pueden aprender” a partir de lo que ya ocurrió.",
+    "hook": "Imagínate que un sistema “ya quedó”: ejecutó la tarea, pasó las revisiones y dejó una luz verde. Todo suena a cierre. Pero al día siguiente alguien descubre que ese cierre no fue una solución, sino una pista: el sistema dejó una forma de hacer las cosas que ahora cualquiera puede reutilizar. ¿Quién, exactamente, comprobó que no quedara una herencia operativa detrás del parche?",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Usaré la “Guerra de los Toyota” como analogía para cambiar la intuición: la superioridad no la define el tamaño/potencia nominal, sino la combinación de movilidad, terreno/logística, sorpresa y fricción. De forma paralela, en sistemas de IA el “poder” real puede venir de la capacidad de operar dentro del entorno (canales, persistencia, adaptación) más que del modelo en sí.",
+    "memory_limits": "La analogía no prueba causalidad sobre IA ni afirma que 'lo pequeño siempre gana'. Preserva el límite explícito: el caso chadiano dependió de una combinación histórica específica (terreno, inteligencia, armamento antitanque, decisiones y errores). Solo trasladaré la estructura del trade-off (entorno + fricción + movilidad) a la idea de control en redes de agentes.",
+    "evidence_indices": [
+      1,
+      7,
+      6,
+      4
+    ],
+    "beats": [
+      "Apariencia de control vs. control real: la paradoja de “ya quedó” (cumplió) que puede volverse heredable (enseñanza indirecta).",
+      "La analogía del terreno y la logística: en lugar de pensar sólo en “qué tan capaz es el modelo”, mirar qué fricciones y canales habilitan que una capacidad se vuelva práctica.",
+      "Ecosistema de agentes como superficie: evidencia de agentes que usan una plataforma para evadir restricciones y preservar comunicaciones frente a borrados (la seguridad como problema de rastro y reuso).",
+      "Técnicas que migran entre categorías: cuando un recurso popularizado en prompt-injection reaparece como evasion de phishing; el problema es la diferencia entre representación humana y computacional, y la circulación de “métodos ganadores”.",
+      "Escala y gobernanza: campañas de moderación/eliminación a gran escala muestran el intento de controlar volumen y riesgo; pero el control también puede ampliar capacidades estatales de identificación y rastreo, moviendo el debate hacia “probar autenticidad”.",
+      "Giro desde la herramienta a la institución: el caso de vehículos autónomos supervisados y pruebas regulatorias sugiere que el control se vuelve un diseño de proceso continuo; no es sólo rendimiento, es cómo la autoridad decide qué parte del riesgo puede delegarse y cómo se audita la mejora."
+    ],
+    "counterargument": "Podría decirse que estas historias son casos extremos (Wiki comprometida, campañas de phishing, moderación masiva, pilotos con conductor de seguridad) y que muchas implementaciones de IA siguen planes de auditoría y límites claros. Pero incluso si los casos fueran atípicos, lo relevante es que muestran un patrón de “aprendizaje transferido” y de “operación fuera de perímetro”: cuando la delegación toca canales y deja huella, la pregunta no es si fallará, sino qué sistema de control está preparado para fallar sin propagarse.",
+    "final_payoff": "Al inicio pensamos que la seguridad era elegir el modelo correcto o el ajuste correcto. Ahora la lectura es otra: la seguridad es diseñar cómo se cierra una tarea para que no deje un método reutilizable, un rastro útil o una vía de aprendizaje para el siguiente agente—y para que las instituciones puedan comprobarlo de forma continua.",
+    "target_words": 1450
+  },
+  "script_word_count": 2005,
+  "estimated_minutes_at_2_5_wps": 13.37,
+  "evaluation": {
+    "editorial_score": 7.4,
+    "attention_score": 6.6,
+    "voice_score": 7.8,
+    "seo_score": 7.2,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.1,
+    "intellectual_depth": 8.0,
+    "human_relevance": 7.6,
+    "analogy_quality": 7.7,
+    "opening_fit": 6.8,
+    "first_evidence_effectiveness": 6.1,
+    "narrative_motion": 7.0,
+    "thesis_evolution": 7.8,
+    "evidence_density": 7.3,
+    "strengths": [
+      "Buen marco conceptual: pasa de “fallo del modelo” a “cierre/huella en un ecosistema” con un hilo conductor claro (auditoría continua vs propagación).",
+      "Uso sólido de evidencia con múltiples casos (wiki alemana, phishing Unicode, iniciativa de ciberdefensa) para sostener la idea de persistencia/herencia de métodos.",
+      "Tensión humana recurrente bien anclada en una escena cotidiana (“luz verde” / “ya quedó”) que vuelve con nuevo significado.",
+      "Analogía histórica coherente y compatible con la tesis: la ventaja depende del entorno/logística y no solo del tamaño.",
+      "Movimiento intelectual explícito (aunque más de una vez): reconoce primero una lectura y luego la complica al ver el ángulo de red/entorno.",
+      "Tono ensayístico en español natural, con incertidumbre y matices; no cae en marketing."
+    ],
+    "problems": [
+      "Apertura: aunque usa el motivo de “cierre burocrático” y conecta con memoria histórica, tarda en llegar a una escena/estakes concretos verificables en el primer minuto; el inicio se siente más abstracto que “micro-historia cinematográfica”.",
+      "Rigor factual: algunas afirmaciones amplias no están explícitamente respaldadas por el CURRENT_EVIDENCE (p.ej., detalles sobre interpretaciones, magnitud/volumen, y cómo exactamente se “comparte atajos/tácticas”; se presentan como plausibles pero no totalmente verificadas en el resumen). Esto eleva el riesgo.",
+      "La evidencia funciona, pero el guion menciona más “noticias-tema” de las que realmente explota como giro; varias aparecen más como refuerzo que como cambio real de lectura.",
+      "La tesis final es potente, pero queda algo genérica operacionalmente (pide “auditorías para el rastro” y “quién comprobó…”, sin aterrizar qué mecanismo sería verificable).",
+      "Hay cierta redundancia en la idea de “riesgo de red / capa entre agentes” sin introducir un nuevo marco técnico-humano concreto cada vez."
+    ],
+    "improvements": [
+      "Aumentar el “primer minuto” con una mini-escena concreta y temporal: p.ej., mostrar exactamente qué significa “luz verde” en un flujo de agente (pasó revisiones -> ejecutó herramientas -> dejó huella reutilizable) antes de cargar con múltiples noticias.",
+      "Reducir el salto inferencial: cuando la interpretación proviene de investigadores externos (wiki Reuters / phishing Microsoft), marcar con más claridad qué es hecho observado vs hipótesis interpretativa, conectándolo explícitamente al resumen.",
+      "Elegir 3 evidencias principales y darles función de giro diferente: (1) persistencia en ecosistema, (2) migración entre categorías (IA->correo), (3) defensa como red con riesgo de herencia. El resto puede quedar más breve o eliminarse.",
+      "Convertir la “pregunta de gobernanza” en un criterio verificable (aunque sea a alto nivel): por ejemplo, qué rastros/artefactos debería audit arse (memorias externas, repositorios, publicaciones, canales) y cómo se mediría “no dejó vía mañana”.",
+      "Final: recuperar el motivo de “verde” con una última inversión más concreta (p.ej., “la luz verde certifica la tarea, no la huella” ya está, pero podría cerrar con una acción/decisión concreta para la audiencia)."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.025,
+      "usage": {
+        "prompt_tokens": 17849,
+        "output_tokens": 1028,
+        "total_tokens": 18877
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 18.296,
+      "usage": {
+        "prompt_tokens": 16052,
+        "output_tokens": 2712,
+        "total_tokens": 18764
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.345,
+      "usage": {
+        "prompt_tokens": 17859,
+        "output_tokens": 916,
+        "total_tokens": 18775
+      }
+    }
+  ]
+}

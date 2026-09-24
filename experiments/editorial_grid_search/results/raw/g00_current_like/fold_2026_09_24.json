@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "status": "ok",
+  "config": {
+    "id": "g00_current_like",
+    "label": "Current-like forced memory opening",
+    "hypothesis": "Reference arm approximating the forced-opening contract.",
+    "memory_policy": "forced_opening",
+    "opening_style": "memory_story",
+    "memory_word_budget": 180,
+    "first_evidence_word_budget": 520,
+    "beat_target": 8,
+    "evidence_target": "3-4",
+    "counterargument": "optional",
+    "thesis_timing": "early",
+    "cadence": "structured",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_24",
+    "date": "2026-09-24",
+    "news_file": "news/2026-09-24-12-43-40.txt",
+    "reason": "Latest dense window; includes agents, science, infrastructure and products."
+  },
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g00_current_like",
+    "memory_instruction": "Open with the selected Narrative Memory case. Keep memory-led material under 180 spoken words, then bridge quickly to the present.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.0796,
+    "opening_instruction": "Open as a compact verified micro-story, not a citation or history lecture.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 520.",
+    "beat_instruction": "Design exactly 8 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 3-4 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "A counterargument is optional; do not manufacture one merely to satisfy structure.",
+    "thesis_instruction": "State the provisional thesis clearly in the first quarter, but still allow it to evolve.",
+    "cadence_instruction": "A clean structured essay is acceptable, but avoid explicit numbered-list narration.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "plato-writing-memory",
+  "selected_memory_retrieval": {
+    "score": 0.2491,
+    "lexical_relevance": 0.065,
+    "quality": 0.902,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Agentes de IA y el problema de “quién comprobó esto”: de la asistencia puntual a la ejecución con límites",
+    "central_question": "Cuando un agente deja de ser una respuesta y pasa a tocar sistemas del mundo (datos, herramientas, procesos), ¿cómo verificamos —en términos humanos y organizacionales— qué parte del resultado fue intención autorizada y qué parte fue “lo que el agente decidió hacer” durante la ejecución?",
+    "provisional_thesis": "Con agentes, la falla más peligrosa no es solo que “se equivoquen”, sino que el sistema prometa una continuidad de acción (y a veces una apariencia de comprensión) sin que exista una capa equivalente de verificación humana sobre el recorrido completo: quién decide, qué intenta rodear y qué consecuencias crea.",
+    "evolved_thesis": "La verificación humana no puede quedarse solo en permisos estáticos (“puede o no puede”), porque los agentes cambian el problema a una trazabilidad de intención y de persistencia en tiempo de ejecución: lo decisivo es gobernar el ciclo completo entre detectar una barrera, escalar la acción y evaluar el resultado; y eso exige rediseñar organización, seguridad e incluso interfaz para que “ya quedó” signifique algo comprobable, no solo convincente.",
+    "hook": "Hay una escena cotidiana que se repite aunque nadie la llame así: una luz verde de “aprobado” aparece y, por un segundo, todo se siente resuelto. El misterio es que esa luz solo prueba que alguien (o algo) marcó el caso como completado; no prueba que alguien haya entendido, verificado y asumido responsabilidad. Con agentes de IA, esa brecha se vuelve sistemática.",
+    "selected_memory_id": "plato-writing-memory",
+    "memory_use_reason": "El mito en el Fedro (Theuth y Thamus) funciona como espejo: la herramienta puede conservar “signos” y dar apariencia de conocimiento, desplazando la práctica viva de recordar/verificar. Esto encaja con el giro actual: agentes que ejecutan y reportan sin que la verificación humana ocurra en el mismo momento y con el mismo criterio.",
+    "memory_limits": "Usar solo los elementos verificados del mito como marco conceptual (no evidencia moderna empírica). Respetar la analogía_limits: no asumir que IA y escritura producen exactamente los mismos efectos cognitivos, solo que comparten la estructura de delegar “práctica” a un dispositivo externo.",
+    "evidence_indices": [
+      1,
+      6,
+      7
+    ],
+    "beats": [
+      "Un arranque histórico para hablar de una mala sustitución: cuando algo “recuerda” por nosotros, corre el riesgo de desplazar el acto vivo de comprobar.",
+      "Explico el mecanismo: la delegación en ejecución crea una brecha entre completar una tarea y entenderla; el agente opera como una especie de “memoria externa” de decisiones, pero no necesariamente de responsabilidades.",
+      "Tensión humana: en el trabajo y en lo público, lo que queremos no es solo rapidez; queremos garantías. Y las garantías no se sienten iguales cuando la acción ocurre fuera de nuestra vista.",
+      "La pregunta se vuelve concreta con un caso de agentes en infraestructura: un agente accede a archivos no públicos mientras buscaba estadísticas. La lección no es “qué tan mal”, sino qué tipo de control necesita existir para que “buscar” no se convierta en cruzar límites.",
+      "Giro 1: el problema no es únicamente contenido (qué datos), sino intención + persistencia. Una política de permisos heredados no captura bien el tramo intermedio: decisiones mientras el agente interpreta obstáculos.",
+      "Evidencia de seguridad como respuesta incompleta: Microsoft extiende Zero Trust para tráfico generado por agentes y bloqueo en tiempo real hacia herramientas no autorizadas; sugiere que gobernar agentes implica una capa nueva de inventario, auditoría y revocación para identidades no humanas.",
+      "Complicación: aunque bloqueemos envíos sensibles, el agente puede seguir siendo valioso y útil dentro de lo permitido; eso desplaza el misterio hacia aprobación, trazabilidad y el “por qué” detrás de cada acción.",
+      "Evidencia de mercado que cambia el incentivo: Amazon convierte Seller Assistant en un sistema continuo con memoria persistente y acciones monitorizadas; aquí la brecha se vuelve negocio: si el agente observa 24/7, la gente necesita nuevas formas de comprender qué se hizo y por qué, no solo de “aceptar” o “negar” cada recomendación."
+    ],
+    "counterargument": "Podría decirse que esto es un problema de implementación y configuración: con controles adecuados, registro y políticas, los agentes podrían operar de forma segura y trazable. La objeción es parcial: aun con buena configuración, el reto persiste porque la verificación humana completa del recorrido completo no es lo mismo que políticas estáticas; el salto de “decidir” ocurre durante la ejecución, y ahí la organización debe rediseñar cómo se supervisa y qué significa “aprobado”.",
+    "final_payoff": "Volvemos a la luz verde de “ya quedó”. Al inicio parecía una señal de cierre. Ahora la leemos como un síntoma: con agentes, necesitamos que el “ya quedó” implique verificación sobre intención y persistencia, no solo que el sistema terminó. La pregunta final queda abierta: ¿quién —humano, institución y herramientas— está configurado para comprobarlo cuando nadie estuvo mirando el camino?",
+    "target_words": 1450
+  },
+  "script_word_count": 1792,
+  "estimated_minutes_at_2_5_wps": 11.95,
+  "evaluation": {
+    "editorial_score": 7.3,
+    "attention_score": 8.0,
+    "voice_score": 7.6,
+    "seo_score": 6.7,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 7.7,
+    "intellectual_depth": 8.2,
+    "human_relevance": 8.4,
+    "analogy_quality": 8.0,
+    "opening_fit": 8.8,
+    "first_evidence_effectiveness": 7.1,
+    "narrative_motion": 7.6,
+    "thesis_evolution": 8.0,
+    "evidence_density": 7.2,
+    "strengths": [
+      "Apertura memorable y con gancho emocional (luz verde / “ya quedó”) conectada con una pregunta filosófica clara.",
+      "Buen movimiento intelectual: pasa de “error del agente” a “significado del cierre” y rediseño de la verificación.",
+      "Uso productivo del motivo recurrente “aprobado/ya quedó” para cambiar el marco interpretativo a lo largo del texto.",
+      "Las noticias entran con función argumental y no como simple listado; ayudan a sostener la tesis sobre trazabilidad e intención vs acción.",
+      "Analogía (Fedro/escritura-memoria) bien usada como espejo estructural, con límites implícitos (no pretende demostrar causalidad empírica).",
+      "Cierra con payoff temático volviendo a la luz verde y dejando tensión ética abierta."
+    ],
+    "problems": [
+      "Riesgo de factualidad: algunos detalles concretos de los incidentes quedan formulados con certeza razonable pero sin evidencia directa en el resumen provisto (p.ej., cómo ocurrió exactamente el “salto” en el recorrido, el alcance legal, o detalles de la notificación “meses después”/cronología). El guion atribuye causalidades implícitas que no están verificadas con el material resumido.",
+      "La densidad de noticias es alta para el tiempo potencial (menciona varias compañías/ejemplos), lo que puede diluir el foco aunque no sean “titulares”.",
+      "Hay tramos donde el ensayo se vuelve más prescriptivo que demostrativo (p.ej., “Un mundo de agentes exige tres capas…”), que suena a checklist aunque con buena intención; eso puede percibirse como menor rigor o como conclusiones más fuertes de lo que la evidencia permite.",
+      "SEO/claridad de entidades: se nombran muchas fuentes/empresas (OpenAI, Medicare/Services Australia, Anthropic, Microsoft, Amazon, Google/Gemini, Meta, etc.) pero no siempre se aclara su relación con la pregunta central en términos de “qué varía exactamente” entre casos; puede sentirse como mezcla de dimensiones (seguridad, ciencia, UX, hardware) sin un mecanismo común explícito por cada salto.",
+      "AI smell medio: el guion sostiene un tono ensayístico bastante uniforme y de alta abstracción; en conjunto puede parecer “muy diseñado” y menos conversacional en algunos segmentos largos."
+    ],
+    "improvements": [
+      "Reducir o matizar afirmaciones causales que no estén directamente respaldadas por los resúmenes (usar “según lo reportado/parece” cuando hila consecuencias sobre responsabilidad, cronología y criterios exactos del incidente).",
+      "Elegir 2–3 noticias como columna vertebral y usar las demás como menciones secundarias (o integrarlas como contrapunto puntual) para aumentar el efecto de evidencia y disminuir la sensación de amplitud temática.",
+      "Antes de la sección de “tres capas”, anclar con una frase más concreta en el misterio central: por ejemplo, qué significa “cierre operativo” en términos observables (logs, eventos, atribución, decisión intermedia) y cómo cada capa responde a esa medición.",
+      "Mejorar el puente recurrente “luz verde/aprobado” con una micro-escena adicional al final (hipotética) que muestre cómo fallaría la verificación aunque el sistema parezca “verde”, para que el payoff sea todavía menos abstracto.",
+      "Mantener la sofisticación pero variar más el ritmo: introducir una pausa/contradicción breve (“hasta aquí pensaba X, pero…”) con una imagen concreta adicional (una pantalla de auditoría, un log, un control de Zero Trust) para reforzar la progresividad."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 10.765,
+      "usage": {
+        "prompt_tokens": 17869,
+        "output_tokens": 1109,
+        "total_tokens": 18978
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 16.078,
+      "usage": {
+        "prompt_tokens": 15876,
+        "output_tokens": 2427,
+        "total_tokens": 18303
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 8.385,
+      "usage": {
+        "prompt_tokens": 17334,
+        "output_tokens": 971,
+        "total_tokens": 18305
+      }
+    }
+  ]
+}

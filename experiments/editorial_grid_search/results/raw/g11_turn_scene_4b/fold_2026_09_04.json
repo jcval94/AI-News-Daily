@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "error",
+  "config": {
+    "id": "g11_turn_scene_4b",
+    "label": "Scene opening, history as turn, four beats",
+    "hypothesis": "A current scene plus a mid-essay historical turn may maximize narrative motion.",
+    "memory_policy": "narrative_turn",
+    "opening_style": "concrete_scene",
+    "memory_word_budget": 90,
+    "first_evidence_word_budget": 160,
+    "beat_target": 4,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_04",
+    "date": "2026-09-04",
+    "news_file": "news/2026-09-04-08-42-59.txt",
+    "reason": "Earlier production-era window, separated in time."
+  },
+  "error_type": "RuntimeError",
+  "error": "Director failed treatment contract: selected_memory_id not in candidate set: electrification-organizacional-redesign"
+}

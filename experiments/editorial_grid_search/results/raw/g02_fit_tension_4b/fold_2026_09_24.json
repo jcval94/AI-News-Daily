@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "error",
+  "config": {
+    "id": "g02_fit_tension_4b",
+    "label": "Fit-gated memory + human tension",
+    "hypothesis": "Four larger beats and immediate human tension should improve voice and narrative motion.",
+    "memory_policy": "fit_gated",
+    "opening_style": "human_tension",
+    "memory_word_budget": 75,
+    "first_evidence_word_budget": 180,
+    "beat_target": 4,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_24",
+    "date": "2026-09-24",
+    "news_file": "news/2026-09-24-12-43-40.txt",
+    "reason": "Latest dense window; includes agents, science, infrastructure and products."
+  },
+  "error_type": "RuntimeError",
+  "error": "Director failed treatment contract: expected exactly 4 beats, got 7"
+}

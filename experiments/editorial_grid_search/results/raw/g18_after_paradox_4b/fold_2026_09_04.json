@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "error",
+  "config": {
+    "id": "g18_after_paradox_4b",
+    "label": "Paradox opening, evidence, then memory",
+    "hypothesis": "A paradox can create mystery while current evidence earns the historical analogy.",
+    "memory_policy": "after_first_evidence",
+    "opening_style": "paradox_question",
+    "memory_word_budget": 80,
+    "first_evidence_word_budget": 190,
+    "beat_target": 4,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "spoken",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_04",
+    "date": "2026-09-04",
+    "news_file": "news/2026-09-04-08-42-59.txt",
+    "reason": "Earlier production-era window, separated in time."
+  },
+  "error_type": "RuntimeError",
+  "error": "Director failed treatment contract: expected exactly 4 beats, got 6"
+}

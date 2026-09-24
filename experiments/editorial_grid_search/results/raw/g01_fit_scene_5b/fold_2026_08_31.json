@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "error",
+  "config": {
+    "id": "g01_fit_scene_5b",
+    "label": "Fit-gated memory + concrete scene",
+    "hypothesis": "A relevance gate plus a concrete scene should preserve Narrative Memory without forcing a weak opening.",
+    "memory_policy": "fit_gated",
+    "opening_style": "concrete_scene",
+    "memory_word_budget": 90,
+    "first_evidence_word_budget": 220,
+    "beat_target": 5,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_08_31",
+    "date": "2026-08-31",
+    "news_file": "news/2026-08-31-08-34-19.txt",
+    "reason": "Independent window with regulation, human-AI interaction, education, agents and infrastructure."
+  },
+  "error_type": "RuntimeError",
+  "error": "Director failed treatment contract: expected exactly 5 beats, got 6"
+}

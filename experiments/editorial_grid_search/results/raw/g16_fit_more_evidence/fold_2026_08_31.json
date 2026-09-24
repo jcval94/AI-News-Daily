@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "error",
+  "config": {
+    "id": "g16_fit_more_evidence",
+    "label": "Fit gate + three to four evidence cases",
+    "hypothesis": "Isolates evidence breadth while keeping the preferred architecture.",
+    "memory_policy": "fit_gated",
+    "opening_style": "concrete_scene",
+    "memory_word_budget": 85,
+    "first_evidence_word_budget": 200,
+    "beat_target": 5,
+    "evidence_target": "3-4",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_08_31",
+    "date": "2026-08-31",
+    "news_file": "news/2026-08-31-08-34-19.txt",
+    "reason": "Independent window with regulation, human-AI interaction, education, agents and infrastructure."
+  },
+  "error_type": "RuntimeError",
+  "error": "Director failed treatment contract: expected exactly 5 beats, got 8"
+}

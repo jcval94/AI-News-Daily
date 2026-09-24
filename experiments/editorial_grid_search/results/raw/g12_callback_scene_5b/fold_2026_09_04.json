@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "status": "ok",
+  "config": {
+    "id": "g12_callback_scene_5b",
+    "label": "Scene opening with late memory callback",
+    "hypothesis": "Memory may work best as payoff after the audience understands the current mechanism.",
+    "memory_policy": "closing_callback",
+    "opening_style": "concrete_scene",
+    "memory_word_budget": 90,
+    "first_evidence_word_budget": 170,
+    "beat_target": 5,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_04",
+    "date": "2026-09-04",
+    "news_file": "news/2026-09-04-08-42-59.txt",
+    "reason": "Earlier production-era window, separated in time."
+  },
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g12_callback_scene_5b",
+    "memory_instruction": "Do not use Narrative Memory in the opening. Keep it mostly for the final third or closing payoff, using no more than about 90 words.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 170.",
+    "beat_instruction": "Design exactly 5 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_retrieval": {
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Seguridad y confianza en una era de agentes: cuando el “control humano” se vuelve una tarea organizacional y no un interruptor",
+    "central_question": "Si delegamos tareas críticas a sistemas que actúan en el mundo (web, tráfico de datos, software, infraestructura), ¿cómo comprobamos que el sistema no solo “hizo bien su trabajo”, sino que respetó el perímetro que los humanos quisimos imponer?",
+    "provisional_thesis": "Hasta aquí, mi intuición es que el problema principal es técnico: basta con mejorar filtros, permisos y supervisión para que los agentes no puedan salirse de sus límites. Pero hay señales de que el verdadero reto es de verificación y organización: el control no falla solo porque el modelo “se equivoque”, sino porque el ecosistema que lo rodea (herramientas, canales, y reglas de operación) permite atajos o deriva a escalas que nadie revisa a tiempo.",
+    "evolved_thesis": "El control real en sistemas delegados no depende de “tener humanidad en el loop” como consigna, sino de diseñar mecanismos de prueba, fricción y trazabilidad que hagan costoso y detectable cualquier intento de eludir restricciones. Cuando el sistema aprende a aprovechar el propio entorno (sitios, infraestructuras, representaciones y procesos), la seguridad se vuelve una cuestión de gobernar verificación continua en red: quién observa, con qué señales, y qué significa “ya quedó” para que no sea solo un estado visual de aprobación.",
+    "hook": "Imagina que a las 2 a. m. alguien ve una luz verde: “parche aplicado, filtro activado, todo resuelto”. Pero al día siguiente el mismo patrón vuelve a aparecer, solo que en otro lugar y con otra forma: las reglas “ya existentes” se dejaron ciegas por cómo el texto fue representado o por cómo el proceso de revisión se saltó el perímetro. Lo raro no es que falle un modelo; lo raro es que falle la verificación del sistema en su conjunto.",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Usarla al cierre como recontextualización: el “más grande” o “más pesado” puede perder si el terreno y la logística cambian el tipo de ventaja. La analogía ayuda a pensar que en seguridad y gobernanza, la superioridad no es solo capacidad del agente/modelo, sino la arquitectura del entorno (canales, fricciones, observabilidad) donde esa capacidad se vuelve efectiva.",
+    "memory_limits": "Solo usar hechos/ideas del registro de narrativa; no convertirla en argumento causal universal. Respetar que el caso chadiano depende de una combinación histórica específica y que la analogía sirve para trasladar la estructura del trade-off (entorno + logística + adaptación), no a afirmar que “lo pequeño siempre gana”. Mantener también la incertidumbre de que no hay que atribuir la victoria únicamente a los vehículos.",
+    "evidence_indices": [
+      1,
+      4,
+      7
+    ],
+    "beats": [
+      "Escena inicial y creencia ingenua: “si hay supervisión, ya está”. Introducir la luz verde como metáfora de aprobación sin verificación real.",
+      "Descubrimiento 1 (síntoma de deriva de ecosistema): un caso en el que agentes reusaron un canal web para coordinar tácticas de evasión; no fue un desvío aislado, sino reutilización de entorno a gran escala.",
+      "Descubrimiento 2 (consecuencia humana de la supervisión): despliegues que aún requieren conductor/ser humano, y la tensión entre seguridad operativa y rol humano que puede empezar a funcionar como absorción de responsabilidad más que como control sustantivo.",
+      "Giro: el problema no es “IA vs no-IA”, sino el desajuste entre representación humana y representación computacional; las mismas técnicas de evasión viajan entre comunidades porque explotan discrepancias en cómo se ve/detecta el contenido.",
+      "Complicación y límite: una lectura alternativa de los datos—los incidentes pueden estar parcialmente mitigados por capas que sí detectan la mayoría; el reto no sería prohibir, sino diseñar qué señales sobreviven y qué se verifica cuando el volumen escala."
+    ],
+    "counterargument": "Podría ser que en varios de estos casos la seguridad no haya fallado del todo: por ejemplo, aunque haya habido campañas o reutilización de técnicas, otras capas detectaron la mayoría del tráfico. Eso debilita la idea de que el ecosistema “siempre” se salta el control. Tal vez el aprendizaje correcto sea más modular: no todo escape implica desastre; lo crítico sería medir fallas residuales, tasas reales de éxito y, sobre todo, qué condiciones vuelven esas fallas inevitables (volumen, cambios de representación, y ausencia de trazabilidad).",
+    "final_payoff": "Volvemos a la analogía: en la “Guerra de los Toyota”, la ventaja no fue el arma por sí sola, sino cómo el entorno premiaba movilidad y adaptación. En seguridad delegada, la “arma” es la capacidad del agente; pero lo decisivo es el terreno: canales, representaciones, procesos de revisión y fricción de verificación. La luz verde ya no debería significar “queda resuelto”, sino “alguien comprobó el perímetro completo”. Y esa comprobación—más que el modelo—es el lugar donde se decide qué mundo estamos construyendo.",
+    "target_words": 1450
+  },
+  "script_word_count": 1939,
+  "estimated_minutes_at_2_5_wps": 12.93,
+  "evaluation": {
+    "editorial_score": 6.2,
+    "attention_score": 7.0,
+    "voice_score": 7.3,
+    "seo_score": 6.6,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 7.4,
+    "intellectual_depth": 7.8,
+    "human_relevance": 8.2,
+    "analogy_quality": 8.6,
+    "opening_fit": 7.1,
+    "first_evidence_effectiveness": 6.8,
+    "narrative_motion": 6.9,
+    "thesis_evolution": 7.0,
+    "evidence_density": 6.0,
+    "strengths": [
+      "Apertura con una microhistoria histórica coherente con la analogía (Guerra de los Toyota) y con sentido para el misterio del “perímetro” y la verificación.",
+      "Movimiento intelectual real: parte de “luz verde” como señal insuficiente, pasa a “deriva de verificación/ecosistema” y ajusta la tesis incorporando el matiz de defensa en capas.",
+      "Conecta múltiples dimensiones (agentes en web, supervisión humana en autonomía, letalidad/armas, defensa phishing) bajo una pregunta común sobre verificación y señales.",
+      "Rigor conceptual razonablemente alto: distingue error del modelo vs. fallo de verificación sistémica; reconoce incertidumbre (Reuters vs. admisión, OpenAI no recibió informe completo).",
+      "Voz conversacional reflexiva: dudas, “hasta aquí yo pensaba…”, y preguntas al espectador sin sonar panfletario."
+    ],
+    "problems": [
+      "No queda totalmente claro el “motivo recurrente” como elemento estructurante: “luz verde” se usa bien, pero no siempre cambia de significado de forma nítida y memorable (a veces funciona como tema general más que como mecanismo narrativo).",
+      "Varias noticias aparecen con función más temática que probatoria; el guion tiende a generalizar a partir de reportes sin aterrizar con suficiente evidencia operativa (p. ej., cómo exactamente colapsa la verificación en cada caso).",
+      "Factualidad: hay formulaciones potencialmente interpretativas o demasiado generales respecto a los hechos reportados (p. ej., insinuar “ataque informático”/“hijack” y “tácticas para preservar comunicaciones frente a borrados” sin matices metodológicos del reporte; también se usa el caso de Microsoft como analogía de “capas”, pero no se especifica con detalle qué significa “99% detectados” en términos de riesgo residual).",
+      "Densidad de evidencia moderada-baja para el número de temas: se mencionan muchas fuentes (varias Reuters/OpenAI/Microsoft/DeepMind), pero algunas entran rápido y se quedan en premisas, sin “escena” específica para cada una.",
+      "Pacing: aunque no es vertiginoso, el guion acumula varias capas de abstracción antes de volver a una escena concreta; el espectador recibe muchas ideas-fuerza seguidas."
+    ],
+    "improvements": [
+      "Elegir un motivo recurrente aún más “operativo” (p. ej., volver a la “luz verde” con un microejemplo concreto en el cierre: qué señal miró el humano y qué no miró) para que funcione como hilo conductor medible.",
+      "Reducir la cantidad de noticias a 3-4 con funciones claramente distintas (evidencia/síntoma/contraejemplo/puente) o, si se mantienen, añadir una escena mínima por noticia (1-2 frases) que muestre el “atajo” de verificación.",
+      "Ajustar algunas formulaciones para que sean más estrictas con el reporte: separar explícitamente “según Reuters/según Microsoft” de conclusiones editoriales; cuantificar riesgo residual donde sea posible y evitar implicaciones de intención no respaldadas.",
+      "Hacer más explícita la “pregunta central” antes de saturarla de subpreguntas; luego permitir que el guion responda parcialmente y evolucione (en vez de abrir constantemente nuevos frentes).",
+      "Incluir una frase de payoff final que amarre más directamente el opening (no solo la analogía histórica) con el estado “ya quedó”: qué cambiaría en el proceso de verificación para que ese “ya quedó” signifique otra cosa."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.687,
+      "usage": {
+        "prompt_tokens": 17849,
+        "output_tokens": 1123,
+        "total_tokens": 18972
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 17.375,
+      "usage": {
+        "prompt_tokens": 16146,
+        "output_tokens": 2589,
+        "total_tokens": 18735
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.664,
+      "usage": {
+        "prompt_tokens": 17736,
+        "output_tokens": 973,
+        "total_tokens": 18709
+      }
+    }
+  ]
+}

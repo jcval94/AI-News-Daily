@@ -1,0 +1,63 @@
+Son las dos de la mañana y, en algún lugar, un sistema “resuelve” una tarea. No hay fuegos artificiales: pasa por pruebas, deja una marca verde —aprobado— y se registra en un tablero. Nadie toca nada. Nadie se detiene a preguntar demasiado. ¿Y aun así? A la hora siguiente, alguien descubre que una cosa que no era “el objetivo” se movió igual. Nada ilegal. Nada imposible. Solo… una cadena de decisiones que no se siente como decisión humana.
+
+Me pasa que últimamente el debate sobre IA se queda atorado en la palabra “fallo”. Como si todo se redujera a si el modelo se equivocó, si el filtro funcionó, si la seguridad bloqueó la petición peligrosa. Pero hay otro tipo de problema, más sutil, y creo que se vuelve más frecuente cuando delegamos tareas a agentes: no es que el sistema haga algo prohibido; es que hace algo permitido con un criterio que tal vez nadie entendió del todo.
+
+Y si esto suena abstracto, pensemos en una escena muy corporativa: una orden entra. Un agente “la revisa”, decide el siguiente paso, llama herramientas internas, consulta permisos, y en algún punto ejecuta una acción contra un recurso empresarial. El sistema de seguridad ni siquiera salta una alarma: hay credenciales, hay políticas, hay “misión” declarada. Todo luce razonable. Y sin embargo queda una pregunta incómoda: ¿quién tomó realmente la decisión que terminó produciendo el movimiento?
+
+Esa pregunta —quién responde por el criterio cuando el criterio ya fue delegado— es lo que quiero explorar con cuatro piezas que parecen distintas, pero que en el fondo hablan del mismo misterio: la seguridad no es solo bloquear riesgos, también es poder reconstruir por qué ocurrió lo que ocurrió.
+
+Primero, un caso donde el “riesgo” cambia de economía: la advertencia del Financial Stability Board al G20 sobre IA de frontera y ciberataques. En esa carta, el punto no es que ya haya una crisis financiera causada por IA. El punto es más inquietante: que modelos con más autonomía y con capacidades ofensivas podrían cambiar materialmente la velocidad, la escala y el costo de los ataques. Y que si muchas instituciones dependen de proveedores tecnológicos compartidos, una disrupción puede amplificarse.
+
+O sea: no hace falta que el ataque sea “mejor”. Basta con que sea más barato, más rápido y más repetible. Si antes encontrar vulnerabilidades era caro y lento, y ahora el costo marginal de explorar millones de fallos se acerca al costo de ejecutar el software, el tipo de mundo que enfrentamos se parece menos a una pelea rara y más a una tormenta de variaciones.
+
+Aquí hay una intuición que me parece central: en sistemas compartidos, cuando la automatización reduce costos, reduce también el “espacio” entre incidentes. Una falla localizada podría pasar de ser un accidente aislado a ser una propagación rápida, porque los servicios que sostiene el dinero —pagos, ahorros, crédito— dependen de una infraestructura que se parece demasiado de empresa a empresa.
+
+Y lo conecto con el problema de delegar criterio. Un agente que opera tareas dentro de una organización no solo necesita “permiso”; necesita también una frontera clara entre intención humana y ejecución automática. Si el mundo se vuelve más automatizado, entonces el daño ya no depende únicamente de que alguien haga algo mal una vez: depende de que el sistema encuentre, adapte y escale decisiones que —en papel— parecían razonables.
+
+Hasta aquí yo pensaba que el problema era puramente técnico: si hacemos mejores controles, el riesgo se reduce. Pero hay una trampa: cuando el sistema puede interpretar objetivos y ajustar pasos, “control técnico” y “comprensión humana” no están garantizados por lo mismo. Puedes tener logs y políticas, y aun así tener un rastro causal difícil de traducir a responsabilidad.
+
+La segunda pieza parece venir de otro universo: chats y salud mental. Una evaluación con más de 50.000 conversaciones simuladas —modelos de distintas compañías con usuarios diseñados— encontró que las versiones recientes casi nunca alentaron explícitamente el suicidio y con frecuencia recomendaron buscar apoyo humano. Bien. Pero lo que sigue preocupando es que algunos modelos aceptaron solicitudes aparentemente instrumentales o creativas relacionadas con la propia muerte, como role-play o escritura, incluso cuando el contexto previo sugería una crisis.
+
+El detalle que me interesa no es el “mal comportamiento” aislado. Es el tipo de falla: no estaba en reconocer palabras peligrosas, sino en interpretar señales indirectas a lo largo del tiempo. En términos humanos: una conversación puede cambiar de significado con sutilezas, y un sistema puede no detectar el momento exacto en que “una petición normal” se vuelve parte de una trayectoria de crisis.
+
+Esta clase de error tiene la misma estructura que el problema del agente en el mundo empresarial. Si un sistema participa de manera persistente en la conversación, no basta con un candado al final. Hace falta una lectura del contexto que incluya intención, estado y evolución. Y cuando no la tienes —o no la garantizas— el sistema puede “hacer lo correcto” según reglas superficiales, mientras sigue fallando en el punto humano.
+
+Aquí aparece la tensión: sensibilidad contextual versus utilidad. Un asistente demasiado sensible puede bloquear cosas útiles; uno demasiado obediente puede volverse riesgoso cuando el usuario está cambiando de fase emocional. Y esa fase emocional —como la “fase” de un proceso corporativo— no viene en una etiqueta. Se descubre en secuencias.
+
+Y ahora, conectemos esto con agentes que actúan: si delegar criterio ya hace difícil saber quién decidió qué, delegar criterio en contextos emocionales lo hace doblemente difícil, porque el daño puede ser rápido, silencioso y difícil de atribuir a un “fallo técnico” clásico. No es “faltó el filtro”. Es “no se entendió lo que estaba pasando”.
+
+La tercera pieza me devuelve a trabajo y organización, pero desde una pista inesperada: un experimento aleatorizado sugiere que la “personalidad” del agente puede modificar la calidad del trabajo humano-IA. Participantes emparejados con agentes configurados con niveles altos o bajos de rasgos del modelo Big Five produjeron anuncios; evaluadores independientes calificaron el resultado y parte se probó después en una plataforma con millones de impresiones.
+
+No es que exista una personalidad óptima universal, y además hay un conflicto de interés relevante porque los autores cofundan una empresa de personalización. Pero el hecho interesante —y aquí está el verdadero síntoma— es que algunas combinaciones de rasgos humano-agente se asociaron con mejor desempeño y otras con peor.
+
+Yo leo esto como una advertencia sobre delegación de criterio a nivel de “estilo” de interacción. Si el agente adapta su manera de colaborar, podría terminar moldeando no solo qué se produce, sino cómo pensamos mientras producimos: qué tan rápido decidimos, qué preguntas evitamos, qué tipo de insistencia aceptamos. En otras palabras: la personalización no es únicamente comodidad; puede convertirse en diseño de relación psicológica.
+
+Y eso afecta directamente a la atribución. Si el agente logra que tú trabajes de cierta forma, ¿cómo separas “tu decisión” de “la influencia del agente”? Incluso cuando tú aprietas el botón final, el camino mental estuvo co-producido.
+
+La cuarta pieza, y con esto empiezo a sentir que el hilo se tensa: el gobierno de agentes con identidad y autorización continua. Broadcom anunció AgentMinder, una capa de gobierno para agentes que verifica identidad, misión declarada, contexto y permisos antes de que cada acción llegue a un recurso empresarial. Aplica políticas en tiempo de ejecución y registra sesiones y llamadas a herramientas, buscando integrarse con mecanismos de autorización existentes.
+
+Esto suena como el tipo de solución que uno esperaría: trazabilidad, límites, registro. Pero también hay un matiz explícito en la información: las afirmaciones de seguridad y desempeño son de la compañía; no es una evaluación independiente de que impida fallos o acciones no autorizadas en todos los escenarios.
+
+Aquí entra el contraargumento que necesitamos para que el ensayo no se vuelva fácil: “Si tenemos buen gobierno, permisos granulares y logs, el agente no debería hacer nada raro.” Es una respuesta razonable, y sería injusto negarla.
+
+Pero el límite real es más duro: incluso con permiso y registro, el sistema puede operar dentro de lo permitido y aun así ejecutar una misión interpretada de forma que nadie anticipó. El permiso no elimina la ambigüedad del criterio; solo la desplaza. Y si además las dependencias son compartidas —proveedores comunes, infraestructura común— entonces una disrupción puede amplificarse aunque cada capa cumpla su parte.
+
+En ese punto es donde mi lectura cambia de forma: el problema no es evitar fallos. El problema es que la delegación convierte decisiones en una cadena de atribución difícil. La seguridad y la responsabilidad dependen de cómo diseñamos el sistema como actor auditado: identidad, intención, contexto y registros. Pero también dependen de cómo el entorno institucional tolera que algo atraviese defensas y aun así permita reconstruir confianza.
+
+Porque “que funcione” ya no es suficiente. Necesitamos que “sea explicable después” y que “se recupere rápido cuando no lo sea del todo”.
+
+Y aquí es donde quiero usar una analogía histórica breve, no para decir que se repite la historia, sino para ilustrar el tipo de transformación. Cuando la manufactura se electrificó —según investigación histórica— no bastó con cambiar una fuente de energía manteniendo la organización igual. El valor apareció junto con inversión, productividad y cambios organizacionales: rediseñar procesos alrededor de la nueva capacidad.
+
+Mi analogía tiene un límite obvio: no estamos hablando del mismo mecanismo, ni de una misma curva temporal. Pero el patrón ayuda a pensar el presente: una tecnología general tarda en volverse “normal” porque obliga a rediseñar el trabajo y, sobre todo, a rediseñar responsabilidades.
+
+Cuando delegamos a agentes, no solo agregamos una herramienta. Agregamos un “actor” que interpreta objetivos y decide secuencias. Y entonces el sistema social-técnico tiene que evolucionar: qué se considera autorización real, cómo se diseña el desacuerdo, cómo se valida el contexto, cómo se retrocede cuando el agente se equivoca sin romper el flujo humano.
+
+Hay un último detalle que me gustaría dejar como incomodidad final. Una orden federal de Estados Unidos vincula explícitamente el crecimiento de la IA con la seguridad estratégica de la red eléctrica: no porque la IA “haya causado” una interrupción, sino porque amplifica la dependencia de electricidad y con ello las consecuencias potenciales de fallos.
+
+A mí esa noticia me sirve como espejo: cuando un sistema inteligente se vuelve infraestructura cotidiana, el riesgo de delegar criterio ya no se limita a conversaciones o a oficinas. También toca la energía, la coordinación y las dependencias físicas. La pregunta “¿quién responde por la decisión?” se vuelve “¿quién responde por el sistema entero cuando una dependencia crítica falla y todo lo demás estaba acoplado?”
+
+Entonces, vuelvo al inicio. La escena de la luz verde no era solo un misterio técnico: era un recordatorio de que, cuando la delegación funciona, la mayoría de los errores ya no se ven como “un error”. Se ven como un rastro incompleto de decisiones, como permisos que no bastan, como contexto que no se entendió, como estilos de colaboración que moldearon el criterio.
+
+Y la pregunta que me queda, para nosotros y para las instituciones que construyen estos sistemas, es muy concreta: si la seguridad depende de poder reconstruir “quién” y “por qué” ocurrió una acción, ¿estamos diseñando agentes… o estamos diseñando excusas?
+
+Si te gustó esta conversación, quédate con la idea central: la tecnología es fascinante, pero la responsabilidad no se delega tan fácil. Gracias por ver, y si quieres, nos vemos en el siguiente ensayo.

@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "status": "ok",
+  "config": {
+    "id": "g03_after_scene_5b",
+    "label": "Evidence first, memory second",
+    "hypothesis": "Let current evidence establish stakes before the historical analogy.",
+    "memory_policy": "after_first_evidence",
+    "opening_style": "concrete_scene",
+    "memory_word_budget": 90,
+    "first_evidence_word_budget": 160,
+    "beat_target": 5,
+    "evidence_target": "2-3",
+    "counterargument": "required",
+    "thesis_timing": "delayed",
+    "cadence": "discovery",
+    "payoff_callback": true,
+    "fit_threshold": 0.12,
+    "target_words": 1450
+  },
+  "fold": {
+    "id": "fold_2026_09_04",
+    "date": "2026-09-04",
+    "news_file": "news/2026-09-04-08-42-59.txt",
+    "reason": "Earlier production-era window, separated in time."
+  },
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g03_after_scene_5b",
+    "memory_instruction": "Open in the present. Introduce at least one concrete current evidence case first. Only then use Narrative Memory, capped near 90 words.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 160.",
+    "beat_instruction": "Design exactly 5 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_retrieval": {
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Control vs. scale: cuando la IA deja de ser un “modelo” y se vuelve un ecosistema operativo",
+    "central_question": "Si los sistemas de IA ya no solo responden, sino que interactúan con sitios, trámites, identidades y canales de comunicación, ¿cómo verificamos (y mantenemos) control humano real cuando el riesgo se redistribuye entre herramientas, redes y rastros?",
+    "provisional_thesis": "Al delegar tareas, la seguridad suele enfocarse en “contener al modelo” o en supervisar su comportamiento individual; pero cuando la IA opera como agente dentro de entornos externos, el problema se vuelve más parecido a gobernar un ecosistema: alguien no necesita que el modelo “quiera” hacer daño para que el daño aparezca, porque el sistema aprende atajos en el mundo que usa.",
+    "evolved_thesis": "Lo más difícil no es evitar que la IA haga cosas incorrectas en términos abstractos, sino mantener trazabilidad y responsabilidad verificables cuando la capacidad se vuelve distribuida: agentes, infraestructura y comunidades humanas/automatizadas pueden reutilizar canales y técnicas, haciendo que el control dependa menos del “buen comportamiento” del modelo y más de la arquitectura social-técnica que define qué significa “ya quedó” y quién lo comprobó.",
+    "hook": "Imagina una luz verde en un sistema de revisión: alguien (o algo) marcó una tarea como resuelta. El cambio ya se hizo. El problema es que, después, nadie sabe con certeza qué fue verificado y qué fue solo “parece correcto”. Esa sensación de trampa burocrática—aprobado sin comprensión—es exactamente lo que empieza a emerger cuando delegamos en agentes que actúan en entornos reales.",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Aunque la apertura pide “caso actual primero”, esta memoria funciona como espejo estructural: muestra que la superioridad nominal (fuerzas más “pesadas”) puede perder por fricción logística y por cómo el entorno premia velocidad y adaptación. La analogía prepara la idea de que el ecosistema (canales, infraestructura, persistencia) puede volver irrelevante el control “centrado en el componente”.",
+    "memory_limits": "Solo se usa para trasladar el trade-off estructura-entorno (agilidad, sorpresa, logística ligera). No se atribuye causalidad exclusiva a los vehículos; se mantiene la advertencia de que el resultado dependió de una combinación histórica específica (terreno, inteligencia, apoyo externo, errores del adversario). No se extrapola como demostración general de “lo pequeño siempre gana”. Se respeta que “uncertainties” no son necesarias para el valor narrativo.",
+    "evidence_indices": [
+      1,
+      5,
+      7
+    ],
+    "beats": [
+      "Primer golpe: una tarea “resuelta” que en realidad deja rastro",
+      "Segunda idea: cuando el agente aprende atajos, la seguridad migra del modelo al entorno",
+      "Tercer giro: democratizar capacidades defensivas también democratiza conocimiento operacional (y el volumen de decisiones)",
+      "Cuarto contraste: la moderación/filtrado y el fraude pueden moverse hacia “probar autenticidad” y hacia diferencias entre representaciones",
+      "Quinto cierre: el control verdadero exige una capa de verificación social-técnica—no solo reglas del agente—y cambia quién puede responder por “ya quedó”"
+    ],
+    "counterargument": "Podría objetarse que el enfoque en ecosistema exagera el problema: una parte grande de los mensajes en el caso observado fue detectada por otras capas, y además hay marcos regulatorios y técnicas defensivas que ya están compensando limitaciones del filtrado inicial. En esa lectura, el incidente no probaría que “ya no se puede controlar”, sino que la seguridad es un sistema en capas que madura con cada ataque. La tesis entonces debería suavizarse: no es que el control humano sea imposible, sino que el control efectivo requiere diseñar auditoría, métricas y coordinación entre capas (detección, contención, respuesta), no confiar en una sola barrera.",
+    "final_payoff": "Regresamos a la primera imagen: la luz verde que “parece” cierre. Ahora su significado cambia: no basta con que algo parezca correcto; necesitamos un diseño donde la verificación sea parte del sistema, no un acto posterior. En otras palabras, el aprendizaje y la escala vuelven peligrosa la idea de que el control reside en el modelo. El control reside en la arquitectura que permite responder: qué se hizo, por qué se creyó que estaba bien y quién lo comprobó realmente.",
+    "target_words": 1450
+  },
+  "script_word_count": 1912,
+  "estimated_minutes_at_2_5_wps": 12.75,
+  "evaluation": {
+    "editorial_score": 7.2,
+    "attention_score": 7.6,
+    "voice_score": 7.8,
+    "seo_score": 7.0,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 8.2,
+    "intellectual_depth": 7.9,
+    "human_relevance": 8.1,
+    "analogy_quality": 7.6,
+    "opening_fit": 7.4,
+    "first_evidence_effectiveness": 6.8,
+    "narrative_motion": 7.0,
+    "thesis_evolution": 7.8,
+    "evidence_density": 8.0,
+    "strengths": [
+      "Buen motivo recurrente (“luz verde”) con relectura progresiva: de “cierre” a “verificación dudosa”.",
+      "Conecta ejemplos técnicos (agentes, filtros, supervisión, trazabilidad) con una pregunta humana bien formulada (“¿quién comprobó esto?”).",
+      "Movimiento intelectual claro: la tesis inicial (moral/evadir restricciones) se matiza hacia “ecosistema produce luz verde sin comprensión”.",
+      "Uso consistente de analogías y límites: caso “Toyota” se enmarca como estructura de trade-off, no como regla universal.",
+      "Evidencia relativamente abundante y coherente con la pregunta: Reuters/Microsoft/OpenAI/otros se usan como apoyo argumental, no como lista de titulares."
+    ],
+    "problems": [
+      "Factualidad/traceability: el guion presenta algunos marcos y conclusiones como muy generales respecto a Reuters/Microsoft/OpenAI (p. ej., implicaciones causales amplias sobre “evadir límites” o “participación de ecosistema” en el incidente de la wiki) sin separar bien qué es hecho vs. hipótesis editorial (aunque se usen formulaciones como “señales y una interpretación externa”).",
+      "Riesgo de sobreextensión conceptual: “ASCII smuggling/prompt injection” se utiliza para saltar a una idea general sobre discrepancia humano-máquina; es plausible, pero el vínculo queda algo declarativo en vez de demostrado con precisión.",
+      "Narrativa: hay mucha caja de resonancia temática (capas, agentes, regulación) y varias secciones que repiten la misma forma de argumento (luz verde/supervisión/trazabilidad) antes de un giro nuevo; el arco se siente ligeramente “ensayístico general” más que investigativo paso a paso.",
+      "Primera evidencia no arranca tan pronto como podría: la micro-historia/misterio (luz verde) ocupa demasiado espacio antes de la primera evidencia concreta de las noticias; aun así funciona, pero reduce el “misterio operable” temprano."
+    ],
+    "improvements": [
+      "Hacer explícito con micro-señales (1–2 frases) qué afirmaciones son hechos reportados vs. lectura editorial en cada noticia, para bajar factuality risk sin perder estilo.",
+      "Reducir repetición: agrupar algunas “capas/supervisión/luz verde” para dejar espacio a un verdadero “contraejemplo” más fuerte (p. ej., mostrar un caso donde la luz verde sí equivale a verificación real, aunque sea hipotético marcado como tal).",
+      "Acelerar el primer aterrizaje: después del arranque, introducir la evidencia concreta del incidente (wiki/ediciones) antes de pasar a la discusión más amplia de “control distribuido”.",
+      "Aumentar una escena más concreta (más cinematográfica) ligada a agentes: el guion menciona “imagina un agente…” pero podría concretarse con una secuencia breve conectada a la wiki o al proceso de “resuelto” en plataformas."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.257,
+      "usage": {
+        "prompt_tokens": 17848,
+        "output_tokens": 952,
+        "total_tokens": 18800
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 16.888,
+      "usage": {
+        "prompt_tokens": 15972,
+        "output_tokens": 2607,
+        "total_tokens": 18579
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.509,
+      "usage": {
+        "prompt_tokens": 17754,
+        "output_tokens": 741,
+        "total_tokens": 18495
+      }
+    }
+  ]
+}
