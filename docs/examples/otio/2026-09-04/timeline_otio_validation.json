@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-04",
+  "source_virtual_timeline": "docs/examples/virtual_timeline/2026-09-04/virtual_timeline.json",
+  "opentimelineio_version": "0.18.1",
+  "adapter": "otio_json",
+  "expected_roundtrip": {
+    "duration_seconds": 917.6,
+    "track_ids": ["V4", "V3", "V2", "V1", "A1"],
+    "clip_count": 65,
+    "marker_count": 36,
+    "v1_take_count": 25,
+    "a1_take_count": 25,
+    "v2_media_cue_count": 15,
+    "v2_missing_reference_count": 15
+  },
+  "frame_accurate": false,
+  "requires_recording_retime": true,
+  "validated_by": "tests/test_otio_export_real_episode.py"
+}
