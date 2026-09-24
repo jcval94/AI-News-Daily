@@ -326,7 +326,12 @@ def validate_roundtrip(
         for track in source_payload.get("tracks", [])
         if isinstance(track, dict)
     )
-    actual_clips = sum(1 for _ in timeline.each_clip())
+    actual_clips = sum(
+        1
+        for track in timeline.tracks
+        for item in track
+        if isinstance(item, otio.schema.Clip)
+    )
     if actual_clips != expected_clips:
         raise ValueError(
             f"OTIO clip count mismatch: expected {expected_clips}, got {actual_clips}"
