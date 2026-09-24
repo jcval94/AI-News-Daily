@@ -284,6 +284,26 @@ def load_inputs(fold: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return raw_news, {"schema_version": 1, "items": items}
 
 
+
+def normalize_beats(beats: list[str], target: int) -> list[str]:
+    """Deterministically compress an over-segmented plan without inventing new ideas."""
+    cleaned = [str(item).strip() for item in beats if str(item).strip()]
+    if len(cleaned) <= target:
+        return cleaned
+    groups: list[list[str]] = [[] for _ in range(target)]
+    for index, beat in enumerate(cleaned):
+        bucket = min(target - 1, (index * target) // len(cleaned))
+        groups[bucket].append(beat)
+    return [" / ".join(group) for group in groups if group]
+
+
+def normalize_plan_shape(plan: ExperimentalPlan, config: dict[str, Any]) -> ExperimentalPlan:
+    target = int(config["beat_target"])
+    if len(plan.beats) > target:
+        plan = plan.model_copy(update={"beats": normalize_beats(plan.beats, target)})
+    return plan
+
+
 def validate_plan(plan: ExperimentalPlan, config: dict[str, Any], news_count: int, memory_ids: set[str]) -> None:
     if plan.selected_memory_id not in memory_ids:
         raise ValueError(f"selected_memory_id not in candidate set: {plan.selected_memory_id}")
@@ -315,8 +335,14 @@ async def run_fold(*, config: dict[str, Any], fold: dict[str, Any], output_root:
     plan: ExperimentalPlan | None = None
     repair_note = ""
 
-    for attempt in range(1, 3):
-        prompt = "Create the experimental essay plan. " + (f"Previous plan contract error: {repair_note}. Repair only that contract. " if repair_note else "")
+    for attempt in range(1, 5):
+        low_evidence, high_evidence = evidence_bounds(str(config["evidence_target"]))
+        prompt = (
+            "Create the experimental essay plan. "
+            f"HARD SHAPE CONTRACT: beats MUST contain exactly {int(config['beat_target'])} strings; "
+            f"evidence_indices MUST contain between {low_evidence} and {high_evidence} unique indices. "
+            + (f"Previous plan contract error: {repair_note}. Repair ONLY that contract and count carefully. " if repair_note else "")
+        )
         state = await run_agent(
             director,
             {"selected_news": selected_json, "narrative_memory": memory_json, "voice_profile": voice_profile, "discourse_profile": discourse_profile, "treatment": treatment_json},
@@ -327,6 +353,7 @@ async def run_fold(*, config: dict[str, Any], fold: dict[str, Any], output_root:
         )
         try:
             candidate = ExperimentalPlan.model_validate(state.get("experiment_plan", {}))
+            candidate = normalize_plan_shape(candidate, config)
             validate_plan(candidate, config, len(selected_payload["items"]), {str(item.get("id", "")) for item in memory_candidates})
             plan = candidate
             break
@@ -340,16 +367,35 @@ async def run_fold(*, config: dict[str, Any], fold: dict[str, Any], output_root:
     plan_json = json.dumps(plan.model_dump(), ensure_ascii=False)
     selected_memory_json = json.dumps(selected_memory, ensure_ascii=False)
 
-    writer_state = await run_agent(
-        writer,
-        {"selected_news": selected_json, "selected_memory": selected_memory_json, "plan": plan_json, "treatment": treatment_json, "voice_profile": voice_profile, "discourse_profile": discourse_profile, "target_words": str(int(config.get("target_words", 1450)))},
-        "Write one finished Spanish video essay. Return narration only.",
-        step="experiment_write",
-        trace=trace,
-    )
-    script = str(writer_state.get("draft_script", "") or "").strip()
-    if not script:
-        raise RuntimeError("Writer returned an empty script")
+    target_words = int(config.get("target_words", 1450))
+    min_words = round(target_words * 0.88)
+    max_words = round(target_words * 1.12)
+    script = ""
+    previous_length = 0
+    for writer_attempt in range(1, 3):
+        writer_prompt = (
+            f"Write one finished Spanish video essay between {min_words} and {max_words} spoken words. "
+            "Return narration only."
+            if writer_attempt == 1
+            else
+            f"Rewrite the SAME plan and factual content more concisely. The previous draft had "
+            f"{previous_length} words; it MUST be between {min_words} and {max_words}. "
+            "Do not add facts or sections merely to change length. Return narration only."
+        )
+        writer_state = await run_agent(
+            writer,
+            {"selected_news": selected_json, "selected_memory": selected_memory_json, "plan": plan_json, "treatment": treatment_json, "voice_profile": voice_profile, "discourse_profile": discourse_profile, "target_words": str(target_words)},
+            writer_prompt,
+            step="experiment_write",
+            trace=trace,
+            iteration=writer_attempt,
+        )
+        script = str(writer_state.get("draft_script", "") or "").strip()
+        if not script:
+            raise RuntimeError("Writer returned an empty script")
+        previous_length = word_count(script)
+        if min_words <= previous_length <= max_words:
+            break
 
     evaluation_state = await run_agent(
         evaluator,
@@ -379,6 +425,9 @@ async def run_fold(*, config: dict[str, Any], fold: dict[str, Any], output_root:
         "selected_memory_retrieval": selected_memory.get("retrieval", {}),
         "plan": plan.model_dump(),
         "script_word_count": wc,
+        "target_word_count": target_words,
+        "target_word_range": [min_words, max_words],
+        "length_compliant": min_words <= wc <= max_words,
         "estimated_minutes_at_2_5_wps": round(wc / 2.5 / 60, 2),
         "evaluation": evaluation.model_dump(),
         "agent_trace": trace,
