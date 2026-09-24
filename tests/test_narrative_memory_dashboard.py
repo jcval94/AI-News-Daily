@@ -124,6 +124,13 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
             self.assertEqual(rows["fresh-case"]["times_used"], 0)
             self.assertEqual(rows["fresh-case"]["availability"], "available")
 
+    def test_review_hub_workflow_builds_and_smoke_tests_memory_page(self) -> None:
+        workflow = Path(".github/workflows/editorial-review-hub.yml").read_text(encoding="utf-8")
+        self.assertIn("python -m pipeline.narrative_memory_dashboard", workflow)
+        self.assertIn("pages-site/memory/index.html", workflow)
+        self.assertIn('data-memory-page="narrative-memory"', workflow)
+        self.assertIn('id="memoryLink"', workflow)
+
     def test_build_dashboard_publishes_json_and_filterable_html(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
