@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -320,6 +320,27 @@ jobs:
             --multimedia-dir "$RUN_ROOT/multimedia" \
             --words-per-second "$WORDS_PER_SECOND"
 
+      - name: Create recording pack and teleprompter
+        id: recording_pack
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.production_script.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          RECORDING_MIN_TAKE_SECONDS: ${{ vars.RECORDING_MIN_TAKE_SECONDS || '20' }}
+          RECORDING_TARGET_TAKE_SECONDS: ${{ vars.RECORDING_TARGET_TAKE_SECONDS || '35' }}
+          RECORDING_MAX_TAKE_SECONDS: ${{ vars.RECORDING_MAX_TAKE_SECONDS || '60' }}
+        run: |
+          python -m pipeline.recording_pack \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --words-per-second "$WORDS_PER_SECOND" \
+            --min-take-seconds "$RECORDING_MIN_TAKE_SECONDS" \
+            --target-take-seconds "$RECORDING_TARGET_TAKE_SECONDS" \
+            --max-take-seconds "$RECORDING_MAX_TAKE_SECONDS"
+
       - name: Create run report
         id: report
         if: always()
@@ -361,6 +382,7 @@ jobs:
         if: >-
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
+          steps.recording_pack.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
@@ -371,6 +393,7 @@ jobs:
         if: >-
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
+          steps.recording_pack.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
@@ -422,6 +445,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'script_not_approved' ||
           steps.dense_media.outcome == 'failure' ||
           steps.production_script.outcome == 'failure' ||
+          steps.recording_pack.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
           echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
