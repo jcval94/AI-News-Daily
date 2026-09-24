@@ -341,6 +341,19 @@ jobs:
             --target-take-seconds "$RECORDING_TARGET_TAKE_SECONDS" \
             --max-take-seconds "$RECORDING_MAX_TAKE_SECONDS"
 
+      - name: Create virtual A-roll timeline
+        id: virtual_timeline
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.recording_pack.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.virtual_timeline \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia"
+
       - name: Create run report
         id: report
         if: always()
@@ -383,6 +396,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
+          steps.virtual_timeline.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
@@ -394,6 +408,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
+          steps.virtual_timeline.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
@@ -446,6 +461,7 @@ jobs:
           steps.dense_media.outcome == 'failure' ||
           steps.production_script.outcome == 'failure' ||
           steps.recording_pack.outcome == 'failure' ||
+          steps.virtual_timeline.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
           echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
