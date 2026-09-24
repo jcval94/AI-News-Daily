@@ -1,0 +1,19 @@
+{
+  "experiment": "editorial-packs-v1-2026-09-24",
+  "matrix": {
+    "include": [
+      {
+        "id": "halifax",
+        "description": "La explosión de Halifax del 6 de diciembre de 1917. Material de archivo del desastre y sus consecuencias para editar un video histórico; varias fotografías y películas existentes, sin imágenes generadas.",
+        "images": 12,
+        "videos": 3
+      },
+      {
+        "id": "yamaguchi",
+        "description": "Tsutomu Yamaguchi, superviviente de Hiroshima y Nagasaki. Busco fotografías reales de esta persona y videos que traten específicamente sobre él para una pieza biográfica.",
+        "images": 6,
+        "videos": 1
+      }
+    ]
+  }
+}

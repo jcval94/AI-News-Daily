@@ -57,7 +57,7 @@ def metadata_gate(plan, item, decision):
     return None
 
 
-def inspect_file(path):
+def inspect_file(path, *, min_short=200, min_long=600):
     with warnings.catch_warnings():
         warnings.simplefilter("error", Image.DecompressionBombWarning)
         with Image.open(path) as im:
@@ -68,8 +68,8 @@ def inspect_file(path):
         with Image.open(path) as im:
             im = ImageOps.exif_transpose(im).convert("RGB")
             im.load()
-            if min(im.size) < 200 or max(im.size) < 600:
-                raise ValueError("Image below minimum useful resolution (200/600 px)")
+            if min(im.size) < min_short or max(im.size) < min_long:
+                raise ValueError(f"Image below minimum useful resolution ({min_short}/{min_long} px)")
             grey = im.convert("L").resize((9, 8))
             pixels = list(grey.get_flattened_data())
             bits = [pixels[y * 9 + x] > pixels[y * 9 + x + 1] for y in range(8) for x in range(8)]
