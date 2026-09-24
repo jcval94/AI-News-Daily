@@ -1,0 +1,1361 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-04",
+  "status": "pre_recording",
+  "timing": {
+    "basis": "estimated_script_words",
+    "words_per_second": 2.5,
+    "duration_seconds": 903.6,
+    "requires_recording_retime": true,
+    "warning": "Timeline positions are editorial estimates until real A-roll is ingested and aligned. Do not treat these timestamps as frame-accurate."
+  },
+  "sources": {
+    "script": "scripts/2026-09-04/script.txt",
+    "script_sections": "scripts/2026-09-04/script_sections.json",
+    "media_plan": "real-episode replay with current deterministic planner",
+    "media_manifest": "historical run did not persist downloaded multimedia assets",
+    "script_sha256": "see canonical script"
+  },
+  "editing_defaults": {
+    "base_visual": "presenter",
+    "director_signal_authority": "suggestion",
+    "tracks": {
+      "presenter": "V1",
+      "b_roll": "V2",
+      "graphics": "V3",
+      "titles": "V4"
+    },
+    "principle": "Presenter is visual continuity. Cut away only when media adds evidence, explanation, context, emotional grounding, analogy, contrast, or intentional rhythm."
+  },
+  "readiness": {
+    "pre_recording_contract_valid": true,
+    "ready_for_recording": true,
+    "asset_resolution_complete": false,
+    "ready_for_automated_timeline_import": false,
+    "blockers": [
+      "missing_manifest_asset",
+      "recording_retime_required"
+    ]
+  },
+  "summary": {
+    "segment_count": 34,
+    "media_segment_count": 15,
+    "presenter_segment_count": 19,
+    "media_cue_count": 15,
+    "manifest_asset_record_count": 0,
+    "resolved_media_cue_count": 0,
+    "blocked_media_cue_count": 15
+  },
+  "validation_warnings": [
+    "Real approved episode replay: the historical 2026-09-04 run did not persist downloaded multimedia assets; director cues were regenerated with the current deterministic planner."
+  ],
+  "timeline": [
+    {
+      "segment_id": "seg_001",
+      "mode": "media",
+      "start_seconds": 0,
+      "end_seconds": 3.5,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_001",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Una respuesta puede ser impecable y aun así dejar una pregunta incómoda sobre la mesa: si apagamos la pantalla justo ahora, ¿sabemos realmente qué hacer después? No hablo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "video",
+        "visual_query": "cinematic close-up hands highlighting research notes documentary b-roll",
+        "on_screen_text": ""
+      }
+    },
+    {
+      "segment_id": "seg_002",
+      "mode": "media",
+      "start_seconds": 3.5,
+      "end_seconds": 7,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_002",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Una respuesta puede ser impecable y aun así dejar una pregunta incómoda sobre la mesa: si apagamos la pantalla justo ahora, ¿sabemos realmente qué hacer después? No hablo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "video",
+        "visual_query": "moving archival documents handwritten notes desk documentary footage",
+        "on_screen_text": ""
+      }
+    },
+    {
+      "segment_id": "seg_003",
+      "mode": "media",
+      "start_seconds": 7,
+      "end_seconds": 10.5,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_003",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… dejar una pregunta incómoda sobre la mesa: si apagamos la pantalla justo ahora, ¿sabemos realmente qué hacer después? No hablo sólo de una tarea escolar. Piensa en un …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "video",
+        "visual_query": "investigative evidence wall notes connecting lines cinematic b-roll",
+        "on_screen_text": ""
+      }
+    },
+    {
+      "segment_id": "seg_004",
+      "mode": "media",
+      "start_seconds": 10.5,
+      "end_seconds": 14,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_004",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… apagamos la pantalla justo ahora, ¿sabemos realmente qué hacer después? No hablo sólo de una tarea escolar. Piensa en un médico que recibe una síntesis perfecta de un …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "video",
+        "visual_query": "abstract flowing data traces light paths cinematic technology footage",
+        "on_screen_text": ""
+      }
+    },
+    {
+      "segment_id": "seg_005",
+      "mode": "media",
+      "start_seconds": 14,
+      "end_seconds": 17.5,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_005",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… después? No hablo sólo de una tarea escolar. Piensa en un médico que recibe una síntesis perfecta de un historial clínico. En un abogado que revisa un documento …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "video",
+        "visual_query": "person carefully reviewing papers computer screen documentary footage",
+        "on_screen_text": ""
+      }
+    },
+    {
+      "segment_id": "seg_006",
+      "mode": "media",
+      "start_seconds": 17.5,
+      "end_seconds": 20,
+      "duration_seconds": 2.5,
+      "cue_id": "slot_006",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Piensa en un médico que recibe una síntesis perfecta de un historial clínico. En un abogado que revisa un documento claro, convincente, muy bien escrito. O en alguien …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "video",
+        "visual_query": "close-up hands sorting research notes printed articles dynamic b-roll",
+        "on_screen_text": ""
+      }
+    },
+    {
+      "segment_id": "seg_007",
+      "mode": "presenter",
+      "start_seconds": 20,
+      "end_seconds": 85.2,
+      "duration_seconds": 65.2,
+      "cue_id": null,
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… clara, ideas bien conectadas, respuestas impecables. Luego, sin computadora, sin asistente, sin esa pequeña ventana que parece saberlo todo, alguien le plantea un caso apenas distinto. Le pide …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_008",
+      "mode": "presenter",
+      "start_seconds": 85.2,
+      "end_seconds": 106.84,
+      "duration_seconds": 21.64,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:la_prueba_de_la_pantalla_apagada",
+        "kind": "development",
+        "beat_id": "la_prueba_de_la_pantalla_apagada",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… que sabemos hacer de verdad. Y no siempre coinciden. Puedes llegar sin problema a una dirección si alguien te va diciendo: “da vuelta aquí, sigue derecho, toma esta …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_009",
+      "mode": "media",
+      "start_seconds": 106.84,
+      "end_seconds": 110.84,
+      "duration_seconds": 4,
+      "cue_id": "slot_007",
+      "section": {
+        "section_key": "beat:la_prueba_de_la_pantalla_apagada",
+        "kind": "development",
+        "beat_id": "la_prueba_de_la_pantalla_apagada",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… bien. Pero si mañana te quitan el teléfono, quizá descubres que nunca aprendiste el camino. No hay nada vergonzoso en usar un mapa. El problema empieza cuando confundimos …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Ground the narrated scene in a concrete place/object/action rather than an abstract technology metaphor."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "person research notes",
+        "on_screen_text": "Abrir con la escena hipotética de desempeño impecable seguido de incapacidad par"
+      }
+    },
+    {
+      "segment_id": "seg_010",
+      "mode": "presenter",
+      "start_seconds": 110.84,
+      "end_seconds": 164,
+      "duration_seconds": 53.16,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:la_prueba_de_la_pantalla_apagada",
+        "kind": "development",
+        "beat_id": "la_prueba_de_la_pantalla_apagada",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… a hacer todo lento y a mano, como si sufrir fuera una forma superior de inteligencia. Francamente, no. La pregunta es otra: ¿qué parte de una tarea necesitamos …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_011",
+      "mode": "presenter",
+      "start_seconds": 164,
+      "end_seconds": 185.28,
+      "duration_seconds": 21.28,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:memoria_que_parece_saber",
+        "kind": "development",
+        "beat_id": "memoria_que_parece_saber",
+        "beat_kind": "reflection",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… IV antes de nuestra era, Platón imaginó en el *Fedro* una discusión sobre la escritura. La objeción no era que escribir fuera inútil. Era más rara que eso: …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_012",
+      "mode": "media",
+      "start_seconds": 185.28,
+      "end_seconds": 189.28,
+      "duration_seconds": 4,
+      "cue_id": "slot_009",
+      "section": {
+        "section_key": "beat:memoria_que_parece_saber",
+        "kind": "development",
+        "beat_id": "memoria_que_parece_saber",
+        "beat_kind": "reflection",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… la práctica de recordar y dar una apariencia de saber sin comprensión real. Una persona podía tener palabras almacenadas fuera de sí y, aun así, no poseer el …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use sparingly. The presenter should usually carry reflective passages unless a visual materially clarifies the thought."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "researcher notes",
+        "on_screen_text": "Usar el espejo de Platón para introducir una preocupación antigua: una herramien"
+      }
+    },
+    {
+      "segment_id": "seg_013",
+      "mode": "presenter",
+      "start_seconds": 189.28,
+      "end_seconds": 241.6,
+      "duration_seconds": 52.32,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:memoria_que_parece_saber",
+        "kind": "development",
+        "beat_id": "memoria_que_parece_saber",
+        "beat_kind": "reflection",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… La IA no es simplemente otra forma de escritura. Esa diferencia importa. Una página no responde, no improvisa, no toma iniciativa dentro de una tarea. Pero el espejo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_014",
+      "mode": "presenter",
+      "start_seconds": 241.6,
+      "end_seconds": 273.68,
+      "duration_seconds": 32.08,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:resultado_no_es_capacidad",
+        "kind": "development",
+        "beat_id": "resultado_no_es_capacidad",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "aprendizaje_transferible"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… educativa. Su advertencia central es sencilla, aunque sus consecuencias no lo sean: interacción y entusiasmo no equivalen necesariamente a aprendizaje. El informe añade algo importante sobre la IA …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_015",
+      "mode": "media",
+      "start_seconds": 273.68,
+      "end_seconds": 277.68,
+      "duration_seconds": 4,
+      "cue_id": "slot_011",
+      "section": {
+        "section_key": "beat:resultado_no_es_capacidad",
+        "kind": "development",
+        "beat_id": "resultado_no_es_capacidad",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "aprendizaje_transferible"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… que pueda usar después, cuando la herramienta ya no esté. Ojo: eso no demuestra que toda IA educativa perjudique el aprendizaje. El informe es una síntesis de evidencia …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Use the visual to make the reveal legible, then return to the presenter before the next inference."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "scientist research",
+        "on_screen_text": "Introducir el informe de la APA como evidencia de la diferencia entre rendimient"
+      }
+    },
+    {
+      "segment_id": "seg_016",
+      "mode": "presenter",
+      "start_seconds": 277.68,
+      "end_seconds": 355.2,
+      "duration_seconds": 77.52,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:resultado_no_es_capacidad",
+        "kind": "development",
+        "beat_id": "resultado_no_es_capacidad",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "aprendizaje_transferible"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… una caída y ganar confianza. Pero si nunca se retiran, nunca sabes si aprendiste a mantener el equilibrio. Y tampoco se trata de quitarlas de golpe y esperar …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_017",
+      "mode": "presenter",
+      "start_seconds": 355.2,
+      "end_seconds": 371.56,
+      "duration_seconds": 16.36,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:la_salida_facil_no_basta",
+        "kind": "development",
+        "beat_id": "la_salida_facil_no_basta",
+        "beat_kind": "complication",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… IA puede hacer el trabajo mental por nosotros, hay que alejarla para proteger nuestra capacidad de pensar. Entiendo esa intuición. En algunos contextos quizá haya que limitar la …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_018",
+      "mode": "media",
+      "start_seconds": 371.56,
+      "end_seconds": 375.56,
+      "duration_seconds": 4,
+      "cue_id": "slot_013",
+      "section": {
+        "section_key": "beat:la_salida_facil_no_basta",
+        "kind": "development",
+        "beat_id": "la_salida_facil_no_basta",
+        "beat_kind": "complication",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… limitar la ayuda. Pero como respuesta general se queda corta. No toda asistencia funciona igual. Una calculadora puede evitarte practicar aritmética. También puede permitirte explorar problemas que serían …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "contrast",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Use contrast only if it sharpens the complication; otherwise prefer staying on camera."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "researcher analysis",
+        "on_screen_text": "Cuestionar la respuesta intuitiva de retirar la IA para proteger autonomía. Dist"
+      }
+    },
+    {
+      "segment_id": "seg_019",
+      "mode": "presenter",
+      "start_seconds": 375.56,
+      "end_seconds": 416.4,
+      "duration_seconds": 40.84,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:la_salida_facil_no_basta",
+        "kind": "development",
+        "beat_id": "la_salida_facil_no_basta",
+        "beat_kind": "complication",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… alternativas. No importa únicamente cuánto hace la máquina. Importa qué aprende la persona mientras la máquina ayuda. Una IA que entrega una solución cerrada puede entrenarnos para aceptar. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_020",
+      "mode": "presenter",
+      "start_seconds": 416.4,
+      "end_seconds": 452.08,
+      "duration_seconds": 35.68,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:aprender_el_sonido_del_motor",
+        "kind": "development",
+        "beat_id": "aprender_el_sonido_del_motor",
+        "beat_kind": "evidence",
+        "evidence_ids": [
+          "explicaciones_para_anticipar_fal"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… las personas pueden interpretar. No buscaba abrir por completo la caja negra y traducir cada cálculo interno de la máquina. Más bien intentaba dar explicaciones útiles para que …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_021",
+      "mode": "media",
+      "start_seconds": 452.08,
+      "end_seconds": 456.08,
+      "duration_seconds": 4,
+      "cue_id": "slot_015",
+      "section": {
+        "section_key": "beat:aprender_el_sonido_del_motor",
+        "kind": "development",
+        "beat_id": "aprender_el_sonido_del_motor",
+        "beat_kind": "evidence",
+        "evidence_ids": [
+          "explicaciones_para_anticipar_fal"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… coche. No necesitas convertirte en ingeniero automotriz para manejar bien. Pero ayuda saber que cierto ruido del motor no es normal, que un temblor al frenar merece atención, …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "evidence",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Show concrete documentary evidence or the closest truthful domain visual; never imply this is exact study footage unless verified."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "cybersecurity analyst",
+        "on_screen_text": "Presentar el estudio de conducción sólo después de establecer por qué importa. M"
+      }
+    },
+    {
+      "segment_id": "seg_022",
+      "mode": "presenter",
+      "start_seconds": 456.08,
+      "end_seconds": 542,
+      "duration_seconds": 85.92,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:aprender_el_sonido_del_motor",
+        "kind": "development",
+        "beat_id": "aprender_el_sonido_del_motor",
+        "beat_kind": "evidence",
+        "evidence_ids": [
+          "explicaciones_para_anticipar_fal"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… de decir: “espera, esto no es lo que esperaba que hiciera; aquí hay algo que revisar”. Ahora, no hagamos de esto una promesa más grande de lo que …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_023",
+      "mode": "presenter",
+      "start_seconds": 542,
+      "end_seconds": 565.68,
+      "duration_seconds": 23.68,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:de_entender_respuestas_a_respons",
+        "kind": "development",
+        "beat_id": "de_entender_respuestas_a_respons",
+        "beat_kind": "turn",
+        "evidence_ids": [
+          "aprendizaje_transferible",
+          "explicaciones_para_anticipar_fal"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… que la gran amenaza era perder independencia: dejar de poder hacer las cosas sin una máquina. Pero el ideal humano no debería ser hacerlo todo sin ayuda. Nadie …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_024",
+      "mode": "media",
+      "start_seconds": 565.68,
+      "end_seconds": 569.68,
+      "duration_seconds": 4,
+      "cue_id": "slot_017",
+      "section": {
+        "section_key": "beat:de_entender_respuestas_a_respons",
+        "kind": "development",
+        "beat_id": "de_entender_respuestas_a_respons",
+        "beat_kind": "turn",
+        "evidence_ids": [
+          "aprendizaje_transferible",
+          "explicaciones_para_anticipar_fal"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… a la imagen médica, ni a un arquitecto que abandone sus herramientas de cálculo, ni a un investigador que memorice una biblioteca entera. La autonomía no consiste en …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Support the conceptual turn with one clarifying visual; avoid adding a second idea through the image."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "scientist research",
+        "on_screen_text": "Reinterpretar las dos piezas anteriores: el centro del problema no es conservar "
+      }
+    },
+    {
+      "segment_id": "seg_025",
+      "mode": "presenter",
+      "start_seconds": 569.68,
+      "end_seconds": 627.6,
+      "duration_seconds": 57.92,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:de_entender_respuestas_a_respons",
+        "kind": "development",
+        "beat_id": "de_entender_respuestas_a_respons",
+        "beat_kind": "turn",
+        "evidence_ids": [
+          "aprendizaje_transferible",
+          "explicaciones_para_anticipar_fal"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… un sistema funciona normalmente, pero esta situación no es normal. Para eso hace falta un mapa mental. No conocimiento total; nadie puede comprender cada detalle de todos los …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_026",
+      "mode": "presenter",
+      "start_seconds": 627.6,
+      "end_seconds": 656.68,
+      "duration_seconds": 29.08,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:la_firma_no_es_entendimiento",
+        "kind": "development",
+        "beat_id": "la_firma_no_es_entendimiento",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "responsabilidad_legal_no_deleg"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… reporte de Reuters, estaba pendiente de la firma del gobernador. La propuesta establece reglas específicas para el uso de IA generativa por abogados: exige verificar materiales generados por …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_027",
+      "mode": "media",
+      "start_seconds": 656.68,
+      "end_seconds": 660.68,
+      "duration_seconds": 4,
+      "cue_id": "slot_019",
+      "section": {
+        "section_key": "beat:la_firma_no_es_entendimiento",
+        "kind": "development",
+        "beat_id": "la_firma_no_es_entendimiento",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "responsabilidad_legal_no_deleg"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… información confidencial en ciertos sistemas y dice que abogados y árbitros no pueden delegar a una IA la práctica del derecho o las decisiones arbitrales. No es una …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Prefer a human-scale, restrained visual. Avoid melodrama or generic emotional stock."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "chemistry laboratory",
+        "on_screen_text": "Usar la medida californiana como consecuencia concreta. Explorar por qué prohibi"
+      }
+    },
+    {
+      "segment_id": "seg_028",
+      "mode": "presenter",
+      "start_seconds": 660.68,
+      "end_seconds": 731.2,
+      "duration_seconds": 70.52,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:la_firma_no_es_entendimiento",
+        "kind": "development",
+        "beat_id": "la_firma_no_es_entendimiento",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "responsabilidad_legal_no_deleg"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… decir: “alguien respondió por esto”. Pero si quien firma no puede explicar por qué el documento era correcto, qué fuentes lo sostienen, qué alternativa descartó o qué pudo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_029",
+      "mode": "presenter",
+      "start_seconds": 731.2,
+      "end_seconds": 750.44,
+      "duration_seconds": 19.24,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:disenar_ayuda_que_deje_criterio",
+        "kind": "development",
+        "beat_id": "disenar_ayuda_que_deje_criterio",
+        "beat_kind": "reflection",
+        "evidence_ids": [
+          "aprendizaje_transferible",
+          "explicaciones_para_anticipar_fal",
+          "responsabilidad_legal_no_deleg"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… estas herramientas. En educación, quizá la pregunta no sea únicamente si un asistente mejora calificaciones, sino si deja a la persona más capaz de resolver un problema distinto …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_030",
+      "mode": "media",
+      "start_seconds": 750.44,
+      "end_seconds": 754.44,
+      "duration_seconds": 4,
+      "cue_id": "slot_021",
+      "section": {
+        "section_key": "beat:disenar_ayuda_que_deje_criterio",
+        "kind": "development",
+        "beat_id": "disenar_ayuda_que_deje_criterio",
+        "beat_kind": "reflection",
+        "evidence_ids": [
+          "aprendizaje_transferible",
+          "explicaciones_para_anticipar_fal",
+          "responsabilidad_legal_no_deleg"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… En profesiones reguladas, quizá no baste con registrar que hubo “revisión humana”. Habría que mirar qué hace que esa revisión sea real. ¿La herramienta muestra sus fuentes? ¿Expone …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use sparingly. The presenter should usually carry reflective passages unless a visual materially clarifies the thought."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "scientist research",
+        "on_screen_text": "Cerrar con la tesis evolucionada: pedir, para educación y profesiones, sistemas "
+      }
+    },
+    {
+      "segment_id": "seg_031",
+      "mode": "presenter",
+      "start_seconds": 754.44,
+      "end_seconds": 802,
+      "duration_seconds": 47.56,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:disenar_ayuda_que_deje_criterio",
+        "kind": "development",
+        "beat_id": "disenar_ayuda_que_deje_criterio",
+        "beat_kind": "reflection",
+        "evidence_ids": [
+          "aprendizaje_transferible",
+          "explicaciones_para_anticipar_fal",
+          "responsabilidad_legal_no_deleg"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… conducción? También habría que aceptar algo incómodo: algunas tareas deben seguir siendo difíciles durante el aprendizaje. No porque la dificultad sea moralmente buena, sino porque ciertas capacidades sólo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_032",
+      "mode": "presenter",
+      "start_seconds": 802,
+      "end_seconds": 855.88,
+      "duration_seconds": 53.88,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… el hilo en cuanto deja de estarlo? La evidencia que vimos no dice que toda asistencia nos vuelva dependientes. Tampoco dice que una explicación vaya a resolver mágicamente …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_033",
+      "mode": "media",
+      "start_seconds": 855.88,
+      "end_seconds": 859.88,
+      "duration_seconds": 4,
+      "cue_id": "slot_023",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… transferir, no sólo mejores tareas. Una herramienta autónoma debería ayudarnos a anticipar sus límites, no sólo a admirar sus aciertos. Y una herramienta profesional debería permitir que la …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?"
+      }
+    },
+    {
+      "segment_id": "seg_034",
+      "mode": "presenter",
+      "start_seconds": 859.88,
+      "end_seconds": 903.6,
+      "duration_seconds": 43.72,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… otra: ayudas que sustituyen el juicio y ayudas que lo entrenan. Porque la autonomía valiosa no es hacer todo sin asistencia. Es no perder la capacidad de juzgar …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    }
+  ]
+}
