@@ -11,6 +11,7 @@ from pipeline.core import PipelineConfig, timeline_duration_seconds
 from pipeline.credits import write_credits
 from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset, download_video_shot_asset
+from pipeline.media_dedup import deduplicate_materialized_media
 from pipeline.review_media import (
     OPENING_DENSE_MEDIA_SECONDS,
     association_label,
@@ -400,6 +401,12 @@ def build_offline_review_media(
             "asset_type": record.get("asset_type", "image"),
         })
 
+    manifest, selected_segments, duplicate_assets = deduplicate_materialized_media(
+        manifest,
+        selected_segments,
+        media_root=output_dir,
+    )
+
     opening_assets = [
         item for item in manifest
         if float(item.get("start_seconds", 0) or 0) < OPENING_DENSE_MEDIA_SECONDS
@@ -412,6 +419,10 @@ def build_offline_review_media(
     warnings: list[str] = [
         "LLM multimedia planner unavailable; deterministic beat/evidence planner used"
     ]
+    if duplicate_assets:
+        warnings.append(
+            f"Removed {len(duplicate_assets)} duplicate multimedia asset(s); highest source resolution was kept"
+        )
     if coverage_ratio < 0.85:
         warnings.append(
             f"Deterministic review multimedia reaches only {coverage_ratio:.0%} of essay duration"
@@ -433,6 +444,11 @@ def build_offline_review_media(
         "opening_video_count": len(opening_videos),
         "coverage_ratio": round(coverage_ratio, 4),
         "validation_warnings": warnings,
+        "deduplication": {
+            "removed_count": len(duplicate_assets),
+            "policy": "same provider asset/source/content -> keep highest source resolution",
+            "removed": duplicate_assets,
+        },
         "segments": selected_segments,
         "agent_trace": [],
     })
@@ -453,6 +469,7 @@ def build_offline_review_media(
         "coverage_ratio": round(coverage_ratio, 4),
         "zip_path": str(zip_path),
         "warnings": warnings,
+        "duplicate_assets_removed": len(duplicate_assets),
     }
 
 
