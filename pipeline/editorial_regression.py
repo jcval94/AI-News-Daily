@@ -7,6 +7,12 @@ from pathlib import Path
 from typing import Any
 
 
+NON_ERROR_TERMINAL_STATES = {
+    "no_relevant_news",
+    "no_novel_essay_angle",
+}
+
+
 PLASTIC_PATTERNS = (
     "en un mundo cada vez más",
     "esto cambiará las reglas del juego",
@@ -87,6 +93,8 @@ def exit_code_for_result(result: dict[str, Any]) -> int:
     # Historical production may be rendered for comparison, while visibly retaining
     # structural_pass=false. Current-runtime failures remain hard failures.
     if bool(result.get("legacy_contract")):
+        return 0
+    if str(result.get("status") or "") in NON_ERROR_TERMINAL_STATES:
         return 0
     return 1
 
