@@ -12,13 +12,16 @@ Google ADK provides the agent runtime. Deterministic Python and GitHub Actions o
 
 The current production entrypoint is `pipeline.run_hardened`, while the core editorial orchestration remains in `pipeline/run.py`.
 
-Editorial identity is versioned separately from prompts:
+Editorial identity is versioned separately from prompts, while reusable verified context has its own store:
 
 ```text
 editorial/
 ├── voice_profile.md
-└── discourse_profile.md
+├── discourse_profile.md
+└── narrative_memory.jsonl
 ```
+
+`Narrative Memory` is not prompt glue or trivia. A scheduled research task can expand it offline; deterministic Python revalidates every row, derives prior usage from approved episode artifacts, applies cooldown/diversity retrieval, and exposes only a small candidate set to the Editorial Director. See `docs/narrative_memory_contract.md`.
 
 This lets prompts and models evolve without silently redefining the channel's identity.
 
@@ -29,9 +32,11 @@ GitHub Actions trigger
         ↓
 source coverage preflight
         ↓
-news ingestion + approved memory
+news ingestion + approved episode memory
         ↓
 Selector
+        ↓
+Narrative Memory retrieval (validated, cooldown, top-N)
         ↓
 Editorial Director + Claim Ledger
         ↓
@@ -191,11 +196,13 @@ Useful clarity test:
 
 > If a curious 15-year-old would have to pause the video to decode the sentence, rewrite it.
 
-## Historical framing
+## Historical framing and Narrative Memory
 
-Historical references are used as mirrors for the present, not as decoration. The curated source-backed library lives inside `editorial/discourse_profile.md`.
+Historical references are used as mirrors for the present, not as decoration. The original curated references remain in `editorial/discourse_profile.md`; reusable verified parallels also live in `editorial/narrative_memory.jsonl`.
 
-The Writer may paraphrase only facts included there. It must not invent historical quotes, people, dates, books, or anecdotes.
+Production never sends the whole library to the Writer. It retrieves a small candidate set for the Director, allows the plan to select at most two, and sends only those exact records to the Writer and factual critic/refiner. The Writer may paraphrase only `verified_claims`, must preserve `uncertainties` and `analogy_limits`, and must not turn structural similarity into causal equivalence.
+
+Usage is derived from approved `episode_plan.narrative_parallels` rather than a mutable global `used=true` flag, so rejected attempts never consume a parallel.
 
 ## Facts vs reflection
 
@@ -334,6 +341,9 @@ scripts/YYYY-MM-DD/
 ├── execution_trace.json
 ├── run_report.json
 ├── selected_news.json
+├── narrative_memory_candidates.json
+├── narrative_memory_selection.json
+├── narrative_memory_usage.json
 ├── episode_plan.json
 ├── script_sections.json
 ├── script.txt

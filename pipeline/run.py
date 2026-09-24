@@ -53,6 +53,12 @@ from pipeline.core import (
 )
 from pipeline.credits import write_credits
 from pipeline.media import download_shot_asset
+from pipeline.narrative_memory import (
+    load_memory,
+    load_usage_history,
+    rank_candidates,
+    resolve_selected_memory,
+)
 from pipeline.news import NewsItem, parse_news_file
 from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script
 
@@ -707,6 +713,31 @@ async def build(
             return episode_scripts_dir
 
         selected_json = json.dumps(selection, ensure_ascii=False)
+
+        memory_items, memory_issues = load_memory(editorial_dir / "narrative_memory.jsonl")
+        validation_warnings.extend(memory_issues)
+        memory_usage = load_usage_history(history_scripts_root, target_date)
+        memory_candidates = rank_candidates(
+            memory_items,
+            selected_json,
+            memory_usage,
+            target_date,
+            top_k=6,
+        )
+        memory_candidates_json = json.dumps(
+            {"schema_version": 1, "items": memory_candidates},
+            ensure_ascii=False,
+        )
+        write_json(
+            episode_scripts_dir / "narrative_memory_candidates.json",
+            {
+                "schema_version": 1,
+                "candidate_count": len(memory_candidates),
+                "issues": memory_issues,
+                "items": memory_candidates,
+            },
+        )
+
         novelty_attempts: list[dict[str, Any]] = []
         novelty_feedback = ""
         episode_plan: dict[str, Any] | None = None
@@ -720,6 +751,7 @@ async def build(
                     "voice_profile": voice_profile,
                     "discourse_profile": discourse_profile,
                     "previous_essays": previous_essays_json,
+                    "narrative_memory": memory_candidates_json,
                     "novelty_feedback": novelty_feedback,
                 },
                 (
@@ -734,6 +766,7 @@ async def build(
                 director_state.get("episode_plan", {})
             ).model_dump()
             validate_episode_plan(candidate_plan, len(selection["items"]))
+            resolve_selected_memory(candidate_plan, memory_candidates)
             candidate_topic = " ".join(
                 str(candidate_plan.get(key, "") or "")
                 for key in ("topic_signature", "central_question", "thesis", "narrative_lens")
@@ -806,6 +839,19 @@ async def build(
             )
             return episode_scripts_dir
 
+        selected_narrative_memory = resolve_selected_memory(episode_plan, memory_candidates)
+        selected_narrative_memory_json = json.dumps(
+            {"schema_version": 1, "items": selected_narrative_memory},
+            ensure_ascii=False,
+        )
+        write_json(
+            episode_scripts_dir / "narrative_memory_selection.json",
+            {
+                "schema_version": 1,
+                "selected_count": len(selected_narrative_memory),
+                "items": selected_narrative_memory,
+            },
+        )
         write_json(episode_scripts_dir / "episode_plan.json", episode_plan)
         episode_plan_json = json.dumps(episode_plan, ensure_ascii=False)
 
@@ -817,6 +863,7 @@ async def build(
                 "episode_plan": episode_plan_json,
                 "voice_profile": voice_profile,
                 "discourse_profile": discourse_profile,
+                "selected_narrative_memory": selected_narrative_memory_json,
             },
             "Write the finished 7-20 minute Spanish reflective AI essay.",
             step="write_script",
@@ -856,6 +903,7 @@ async def build(
                 "episode_plan": episode_plan_json,
                 "voice_profile": voice_profile,
                 "discourse_profile": discourse_profile,
+                "selected_narrative_memory": selected_narrative_memory_json,
             }
             editorial_state = await run_agent(
                 reviewer_agent,
@@ -965,6 +1013,7 @@ async def build(
                     "news_text": news_text,
                     "episode_plan": episode_plan_json,
                     "discourse_profile": discourse_profile,
+                    "selected_narrative_memory": selected_narrative_memory_json,
                 }
                 refinement_prompt = (
                     "Repair factuality and traceability only. Ignore voice, SEO, and retention."
@@ -1133,6 +1182,18 @@ async def build(
                 )
         write_json(episode_media_dir / "manifest.json", manifest)
         write_credits(manifest, episode_media_dir)
+        write_json(
+            episode_scripts_dir / "narrative_memory_usage.json",
+            {
+                "schema_version": 1,
+                "episode_date": target_date.isoformat(),
+                "memory_ids": [
+                    item.get("id") for item in selected_narrative_memory if item.get("id")
+                ],
+                "count": len(selected_narrative_memory),
+                "note": "Usage counts only because this episode passed the final deterministic gate.",
+            },
+        )
         write_json(
             state_path,
             _run_state_payload(

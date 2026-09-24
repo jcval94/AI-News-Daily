@@ -28,6 +28,7 @@ on:
       - "pipeline/source_coverage.py"
       - "pipeline/editorial_regression.py"
       - "editorial/**"
+      - "!editorial/narrative_memory.jsonl"
   push:
     branches:
       - main
@@ -43,6 +44,7 @@ on:
       - "pipeline/source_coverage.py"
       - "pipeline/editorial_regression.py"
       - "editorial/**"
+      - "!editorial/narrative_memory.jsonl"
 
 permissions:
   contents: read

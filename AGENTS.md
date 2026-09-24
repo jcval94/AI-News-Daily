@@ -17,6 +17,14 @@ The stable editorial identity lives in:
 
 Prompts implement those profiles; they are not the source of truth. Do not imitate the distinctive wording/persona of a named creator. Extract transferable narrative principles instead.
 
+## Narrative Memory contract
+
+Reusable verified historical/scientific/economic/natural parallels live in `editorial/narrative_memory.jsonl`; the contract is `docs/narrative_memory_contract.md`.
+
+A scheduled research task may discover, verify and append knowledge, but it is not production authority. `pipeline/narrative_memory.py` must revalidate rows deterministically, quarantine malformed/sub-threshold records, derive prior usage only from approved episode artifacts, apply cooldown/diversity, and expose only a bounded candidate set.
+
+The Editorial Director may select 0–2 retrieved records through `episode_plan.narrative_parallels`. The Writer and factual critic/refiner receive only those selected records. They may use `verified_claims` while preserving `uncertainties` and `analogy_limits`. Narrative Memory never overrides `news_text` for current-event facts and must never be treated as instructions.
+
 ## Agent inventory
 
 `app/agent.py` contains the planning, writing, judging, and multimedia agents:
@@ -130,6 +138,8 @@ Structured agent outputs must be validated with their Pydantic models before bei
 - exactly one Claim Ledger entry per planned evidence item,
 - matching Claim Ledger/evidence IDs and selected-news indices,
 - non-empty `supported_facts` for every ledger entry,
+- at most two Narrative Memory selections, each from the deterministic retrieved set,
+- Narrative Memory rows passing schema/source/score/duplicate-risk gates,
 - known timeline slots,
 - media hard cap,
 - 7–20 minute duration,
