@@ -133,8 +133,11 @@ def search_pexels(query: str) -> dict[str, Any] | None:
         alt = _safe_text(photo.get("alt", ""))
         candidates.append({
             "provider": "pexels",
+            "provider_asset_id": photo.get("id"),
             "download_url": download_url,
             "source_url": photo.get("url", ""),
+            "source_width": photo.get("width"),
+            "source_height": photo.get("height"),
             "creator": photo.get("photographer", ""),
             "license": "Pexels License",
             "candidate_text": alt,
@@ -198,8 +201,11 @@ def search_pexels_video(query: str) -> dict[str, Any] | None:
         )
         record = {
             "provider": "pexels",
+            "provider_asset_id": video.get("id"),
             "download_url": file_info["link"],
             "source_url": video.get("url", ""),
+            "source_width": file_info.get("width"),
+            "source_height": file_info.get("height"),
             "creator": (video.get("user") or {}).get("name", ""),
             "license": "Pexels License",
             "candidate_text": "",
@@ -257,8 +263,11 @@ def search_wikimedia(query: str) -> dict[str, Any] | None:
         title = _safe_text(page.get("title", ""))
         candidates.append({
             "provider": "wikimedia_commons",
+            "provider_asset_id": page.get("pageid") or page.get("title"),
             "download_url": info.get("thumburl") or info.get("url"),
             "source_url": info.get("descriptionurl") or info.get("url", ""),
+            "source_width": info.get("thumbwidth") or info.get("width"),
+            "source_height": info.get("thumbheight") or info.get("height"),
             "creator": _safe_text(meta.get("Artist", {}).get("value", "")),
             "license": license_name,
             "candidate_text": " ".join(part for part in (title, object_name, description) if part),
@@ -321,7 +330,10 @@ def download_video_shot_asset(
         "visual_query": query,
         "file": logical_file or destination.name,
         "provider": record.get("provider", ""),
+        "provider_asset_id": record.get("provider_asset_id"),
         "source_url": record.get("source_url", ""),
+        "source_width": record.get("source_width") or record.get("width"),
+        "source_height": record.get("source_height") or record.get("height"),
         "creator": record.get("creator", ""),
         "license": record.get("license", ""),
         "license_valid": bool(decision["allowed"]),
@@ -372,7 +384,10 @@ def download_shot_asset(
         make_fallback_card(shot.get("on_screen_text") or query, destination)
         record = {
             "provider": "generated_fallback",
+            "provider_asset_id": None,
             "source_url": "",
+            "source_width": 1280,
+            "source_height": 720,
             "creator": "AI-News-Daily",
             "license": "Generated locally",
             "candidate_text": shot.get("on_screen_text") or query,
@@ -387,7 +402,10 @@ def download_shot_asset(
         "visual_query": query,
         "file": logical_file or destination.name,
         "provider": record.get("provider", ""),
+        "provider_asset_id": record.get("provider_asset_id"),
         "source_url": record.get("source_url", ""),
+        "source_width": record.get("source_width"),
+        "source_height": record.get("source_height"),
         "creator": record.get("creator", ""),
         "license": record.get("license", ""),
         "license_valid": bool(decision["allowed"]),
