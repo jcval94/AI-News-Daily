@@ -343,7 +343,7 @@ Audience rule: the viewer is curious but nontechnical. Prefer the human idea ove
 If a term such as runtime, orchestration, inference, embedding, latency, benchmark, or RAG is necessary,
 plan how to explain the idea in ordinary language before naming the term.
 
-Evidence selected_news_index values are 1-based and MUST refer to selected_news.items. Each evidence item also owns a stable evidence_id. Beats reference evidence ONLY by those evidence_id strings; never use selected-news positions inside beats.
+Every object in selected_news.items contains an explicit `selected_news_index`. For episode_plan.evidence and claim_ledger, COPY that exact selected_news_index from the chosen selected_news item. Never use the source `item_index`, a date, or a position from news_text. selected_news_index values are 1-based within selected_news.items only. Each evidence item also owns a stable evidence_id. Beats reference evidence ONLY by those evidence_id strings; never use selected-news positions inside beats.
 Do not invent new evidence. Do not write polished narration.
 """,
     output_schema=EpisodePlan,
