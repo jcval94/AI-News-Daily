@@ -2,14 +2,6 @@ name: Editorial Grid Search
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "experiments/editorial_grid_search/grid.json"
-      - "experiments/editorial_grid_search/folds.json"
-      - "experiments/editorial_grid_search/run.py"
-      - "experiments/editorial_grid_search/analyze.py"
-      - "experiments/editorial_grid_search/README.md"
-      - ".github/workflows/editorial-grid-search.yml"
 
 permissions:
   contents: write
@@ -123,8 +115,8 @@ jobs:
             exit 0
           fi
           git commit -m "experiment: editorial grid-search results"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin HEAD:"$GITHUB_REF_NAME"
 
       - name: Require complete 20 x 3 grid
         run: |
