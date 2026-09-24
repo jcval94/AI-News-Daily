@@ -175,6 +175,7 @@ python-multipart==0.0.32
     # via google-adk
 pyyaml==6.0.3
     # via
+    #   ai-news-daily (pyproject.toml)
     #   google-adk
     #   huggingface-hub
 referencing==0.37.0
