@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.news import parse_news_file
+from pipeline.news import parse_news_file, stable_news_id
 
 
 class NewsParserTests(unittest.TestCase):
@@ -16,7 +16,23 @@ class NewsParserTests(unittest.TestCase):
                 encoding="utf-8",
             )
             items = parse_news_file(path)
-            self.assertEqual([item.news_id for item in items], ["2026-08-21:1", "2026-08-21:2"])
+            self.assertEqual(
+                [item.news_id for item in items],
+                [
+                    stable_news_id(
+                        title="Caso uno",
+                        source="Fuente A",
+                        url="https://example.com/blog",
+                        item_index=1,
+                    ),
+                    stable_news_id(
+                        title="Caso dos",
+                        source="Fuente B",
+                        url="https://example.com/news/specific-story",
+                        item_index=2,
+                    ),
+                ],
+            )
             self.assertEqual(items[0].source_locator, "2026-08-21.txt#item-1")
             self.assertEqual(items[0].url_quality, "generic")
             self.assertEqual(items[1].url_quality, "article")
@@ -45,7 +61,23 @@ class NewsParserTests(unittest.TestCase):
                 encoding="utf-8",
             )
             items = parse_news_file(path)
-            self.assertEqual([item.news_id for item in items], ["2026-08-20:1", "2026-08-20:2"])
+            self.assertEqual(
+                [item.news_id for item in items],
+                [
+                    stable_news_id(
+                        title="Caso real del repositorio",
+                        source="Fuente primaria / PR Newswire",
+                        url="https://example.com/releases/caso-real.html",
+                        item_index=1,
+                    ),
+                    stable_news_id(
+                        title="Segundo caso",
+                        source="Otra fuente",
+                        url="https://example.com/releases/segundo.html",
+                        item_index=2,
+                    ),
+                ],
+            )
             self.assertEqual(items[0].title, "Caso real del repositorio")
             self.assertEqual(items[0].date, "19/08/2026, 12:10 ET")
             self.assertEqual(items[0].date_origin, "field")
