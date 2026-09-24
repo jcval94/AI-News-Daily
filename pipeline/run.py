@@ -591,7 +591,7 @@ def normalize_multimedia_plan(
             "visual_query": query,
             "on_screen_text": str(raw.get("on_screen_text", "")).strip()[:80],
             "reason": str(raw.get("reason", "")).strip(),
-            "visual_role": str(raw.get("visual_role", "") or "explanation"),
+            "visual_role": str(raw.get("visual_role", "") or ""),
             "preferred_asset_type": str(
                 raw.get("preferred_asset_type", "")
                 or slot.get("preferred_asset_type", "")
@@ -604,8 +604,8 @@ def normalize_multimedia_plan(
             ),
             "transition_in": str(raw.get("transition_in", "") or "hard_cut"),
             "transition_out": str(raw.get("transition_out", "") or "hard_cut"),
-            "treatment": str(raw.get("treatment", "") or "natural_motion"),
-            "pacing": str(raw.get("pacing", "") or "normal"),
+            "treatment": str(raw.get("treatment", "") or ""),
+            "pacing": str(raw.get("pacing", "") or ""),
             "return_to_presenter": bool(raw.get("return_to_presenter", True)),
             "director_note": str(raw.get("director_note", "") or "").strip()[:280],
         }
@@ -1186,7 +1186,7 @@ async def build(
         )
         raw_plan = MultimediaPlan.model_validate(
             editor_state.get("multimedia_plan", {})
-        ).model_dump()
+        ).model_dump(exclude_unset=True)
         multimedia_plan, media_warnings = normalize_multimedia_plan(
             raw_plan, timeline_slots, max(0, max_media_downloads)
         )
