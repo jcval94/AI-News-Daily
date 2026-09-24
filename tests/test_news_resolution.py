@@ -192,6 +192,41 @@ class NewsResolutionTests(unittest.TestCase):
             self.assertEqual(result["missing_dates"], ["2026-09-02"])
             self.assertTrue(all(name.endswith("-08-00-00.txt") for name in result["available_files"]))
 
+    def test_source_coverage_reports_duplicate_resolution_and_freshness(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(
+            os.environ,
+            {"NEWS_SOURCE_MODE": "recent_window", "NEWS_LOOKBACK_DAYS": "2"},
+            clear=False,
+        ):
+            root = Path(tmp)
+            self._write(root, "2026-09-04-08-00-00.txt", "2026-09-04", "older")
+            newest = self._write(
+                root,
+                "2026-09-04-09-30-00.txt",
+                "2026-09-04",
+                "newest",
+            )
+            self._write(root, "2026-09-05-08-00-00.txt", "2026-09-05", "today")
+
+            result = evaluate_source_coverage(
+                target_date="2026-09-05",
+                news_dir=root,
+                min_ratio=1.0,
+            )
+
+            self.assertTrue(result["sufficient"])
+            self.assertEqual(result["duplicate_source_dates"], ["2026-09-04"])
+            self.assertEqual(result["duplicate_source_day_count"], 1)
+            self.assertEqual(result["latest_repository_source_date"], "2026-09-05")
+            self.assertEqual(result["source_staleness_days"], 0)
+            first = result["source_resolution"][0]
+            self.assertEqual(first["selected_file"], newest.name)
+            self.assertEqual(first["candidate_count"], 2)
+            self.assertEqual(
+                first["candidate_files"],
+                ["2026-09-04-09-30-00.txt", "2026-09-04-08-00-00.txt"],
+            )
+
     def test_source_coverage_accepts_mixed_filename_contracts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, patch.dict(
             os.environ,

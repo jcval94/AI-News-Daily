@@ -8,7 +8,8 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.core import expected_news_dates
-from pipeline.news_resolution import load_news_for_date
+from pipeline.news_resolution import candidate_news_files, load_news_for_date
+from pipeline.source_naming import is_supported_source, source_date
 
 
 def _utc_now() -> str:
@@ -26,14 +27,43 @@ def evaluate_source_coverage(
     available_files: list[str] = []
     missing_dates: list[str] = []
     item_count = 0
+    source_resolution: list[dict[str, Any]] = []
+    duplicate_source_dates: list[str] = []
 
     for current in expected:
+        candidates = candidate_news_files(news_dir, current)
         path, parsed = load_news_for_date(news_dir, current)
+        candidate_names = [candidate.name for candidate in candidates]
+        if len(candidate_names) > 1:
+            duplicate_source_dates.append(current.isoformat())
+        source_resolution.append(
+            {
+                "date": current.isoformat(),
+                "selected_file": path.name if path is not None else None,
+                "candidate_files": candidate_names,
+                "candidate_count": len(candidate_names),
+            }
+        )
         if path is None:
             missing_dates.append(current.isoformat())
             continue
         available_files.append(path.name)
         item_count += len(parsed)
+
+    repository_dates = []
+    if news_dir.exists():
+        for source in news_dir.iterdir():
+            if not is_supported_source(source):
+                continue
+            value = source_date(source)
+            if value is not None:
+                repository_dates.append(value)
+    latest_repository_source_date = max(repository_dates) if repository_dates else None
+    source_staleness_days = (
+        max(0, (target - latest_repository_source_date).days)
+        if latest_repository_source_date is not None
+        else None
+    )
 
     expected_count = len(expected)
     available_count = len(available_files)
@@ -46,6 +76,15 @@ def evaluate_source_coverage(
         "expected_dates": [value.isoformat() for value in expected],
         "available_files": available_files,
         "missing_dates": missing_dates,
+        "source_resolution": source_resolution,
+        "duplicate_source_dates": duplicate_source_dates,
+        "duplicate_source_day_count": len(duplicate_source_dates),
+        "latest_repository_source_date": (
+            latest_repository_source_date.isoformat()
+            if latest_repository_source_date is not None
+            else None
+        ),
+        "source_staleness_days": source_staleness_days,
         "expected_day_count": expected_count,
         "available_day_count": available_count,
         "coverage_ratio": round(ratio, 4),
@@ -81,7 +120,16 @@ def write_skip_state(path: Path, payload: dict[str, Any]) -> None:
             "finished_at_utc": _utc_now(),
             "refinement_iterations": 0,
             "validation_warnings": [
-                f"Missing source dates: {', '.join(payload.get('missing_dates', [])) or 'none'}"
+                f"Missing source dates: {', '.join(payload.get('missing_dates', [])) or 'none'}",
+                (
+                    "Duplicate source dates: "
+                    f"{', '.join(payload.get('duplicate_source_dates', [])) or 'none'}"
+                ),
+                (
+                    "Latest repository source: "
+                    f"{payload.get('latest_repository_source_date') or 'none'} "
+                    f"(staleness_days={payload.get('source_staleness_days')})"
+                ),
             ],
         },
     )
