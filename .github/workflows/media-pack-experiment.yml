@@ -1,0 +1,107 @@
+name: Experiment — Editorial media pack
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: "Descripción del tema para el paquete de edición"
+        required: true
+        type: string
+      images:
+        description: "Imágenes (1–48; total con videos <=54)"
+        default: "20"
+        type: string
+      videos:
+        description: "Videos cortos o fragmentos (0–8)"
+        default: "4"
+        type: string
+  push:
+    branches: [experiment/youtube-artifacts]
+    paths: [experiments/media_pack/live-request.json]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: media-pack-experiment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  requests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.requests.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: requests
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DESCRIPTION: ${{ inputs.description }}
+          IMAGES: ${{ inputs.images }}
+          VIDEOS: ${{ inputs.videos }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          if os.environ['EVENT_NAME'] == 'workflow_dispatch':
+              matrix = {'include': [dict(id='manual', description=os.environ['DESCRIPTION'],
+                  images=int(os.environ['IMAGES']), videos=int(os.environ['VIDEOS']))]}
+          else:
+              matrix = json.loads(Path('experiments/media_pack/live-request.json').read_text())['matrix']
+          assert 1 <= len(matrix['include']) <= 3
+          for request in matrix['include']:
+              assert re.fullmatch('[a-z0-9-]{1,60}', request['id'])
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('matrix=' + json.dumps(matrix, ensure_ascii=True) + '\n')
+          PY
+
+  collect:
+    needs: requests
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix: ${{ fromJSON(needs.requests.outputs.matrix) }}
+    env:
+      MEDIA_DESCRIPTION: ${{ matrix.description }}
+      IMAGE_COUNT: ${{ matrix.images }}
+      VIDEO_COUNT: ${{ matrix.videos }}
+      OUTPUT_DIR: media-pack-output/run
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install isolated dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install -r experiments/image_search/requirements.txt -r experiments/video_search/requirements.txt
+      - name: Collect editorial pack
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          IMAGE_SEARCH_MODEL: ${{ vars.IMAGE_SEARCH_MODEL || 'gpt-5.4-mini' }}
+          VIDEO_SEARCH_MODEL: ${{ vars.VIDEO_SEARCH_MODEL || 'gpt-5.4-mini' }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python -m experiments.media_pack.run --images "$IMAGE_COUNT" --videos "$VIDEO_COUNT" --output "$OUTPUT_DIR"
+      - name: Upload media, gallery and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-pack-${{ matrix.id }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
+      - name: Show actual coverage
+        if: always()
+        run: |
+          if [ -f "$OUTPUT_DIR/SUMMARY.md" ]; then
+            cat "$OUTPUT_DIR/SUMMARY.md" >> "$GITHUB_STEP_SUMMARY"
+          fi

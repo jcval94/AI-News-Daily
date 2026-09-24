@@ -1,0 +1,15 @@
+{
+  "request_id": "alternative-nyos-all-words-search-2026-09-24",
+  "matrix": {
+    "include": [
+      {
+        "id": "lake-nyos-alternatives-retry",
+        "description": "El desastre del lago Nyos de 1986 en Camerún, causado por la liberación de gas. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
+        "count": "1",
+        "sources": "youtube,archive,commons,peertube,nasa",
+        "mode": "full",
+        "transcript": "off"
+      }
+    ]
+  }
+}

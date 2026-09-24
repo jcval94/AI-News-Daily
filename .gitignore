@@ -3,4 +3,8 @@ __pycache__/
 .venv/
 .env
 .pipeline-runs/
+youtube-artifact-output/
+video-search-output/
+image-search-output/
+media-pack-output/
 .DS_Store

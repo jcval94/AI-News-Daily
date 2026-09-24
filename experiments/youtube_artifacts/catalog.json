@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "expected_count": 10,
+  "purpose": "Reproducible acquisition test using short excerpts of openly licensed YouTube videos.",
+  "items": [
+    {
+      "ordinal": 1,
+      "cohort": "famous_open_movie",
+      "video_id": "aqz-KE-bpKQ",
+      "source_url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "expected_title": "Big Buck Bunny 60fps 4K - Official Blender Foundation Short Film",
+      "expected_channel": "Blender",
+      "selection_reason": "Well-known Blender open movie and common video-pipeline benchmark.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://peach.blender.org/about/",
+        "attribution": "Big Buck Bunny — Blender Foundation"
+      }
+    },
+    {
+      "ordinal": 2,
+      "cohort": "famous_open_movie",
+      "video_id": "eRsGyueVLvQ",
+      "source_url": "https://www.youtube.com/watch?v=eRsGyueVLvQ",
+      "expected_title": "Sintel - Open Movie by Blender Foundation",
+      "expected_channel": "Blender",
+      "selection_reason": "Well-known Blender open movie with publisher-hosted licensing evidence.",
+      "license_evidence": {
+        "basis": "publisher_license",
+        "license_name": "CC BY 3.0",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://durian.blender.org/sharing/",
+        "attribution": "Sintel — Blender Foundation"
+      }
+    },
+    {
+      "ordinal": 3,
+      "cohort": "famous_open_movie",
+      "video_id": "OHOpb2fS-cM",
+      "source_url": "https://www.youtube.com/watch?v=OHOpb2fS-cM",
+      "expected_title": "Tears of Steel in 4k - Official Blender Foundation release",
+      "expected_channel": "Blender",
+      "selection_reason": "Well-known live-action/VFX Blender open movie.",
+      "license_evidence": {
+        "basis": "publisher_license",
+        "license_name": "CC BY 3.0",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://mango.blender.org/about/",
+        "attribution": "Tears of Steel — Blender Foundation"
+      }
+    },
+    {
+      "ordinal": 4,
+      "cohort": "famous_open_movie",
+      "video_id": "Y-rmzh0PI3c",
+      "source_url": "https://www.youtube.com/watch?v=Y-rmzh0PI3c",
+      "expected_title": "Cosmos Laundromat - First Cycle. Official Blender Foundation release.",
+      "expected_channel": "Blender",
+      "selection_reason": "Recognizable Blender Foundation open-film release.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://gooseberry.blender.org/license/",
+        "attribution": "Cosmos Laundromat: First Cycle — Blender Foundation"
+      }
+    },
+    {
+      "ordinal": 5,
+      "cohort": "famous_open_movie",
+      "video_id": "WhWc3b3KhnY",
+      "source_url": "https://www.youtube.com/watch?v=WhWc3b3KhnY",
+      "expected_title": "Spring - Blender Open Movie",
+      "expected_channel": "Blender Studio",
+      "selection_reason": "Modern Blender open movie with explicit CC BY 4.0 publisher terms.",
+      "license_evidence": {
+        "basis": "publisher_license",
+        "license_name": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://studio.blender.org/projects/spring/pages/about/",
+        "attribution": "Spring — Blender Studio"
+      }
+    },
+    {
+      "ordinal": 6,
+      "cohort": "random_cc",
+      "video_id": "w6uX9jamcwQ",
+      "source_url": "https://www.youtube.com/watch?v=w6uX9jamcwQ",
+      "expected_title": "Free Waterfall 4k Videoclip | Nature Videos | Youstock",
+      "expected_channel": "Youstock",
+      "selection_reason": "Long-tail nature-footage result from YouTube's Creative Commons filter.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://www.youtube.com/watch?v=w6uX9jamcwQ",
+        "attribution": "Free Waterfall 4k Videoclip — Youstock"
+      }
+    },
+    {
+      "ordinal": 7,
+      "cohort": "random_cc",
+      "video_id": "0er8h_wAp58",
+      "source_url": "https://www.youtube.com/watch?v=0er8h_wAp58",
+      "expected_title": "EPFL Operation Robot - Precision to within One Tenth of a Millimeter",
+      "expected_channel": "EPFL",
+      "selection_reason": "Long-tail robotics footage with YouTube-declared Creative Commons licensing.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://www.youtube.com/watch?v=0er8h_wAp58",
+        "attribution": "EPFL Operation Robot — EPFL"
+      }
+    },
+    {
+      "ordinal": 8,
+      "cohort": "random_cc",
+      "video_id": "iG6M-vt-4JY",
+      "source_url": "https://www.youtube.com/watch?v=iG6M-vt-4JY",
+      "expected_title": "[ASMR] - Coding Tic-Tac-Toe, on nostalgia, Cathode terminal emulator and vintage computer sound",
+      "expected_channel": "Korakot Rakhuang",
+      "selection_reason": "Long-tail coding footage with YouTube-declared Creative Commons licensing.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://www.youtube.com/watch?v=iG6M-vt-4JY",
+        "attribution": "Coding Tic-Tac-Toe — Korakot Rakhuang"
+      }
+    },
+    {
+      "ordinal": 9,
+      "cohort": "random_cc",
+      "video_id": "sLOfqC8cxRY",
+      "source_url": "https://www.youtube.com/watch?v=sLOfqC8cxRY",
+      "expected_title": "City Timelapse 01 / Free Stock Footage (4K)",
+      "expected_channel": "101GreenLight TV",
+      "selection_reason": "Long-tail city footage with YouTube-declared Creative Commons licensing.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://www.youtube.com/watch?v=sLOfqC8cxRY",
+        "attribution": "City Timelapse 01 — 101GreenLight TV"
+      }
+    },
+    {
+      "ordinal": 10,
+      "cohort": "random_cc",
+      "video_id": "Lf3ORKoNp2c",
+      "source_url": "https://www.youtube.com/watch?v=Lf3ORKoNp2c",
+      "expected_title": "YouTube's First Virtual Science Experiment (The Scientific Method)",
+      "expected_channel": "Jesse Mason",
+      "selection_reason": "Long-tail science result with YouTube-declared Creative Commons licensing.",
+      "license_evidence": {
+        "basis": "youtube_metadata",
+        "license_name": "Creative Commons Attribution license (reuse allowed)",
+        "license_url": "https://creativecommons.org/licenses/by/3.0/",
+        "evidence_url": "https://www.youtube.com/watch?v=Lf3ORKoNp2c",
+        "attribution": "YouTube's First Virtual Science Experiment — Jesse Mason"
+      }
+    }
+  ]
+}

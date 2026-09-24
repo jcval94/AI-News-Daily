@@ -1,0 +1,126 @@
+name: Experiment — Rare media stress test
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiment/youtube-artifacts]
+    paths: [experiments/media_stress/live-request.json]
+permissions:
+  contents: read
+jobs:
+  source-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated control dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install -r experiments/video_search/requirements.txt -r experiments/image_search/requirements.txt
+      - name: Test public downloads without model calls
+        run: python -m experiments.media_stress.source_controls
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: alternative-source-controls-${{ github.run_id }}
+          path: video-search-output/source-controls/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+  cases:
+    runs-on: ubuntu-latest
+    outputs:
+      ids: ${{ steps.cases.outputs.ids }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: cases
+        run: |
+          python - <<'PYCODE'
+          import json, os
+          from pathlib import Path
+          cases=json.loads(Path('experiments/media_stress/cases.json').read_text())
+          assert len(cases)>=12 and len({c['id'] for c in cases})==len(cases)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('ids='+json.dumps([c['id'] for c in cases])+'\n')
+          PYCODE
+  images:
+    needs: cases
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        case: ${{ fromJSON(needs.cases.outputs.ids) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install independent experiment dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install -r experiments/video_search/requirements.txt -r experiments/image_search/requirements.txt
+      - name: Search, download and record strict benchmark evidence
+        env:
+          CASE_ID: ${{ matrix.case }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          IMAGE_SEARCH_MODEL: ${{ vars.IMAGE_SEARCH_MODEL || 'gpt-5.4-mini' }}
+          VIDEO_SEARCH_MODEL: ${{ vars.VIDEO_SEARCH_MODEL || 'gpt-5.4-mini' }}
+        run: python -m experiments.media_stress.run --case "$CASE_ID" --modality images
+      - name: Preserve media and negative evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stress-images-${{ matrix.case }}-${{ github.run_id }}
+          path: image-search-output/stress/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+  videos:
+    needs: cases
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        case: ${{ fromJSON(needs.cases.outputs.ids) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install independent experiment dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends ffmpeg
+          python -m pip install -r experiments/video_search/requirements.txt -r experiments/image_search/requirements.txt
+      - name: Search, download and record strict benchmark evidence
+        env:
+          CASE_ID: ${{ matrix.case }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          IMAGE_SEARCH_MODEL: ${{ vars.IMAGE_SEARCH_MODEL || 'gpt-5.4-mini' }}
+          VIDEO_SEARCH_MODEL: ${{ vars.VIDEO_SEARCH_MODEL || 'gpt-5.4-mini' }}
+        run: python -m experiments.media_stress.run --case "$CASE_ID" --modality videos
+      - name: Preserve media and negative evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stress-videos-${{ matrix.case }}-${{ github.run_id }}
+          path: video-search-output/stress/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
