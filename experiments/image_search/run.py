@@ -101,6 +101,15 @@ def is_duplicate(media, previous):
 def visual_gate(plan, decision, visual):
     if not visual["usable"] or visual["obvious_synthetic_or_meme"]:
         return "Visual inspection rejected usability/synthetic content"
+    # The visual classifier labels ANY photograph containing people person_photo.
+    # A catalogued historical scene can therefore be a site/object photograph
+    # semantically while containing participants. Its subject still needs the
+    # preceding literal source-evidence gate; portraits and synthetic art do not
+    # gain this exception for person requests.
+    if (plan.kind == "historical" and visual["kind"] == "person_photo"
+            and decision["depiction"] in {"site_photo", "object_photo"}
+            and decision["depiction"] in plan.allowed_types):
+        return None
     if visual["kind"] not in plan.allowed_types:
         return "Visible medium does not match requested medium"
     if visual["kind"] != decision["depiction"]:

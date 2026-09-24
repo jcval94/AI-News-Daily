@@ -32,6 +32,18 @@ class MediaStressTests(unittest.TestCase):
             self.assertTrue(run.write_report(Path(directory),manifest))
         self.assertEqual(manifest['summary']['missing_events'],[])
 
+    def test_historical_scene_can_include_people_without_becoming_a_portrait(self):
+        from experiments.image_search.run import visual_gate
+        from types import SimpleNamespace
+        plan=SimpleNamespace(kind='historical',allowed_types=['site_photo'])
+        decision={'depiction':'site_photo'}
+        visual=dict(kind='person_photo',usable=True,obvious_synthetic_or_meme=False)
+        self.assertIsNone(visual_gate(plan,decision,visual))
+        visual['obvious_synthetic_or_meme']=True
+        self.assertIsNotNone(visual_gate(plan,decision,visual))
+        visual.update(obvious_synthetic_or_meme=False,kind='illustration_or_render')
+        self.assertIsNotNone(visual_gate(plan,decision,visual))
+
     def test_search_words_need_not_be_adjacent(self):
         from experiments.image_search import sources
         from unittest.mock import patch
