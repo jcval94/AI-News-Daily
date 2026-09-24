@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-04",
+  "style_id": "jc_reflective_essay_v1",
+  "source_edit_manifest": "docs/examples/edit_manifest/2026-09-04/edit_manifest.json",
+  "interpretation": "Historical pre-style replay evaluated against the current observational editing grammar. Warnings are calibration signals, not publication failures.",
+  "summary": {
+    "warning_count": 12,
+    "errors": 0,
+    "warnings": 2,
+    "info": 10,
+    "presenter_visual_share": 0.938,
+    "first_presenter_seconds": 20,
+    "opening_continuous_media_seconds": 20
+  },
+  "warnings": [
+    {
+      "code": "presenter_share_high",
+      "severity": "info",
+      "message": "Presenter visual share 93.8% is above style target 85.0%; verify that long camera runs remain intentional."
+    },
+    {
+      "code": "opening_presenter_anchor_late",
+      "severity": "warning",
+      "message": "First presenter appearance starts at 20s; style target is <= 6.0s."
+    },
+    {
+      "code": "continuous_media_too_long",
+      "severity": "warning",
+      "message": "Continuous media run 20.0s exceeds 18.0s style limit.",
+      "segment_ids": [
+        "seg_001",
+        "seg_002",
+        "seg_003",
+        "seg_004",
+        "seg_005",
+        "seg_006"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 86.8s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_007",
+        "seg_008"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 74.4s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_010",
+        "seg_011"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 84.4s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_013",
+        "seg_014"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 93.9s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_016",
+        "seg_017"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 76.5s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_019",
+        "seg_020"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 109.6s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_022",
+        "seg_023"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 87.0s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_025",
+        "seg_026"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 89.8s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_028",
+        "seg_029"
+      ]
+    },
+    {
+      "code": "presenter_run_too_long",
+      "severity": "info",
+      "message": "Uninterrupted presenter run 101.4s exceeds 45.0s attention-reset target.",
+      "segment_ids": [
+        "seg_031",
+        "seg_032"
+      ]
+    }
+  ]
+}
