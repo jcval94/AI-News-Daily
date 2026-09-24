@@ -19,7 +19,7 @@ mention in a general programme does not. Generated images do not qualify.
 
 Artifacts include media (if retrieved), discovery candidates, rejections, source
 metadata, integrity hashes and `benchmark.json`. Literal matching cannot measure
-precision: it excludes queries and model reasons, but still requires human source
+precision: it excludes queries and model reasons, but still requires independent source
 review. `exact_success` remains null until that review. An empty retrieval is a
 failure to satisfy the user's target, even if a negative test completed normally.
 A green benchmark workflow means completed evaluation, not 100% successful retrieval.
@@ -34,3 +34,5 @@ python -m experiments.media_stress.run --case toyota-war --modality videos
 
 Outputs must be new directories. GitHub artifacts are retained for seven days;
 committed results retain run IDs, source URLs and review evidence afterward.
+
+Verified results and artifact links: [RESULTS.md](RESULTS.md), with machine-readable adjudication in [results-2026-09-24.json](results-2026-09-24.json). Review was performed by the assistant using catalogue evidence and downloaded files, not by a human reviewer.

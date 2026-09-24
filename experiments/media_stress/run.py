@@ -34,7 +34,7 @@ def audit(case, modality, manifest, candidates):
                 description=case['description'], expected=case,
                 candidates=len(candidates), textual_candidate_matches=sum(evidence_matches(case, x) for x in candidates),
                 downloaded=len(downloaded), downloaded_with_literal_evidence=len(matches),
-                exact_success=None, review_status='human_review_required',
+                exact_success=None, review_status='independent_review_required',
                 note='Literal evidence is a review aid, not proof of exact identity or event depiction.',
                 pipeline_summary=manifest.get('summary', {}), fatal_error=manifest.get('fatal_error'),
                 media=[dict(key=x['key'], url=x['url'], path=x['path'],

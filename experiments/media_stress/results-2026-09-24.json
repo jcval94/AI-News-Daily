@@ -1,0 +1,2736 @@
+{
+  "date": "2026-09-24",
+  "scope": "12 frozen subjects × 2 processes, plus targeted reruns. Not a full new run on the final commit.",
+  "review_method": "Assistant review of source catalogue attribution and downloaded images / sampled video frames. No face recognition, human reviewer, ASR or complete factual audit of narration.",
+  "verified_file_hashes": 246,
+  "metrics": {
+    "images": {
+      "cases": 12,
+      "baseline_exact": 2,
+      "latest_tested_exact": 5
+    },
+    "videos": {
+      "cases": 12,
+      "baseline_exact": 3,
+      "latest_tested_exact": 3
+    }
+  },
+  "cases": [
+    {
+      "id": "khan-baba",
+      "label": "Khan Baba",
+      "description": "Khan Baba (Arbab Khizer Hayat), el pakistaní conocido como Pakistani Hulk.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790709466,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790709466",
+          "expires_at": "2026-10-01T04:59:48Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 19
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "blocked",
+              "error": "Provider denied access or rate limited (HTTP 403)"
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790709466,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790709466",
+          "expires_at": "2026-10-01T04:59:48Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 19
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "blocked",
+              "error": "Provider denied access or rate limited (HTTP 403)"
+            }
+          ]
+        },
+        "review_note": "Sin foto acreditada descargada."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791715368,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791715368",
+          "expires_at": "2026-10-01T04:59:29Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Khan Baba Arbab Khizer Hayat Pakistani Hulk",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Khan Baba Pakistani Hulk",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Khan Baba",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Arbab Khizer Hayat",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791715368,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791715368",
+          "expires_at": "2026-10-01T04:59:29Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Khan Baba Arbab Khizer Hayat Pakistani Hulk",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Khan Baba Pakistani Hulk",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Khan Baba",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Arbab Khizer Hayat",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "YouTube encontró videos específicos pero bloqueó la descarga; sin alternativa de Archive."
+      }
+    },
+    {
+      "id": "juliane-koepcke",
+      "label": "Juliane Koepcke",
+      "description": "Juliane Koepcke, superviviente del vuelo LANSA 508 en Perú en 1971.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790699681,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790699681",
+          "expires_at": "2026-10-01T05:00:45Z",
+          "media": [],
+          "fatal_error": "1 validation error for Plan\n  Value error, Both period boundaries are required together [type=value_error, input_value={'subject': 'Juliane Koep...ypes': ['person_photo']}, input_type=dict]\n    For further information visit [remote-url]",
+          "discovery": []
+        },
+        "latest_tested": {
+          "run_id": 35959033518,
+          "commit": "1917e1c5ca1738cbc9daa510dce710d1f1d8c7b0",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791831629,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35959033518/artifacts/10791831629",
+          "expires_at": "2026-10-01T05:14:48Z",
+          "media": [
+            {
+              "key": "commons:83903748",
+              "url": "https://commons.wikimedia.org/wiki/File:Ceremonia_de_condecoraci%C3%B3n_a_la_doctora_Juliane_Koepcke_-_46616983225_(cropped).jpg",
+              "path": "images/commons_83903748/source.jpg",
+              "title": "File:Ceremonia de condecoración a la doctora Juliane Koepcke - 46616983225 (cropped).jpg",
+              "metadata": {
+                "title": "File:Ceremonia de condecoración a la doctora Juliane Koepcke - 46616983225 (cropped).jpg",
+                "description": "El canciller Nestor Popolizio impuso la condecoración de la Orden al Mérito por Servicios Distinguidos, en el Grado de “Gran Oficial”, a la Dra. Juliane Koepcke, en reconocimiento a su labor científica y académica enfocada en la Amazonía peruana.",
+                "date": "2019-04-03 15:18:06",
+                "creator": "Cancillería del Perú",
+                "categories": "2019 in Peru|Juliane Koepcke|Extracted images|Photographs by the Peruvian Ministry of Foreign Affairs|Files uploaded by User:Discasto",
+                "license": "CC BY-SA 2.0",
+                "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+                "credit": " https://www.flickr.com/photos/50197436@N08/46616983225/ ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "JPEG",
+                "width": 1501,
+                "height": 2134,
+                "size_bytes": 1172071,
+                "sha256": "1b395b851a124cde7eb9f2981b6e86e9ff4bf56b56102672dd5f93c98d7550bc",
+                "pixel_sha256": "e0cdec7d5b4731d0a9f253111ebd94fec5f1a70982359487d5cda7c14c7ddfe7",
+                "dhash": "28646363c343c3e6",
+                "catalogue_family": "commons:ceremonia de condecoracion a la doctora juliane koepcke 46616983225"
+              },
+              "sha256": "1b395b851a124cde7eb9f2981b6e86e9ff4bf56b56102672dd5f93c98d7550bc",
+              "companions": null,
+              "assessment": {
+                "key": "c001",
+                "relevance": "direct",
+                "evidence_field": "description",
+                "evidence_quote": "a la Dra. Juliane Koepcke",
+                "depiction": "person_photo",
+                "reason": "La ficha identifica explícitamente a Juliane Koepcke como la persona retratada en una fotografía real de ceremonia."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 9
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Fallo inicial del plan por fechas incompletas; repetición con foto acreditada por Cancillería del Perú."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791142525,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791142525",
+          "expires_at": "2026-10-01T04:59:42Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "LANSA 508 crash Peru 1971",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "vuelo LANSA 508 Perú 1971",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "LANSA 508",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Peru 1971",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "youtube",
+              "query": "Juliane Koepcke LANSA 508",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Juliane Koepcke superviviente vuelo LANSA 508",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Juliane Koepcke",
+              "status": "ok",
+              "count": 1
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791142525,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791142525",
+          "expires_at": "2026-10-01T04:59:42Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "LANSA 508 crash Peru 1971",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "vuelo LANSA 508 Perú 1971",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "LANSA 508",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Peru 1971",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "youtube",
+              "query": "Juliane Koepcke LANSA 508",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Juliane Koepcke superviviente vuelo LANSA 508",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Juliane Koepcke",
+              "status": "ok",
+              "count": 1
+            }
+          ]
+        },
+        "review_note": "YouTube bloqueado; documental de Archive fuera del límite de duración."
+      }
+    },
+    {
+      "id": "tsutomu-yamaguchi",
+      "label": "Tsutomu Yamaguchi",
+      "description": "Tsutomu Yamaguchi, superviviente de Hiroshima y Nagasaki.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790762843,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790762843",
+          "expires_at": "2026-10-01T05:02:04Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 1
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790762843,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790762843",
+          "expires_at": "2026-10-01T05:02:04Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 1
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "El Domo de Hiroshima fue rechazado: no es una foto de Yamaguchi."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791187433,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791187433",
+          "expires_at": "2026-10-01T05:01:29Z",
+          "media": [
+            {
+              "key": "archive:111-adc-10038",
+              "url": "https://archive.org/details/111-adc-10038",
+              "path": "videos/archive_111-adc-10038/source.mp4",
+              "title": "HIROSHIMA AND NAGASAKI, JAPAN",
+              "metadata": {
+                "id": "111-adc-10038",
+                "title": "HIROSHIMA AND NAGASAKI, JAPAN",
+                "creator": "National Archives",
+                "file": "111-adc-10038.mp4",
+                "source_size_bytes": 128297792,
+                "license": "unknown",
+                "source_duration_seconds": 472.2
+              },
+              "media": {
+                "duration_seconds": 472.212,
+                "size_bytes": 14728387,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 540,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "fa58d0df44a5b137e39ff64ad52af8eb50cfe7b89b2602863a8efb45e98db952",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Hiroshima and Nagasaki atomic bomb survivor Tsutomu Yamaguchi",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "superviviente de Hiroshima y Nagasaki Tsutomu Yamaguchi",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Hiroshima and Nagasaki",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "archive",
+              "query": "atomic bombings",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "youtube",
+              "query": "Tsutomu Yamaguchi short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Tsutomu Yamaguchi sobreviviente Hiroshima Nagasaki",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Tsutomu Yamaguchi",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35958457226,
+          "commit": "f0e4d9ce9eb4926bdf5f9f0601143bbabf4db423",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791466178,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35958457226/artifacts/10791466178",
+          "expires_at": "2026-10-01T05:06:56Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Tsutomu Yamaguchi short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Tsutomu Yamaguchi superviviente",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Tsutomu Yamaguchi",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Yamaguchi",
+              "status": "ok",
+              "count": 30
+            }
+          ]
+        },
+        "review_note": "Falso positivo inicial: Hiroshima/Nagasaki general. Corregido; repetición rechaza el contexto, YouTube sigue bloqueado."
+      }
+    },
+    {
+      "id": "vesna-vulovic",
+      "label": "Vesna Vulović",
+      "description": "Vesna Vulović, azafata que sobrevivió al accidente del vuelo JAT 367 en 1972.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791395928,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791395928",
+          "expires_at": "2026-10-01T05:03:41Z",
+          "media": [
+            {
+              "key": "commons:163570097",
+              "url": "https://commons.wikimedia.org/wiki/File:Vesna_Vulovi%C4%87_(right)_during_her_visit_in_Czechoslovakia,_November_1972.png",
+              "path": "images/commons_163570097/source.png",
+              "title": "File:Vesna Vulović (right) during her visit in Czechoslovakia, November 1972.png",
+              "metadata": {
+                "title": "File:Vesna Vulović (right) during her visit in Czechoslovakia, November 1972.png",
+                "description": "Vesna Vulović (right) during her visit in Czechoslovakia, November 1972",
+                "date": "November 1972",
+                "creator": "Unknown author Unknown author ",
+                "categories": "1972 in Czechia|Template Unknown (author)|Vesna Vulović|PD Czechoslovakia anonymous|JAT Flight 367|Magazines of Czechoslovakia, 1972|Deletion requests April 2026",
+                "license": "Public domain",
+                "license_url": "",
+                "credit": "Naše rodina: zábavný týdeník Československé strany lidové. Praha: Lidová demokracie, 1972(47), p. 9. ISSN 0323-2743. Online:  https://ndk.cz/uuid/uuid:6ff09810-b893-11e5-82dc-5ef3fc9bb22f ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "PNG",
+                "width": 1216,
+                "height": 1855,
+                "size_bytes": 2654852,
+                "sha256": "b49e08da906176565889d9575f587f16a5ba533c6952f16ef1cc57eb7ec4be6a",
+                "pixel_sha256": "d3f4f2b159a545c3c7fefaf8f64d23ff1605bcc32bd61fbb91ccf2b8e1e32062",
+                "dhash": "ba9a9e8eae7e3f6e",
+                "catalogue_family": "commons:vesna vulovic right during her visit in czechoslovakia november 1972"
+              },
+              "sha256": "b49e08da906176565889d9575f587f16a5ba533c6952f16ef1cc57eb7ec4be6a",
+              "companions": null,
+              "assessment": {
+                "key": "c001",
+                "relevance": "direct",
+                "evidence_field": "description",
+                "evidence_quote": "Vesna Vulović (right) during her visit in Czechoslovakia, November 1972",
+                "depiction": "person_photo",
+                "reason": "La descripción identifica explícitamente a Vesna Vulović como una de las personas retratadas en la foto."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 5
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "failed",
+              "error": "The read operation timed out"
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791395928,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791395928",
+          "expires_at": "2026-10-01T05:03:41Z",
+          "media": [
+            {
+              "key": "commons:163570097",
+              "url": "https://commons.wikimedia.org/wiki/File:Vesna_Vulovi%C4%87_(right)_during_her_visit_in_Czechoslovakia,_November_1972.png",
+              "path": "images/commons_163570097/source.png",
+              "title": "File:Vesna Vulović (right) during her visit in Czechoslovakia, November 1972.png",
+              "metadata": {
+                "title": "File:Vesna Vulović (right) during her visit in Czechoslovakia, November 1972.png",
+                "description": "Vesna Vulović (right) during her visit in Czechoslovakia, November 1972",
+                "date": "November 1972",
+                "creator": "Unknown author Unknown author ",
+                "categories": "1972 in Czechia|Template Unknown (author)|Vesna Vulović|PD Czechoslovakia anonymous|JAT Flight 367|Magazines of Czechoslovakia, 1972|Deletion requests April 2026",
+                "license": "Public domain",
+                "license_url": "",
+                "credit": "Naše rodina: zábavný týdeník Československé strany lidové. Praha: Lidová demokracie, 1972(47), p. 9. ISSN 0323-2743. Online:  https://ndk.cz/uuid/uuid:6ff09810-b893-11e5-82dc-5ef3fc9bb22f ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "PNG",
+                "width": 1216,
+                "height": 1855,
+                "size_bytes": 2654852,
+                "sha256": "b49e08da906176565889d9575f587f16a5ba533c6952f16ef1cc57eb7ec4be6a",
+                "pixel_sha256": "d3f4f2b159a545c3c7fefaf8f64d23ff1605bcc32bd61fbb91ccf2b8e1e32062",
+                "dhash": "ba9a9e8eae7e3f6e",
+                "catalogue_family": "commons:vesna vulovic right during her visit in czechoslovakia november 1972"
+              },
+              "sha256": "b49e08da906176565889d9575f587f16a5ba533c6952f16ef1cc57eb7ec4be6a",
+              "companions": null,
+              "assessment": {
+                "key": "c001",
+                "relevance": "direct",
+                "evidence_field": "description",
+                "evidence_quote": "Vesna Vulović (right) during her visit in Czechoslovakia, November 1972",
+                "depiction": "person_photo",
+                "reason": "La descripción identifica explícitamente a Vesna Vulović como una de las personas retratadas en la foto."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 5
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "failed",
+              "error": "The read operation timed out"
+            }
+          ]
+        },
+        "review_note": "Foto identificada de su visita a Checoslovaquia en noviembre de 1972."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791745477,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791745477",
+          "expires_at": "2026-10-01T05:00:50Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "JAT 367 accident 1972",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "accidente vuelo JAT 367 1972",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "JAT Flight 367",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "air crash",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "youtube",
+              "query": "Vesna Vulović JAT 367",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Vesna Vulovic flight 367",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Vesna Vulović",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791745477,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791745477",
+          "expires_at": "2026-10-01T05:00:50Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "JAT 367 accident 1972",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "accidente vuelo JAT 367 1972",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "JAT Flight 367",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "air crash",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "youtube",
+              "query": "Vesna Vulović JAT 367",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Vesna Vulovic flight 367",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Vesna Vulović",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "YouTube bloqueado; sin alternativa exacta descargada."
+      }
+    },
+    {
+      "id": "vasili-arkhipov",
+      "label": "Vasili Arkhipov",
+      "description": "Vasili Arkhipov, oficial soviético del submarino B-59 durante la crisis de 1962.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791611351,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791611351",
+          "expires_at": "2026-10-01T05:06:15Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35959033518,
+          "commit": "1917e1c5ca1738cbc9daa510dce710d1f1d8c7b0",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791292125,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35959033518/artifacts/10791292125",
+          "expires_at": "2026-10-01T05:15:24Z",
+          "media": [
+            {
+              "key": "commons:132240693",
+              "url": "https://commons.wikimedia.org/wiki/File:Vasili_Arkhipov.jpg",
+              "path": "images/commons_132240693/source.jpg",
+              "title": "File:Vasili Arkhipov.jpg",
+              "metadata": {
+                "title": "File:Vasili Arkhipov.jpg",
+                "description": "Vasili Arkhipov was a Soviet Naval officer who prevented a Soviet nuclear torpedo launch during the Cuban Missile Crisis.",
+                "date": "2012-10-01",
+                "creator": "Image courtesy by Olga Arkhipova",
+                "categories": "Vasily Arkhipov|Images with extracted images",
+                "license": "CC BY-SA 4.0",
+                "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+                "credit": " https://www.learning-mind.com/vasili-arkhipov ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "JPEG",
+                "width": 840,
+                "height": 1024,
+                "size_bytes": 87105,
+                "sha256": "1e3228c61e062cbd7249a39fdcca55ca7c4ac712c968bc0e0298a220710d430a",
+                "pixel_sha256": "fe6c19364fe496540531797d5895e40c13880363f3ad8f14b1b22fc31ea47e28",
+                "dhash": "63665931ccdcdbc6",
+                "catalogue_family": null
+              },
+              "sha256": "1e3228c61e062cbd7249a39fdcca55ca7c4ac712c968bc0e0298a220710d430a",
+              "companions": null,
+              "assessment": {
+                "key": "c001",
+                "relevance": "direct",
+                "evidence_field": "title",
+                "evidence_quote": "File:Vasili Arkhipov.jpg",
+                "depiction": "person_photo",
+                "reason": "La ficha identifica explícitamente a la persona buscada en el título, y además la descripción la nombra como Vasili Arkhipov. Es una fotografía de esa persona."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 4
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 7
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Falló por nombre/consulta; repetición con retrato identificado en Commons."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791216478,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791216478",
+          "expires_at": "2026-10-01T05:01:56Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Cuban Missile Crisis Vasili Arkhipov",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "crisis de 1962 Vasili Arkhipov",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Cuban Missile Crisis",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "youtube",
+              "query": "Vasili Arkhipov B-59 short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Vasili Arkhipov submarino B-59",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Vasili Arkhipov",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "B-59",
+              "status": "ok",
+              "count": 7
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791216478,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791216478",
+          "expires_at": "2026-10-01T05:01:56Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Cuban Missile Crisis Vasili Arkhipov",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "crisis de 1962 Vasili Arkhipov",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Cuban Missile Crisis",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "youtube",
+              "query": "Vasili Arkhipov B-59 short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Vasili Arkhipov submarino B-59",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Vasili Arkhipov",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "B-59",
+              "status": "ok",
+              "count": 7
+            }
+          ]
+        },
+        "review_note": "YouTube bloqueado; sin alternativa exacta descargada."
+      }
+    },
+    {
+      "id": "stanislav-petrov",
+      "label": "Stanislav Petrov",
+      "description": "Stanislav Petrov, oficial soviético de la falsa alarma nuclear de 1983.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791387204,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791387204",
+          "expires_at": "2026-10-01T05:07:20Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 10
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 7
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791387204,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791387204",
+          "expires_at": "2026-10-01T05:07:20Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 10
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 7
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Fotos con transliteración alemana rechazadas; homónimos impidieron resolver entidad única."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791076920,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791076920",
+          "expires_at": "2026-10-01T05:02:22Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "1983 nuclear false alarm Stanislav Petrov",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "falsa alarma nuclear 1983 Stanislav Petrov",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "nuclear false alarm",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "1983",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "youtube",
+              "query": "Stanislav Petrov false alarm 1983 short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Stanislav Petrov alarma nuclear 1983",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Stanislav Petrov",
+              "status": "ok",
+              "count": 7
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35958724059,
+          "commit": "fbd38140000487e946056b276667a6f7ac6a0283",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791042798,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35958724059/artifacts/10791042798",
+          "expires_at": "2026-10-01T05:10:57Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "1983 nuclear false alarm",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "falsa alarma nuclear 1983",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "nuclear false alarm",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "1983",
+              "status": "ok",
+              "count": 30
+            },
+            {
+              "source": "youtube",
+              "query": "Stanislav Petrov short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Stanislav Petrov español",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Stanislav Petrov",
+              "status": "ok",
+              "count": 7
+            },
+            {
+              "source": "archive",
+              "query": "Станислав Петров",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "YouTube bloqueado también en la repetición."
+      }
+    },
+    {
+      "id": "toyota-war",
+      "label": "Guerra de los Toyota",
+      "description": "La Guerra de los Toyota de 1987 en Chad, entre Chad y Libia.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791616616,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791616616",
+          "expires_at": "2026-10-01T05:08:18Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "blocked",
+              "error": "Provider denied access or rate limited (HTTP 403)"
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791616616,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791616616",
+          "expires_at": "2026-10-01T05:08:18Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "blocked",
+              "error": "Provider denied access or rate limited (HTTP 403)"
+            }
+          ]
+        },
+        "review_note": "Sin coincidencia descargada con las consultas iniciales."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791471675,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791471675",
+          "expires_at": "2026-10-01T05:05:11Z",
+          "media": [
+            {
+              "key": "archive:the-toyota-war-animated-history",
+              "url": "https://archive.org/details/the-toyota-war-animated-history",
+              "path": "videos/archive_the-toyota-war-animated-history/source.mp4",
+              "title": "The Toyota War Animated History",
+              "metadata": {
+                "id": "the-toyota-war-animated-history",
+                "title": "The Toyota War Animated History",
+                "creator": "The Armchair Historian",
+                "file": "The-Toyota-War-Animated-History.mp4",
+                "source_size_bytes": 182326187,
+                "license": "unknown",
+                "source_duration_seconds": 937.784308
+              },
+              "media": {
+                "duration_seconds": 937.784,
+                "size_bytes": 36384784,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 840,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "b8bb5984056984b612f0de4f4ca7d92dab9415b9832b808960d8904b44e8e9bf",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Toyota War 1987 Chad Libya",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Guerra de los Toyota 1987 Chad Libia",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Toyota War",
+              "status": "ok",
+              "count": 1
+            },
+            {
+              "source": "archive",
+              "query": "Chad-Libya conflict",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791471675,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791471675",
+          "expires_at": "2026-10-01T05:05:11Z",
+          "media": [
+            {
+              "key": "archive:the-toyota-war-animated-history",
+              "url": "https://archive.org/details/the-toyota-war-animated-history",
+              "path": "videos/archive_the-toyota-war-animated-history/source.mp4",
+              "title": "The Toyota War Animated History",
+              "metadata": {
+                "id": "the-toyota-war-animated-history",
+                "title": "The Toyota War Animated History",
+                "creator": "The Armchair Historian",
+                "file": "The-Toyota-War-Animated-History.mp4",
+                "source_size_bytes": 182326187,
+                "license": "unknown",
+                "source_duration_seconds": 937.784308
+              },
+              "media": {
+                "duration_seconds": 937.784,
+                "size_bytes": 36384784,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 840,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "b8bb5984056984b612f0de4f4ca7d92dab9415b9832b808960d8904b44e8e9bf",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Toyota War 1987 Chad Libya",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Guerra de los Toyota 1987 Chad Libia",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Toyota War",
+              "status": "ok",
+              "count": 1
+            },
+            {
+              "source": "archive",
+              "query": "Chad-Libya conflict",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Documental animado dedicado a la Guerra de los Toyota: 15:38. Explicación moderna, no filmación original de 1987."
+      }
+    },
+    {
+      "id": "emu-war",
+      "label": "Guerra del Emú",
+      "description": "La Guerra del Emú de 1932 en Australia Occidental.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791466391,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791466391",
+          "expires_at": "2026-10-01T05:09:16Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 36028318300,
+          "commit": "27af255d8853f3871a75cd8165285bda7e697fb1",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10820328142,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/36028318300/artifacts/10820328142",
+          "expires_at": "2026-10-01T16:35:29Z",
+          "media": [
+            {
+              "key": "commons:57741581",
+              "url": "https://commons.wikimedia.org/wiki/File:Australian_soldiers_resting_during_Emu_War.jpg",
+              "path": "images/commons_57741581/source.jpg",
+              "title": "File:Australian soldiers resting during Emu War.jpg",
+              "metadata": {
+                "title": "File:Australian soldiers resting during Emu War.jpg",
+                "description": "Australian soldiers resting during the Emu War. Note the camera reflected in the water, ready to record.",
+                "date": "November – December 1932",
+                "creator": "Unknown author Unknown author ",
+                "categories": "Emu War|PD-Australia|Template Unknown (author)",
+                "license": "Public domain",
+                "license_url": "",
+                "credit": " Pickering Brook Heritage ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "JPEG",
+                "width": 900,
+                "height": 522,
+                "size_bytes": 200765,
+                "sha256": "01d7052668834422f2bee2fb029cba97e8e208a919534cc33b9aebd13a471904",
+                "pixel_sha256": "081b7816665f7e07531f7f77a173a27df0a2b6c348f1214758f5e576bd22f5a6",
+                "dhash": "f1715395697c7378",
+                "catalogue_family": "commons:australian soldiers resting during emu war"
+              },
+              "sha256": "01d7052668834422f2bee2fb029cba97e8e208a919534cc33b9aebd13a471904",
+              "companions": null,
+              "assessment": {
+                "key": "c002",
+                "relevance": "direct",
+                "evidence_field": "description",
+                "evidence_quote": "Australian soldiers resting during the Emu War.",
+                "depiction": "site_photo",
+                "reason": "La catalogación identifica explícitamente la Guerra del Emú de 1932; la imagen pertenece a ese evento."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 8
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Tras corregir consulta y clasificación del medio: soldados descansando durante la Guerra del Emú, noviembre-diciembre de 1932."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791480903,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791480903",
+          "expires_at": "2026-10-01T05:03:34Z",
+          "media": [
+            {
+              "key": "archive:TikTok-7625969863126879495",
+              "url": "https://archive.org/details/TikTok-7625969863126879495",
+              "path": "videos/archive_TikTok-7625969863126879495/source.mp4",
+              "title": "Emu war 1932#edit #map #war #fyp #australia",
+              "metadata": {
+                "id": "TikTok-7625969863126879495",
+                "title": "Emu war 1932#edit #map #war #fyp #australia ",
+                "creator": "barnanana0",
+                "file": "7625969863126879495.mp4",
+                "source_size_bytes": 1077754,
+                "license": "unknown",
+                "source_duration_seconds": 23.288005
+              },
+              "media": {
+                "duration_seconds": 23.291,
+                "size_bytes": 870984,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 692,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "598910e8acc84787d52caf97da3424683cdfc781f2d1d5791029fdb20856ff7a",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Emu War 1932 Western Australia",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Guerra del Emú 1932 Australia Occidental",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Emu War",
+              "status": "ok",
+              "count": 8
+            },
+            {
+              "source": "archive",
+              "query": "Western Australia",
+              "status": "ok",
+              "count": 30
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791480903,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791480903",
+          "expires_at": "2026-10-01T05:03:34Z",
+          "media": [
+            {
+              "key": "archive:TikTok-7625969863126879495",
+              "url": "https://archive.org/details/TikTok-7625969863126879495",
+              "path": "videos/archive_TikTok-7625969863126879495/source.mp4",
+              "title": "Emu war 1932#edit #map #war #fyp #australia",
+              "metadata": {
+                "id": "TikTok-7625969863126879495",
+                "title": "Emu war 1932#edit #map #war #fyp #australia ",
+                "creator": "barnanana0",
+                "file": "7625969863126879495.mp4",
+                "source_size_bytes": 1077754,
+                "license": "unknown",
+                "source_duration_seconds": 23.288005
+              },
+              "media": {
+                "duration_seconds": 23.291,
+                "size_bytes": 870984,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 692,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "598910e8acc84787d52caf97da3424683cdfc781f2d1d5791029fdb20856ff7a",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Emu War 1932 Western Australia",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "Guerra del Emú 1932 Australia Occidental",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Emu War",
+              "status": "ok",
+              "count": 8
+            },
+            {
+              "source": "archive",
+              "query": "Western Australia",
+              "status": "ok",
+              "count": 30
+            }
+          ]
+        },
+        "review_note": "Montaje temático con mapa y fechas de la Guerra del Emú: 23 s. Referente exacto; calidad editorial limitada, no filmación original."
+      }
+    },
+    {
+      "id": "lake-nyos",
+      "label": "Desastre del lago Nyos",
+      "description": "El desastre del lago Nyos de 1986 en Camerún, causado por la liberación de gas.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790813361,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790813361",
+          "expires_at": "2026-10-01T05:10:12Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10790813361,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10790813361",
+          "expires_at": "2026-10-01T05:10:12Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Sin coincidencia descargada con las consultas iniciales."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791790720,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791790720",
+          "expires_at": "2026-10-01T05:04:24Z",
+          "media": [
+            {
+              "key": "archive:SVS-2348",
+              "url": "https://archive.org/details/SVS-2348",
+              "path": "videos/archive_SVS-2348/source.mp4",
+              "title": "Lake Nyos Zoom-in",
+              "metadata": {
+                "id": "SVS-2348",
+                "title": "Lake Nyos Zoom-in",
+                "creator": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+                "file": "a002348_512kb.mp4",
+                "source_size_bytes": 969017,
+                "license": "unknown",
+                "source_duration_seconds": 13.013013
+              },
+              "media": {
+                "duration_seconds": 13.013,
+                "size_bytes": 363231,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 480,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "15cf748c45fd550429ed181badda6b470cd3ae810dee090359b62d1bd86b5efd",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Lake Nyos disaster 1986 Cameroon gas release",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "desastre del lago Nyos 1986 Camerún gas",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Lake Nyos",
+              "status": "ok",
+              "count": 4
+            },
+            {
+              "source": "archive",
+              "query": "limnic eruption",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791790720,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791790720",
+          "expires_at": "2026-10-01T05:04:24Z",
+          "media": [
+            {
+              "key": "archive:SVS-2348",
+              "url": "https://archive.org/details/SVS-2348",
+              "path": "videos/archive_SVS-2348/source.mp4",
+              "title": "Lake Nyos Zoom-in",
+              "metadata": {
+                "id": "SVS-2348",
+                "title": "Lake Nyos Zoom-in",
+                "creator": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+                "file": "a002348_512kb.mp4",
+                "source_size_bytes": 969017,
+                "license": "unknown",
+                "source_duration_seconds": 13.013013
+              },
+              "media": {
+                "duration_seconds": 13.013,
+                "size_bytes": 363231,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 480,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "15cf748c45fd550429ed181badda6b470cd3ae810dee090359b62d1bd86b5efd",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Lake Nyos disaster 1986 Cameroon gas release",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "desastre del lago Nyos 1986 Camerún gas",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Lake Nyos",
+              "status": "ok",
+              "count": 4
+            },
+            {
+              "source": "archive",
+              "query": "limnic eruption",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Falso positivo: zoom geográfico NASA de 13 s. No documenta ni explica el desastre."
+      }
+    },
+    {
+      "id": "molasses-flood",
+      "label": "Inundación de melaza",
+      "description": "La gran inundación de melaza de Boston del 15 de enero de 1919.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791213561,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791213561",
+          "expires_at": "2026-10-01T05:11:10Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791213561,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791213561",
+          "expires_at": "2026-10-01T05:11:10Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Sin coincidencia descargada en esta ejecución."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791746056,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791746056",
+          "expires_at": "2026-10-01T05:05:28Z",
+          "media": [
+            {
+              "key": "archive:TikTok-7280574985075215658",
+              "url": "https://archive.org/details/TikTok-7280574985075215658",
+              "path": "videos/archive_TikTok-7280574985075215658/source.mp4",
+              "title": "What would you do if you saw a 25ft high wave of molasses coming straight for you? Tragedy struck Boston’s North End neighborhood in 1919 when dozens died and hundreds were injured in the freak accident known as the Great Molasses Flood. #30morbidminutes #molasses #truecrime #historytok #weirdfacts #truecrimetiktok #truecrimepodcast #boston #morbidcuriosity #fyp #spookyseason",
+              "metadata": {
+                "id": "TikTok-7280574985075215658",
+                "title": "What would you do if you saw a 25ft high wave of molasses coming straight for you?  Tragedy struck Boston’s North End neighborhood in 1919 when dozens died and hundreds were injured in the freak accident known as the Great Molasses Flood.  #30morbidminutes #molasses #truecrime #historytok #weirdfacts #truecrimetiktok #truecrimepodcast #boston #morbidcuriosity #fyp #spookyseason ",
+                "creator": "30morbidminutes",
+                "file": "7280574985075215658.mp4",
+                "source_size_bytes": 8017705,
+                "license": "unknown",
+                "source_duration_seconds": 67.466667
+              },
+              "media": {
+                "duration_seconds": 67.467,
+                "size_bytes": 1397033,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 202,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "94eaf1a0c8e607c60f194641d0d30961174d5b08d0e885509be14d05535ec3b8",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Boston molasses flood 1919 short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "inundación de melaza de Boston 1919",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Boston molasses flood",
+              "status": "ok",
+              "count": 3
+            },
+            {
+              "source": "archive",
+              "query": "molasses flood",
+              "status": "ok",
+              "count": 18
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791746056,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791746056",
+          "expires_at": "2026-10-01T05:05:28Z",
+          "media": [
+            {
+              "key": "archive:TikTok-7280574985075215658",
+              "url": "https://archive.org/details/TikTok-7280574985075215658",
+              "path": "videos/archive_TikTok-7280574985075215658/source.mp4",
+              "title": "What would you do if you saw a 25ft high wave of molasses coming straight for you? Tragedy struck Boston’s North End neighborhood in 1919 when dozens died and hundreds were injured in the freak accident known as the Great Molasses Flood. #30morbidminutes #molasses #truecrime #historytok #weirdfacts #truecrimetiktok #truecrimepodcast #boston #morbidcuriosity #fyp #spookyseason",
+              "metadata": {
+                "id": "TikTok-7280574985075215658",
+                "title": "What would you do if you saw a 25ft high wave of molasses coming straight for you?  Tragedy struck Boston’s North End neighborhood in 1919 when dozens died and hundreds were injured in the freak accident known as the Great Molasses Flood.  #30morbidminutes #molasses #truecrime #historytok #weirdfacts #truecrimetiktok #truecrimepodcast #boston #morbidcuriosity #fyp #spookyseason ",
+                "creator": "30morbidminutes",
+                "file": "7280574985075215658.mp4",
+                "source_size_bytes": 8017705,
+                "license": "unknown",
+                "source_duration_seconds": 67.466667
+              },
+              "media": {
+                "duration_seconds": 67.467,
+                "size_bytes": 1397033,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 202,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "94eaf1a0c8e607c60f194641d0d30961174d5b08d0e885509be14d05535ec3b8",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Boston molasses flood 1919 short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "inundación de melaza de Boston 1919",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Boston molasses flood",
+              "status": "ok",
+              "count": 3
+            },
+            {
+              "source": "archive",
+              "query": "molasses flood",
+              "status": "ok",
+              "count": 18
+            }
+          ]
+        },
+        "review_note": "Video explicativo sobre la inundación de Boston de 1919: 67 s."
+      }
+    },
+    {
+      "id": "halifax-explosion",
+      "label": "Explosión de Halifax",
+      "description": "La explosión de Halifax del 6 de diciembre de 1917, por la colisión del Mont-Blanc.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791562253,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791562253",
+          "expires_at": "2026-10-01T05:12:13Z",
+          "media": [
+            {
+              "key": "commons:53036958",
+              "url": "https://commons.wikimedia.org/wiki/File:Smoke_cloud_from_the_Halifax_Explosion,_probably_taken_off_McNabs_Island_(15318272793).jpg",
+              "path": "images/commons_53036958/source.jpg",
+              "title": "File:Smoke cloud from the Halifax Explosion, probably taken off McNabs Island (15318272793).jpg",
+              "metadata": {
+                "title": "File:Smoke cloud from the Halifax Explosion, probably taken off McNabs Island (15318272793).jpg",
+                "description": "200200005 \n Date: 6 December 1917 \n \nReference no.: Halifax Relief Commission Nova Scotia Archives accession no. 1976-166 no. 106",
+                "date": "2013-06-24 13:14:45",
+                "creator": " Nova Scotia Archives ",
+                "categories": "Halifax Explosion|Photos uploaded from Flickr by Fæ using a script|Flickr images reviewed by FlickreviewR|Files from Flickr's 'The Commons'|Black and white photographs of Canada in the 1910s|1917 black and white photographs|Canada photographs taken on 1917-12-06|Photographs by Nova Scotia Archives|Flickr images missing SDC published in",
+                "license": "No restrictions",
+                "license_url": "https://www.flickr.com/commons/usage/",
+                "credit": " https://www.flickr.com/photos/nsarchives/15318272793/ ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "JPEG",
+                "width": 1920,
+                "height": 1149,
+                "size_bytes": 391789,
+                "sha256": "8fa0b05e1d0092e98fb1d5762a0ddcec490bbd405be153b1260f507bb2df7145",
+                "pixel_sha256": "a2ea913c639bbf36009d243111d8af0e8c0e89a5844d4fd8b43c52c718b8f91e",
+                "dhash": "73c7270d3d6f4f27",
+                "catalogue_family": "commons:smoke cloud from the halifax explosion probably taken off mcnabs island 15318272793"
+              },
+              "sha256": "8fa0b05e1d0092e98fb1d5762a0ddcec490bbd405be153b1260f507bb2df7145",
+              "companions": null,
+              "assessment": {
+                "key": "c002",
+                "relevance": "direct",
+                "evidence_field": "title",
+                "evidence_quote": "Smoke cloud from the Halifax Explosion",
+                "depiction": "site_photo",
+                "reason": "El título nombra de forma literal la Explosión de Halifax; la fecha también coincide con el 6 de diciembre de 1917."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": true,
+          "reviewer": "assistant",
+          "artifact_id": 10791562253,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791562253",
+          "expires_at": "2026-10-01T05:12:13Z",
+          "media": [
+            {
+              "key": "commons:53036958",
+              "url": "https://commons.wikimedia.org/wiki/File:Smoke_cloud_from_the_Halifax_Explosion,_probably_taken_off_McNabs_Island_(15318272793).jpg",
+              "path": "images/commons_53036958/source.jpg",
+              "title": "File:Smoke cloud from the Halifax Explosion, probably taken off McNabs Island (15318272793).jpg",
+              "metadata": {
+                "title": "File:Smoke cloud from the Halifax Explosion, probably taken off McNabs Island (15318272793).jpg",
+                "description": "200200005 \n Date: 6 December 1917 \n \nReference no.: Halifax Relief Commission Nova Scotia Archives accession no. 1976-166 no. 106",
+                "date": "2013-06-24 13:14:45",
+                "creator": " Nova Scotia Archives ",
+                "categories": "Halifax Explosion|Photos uploaded from Flickr by Fæ using a script|Flickr images reviewed by FlickreviewR|Files from Flickr's 'The Commons'|Black and white photographs of Canada in the 1910s|1917 black and white photographs|Canada photographs taken on 1917-12-06|Photographs by Nova Scotia Archives|Flickr images missing SDC published in",
+                "license": "No restrictions",
+                "license_url": "https://www.flickr.com/commons/usage/",
+                "credit": " https://www.flickr.com/photos/nsarchives/15318272793/ ",
+                "restrictions": ""
+              },
+              "media": {
+                "format": "JPEG",
+                "width": 1920,
+                "height": 1149,
+                "size_bytes": 391789,
+                "sha256": "8fa0b05e1d0092e98fb1d5762a0ddcec490bbd405be153b1260f507bb2df7145",
+                "pixel_sha256": "a2ea913c639bbf36009d243111d8af0e8c0e89a5844d4fd8b43c52c718b8f91e",
+                "dhash": "73c7270d3d6f4f27",
+                "catalogue_family": "commons:smoke cloud from the halifax explosion probably taken off mcnabs island 15318272793"
+              },
+              "sha256": "8fa0b05e1d0092e98fb1d5762a0ddcec490bbd405be153b1260f507bb2df7145",
+              "companions": null,
+              "assessment": {
+                "key": "c002",
+                "relevance": "direct",
+                "evidence_field": "title",
+                "evidence_quote": "Smoke cloud from the Halifax Explosion",
+                "depiction": "site_photo",
+                "reason": "El título nombra de forma literal la Explosión de Halifax; la fecha también coincide con el 6 de diciembre de 1917."
+              }
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Foto de la nube del 6-12-1917, acreditada por Nova Scotia Archives."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791183155,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791183155",
+          "expires_at": "2026-10-01T05:06:04Z",
+          "media": [],
+          "fatal_error": "Video count must cover every explicit event",
+          "discovery": []
+        },
+        "latest_tested": {
+          "run_id": 35958724059,
+          "commit": "fbd38140000487e946056b276667a6f7ac6a0283",
+          "pipeline_gate_passed": true,
+          "downloaded": 1,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791237227,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35958724059/artifacts/10791237227",
+          "expires_at": "2026-10-01T05:11:54Z",
+          "media": [
+            {
+              "key": "archive:60694-yesterdays-newsreel-airmail-history-begins-vwr",
+              "url": "https://archive.org/details/60694-yesterdays-newsreel-airmail-history-begins-vwr",
+              "path": "videos/archive_60694-yesterdays-newsreel-airmail-history-begins-vwr/source.mp4",
+              "title": "YESTERDAY'S NEWSREEL ACTORS STRIKE OF 1919 FIRST U.S. AIRMAIL HALIFAX EXPLOSION 60694",
+              "metadata": {
+                "id": "60694-yesterdays-newsreel-airmail-history-begins-vwr",
+                "title": "YESTERDAY'S NEWSREEL ACTORS STRIKE OF 1919   FIRST U.S. AIRMAIL   HALIFAX EXPLOSION 60694",
+                "creator": "PeriscopeFilm",
+                "file": "60694+Yesterdays+Newsreel+Airmail+History+Begins_vwr.mp4",
+                "source_size_bytes": 73400609,
+                "license": "unknown",
+                "source_duration_seconds": 763.469558
+              },
+              "media": {
+                "duration_seconds": 763.47,
+                "size_bytes": 34298024,
+                "container": "mov,mp4,m4a,3gp,3g2,mj2",
+                "width": 640,
+                "height": 360,
+                "video_codec": "h264",
+                "audio_codec": "aac"
+              },
+              "sha256": "ea054a15ddba20bf400e62c935aa98d402ea2f9c5fcb29f8418cb32e5363f1a2",
+              "companions": {
+                "transcript": {
+                  "status": "disabled",
+                  "method": null,
+                  "attempts": [],
+                  "reason": "Transcription disabled by input"
+                },
+                "most_replayed": {
+                  "status": "not_applicable",
+                  "provider": "youtube",
+                  "scope": "original_full_video",
+                  "unit": "relative_replay_intensity",
+                  "reason": "Archive does not expose YouTube Most Replayed data"
+                }
+              },
+              "assessment": null
+            }
+          ],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Halifax Explosion 1917 short video",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "youtube",
+              "query": "explosión de Halifax 1917 video corto",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Halifax Explosion",
+              "status": "ok",
+              "count": 11
+            },
+            {
+              "source": "archive",
+              "query": "Mont-Blanc",
+              "status": "ok",
+              "count": 30
+            }
+          ]
+        },
+        "review_note": "Plan inicial duplicó evento y colisión. La repetición descargó un noticiero de 763 s con segmento 07:12–08:39 pertinente. El archivo completo es una compilación de ocho temas y no cumple."
+      }
+    },
+    {
+      "id": "tanganyika-laughter",
+      "label": "Epidemia de risa de Tanganica",
+      "description": "La epidemia de risa de Tanganica de 1962, iniciada en Kashasha.",
+      "images": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10792010067,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10792010067",
+          "expires_at": "2026-10-01T05:13:08Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10792010067,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10792010067",
+          "expires_at": "2026-10-01T05:13:08Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "commons",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "met",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "artic",
+              "status": "ok",
+              "count": 20
+            },
+            {
+              "source": "loc",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "Sin documento visual del evento exacto descargado."
+      },
+      "videos": {
+        "baseline": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791910194,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791910194",
+          "expires_at": "2026-10-01T05:06:18Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Tanganyika laughter epidemic 1962 Kashasha short video",
+              "status": "ok",
+              "count": 11
+            },
+            {
+              "source": "youtube",
+              "query": "epidemia de risa de Tanganica 1962 Kashasha",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Tanganyika laughter epidemic",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Kashasha",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "latest_tested": {
+          "run_id": 35957914540,
+          "commit": "4865c2c6adab80069d8e5fb14ae50e9aa0ddfeb4",
+          "pipeline_gate_passed": false,
+          "downloaded": 0,
+          "exact_success": false,
+          "reviewer": "assistant",
+          "artifact_id": 10791910194,
+          "artifact_url": "https://github.com/jcval94/AI-News-Daily/actions/runs/35957914540/artifacts/10791910194",
+          "expires_at": "2026-10-01T05:06:18Z",
+          "media": [],
+          "fatal_error": null,
+          "discovery": [
+            {
+              "source": "youtube",
+              "query": "Tanganyika laughter epidemic 1962 Kashasha short video",
+              "status": "ok",
+              "count": 11
+            },
+            {
+              "source": "youtube",
+              "query": "epidemia de risa de Tanganica 1962 Kashasha",
+              "status": "ok",
+              "count": 15
+            },
+            {
+              "source": "archive",
+              "query": "Tanganyika laughter epidemic",
+              "status": "ok",
+              "count": 0
+            },
+            {
+              "source": "archive",
+              "query": "Kashasha",
+              "status": "ok",
+              "count": 0
+            }
+          ]
+        },
+        "review_note": "YouTube encontró candidatos; descarga bloqueada y sin alternativa descargada."
+      }
+    }
+  ]
+}
