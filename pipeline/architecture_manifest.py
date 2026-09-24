@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 
-ARCHITECTURE_VERSION = 7
+ARCHITECTURE_VERSION = 8
 
 LAYERS = [
     {
@@ -63,6 +63,7 @@ STAGES: list[dict[str, Any]] = [
     {"id": "media_plan", "kind": "service", "title": "Paquete multimedia denso post-aprobación", "summary": "Producción omite el planner sparse del runtime y, solo tras aprobar el guion, ejecuta la política densa de hasta 54 assets. Puede usar el agente multimedia o fallback determinista si no hay cuota.", "inputs": "script aprobado + secciones + timeline + budget", "outputs": "multimedia/plan.json + paquete denso", "authority": "GitHub Actions/Python; el agente solo propone cuando está disponible", "code": "review_media_dense_hardened.py · review_media_density.py", "trace_steps": []},
     {"id": "media_materialize", "kind": "service", "title": "Materialización y gate multimedia", "summary": "Descarga proveedores con retries acotados, admite fallback local y exige >=45 assets y >=5 en los primeros 20 s con el budget productivo por defecto.", "inputs": "plan denso + queries", "outputs": "assets + manifest + credits + zip", "authority": "Python/GitHub Actions", "code": "pipeline/media.py · pipeline/review_media_offline_dense.py · build-video-kit.yml", "trace_steps": []},
     {"id": "footage_discovery", "kind": "service", "title": "Discovery de real footage en YouTube", "summary": "Tras aprobar el guion busca videos vinculados con la evidencia planificada, rankea candidatos con metadata y conserva enlaces para revisión editorial. Nunca descarga contenido audiovisual de YouTube ni declara fair use automáticamente.", "inputs": "selected_news + episode_plan + YOUTUBE_API_KEY", "outputs": "isolated run multimedia/footage_candidates.json (30-day ephemeral)", "authority": "Python/GitHub Actions para discovery; derechos y uso requieren revisión humana", "code": "pipeline/footage.py · build-video-kit.yml", "trace_steps": []},
+    {"id": "editing_style", "kind": "deterministic", "title": "Gramática audiovisual versionada", "summary": "Aplica defaults por rol visual y lint de ritmo/transiciones/presencia en cámara. Empieza en modo observe para aprender de retención real antes de convertir preferencias estéticas en gates.", "inputs": "config/editing_style.yaml + timeline propuesto", "outputs": "editing_style fingerprint + style_warnings dentro de edit_manifest.json", "authority": "Python; política audiovisual, nunca autoridad factual", "code": "pipeline/editing_style.py · config/editing_style.yaml · docs/editing_style.md", "trace_steps": []},
     {"id": "edit_manifest", "kind": "deterministic", "title": "Contrato de edición pre-recording", "summary": "Convierte guion, secciones y multimedia en un timeline presenter-first con cues de director separados de la narración. Declara readiness explícito y nunca finge frame accuracy antes de grabar.", "inputs": "script.txt + script_sections.json + multimedia plan/manifest", "outputs": "multimedia/<date>/edit_manifest.json", "authority": "Python; señales de dirección son sugerencias y no pueden cambiar hechos ni narración", "code": "pipeline/edit_manifest.py · config/edit_manifest.schema.json", "trace_steps": []},
     {"id": "recording_pack", "kind": "deterministic", "title": "Recording Pack + teleprompter", "summary": "Parte el ensayo aprobado en takes grabables de ~20–60 s sin alterar la narración, añade claquetas estables y contexto de edición, y genera un teleprompter HTML autónomo.", "inputs": "script aprobado + script_sections + production_script + edit_manifest opcional", "outputs": "recording_pack.json + camera_script.md + teleprompter.html (standalone offline)", "authority": "Python; script.txt permanece autoridad editorial", "code": "pipeline/recording_pack.py · config/recording_pack.schema.json · build-video-kit.yml", "trace_steps": []},
     {"id": "report_promote", "kind": "deterministic", "title": "Estado, trazas, reporte y promoción", "summary": "Persiste evidencia del run y solo promueve si script, Production Script, Recording Pack, reporte y —cuando se pidió— multimedia densa terminaron correctamente.", "inputs": "artefactos + gate final + resultado multimedia + recording handoff", "outputs": "run_state + execution_trace + run_report + canon opcional", "authority": "Python/GitHub Actions", "code": "pipeline/report.py · build-video-kit.yml", "trace_steps": []},
@@ -86,7 +87,7 @@ DECISION_FLOW = [
     "¿Factualidad y voz pasaron pero queda otro gate? → secondary polish → rejudge",
     "¿Se agotó refinamiento? → script_not_approved",
     "¿Guion aprobado? → paquete multimedia denso + discovery de real footage en YouTube",
-    "Guion + multimedia → edit_manifest pre-recording con readiness explícito",
+    "Guion + multimedia → editing_style versionado → edit_manifest pre-recording + style_warnings",
     "Production Script → Recording Pack + camera script + teleprompter autónomo",
     "¿Multimedia solicitada no cumple su gate o falla el Recording Pack? → se preserva el run, no se promueve",
     "¿Script + Production Script + Recording Pack + report + media solicitada pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
@@ -100,6 +101,7 @@ DESIGN_DECISIONS = [
     ("Tres refiners con contextos distintos", "Aísla responsabilidades y evita oscilaciones entre reparar hechos y estilo."),
     ("Multimedia después del gate editorial", "No se gastan búsquedas/assets ni se deja que lo visual convierta un script rechazado en publicable."),
     ("Narración separada de dirección", "script.txt permanece limpio; edit_manifest y Recording Pack pueden orientar cámara/corte sin contaminar ni reescribir el ensayo aprobado."),
+    ("Estilo observable antes de gatearlo", "La gramática audiovisual empieza como defaults + lint. Sus umbrales numéricos solo deberían endurecerse después de comparar varios episodios publicados con retención real."),
     ("Takes estables antes de alinear", "La grabación se divide determinísticamente en bloques cortos con IDs/claquetas reutilizables para que el futuro ingest pueda identificar retakes sin depender de un agente."),
     ("Discovery separado de derechos", "YouTube se usa para encontrar y rankear candidatos; metadata, atribución o duración breve no se tratan como permiso de descarga, edición, publicación o fair use."),
     ("Producción es la fuente de verdad de Pages", "Review Hub observa el artifact que realmente salió de Build AI News Video Kit; Regression queda como QA independiente."),
