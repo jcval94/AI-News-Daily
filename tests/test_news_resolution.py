@@ -89,6 +89,27 @@ class NewsResolutionTests(unittest.TestCase):
             self._write(root, "captura-final.txt", "2026-09-23", "content-only")
             self.assertEqual(latest_source_date(root), date(2026, 9, 24))
 
+    def test_news_ids_are_opaque_and_stable_across_timestamped_filenames(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            first = self._write(
+                root,
+                "2026-09-23-08-00-00.txt",
+                "2026-09-23",
+                "same-story",
+            )
+            second = self._write(
+                root,
+                "2026-09-23-14-43-00.txt",
+                "2026-09-23",
+                "same-story",
+            )
+            first_id = parse_news_file(first)[0].news_id
+            second_id = parse_news_file(second)[0].news_id
+            self.assertRegex(first_id, r"^n_[0-9a-f]{16}$")
+            self.assertEqual(first_id, second_id)
+            self.assertNotIn("2026-09-23", first_id)
+
     def test_latest_timestamped_source_wins_over_legacy(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
