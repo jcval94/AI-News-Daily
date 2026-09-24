@@ -217,9 +217,10 @@ def _treatment(item: dict[str, Any], asset: dict[str, Any] | None) -> str:
     explicit = str(item.get("treatment", "") or "").strip()
     if explicit:
         return explicit
-    asset_type = str((asset or {}).get("asset_type", "") or "")
+    asset_type = str((asset or {}).get("asset_type", "") or "").strip()
+    preferred = str(item.get("preferred_asset_type", "") or "").strip()
     motion = str(item.get("motion_preference", "") or "normal")
-    if asset_type == "video":
+    if asset_type == "video" or (not asset_type and preferred == "video"):
         return "natural_motion"
     if motion == "high":
         return "slow_push_in"
@@ -413,6 +414,18 @@ def build_edit_manifest(
         last_mode = mode
 
     paths = source_paths or {}
+    media_items = [item for item in timeline if item["mode"] == "media"]
+    cue_status: dict[str, bool] = {}
+    cue_blockers: set[str] = set()
+    for item in media_items:
+        cue_id = str(item.get("cue_id", "") or "")
+        media = item.get("media") if isinstance(item.get("media"), dict) else {}
+        if cue_id:
+            cue_status[cue_id] = bool(media.get("usable_for_edit") is True)
+        for blocker in media.get("blockers", []) if isinstance(media, dict) else []:
+            if blocker:
+                cue_blockers.add(str(blocker))
+
     return {
         "schema_version": SCHEMA_VERSION,
         "episode_date": str(episode_date),
@@ -452,28 +465,25 @@ def build_edit_manifest(
                 "context, emotional grounding, analogy, contrast, or intentional rhythm."
             ),
         },
+        "readiness": {
+            "pre_recording_contract_valid": True,
+            "ready_for_recording": True,
+            "asset_resolution_complete": bool(cues) and all(cue_status.values()),
+            "ready_for_automated_timeline_import": False,
+            "blockers": sorted(
+                {"recording_retime_required", *cue_blockers}
+            ),
+        },
         "summary": {
             "segment_count": len(timeline),
             "media_segment_count": sum(1 for item in timeline if item["mode"] == "media"),
             "presenter_segment_count": sum(1 for item in timeline if item["mode"] == "presenter"),
             "media_cue_count": len(cues),
-            "downloaded_asset_count": len(
+            "manifest_asset_record_count": len(
                 [item for item in media_manifest if isinstance(item, dict)]
             ),
-            "usable_asset_count": sum(
-                1
-                for item in timeline
-                if item["mode"] == "media"
-                and isinstance(item.get("media"), dict)
-                and item["media"].get("usable_for_edit") is True
-            ),
-            "blocked_media_segment_count": sum(
-                1
-                for item in timeline
-                if item["mode"] == "media"
-                and isinstance(item.get("media"), dict)
-                and item["media"].get("usable_for_edit") is not True
-            ),
+            "resolved_media_cue_count": sum(1 for usable in cue_status.values() if usable),
+            "blocked_media_cue_count": sum(1 for usable in cue_status.values() if not usable),
         },
         "validation_warnings": warnings,
         "timeline": timeline,
