@@ -29,7 +29,13 @@ def load_editing_style(path: Path) -> dict[str, Any]:
         raise ValueError("editing_style.yaml must contain a mapping")
     validate_editing_style(data)
     payload = dict(data)
-    payload["_source_path"] = str(path)
+    parts = list(path.parts)
+    if "config" in parts:
+        config_index = len(parts) - 1 - parts[::-1].index("config")
+        source_path = Path(*parts[config_index:]).as_posix()
+    else:
+        source_path = path.name
+    payload["_source_path"] = source_path
     payload["_sha256"] = hashlib.sha256(raw.encode("utf-8")).hexdigest()
     return payload
 
