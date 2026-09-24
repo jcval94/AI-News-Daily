@@ -1,0 +1,131 @@
+name: Editorial Grid Search
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "experiments/editorial_grid_search/grid.json"
+      - "experiments/editorial_grid_search/folds.json"
+      - "experiments/editorial_grid_search/run.py"
+      - "experiments/editorial_grid_search/analyze.py"
+      - "experiments/editorial_grid_search/README.md"
+      - ".github/workflows/editorial-grid-search.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: matrix
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          payload = json.loads(Path("experiments/editorial_grid_search/grid.json").read_text())
+          ids = [row["id"] for row in payload["configurations"]]
+          if len(ids) < 20:
+              raise SystemExit("Grid must contain at least 20 configurations")
+          print("matrix=" + json.dumps({"config_id": ids}, separators=(",", ":")))
+          PY
+
+  run-grid:
+    needs: prepare
+    if: needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+      AGENT_MAX_ATTEMPTS: "3"
+      AGENT_RETRY_BASE_SECONDS: "2.0"
+      TARGET_MIN_SECONDS: "420"
+      TARGET_MAX_SECONDS: "1200"
+      WORDS_PER_SECOND: "2.5"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+
+      - name: Validate experiment contract
+        run: python -m experiments.editorial_grid_search.run --validate-only
+
+      - name: Run 3-fold configuration
+        run: |
+          python -m experiments.editorial_grid_search.run             --config-id "${{ matrix.config_id }}"             --output-root experiments/editorial_grid_search/results
+
+      - name: Upload configuration results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-grid-${{ matrix.config_id }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            experiments/editorial_grid_search/results/raw/${{ matrix.config_id }}
+            experiments/editorial_grid_search/results/scripts/${{ matrix.config_id }}
+
+  aggregate:
+    needs: [prepare, run-grid]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Clear prior generated cells
+        run: |
+          rm -rf experiments/editorial_grid_search/results/raw
+          rm -rf experiments/editorial_grid_search/results/scripts
+          mkdir -p experiments/editorial_grid_search/results
+
+      - name: Download all grid artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: editorial-grid-*
+          path: experiments/editorial_grid_search/results
+          merge-multiple: true
+
+      - name: Aggregate cross-validation results
+        run: |
+          python -m experiments.editorial_grid_search.analyze             --results-root experiments/editorial_grid_search/results
+
+      - name: Commit experiment results
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/editorial_grid_search/results
+          if git diff --cached --quiet; then
+            echo "No result changes to commit."
+            exit 0
+          fi
+          git commit -m "experiment: editorial grid-search results"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Require complete 20 x 3 grid
+        run: |
+          python -m experiments.editorial_grid_search.analyze             --results-root experiments/editorial_grid_search/results             --require-complete
