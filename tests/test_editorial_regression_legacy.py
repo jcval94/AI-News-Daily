@@ -23,6 +23,19 @@ class EditorialRegressionLegacyTests(unittest.TestCase):
             self.assertEqual(result["editorial_score"], 9.1)
             self.assertEqual(exit_code_for_result(result), 0)
 
+    def test_valid_editorial_noop_states_are_not_structural_failures(self) -> None:
+        for status in ("no_relevant_news", "no_novel_essay_angle"):
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as tmp:
+                episode = Path(tmp)
+                (episode / "run_state.json").write_text(
+                    json.dumps({"status": status}),
+                    encoding="utf-8",
+                )
+                result = evaluate_episode(episode)
+                self.assertFalse(result["legacy_contract"])
+                self.assertFalse(result["structural_pass"])
+                self.assertEqual(exit_code_for_result(result), 0)
+
     def test_current_runtime_failure_remains_blocking(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             episode = Path(tmp)

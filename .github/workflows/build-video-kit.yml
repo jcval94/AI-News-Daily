@@ -416,6 +416,8 @@ jobs:
         if: >-
           steps.episode_outcome.outputs.status == 'missing_openai_secret' ||
           steps.episode_outcome.outputs.status == 'no_source_news' ||
+          steps.episode_outcome.outputs.status == 'no_relevant_news' ||
+          steps.episode_outcome.outputs.status == 'no_novel_essay_angle' ||
           steps.episode_outcome.outputs.status == 'failure' ||
           steps.episode_outcome.outputs.status == 'script_not_approved' ||
           steps.dense_media.outcome == 'failure' ||

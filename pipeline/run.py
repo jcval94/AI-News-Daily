@@ -126,6 +126,7 @@ def materialize_selection(
             raise ValueError(f"Selector referenced duplicate news_id={news_id!r}")
         seen.add(news_id)
         record = catalog[news_id].model_dump()
+        record["selected_news_index"] = len(selected) + 1
         record["selection_reason"] = str(ref.get("selection_reason", "") or "").strip()
         selected.append(record)
     return {
@@ -743,29 +744,54 @@ async def build(
         episode_plan: dict[str, Any] | None = None
 
         for novelty_attempt in range(1, CONFIG.max_novelty_replans + 2):
-            director_state = await run_agent(
-                editorial_director_agent,
-                {
-                    "news_text": news_text,
-                    "selected_news": selected_json,
-                    "voice_profile": voice_profile,
-                    "discourse_profile": discourse_profile,
-                    "previous_essays": previous_essays_json,
-                    "narrative_memory": memory_candidates_json,
-                    "novelty_feedback": novelty_feedback,
-                },
-                (
-                    "Design a novel episode thesis, evidence strategy, narrative beats, and target duration. "
-                    "Do not repeat a recent essay merely with new headlines."
-                ),
-                step="plan_episode" if novelty_attempt == 1 else "replan_episode_novelty",
-                trace=agent_trace,
-                iteration=novelty_attempt,
-            )
-            candidate_plan = EpisodePlan.model_validate(
-                director_state.get("episode_plan", {})
-            ).model_dump()
-            validate_episode_plan(candidate_plan, len(selection["items"]))
+            selected_count = len(selection["items"])
+            candidate_plan: dict[str, Any] | None = None
+            contract_error = ""
+            for contract_attempt in range(1, 3):
+                repair_instruction = (
+                    ""
+                    if not contract_error
+                    else (
+                        " Your previous plan violated the deterministic evidence-reference contract: "
+                        f"{contract_error}. Rebuild the plan and copy only explicit selected_news_index "
+                        f"values from selected_news.items (valid range 1..{selected_count})."
+                    )
+                )
+                director_state = await run_agent(
+                    editorial_director_agent,
+                    {
+                        "news_text": news_text,
+                        "selected_news": selected_json,
+                        "selected_news_count": str(selected_count),
+                        "voice_profile": voice_profile,
+                        "discourse_profile": discourse_profile,
+                        "previous_essays": previous_essays_json,
+                        "narrative_memory": memory_candidates_json,
+                        "novelty_feedback": novelty_feedback,
+                    },
+                    (
+                        "Design a novel episode thesis, evidence strategy, narrative beats, and target duration. "
+                        f"There are exactly {selected_count} selected_news items; every selected_news_index "
+                        f"must be between 1 and {selected_count}. "
+                        "Do not repeat a recent essay merely with new headlines."
+                        + repair_instruction
+                    ),
+                    step="plan_episode" if novelty_attempt == 1 else "replan_episode_novelty",
+                    trace=agent_trace,
+                    iteration=novelty_attempt,
+                )
+                candidate_plan = EpisodePlan.model_validate(
+                    director_state.get("episode_plan", {})
+                ).model_dump()
+                try:
+                    validate_episode_plan(candidate_plan, selected_count)
+                    break
+                except ValueError as exc:
+                    contract_error = str(exc)
+                    if contract_attempt >= 2:
+                        raise
+            if candidate_plan is None:
+                raise RuntimeError("Editorial Director did not produce a contract-valid episode plan")
             resolve_selected_memory(candidate_plan, memory_candidates)
             candidate_topic = " ".join(
                 str(candidate_plan.get(key, "") or "")
