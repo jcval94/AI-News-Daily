@@ -42,7 +42,9 @@ on:
       - "pipeline/run_journey.py"
       - "pipeline/architecture_manifest.py"
       - "pipeline/repo_health.py"
+      - "pipeline/narrative_memory*.py"
       - "tests/test_repo_health.py"
+      - "tests/test_narrative_memory_dashboard.py"
       - "config/cost_rates.json"
       - "evals/editorial/**"
 
@@ -307,6 +309,7 @@ jobs:
           grep -q 'class="episode-sidebar"' pages-site/index.html
           grep -q 'id="episodeFrame"' pages-site/index.html
           grep -q 'id="repoHealthLink"' pages-site/index.html
+          grep -q 'id="memoryLink"' pages-site/index.html
           grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
 
       - name: Build repository health dashboard
@@ -323,6 +326,18 @@ jobs:
           test -s pages-site/health/repo-health.json
           grep -q 'data-health-page="repo-health"' pages-site/health/index.html
           grep -q '"status"' pages-site/health/repo-health.json
+
+      - name: Build Narrative Memory dashboard
+        run: |
+          set -euo pipefail
+          python -m pipeline.narrative_memory_dashboard \
+            --memory editorial/narrative_memory.jsonl \
+            --scripts-root scripts \
+            --output-dir pages-site/memory
+          test -s pages-site/memory/index.html
+          test -s pages-site/memory/narrative-memory.json
+          grep -q 'data-memory-page="narrative-memory"' pages-site/memory/index.html
+          grep -q '"approved_items"' pages-site/memory/narrative-memory.json
 
       - name: Upload lightweight Pages catalog snapshot
         uses: actions/upload-artifact@v4
@@ -365,16 +380,20 @@ jobs:
           ROOT_URL="${PAGE_URL%/}/"
           EPISODE_URL="${ROOT_URL}episodes/${TARGET_DATE}/"
           HEALTH_URL="${ROOT_URL}health/"
+          MEMORY_URL="${ROOT_URL}memory/"
           for attempt in 1 2 3 4 5 6; do
             if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/catalog.html \
               && grep -q 'class="episode-sidebar"' /tmp/catalog.html \
               && grep -q 'id="episodeFrame"' /tmp/catalog.html \
               && grep -q 'id="repoHealthLink"' /tmp/catalog.html \
+              && grep -q 'id="memoryLink"' /tmp/catalog.html \
               && curl -fsSL --max-time 20 "$EPISODE_URL" -o /tmp/episode.html \
               && grep -q 'id="globalSearch"' /tmp/episode.html \
               && grep -q 'data-tab="overview"' /tmp/episode.html \
               && curl -fsSL --max-time 20 "$HEALTH_URL" -o /tmp/health.html \
-              && grep -q 'data-health-page="repo-health"' /tmp/health.html; then
+              && grep -q 'data-health-page="repo-health"' /tmp/health.html \
+              && curl -fsSL --max-time 20 "$MEMORY_URL" -o /tmp/memory.html \
+              && grep -q 'data-memory-page="narrative-memory"' /tmp/memory.html; then
               echo "Pages smoke test passed: $ROOT_URL"
               exit 0
             fi
