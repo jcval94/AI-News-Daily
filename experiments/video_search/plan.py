@@ -5,6 +5,7 @@ import json
 import os
 import re
 import unicodedata
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -27,6 +28,7 @@ class IdentityConstraint(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     mention: str = Field(min_length=1, max_length=240)
     aliases: list[str] = Field(min_length=1, max_length=8)
+    kind: Literal["person", "event", "entity"] = "person"
 
 
 class SearchPlan(BaseModel):
@@ -72,7 +74,10 @@ must be a verbatim, contiguous span from the input. Do not invent events/compani
 for a broad theme. 'Investors did bad things' means financial misconduct as a research theme,
 not a factual finding. 'La caída de Enron' requires searches specifically about that collapse.
 If the main request is ONE particular named person or specific named event, set
-required_identity to that person's/event's literal mention plus distinctive full-name aliases
+required_identity to that person's/event's literal mention plus distinctive full-name aliases.
+Set its kind to person for people, event for historical events, entity otherwise. For events,
+aliases must include the distinctive event name and a distinguishing qualifier, not just geography.
+Provide aliases
 in useful languages. Never put a person's associated events, generic surname, occupation,
 place or historical period in their identity aliases. Tsutomu Yamaguchi aliases must identify
 Yamaguchi, never Hiroshima or Nagasaki. If the request is broad or multiple independent
@@ -110,6 +115,7 @@ def make_plan(description: str, mode: str, request_json) -> tuple[SearchPlan, di
     model = os.environ.get("VIDEO_SEARCH_MODEL") or os.environ.get("OPENAI_MODEL", "gpt-5.4-mini")
     schema = SearchPlan.model_json_schema()
     schema["required"] = list(schema["properties"])
+    schema["$defs"]["IdentityConstraint"]["required"] = list(schema["$defs"]["IdentityConstraint"]["properties"])
     response = request_json("https://api.openai.com/v1/responses", body={
         "model": model, "store": False, "instructions": INSTRUCTIONS,
         **({"reasoning": {"effort": "low"}} if model.startswith("gpt-5") else {}),
@@ -148,9 +154,32 @@ class Selections(BaseModel):
 def identity_matches(plan, candidate):
     if plan.required_identity is None:
         return True
-    return any(f" {normalize(alias)} " in f" {normalize(candidate.get(field, ''))} "
+    aliases = [plan.required_identity.mention, *plan.required_identity.aliases]
+    if any(f" {normalize(alias)} " in f" {normalize(candidate.get(field, ''))} "
                for alias in [plan.required_identity.mention, *plan.required_identity.aliases]
-               for field in ("title", "description"))
+               for field in ("title", "description")):
+        return True
+    # Event names can be expressed compositionally: "Lake Nyos in 1986 ...
+    # disaster" still names the event. Person names retain strict phrase matching.
+    # Require a grounded explicit event, its AND-group, and ALL alias words in
+    # one bounded source passage. Search queries/model reasons never count.
+    if plan.required_identity.kind != "event":
+        return False
+    event = next((e for e in plan.events if e.mention == plan.required_identity.mention), None)
+    if event is None:
+        return False
+    for field in ("title", "description"):
+        value = candidate.get(field, "")
+        if not matches(event, value):
+            continue
+        words = normalize(value).split()
+        for alias in aliases:
+            required = set(normalize(alias).split())
+            if len(required) < 3:
+                continue
+            if any(required.issubset(set(words[i:i + 80])) for i in range(len(words))):
+                return True
+    return False
 
 
 def assess_candidates(plan: SearchPlan, candidates: list[dict], request_json) -> dict:

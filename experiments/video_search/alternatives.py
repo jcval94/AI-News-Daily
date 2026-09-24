@@ -93,14 +93,19 @@ def direct_media(item):
             raise ValueError("PeerTube video is not the selected public recording")
         if d.get("downloadEnabled") is not True:
             raise ValueError("PeerTube owner has not enabled downloads")
-        # Progressive, muxed files only. Do not follow manifests, P2P or HLS.
-        files = [f for f in d.get("files", []) if str(f.get("fileUrl", "")).split("?")[0].endswith(".mp4")
+        # Progressive or self-contained fragmented MP4 with explicit audio.
+        # These are whole files, not playlists: never follow HLS manifests/P2P.
+        available = list(d.get("files", []))
+        available += [f for p in d.get("streamingPlaylists", []) for f in p.get("files", [])
+                      if f.get("hasAudio") is True]
+        files = [f for f in available if str(f.get("fileUrl", "")).split("?")[0].endswith(".mp4")
                  and 0 < int(f.get("size") or 0) <= 256 * 1024 * 1024
                  and f.get("hasAudio") is not False]
         if not files:
-            raise ValueError("No public progressive MP4 under 256 MiB; HLS/P2P is not downloaded")
+            raise ValueError("No public self-contained MP4 under 256 MiB; HLS/P2P is not downloaded")
         chosen = min(files, key=lambda f: (f.get("resolution", {}).get("id", 9999) > 360, int(f["size"])))
-        metadata.update(source_duration_seconds=d.get("duration"), source_size_bytes=chosen["size"])
+        metadata.update(source_duration_seconds=d.get("duration"), source_size_bytes=chosen["size"],
+                        source_has_audio=chosen.get("hasAudio"))
         return chosen["fileUrl"], metadata, None
     if source == "commons":
         d = api("https://commons.wikimedia.org/w/api.php", action="query", format="json", formatversion=2,

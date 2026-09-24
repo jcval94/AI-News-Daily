@@ -12,7 +12,7 @@ Transcripción desactivada; prioridad para videos cortos. No se generan imágene
 | Wikipedia/MediaWiki | Descubrir archivos de artículos en inglés y español, incluidos archivos locales | Pública, sin clave. La pertenencia al artículo no demuestra qué representa una foto. Se exige la ficha del archivo; P18 puede acreditar una transliteración. Las licencias se conservan. |
 | Openverse | Ampliar búsqueda de imágenes | API anónima, sin cuenta ni pago; una búsqueda/caso, 20 resultados. Solo descarga desde CDN/catálogos admitidos. 403/429 detiene el proveedor. La sonda local devolvió 403. |
 | Wikimedia Commons TimedMediaHandler | Videos con archivos originales/derivados públicos | API sin clave. Bytes limitados, copia local, comprobación con ffprobe/ffmpeg. |
-| Sepia Search + PeerTube | Descubrir videos en plataformas federadas | API pública sin clave; frases exactas para evitar el OR implícito. Se reconfirma público, no directo y `downloadEnabled=true`. Solo MP4 progresivo; HLS/P2P queda excluido. |
+| Sepia Search + PeerTube | Descubrir videos en plataformas federadas | API pública sin clave; frases exactas para evitar el OR implícito. Se reconfirma público, no directo y `downloadEnabled=true`. MP4 progresivo o archivo MP4 fragmentado completo con audio explícito; no se siguen listas HLS/P2P. |
 | NASA Image and Video Library | Videos científicos e históricos del catálogo | API pública sin clave; se prioriza el derivado pequeño. Una coincidencia geográfica no acredita un desastre. |
 
 Se mantienen YouTube, Internet Archive, Commons de imágenes, Met, AIC y LoC.
@@ -51,3 +51,5 @@ de cobertura universal. El plan/modelo puede variar aun con las mismas entradas.
 - https://search.joinpeertube.org/
 - https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf
 - https://developers.dailymotion.com/docs/generate-download-urls
+
+El tipo de identidad distingue personas de eventos: para personas se mantiene el nombre literal; para eventos se admite un alias compuesto dentro de 80 palabras de la fuente, con todos sus términos y una coincidencia del evento explícito. Esto evita rechazar «Lake Nyos in 1986 ... disaster» por no ser una frase contigua. La relevancia semántica y la revisión de exactitud siguen siendo necesarias.

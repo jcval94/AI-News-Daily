@@ -5,9 +5,33 @@ from unittest.mock import patch
 from experiments import public_media
 from experiments.image_search import alternatives as images, sources, run
 from experiments.video_search import alternatives as videos
+from experiments.video_search.plan import SearchPlan, identity_matches
 
 
 class AlternativeMediaTests(unittest.TestCase):
+    def test_event_alias_can_be_compositional_but_person_cannot(self):
+        topic = dict(mention='Lake Nyos disaster', queries=['Lake Nyos'], archive_terms=['Lake Nyos'],
+                     match_groups=[['Lake Nyos', '1986']])
+        plan = SearchPlan(theme=topic, events=[topic], required_identity=dict(
+            mention='Lake Nyos disaster', aliases=['Lake Nyos disaster'], kind='event'))
+        self.assertTrue(identity_matches(plan, {'description': 'What happened at Lake Nyos in 1986 was a rare disaster.'}))
+        self.assertFalse(identity_matches(plan, {'description': 'An aerial view of Lake Nyos in Cameroon.'}))
+        self.assertFalse(identity_matches(plan, {'description': 'Lake Nyos in 1986.', 'selection_reason': 'Lake Nyos disaster'}))
+        plan.required_identity.kind = 'person'
+        self.assertFalse(identity_matches(plan, {'description': 'What happened at Lake Nyos in 1986 was a rare disaster.'}))
+
+    def test_peertube_self_contained_fragmented_file_requires_audio(self):
+        item = dict(source='peertube', id='abc', url='https://tube.example/videos/watch/abc', title='Subject', creator='A', license='unknown')
+        file = dict(fileUrl='https://tube.example/video-fragmented.mp4', size=1234, resolution={'id':360}, hasAudio=True)
+        detail = dict(uuid='abc', privacy={'id':1}, isLive=False, downloadEnabled=True, duration=75,
+                      files=[], streamingPlaylists=[{'files':[file]}])
+        with patch.object(videos, 'api', return_value=detail):
+            self.assertEqual(videos.direct_media(item)[0], file['fileUrl'])
+        file['hasAudio'] = False
+        with patch.object(videos, 'api', return_value=detail):
+            with self.assertRaisesRegex(ValueError, 'self-contained'):
+                videos.direct_media(item)
+
     def test_federated_host_rejects_private_mixed_dns(self):
         rows = [(2, 1, 6, '', ('8.8.8.8', 443)), (2, 1, 6, '', ('127.0.0.1', 443))]
         with patch.object(public_media.socket, 'getaddrinfo', return_value=rows):

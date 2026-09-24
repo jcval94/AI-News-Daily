@@ -149,8 +149,13 @@ def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode=
                 raise ProviderBlocked(str(error)) from None
             # Probe/transcode local bytes only: remote media cannot introduce
             # arbitrary network reads through nested playlist manifests.
-            expected_duration = probe_media(local_source, runner=lambda argv, **kwargs: subprocess.run(
-                [argv[0], "-protocol_whitelist", "file,pipe", *argv[1:]], **kwargs))["duration_seconds"]
+            source_probe = probe_media(local_source, runner=lambda argv, **kwargs: subprocess.run(
+                [argv[0], "-protocol_whitelist", "file,pipe", *argv[1:]], **kwargs))
+            expected_duration = source_probe["duration_seconds"]
+            if stated and abs(expected_duration - float(stated)) > 3:
+                raise ValueError("Downloaded source duration differs from provider metadata")
+            if metadata.get("source_has_audio") is True and not source_probe["audio_codec"]:
+                raise ValueError("Downloaded source lacks the declared audio stream")
             if mode == "full" and not 0 < expected_duration <= MAX_DURATION:
                 raise ValueError("Public video exceeds 30-minute limit or has unknown duration")
             media_path = folder / "source.mp4"

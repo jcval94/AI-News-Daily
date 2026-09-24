@@ -1,21 +1,13 @@
 {
-  "request_id": "alternative-nasa-https-and-vesna-retry-2026-09-24",
+  "request_id": "alternative-nyos-compositional-identity-2026-09-24",
   "matrix": {
     "include": [
       {
-        "id": "vesna-alternatives-retry",
-        "description": "Vesna Vulović, azafata que sobrevivió al accidente del vuelo JAT 367 en 1972. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
+        "id": "lake-nyos-alternatives-retry",
+        "description": "El desastre del lago Nyos de 1986 en Camerún, causado por la liberación de gas. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
         "count": "1",
         "sources": "youtube,archive,commons,peertube,nasa",
         "mode": "full",
-        "transcript": "off"
-      },
-      {
-        "id": "nasa-connectivity-control",
-        "description": "Apollo",
-        "count": "1",
-        "sources": "nasa",
-        "mode": "clip",
         "transcript": "off"
       }
     ]
