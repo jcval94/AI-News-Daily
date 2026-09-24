@@ -101,6 +101,16 @@ def build_report(
 
     used_count = sum(1 for row in rows if row["times_used"] > 0)
     cooldown_count = sum(1 for row in rows if row["availability"] == "cooldown")
+    episode_usage_map: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        for episode in row.get("episodes_used", []):
+            episode_usage_map.setdefault(str(episode), []).append(
+                {"id": str(row["id"]), "title": str(row["title"])}
+            )
+    episode_usage = [
+        {"episode": episode, "parallels": parallels}
+        for episode, parallels in sorted(episode_usage_map.items(), reverse=True)
+    ]
     scheduled_count = source_kind_counts.get("scheduled_research", 0)
     latest_created = max(
         (_parse_date(row.get("created_at")) for row in rows),
@@ -148,6 +158,7 @@ def build_report(
             "invalid_or_quarantined_rows": len(issues),
             "latest_created_at": latest_created.isoformat() if latest_created else None,
             "primary_mechanism_concentration": concentration,
+            "average_quality_score": _avg([float(row["quality_score"]) for row in rows]),
             "averages": averages,
         },
         "mechanisms": [
@@ -159,6 +170,7 @@ def build_report(
             for name, count in domain_counts.most_common()
         ],
         "issues": issues,
+        "episode_usage": episode_usage,
         "items": rows,
     }
 
@@ -175,6 +187,7 @@ def memory_document(report: dict[str, Any]) -> str:
     items = report.get("items", []) if isinstance(report.get("items"), list) else []
     mechanisms = report.get("mechanisms", []) if isinstance(report.get("mechanisms"), list) else []
     issues = report.get("issues", []) if isinstance(report.get("issues"), list) else []
+    episode_usage = report.get("episode_usage", []) if isinstance(report.get("episode_usage"), list) else []
     averages = metrics.get("averages", {}) if isinstance(metrics.get("averages"), dict) else {}
 
     mechanism_options = "".join(
@@ -196,7 +209,6 @@ def memory_document(report: dict[str, Any]) -> str:
     )
 
     cards: list[str] = []
-    usage_rows: list[str] = []
     for item in items:
         if not isinstance(item, dict):
             continue
@@ -256,16 +268,15 @@ def memory_document(report: dict[str, Any]) -> str:
             '</details>'
             '</article>'
         )
-        if int(item.get("times_used", 0) or 0) > 0:
-            episodes = ", ".join(str(value) for value in item.get("episodes_used", []))
-            usage_rows.append(
-                '<tr data-search-item>'
-                f'<td>{_esc(item.get("title"))}</td>'
-                f'<td>{_esc(item.get("times_used"))}</td>'
-                f'<td>{_esc(item.get("last_used_at"))}</td>'
-                f'<td>{_esc(episodes)}</td>'
-                '</tr>'
-            )
+    episode_rows = "".join(
+        '<tr data-search-item>'
+        f'<td>{_esc(entry.get("episode"))}</td>'
+        f'<td>{_esc(" · ".join(str(item.get("title") or item.get("id")) for item in entry.get("parallels", [])))}</td>'
+        f'<td>{_esc(len(entry.get("parallels", [])))}</td>'
+        '</tr>'
+        for entry in episode_usage
+        if isinstance(entry, dict)
+    )
 
     issues_block = (
         '<div class="warning"><strong>Filas fuera del contrato</strong><ul>'
@@ -309,7 +320,7 @@ table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:lef
 <div class="kpi"><span>En cooldown</span><b>{_esc(metrics.get("cooldown_items"))}</b><small>anti-repetición</small></div>
 <div class="kpi"><span>Usados</span><b>{_esc(metrics.get("used_items"))}</b><small>en episodios aprobados</small></div>
 <div class="kpi"><span>Mecanismos</span><b>{_esc(metrics.get("unique_mechanisms"))}</b><small>estructuras distintas</small></div>
-<div class="kpi"><span>Calidad media</span><b>{_score(averages.get("source_quality_score"))}</b><small>fuentes / 10</small></div>
+<div class="kpi"><span>Calidad media</span><b>{_score(metrics.get("average_quality_score"))}</b><small>score compuesto / 10</small></div>
 </section>
 <div class="toolbar">
 <input id="memorySearch" type="search" placeholder="Buscar caso, dominio o mecanismo…" aria-label="Buscar Narrative Memory">
@@ -320,7 +331,7 @@ table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:lef
 <div id="emptyMemory" class="empty" hidden>No hay casos que coincidan con los filtros.</div>
 <section class="section-grid">
 <div class="panel"><span class="eyebrow">Cobertura</span><h2>Mecanismos narrativos</h2>{mechanism_cards or '<p class="empty">Sin mecanismos disponibles.</p>'}<p class="footer-note">Concentración del mecanismo más frecuente: {_esc(metrics.get("primary_mechanism_concentration"))}. Un valor alto puede indicar que la biblioteca está acumulando variaciones de la misma idea.</p></div>
-<div class="panel"><span class="eyebrow">Uso real</span><h2>Paralelos que llegaron a episodios aprobados</h2><table><thead><tr><th>Caso</th><th>Usos</th><th>Último uso</th><th>Episodios</th></tr></thead><tbody>{"".join(usage_rows) if usage_rows else '<tr><td colspan="4" class="empty">Aún no hay usos aprobados registrados.</td></tr>'}</tbody></table></div>
+<div class="panel"><span class="eyebrow">Uso real</span><h2>Qué paralelos utilizó cada episodio</h2><table><thead><tr><th>Episodio</th><th>Paralelos</th><th>Total</th></tr></thead><tbody>{episode_rows if episode_rows else '<tr><td colspan="3" class="empty">Aún no hay usos aprobados registrados.</td></tr>'}</tbody></table></div>
 </section>
 {issues_block}
 <p class="footer-note">La biblioteca es contexto verificado, no autoridad editorial. El Director puede elegir 0–2 casos recuperados y el Writer recibe solo esos registros. Un episodio rechazado no cuenta como uso.</p>
