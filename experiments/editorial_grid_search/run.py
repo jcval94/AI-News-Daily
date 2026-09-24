@@ -264,9 +264,9 @@ Return only structured ExperimentEvaluation.
 def make_agents() -> tuple[Agent, Agent, Agent]:
     chosen_model = model()
     return (
-        Agent(name="experimental_editorial_director", model=chosen_model, instruction=DIRECTOR_INSTRUCTION, output_schema=ExperimentalPlan, output_key="experiment_plan"),
-        Agent(name="experimental_essay_writer", model=chosen_model, instruction=WRITER_INSTRUCTION, output_key="draft_script"),
-        Agent(name="experimental_blinded_evaluator", model=chosen_model, instruction=EVALUATOR_INSTRUCTION, output_schema=ExperimentEvaluation, output_key="experiment_evaluation"),
+        Agent(name="experimental_editorial_director", model=chosen_model, description="Treatment-aware plan generator for editorial CV.", instruction=DIRECTOR_INSTRUCTION, output_schema=ExperimentalPlan, output_key="experiment_plan"),
+        Agent(name="experimental_essay_writer", model=chosen_model, description="Treatment-aware first-pass essay writer for editorial CV.", instruction=WRITER_INSTRUCTION, output_key="draft_script"),
+        Agent(name="experimental_blinded_evaluator", model=chosen_model, description="Blind evaluator for editorial grid-search outputs.", instruction=EVALUATOR_INSTRUCTION, output_schema=ExperimentEvaluation, output_key="experiment_evaluation"),
     )
 
 
