@@ -96,7 +96,9 @@ def api(base, **params):
 def resolve_entity(plan):
     base = "https://www.wikidata.org/w/api.php"
     results = api(base, action="wbsearchentities", search=plan.subject, language="en", limit=7, format="json")
-    exact = [r for r in results.get("search", []) if normalize(r.get("label")) == normalize(plan.subject)]
+    exact = [r for r in results.get("search", [])
+             if any(normalize(name) == normalize(plan.subject)
+                    for name in [r.get("label", ""), *r.get("aliases", []), r.get("match", {}).get("text", "")])]
     exact = [r for r in exact if re.fullmatch(r"Q\d+", r.get("id", ""))]
     if not exact:
         return {"status": "unresolved", "reason": "No unique exact canonical entity label"}

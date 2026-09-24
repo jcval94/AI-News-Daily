@@ -20,6 +20,31 @@ class MediaStressTests(unittest.TestCase):
         self.assertEqual(result['downloaded'],0)
         self.assertIsNone(result['exact_success'])
 
+    def test_one_video_can_cover_multiple_event_mentions(self):
+        from experiments.video_search import run, providers
+        import tempfile
+        from pathlib import Path
+        row=providers.candidate('youtube','12345678901','Halifax Explosion and ship collision','','A','unknown','q')
+        row.update(status='downloaded',metadata={},events=['Halifax explosion','Mont-Blanc collision'])
+        manifest={'config':{'count':1,'mode':'full','sources':['youtube']},
+                  'plan':{'events':[{'mention':e} for e in row['events']]},'items':[row]}
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertTrue(run.write_report(Path(directory),manifest))
+        self.assertEqual(manifest['summary']['missing_events'],[])
+
+    def test_catalogue_alias_can_resolve_person_without_guessing(self):
+        from experiments.image_search import sources
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        search={'search':[{'id':'Q1395757','label':'Vasili Arkhipov',
+                           'match':{'type':'alias','text':'Vasili Alexandrovich Arkhipov'}}]}
+        entities={'entities':{'Q1395757':{'claims':{'P31':[{'mainsnak':{'datavalue':{'value':{'id':'Q5'}}}}],
+                                                          'P18':[{'mainsnak':{'datavalue':{'value':'Portrait.jpg'}}}]}}}}
+        with patch.object(sources,'api',side_effect=[search,entities]):
+            result=sources.resolve_entity(SimpleNamespace(subject='Vasili Alexandrovich Arkhipov',kind='person'))
+        self.assertEqual(result['status'],'resolved')
+        self.assertEqual(result['id'],'Q1395757')
+
     def test_person_cannot_be_replaced_by_associated_event(self):
         from experiments.video_search.plan import IdentityConstraint, identity_matches
         from types import SimpleNamespace

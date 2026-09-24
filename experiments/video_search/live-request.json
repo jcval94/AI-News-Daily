@@ -1,10 +1,18 @@
 {
-  "request_id": "stress-identity-fix-2026-09-24-2",
+  "request_id": "stress-specific-events-fix-2026-09-24-1",
   "matrix": {
     "include": [
       {
-        "id": "tsutomu-yamaguchi-fixed",
-        "description": "Tsutomu Yamaguchi, superviviente de Hiroshima y Nagasaki. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
+        "id": "stanislav-petrov-fixed",
+        "description": "Stanislav Petrov, oficial soviético de la falsa alarma nuclear de 1983. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
+        "count": "1",
+        "sources": "youtube,archive",
+        "mode": "full",
+        "transcript": "off"
+      },
+      {
+        "id": "halifax-explosion-fixed",
+        "description": "La explosión de Halifax del 6 de diciembre de 1917, por la colisión del Mont-Blanc. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
         "count": "1",
         "sources": "youtube,archive",
         "mode": "full",
