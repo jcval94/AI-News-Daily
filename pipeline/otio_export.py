@@ -78,6 +78,7 @@ def _media_reference(
 ) -> otio.schema.MediaReference:
     source = clip.get("source", {}) if isinstance(clip.get("source"), dict) else {}
     media_file = str(source.get("media_file", "") or "").strip()
+    logical_media_path = str(source.get("logical_media_path", "") or "").strip()
     common_metadata = {
         _METADATA_NS: {
             "clip_id": str(clip.get("clip_id", "") or ""),
@@ -88,7 +89,7 @@ def _media_reference(
         }
     }
     if media_file:
-        target = media_file.replace("\\", "/")
+        target = (logical_media_path or media_file).replace("\\", "/")
         return otio.schema.ExternalReference(
             target_url=target,
             metadata=common_metadata,
