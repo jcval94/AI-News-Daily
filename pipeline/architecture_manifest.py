@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 
-ARCHITECTURE_VERSION = 4
+ARCHITECTURE_VERSION = 5
 
 LAYERS = [
     {
@@ -64,7 +64,8 @@ STAGES: list[dict[str, Any]] = [
     {"id": "media_materialize", "kind": "service", "title": "Materialización y gate multimedia", "summary": "Descarga proveedores con retries acotados, admite fallback local y exige >=45 assets y >=5 en los primeros 20 s con el budget productivo por defecto.", "inputs": "plan denso + queries", "outputs": "assets + manifest + credits + zip", "authority": "Python/GitHub Actions", "code": "pipeline/media.py · pipeline/review_media_offline_dense.py · build-video-kit.yml", "trace_steps": []},
     {"id": "footage_discovery", "kind": "service", "title": "Discovery de real footage en YouTube", "summary": "Tras aprobar el guion busca videos vinculados con la evidencia planificada, rankea candidatos con metadata y conserva enlaces para revisión editorial. Nunca descarga contenido audiovisual de YouTube ni declara fair use automáticamente.", "inputs": "selected_news + episode_plan + YOUTUBE_API_KEY", "outputs": "isolated run multimedia/footage_candidates.json (30-day ephemeral)", "authority": "Python/GitHub Actions para discovery; derechos y uso requieren revisión humana", "code": "pipeline/footage.py · build-video-kit.yml", "trace_steps": []},
     {"id": "report_promote", "kind": "deterministic", "title": "Estado, trazas, reporte y promoción", "summary": "Persiste evidencia del run y solo promueve si script, reporte y —cuando se pidió— multimedia densa terminaron correctamente.", "inputs": "artefactos + gate final + resultado multimedia", "outputs": "run_state + execution_trace + run_report + canon opcional", "authority": "Python/GitHub Actions", "code": "pipeline/report.py · build-video-kit.yml", "trace_steps": []},
-    {"id": "pages", "kind": "pages", "title": "Artifact productivo → Review Hub → GitHub Pages", "summary": "Pages consume el ai-news-run real como fuente canónica. Editorial Regression queda como lane separada de QA; Review Hub reutiliza multimedia productiva válida y solo reconstruye artifacts legacy/sparse.", "inputs": "ai-news-run-* + pricing + historia de Review Hub", "outputs": "review-site + cost_snapshot + pages-site", "authority": "Workflows deterministas", "code": "editorial-review-hub.yml · editorial-regression.yml", "trace_steps": []},
+    {"id": "narrative_memory_observability", "kind": "deterministic", "title": "Observabilidad de Narrative Memory", "summary": "Pages cruza biblioteca verificada con episodios aprobados para mostrar cobertura, calidad, uso real, disponibilidad y cooldown sin nuevas llamadas de modelo.", "inputs": "editorial/narrative_memory.jsonl + scripts/ aprobados", "outputs": "pages-site/memory/index.html + narrative-memory.json", "authority": "Python determinista", "code": "pipeline/narrative_memory_dashboard.py · editorial-review-hub.yml", "trace_steps": []},
+    {"id": "pages", "kind": "pages", "title": "Artifact productivo → Review Hub → GitHub Pages", "summary": "Pages consume el ai-news-run real como fuente canónica. Editorial Regression queda como lane separada de QA; Review Hub reutiliza multimedia productiva válida y solo reconstruye artifacts legacy/sparse.", "inputs": "ai-news-run-* + pricing + historia de Review Hub", "outputs": "review-site + cost_snapshot + pages-site + health + Narrative Memory", "authority": "Workflows deterministas", "code": "editorial-review-hub.yml · editorial-regression.yml", "trace_steps": []},
 ]
 
 REFINEMENT_PHASES = [
