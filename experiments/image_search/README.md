@@ -10,6 +10,8 @@ experimento de videos, con workflow, dependencias y artefactos propios.
 | Fuente | Uso principal | Evidencia y derechos |
 |---|---|---|
 | Wikimedia Commons + Wikidata | Personas, lugares, acontecimientos, mapas y fotografías | Nombre canónico, imagen P18 cuando se resuelve una entidad, títulos y descripciones; licencia por archivo |
+| Wikipedia → archivos | Imágenes de artículos en inglés/español, incluidas imágenes locales | Descubrimiento adicional; pertenecer a un artículo no acredita la representación. Se conservan ficha, licencia y restricciones del archivo |
+| Openverse | Imágenes de catálogos y Flickr | API anónima, sin claves pagadas; títulos/metadatos, atribución y licencia. Descargas limitadas a los dominios admitidos |
 | Metropolitan Museum of Art | Objetos, arte e historia material | Cultura, periodo, fechas de creación y ficha del objeto; solo `isPublicDomain=true` con imagen disponible |
 | Art Institute of Chicago | Arte y objetos históricos | Periodo, origen, descripción y fechas; solo `is_public_domain=true`; imágenes IIIF |
 | Library of Congress | Fotografías y documentos históricos | Título, descripción y materias del catálogo; derechos propios de cada ficha |
@@ -24,7 +26,8 @@ catálogos. El Met usa `/v1.1/search`, el endpoint paginado anunciado en septiem
 1. Un plan tipado conserva el tema completo, interpreta errores ortográficos obvios
    y expresa nombre canónico, contexto, periodo y tipos de imagen. Si la petición
    es ambigua, falla con una explicación; no escoge arbitrariamente un significado.
-2. Consulta hasta 20 candidatos por fuente. Wikidata puede aportar una entidad exacta
+2. Consulta hasta 20 candidatos por fuente (Wikipedia: 24); el conjunto semántico
+   queda limitado a 80 y reserva espacio a cada fuente. Wikidata puede aportar una entidad exacta
    y su imagen declarada; si no puede resolverse, queda registrado y se exige evidencia
    explícita en las fichas. Los candidatos nunca salen de una URL inventada por el modelo.
 3. Un evaluador semántico propone coincidencias directas, incertidumbre o rechazo a

@@ -41,9 +41,10 @@ class AlternativeMediaTests(unittest.TestCase):
         item = dict(source='nasa', id='abc', title='Subject', creator='NASA', license='consult source')
         with patch.object(videos, 'api', return_value={'collection': {'items': [
                 {'href': 'https://images-assets.nasa.gov/abc~orig.mp4'},
-                {'href': 'https://images-assets.nasa.gov/abc~small.mp4'}]}}):
+                {'href': 'http://images-assets.nasa.gov/abc~small.mp4'}]}}):
             url, _, hosts = videos.direct_media(item)
         self.assertTrue(url.endswith('~small.mp4'))
+        self.assertTrue(url.startswith('https://'))
         with self.assertRaises(ValueError):
             public_media.validate_url('https://unrelated.example/a.mp4', hosts)
 

@@ -117,7 +117,13 @@ def direct_media(item):
         if not files:
             raise ValueError("NASA record has no MP4")
         files.sort(key=lambda u: ("~small.mp4" not in u, "~medium.mp4" not in u, u))
-        return files[0], metadata, ("images-assets.nasa.gov",)
+        url = files[0]
+        # NASA's asset manifest still emits http URLs for its HTTPS CDN.
+        # Upgrade only the known official host, never an arbitrary manifest URL.
+        if urlsplit(url).scheme == "http" and urlsplit(url).hostname == "images-assets.nasa.gov":
+            url = "https:" + url[5:]
+        public_media.validate_url(url, ("images-assets.nasa.gov",))
+        return url, metadata, ("images-assets.nasa.gov",)
     raise ValueError("Unknown direct video provider")
 
 

@@ -1,21 +1,21 @@
 {
-  "request_id": "stress-specific-events-fix-2026-09-24-1",
+  "request_id": "alternative-nasa-https-and-vesna-retry-2026-09-24",
   "matrix": {
     "include": [
       {
-        "id": "stanislav-petrov-fixed",
-        "description": "Stanislav Petrov, oficial soviético de la falsa alarma nuclear de 1983. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
+        "id": "vesna-alternatives-retry",
+        "description": "Vesna Vulović, azafata que sobrevivió al accidente del vuelo JAT 367 en 1972. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
         "count": "1",
-        "sources": "youtube,archive",
+        "sources": "youtube,archive,commons,peertube,nasa",
         "mode": "full",
         "transcript": "off"
       },
       {
-        "id": "halifax-explosion-fixed",
-        "description": "La explosión de Halifax del 6 de diciembre de 1917, por la colisión del Mont-Blanc. Busca un video corto dedicado específicamente a este referente; no menciones incidentales ni compilaciones generales.",
+        "id": "nasa-connectivity-control",
+        "description": "Apollo",
         "count": "1",
-        "sources": "youtube,archive",
-        "mode": "full",
+        "sources": "nasa",
+        "mode": "clip",
         "transcript": "off"
       }
     ]

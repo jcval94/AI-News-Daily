@@ -12,7 +12,9 @@ Workflow: **Experiment — Description to video artifacts**.
 - `description`: tema libre, en español u otro idioma. Incluye los eventos concretos
   que quieres cubrir, por ejemplo: «malas prácticas financieras y la caída de Enron».
 - `count`: de 1 a 25 videos, diez por defecto.
-- `sources`: `youtube` por defecto; `archive` o `youtube,archive` son opciones explícitas.
+- `sources`: lista separada por comas; por defecto `youtube,archive,commons,peertube,nasa`.
+  Puedes limitarla a cualquier subconjunto. Las nuevas APIs públicas no requieren
+  claves pagadas; sus controles y límites están en [ALTERNATIVES.md](../media_stress/ALTERNATIVES.md).
 - `mode`: `full` descarga el video completo dentro del presupuesto; `clip` conserva
   los primeros 15 segundos como prueba de acceso. No busca automáticamente el mejor
   instante dentro del video.
