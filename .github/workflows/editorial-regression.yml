@@ -152,6 +152,73 @@ jobs:
             --max-media-downloads 0 \
             --no-download-multimedia
 
+      - name: Run writer smoke when novelty short-circuits
+        id: writer_smoke
+        if: always()
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
+          MAX_REFINEMENT_ITERATIONS: "1"
+          MAX_SELECTED_NEWS: ${{ vars.MAX_SELECTED_NEWS || '8' }}
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
+          MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
+          ESSAY_DUPLICATE_THRESHOLD: ${{ vars.ESSAY_DUPLICATE_THRESHOLD || '0.42' }}
+          MAX_NOVELTY_REPLANS: "0"
+          TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
+          AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          NEWS_SOURCE_MODE: recent_window
+          NEWS_LOOKBACK_DAYS: ${{ steps.scenario.outputs.lookback_days }}
+          DOWNLOAD_MULTIMEDIA: "false"
+          TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
+          RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
+        run: |
+          STATUS="$(python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path(os.environ["RUN_ROOT"]) / "scripts" / os.environ["TARGET_DATE"] / "run_state.json"
+          data = json.loads(path.read_text()) if path.exists() else {}
+          print(data.get("status", ""))
+          PY
+          )"
+          echo "primary_status=$STATUS" >> "$GITHUB_OUTPUT"
+          if [ "$STATUS" != "no_novel_essay_angle" ]; then
+            echo "required=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "required=true" >> "$GITHUB_OUTPUT"
+          SMOKE_ROOT="$RUN_ROOT/writer-smoke"
+          mkdir -p "$SMOKE_ROOT/history" "$SMOKE_ROOT/scripts" "$SMOKE_ROOT/multimedia"
+          python -m pipeline.run_hardened \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$SMOKE_ROOT/scripts" \
+            --multimedia-dir "$SMOKE_ROOT/multimedia" \
+            --history-scripts-dir "$SMOKE_ROOT/history" \
+            --editorial-dir editorial \
+            --max-media-downloads 0 \
+            --no-download-multimedia
+
+      - name: Evaluate writer smoke structure
+        id: writer_smoke_regression
+        if: always() && steps.writer_smoke.outputs.required == 'true'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
+          RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
+        run: |
+          python -m pipeline.editorial_regression \
+            --episode-dir "$RUN_ROOT/writer-smoke/scripts/$TARGET_DATE" \
+            --output "$RUN_ROOT/writer-smoke-regression.json"
+
       - name: Evaluate current-runtime editorial structure
         id: regression
         if: always()
@@ -201,8 +268,18 @@ jobs:
         env:
           BUILD_OUTCOME: ${{ steps.build.outcome }}
           REGRESSION_OUTCOME: ${{ steps.regression.outcome }}
+          WRITER_SMOKE_REQUIRED: ${{ steps.writer_smoke.outputs.required }}
+          WRITER_SMOKE_OUTCOME: ${{ steps.writer_smoke.outcome }}
+          WRITER_SMOKE_REGRESSION_OUTCOME: ${{ steps.writer_smoke_regression.outcome }}
         run: |
           echo "Build outcome: $BUILD_OUTCOME"
           echo "Regression outcome: $REGRESSION_OUTCOME"
+          echo "Writer smoke required: $WRITER_SMOKE_REQUIRED"
+          if [ "$WRITER_SMOKE_REQUIRED" = "true" ]; then
+            echo "Writer smoke outcome: $WRITER_SMOKE_OUTCOME"
+            echo "Writer smoke regression outcome: $WRITER_SMOKE_REGRESSION_OUTCOME"
+            test "$WRITER_SMOKE_OUTCOME" = "success" || exit 1
+            test "$WRITER_SMOKE_REGRESSION_OUTCOME" = "success" || exit 1
+          fi
           test "$BUILD_OUTCOME" = "success" || exit 1
           test "$REGRESSION_OUTCOME" = "success" || exit 1
