@@ -218,13 +218,13 @@ body{{overflow:hidden}}.catalog-shell{{display:grid;grid-template-columns:var(--
 <div class="catalog-shell">
   <aside class="episode-sidebar" aria-label="Selector de episodios">
     <div class="sidebar-head"><div class="brand">AI News Daily</div><h1>Episodios</h1><p>Selecciona un episodio y conserva el mismo Review Hub.</p></div>
-    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Narrative Memory</strong><small>casos · mecanismos · uso · cooldown</small></a></div>
+    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Narrative Memory</strong><small>casos · mecanismos · uso · cooldown</small></a><a id="metricsLink" class="repo-health-link" href="?view=metrics"><span>Performance</span><strong>Histórico de métricas</strong><small>Editorial · Attention · Voice · SEO</small></a></div>
     <div class="episode-search-wrap"><input id="episodeSearch" class="episode-search" type="search" placeholder="Buscar episodio…" aria-label="Buscar episodio"></div>
     <nav id="episodeList" class="episode-list" aria-label="Episodios disponibles">{items}<div id="emptyFilter" class="empty-filter">No hay episodios que coincidan.</div></nav>
     <div class="sidebar-foot"><span id="episodeCount">{len(episodes)} episodio{'s' if len(episodes) != 1 else ''}</span> · artifacts disponibles</div>
   </aside>
   <main class="episode-stage">
-    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option><option value="__memory__">Narrative Memory</option>{options}</select></div>
+    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option><option value="__memory__">Narrative Memory</option><option value="__metrics__">Histórico de métricas</option>{options}</select></div>
     <iframe id="episodeFrame" class="episode-frame" src="{frame_src}" title="{frame_title}" loading="eager"></iframe>
   </main>
 </div>
@@ -239,11 +239,13 @@ const search=document.getElementById('episodeSearch');
 const emptyFilter=document.getElementById('emptyFilter');
 const healthLink=document.getElementById('repoHealthLink');
 const memoryLink=document.getElementById('memoryLink');
+const metricsLink=document.getElementById('metricsLink');
 
 function selectedFromUrl(){{
   const params=new URLSearchParams(window.location.search);
   if(params.get('view')==='health') return '__health__';
   if(params.get('view')==='memory') return '__memory__';
+  if(params.get('view')==='metrics') return '__metrics__';
   const value=params.get('episode');
   return byId.has(value) ? value : DEFAULT_EPISODE;
 }}
@@ -256,6 +258,7 @@ function setEpisode(id,{{push=true}}={{}}){{
   if(select) select.value=id;
   if(healthLink) healthLink.classList.remove('active');
   if(memoryLink) memoryLink.classList.remove('active');
+  if(metricsLink) metricsLink.classList.remove('active');
   links.forEach(link=>{{
     const active=link.dataset.episodeId===id;
     link.classList.toggle('active',active);
@@ -277,6 +280,7 @@ function setHealth({{push=true}}={{}}){{
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
   if(healthLink) healthLink.classList.add('active');
   if(memoryLink) memoryLink.classList.remove('active');
+  if(metricsLink) metricsLink.classList.remove('active');
   document.title='Salud del repo · AI News Daily';
   if(push){{
     const url=new URL(window.location.href);
@@ -293,6 +297,7 @@ function setMemory({{push=true}}={{}}){{
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
   if(healthLink) healthLink.classList.remove('active');
   if(memoryLink) memoryLink.classList.add('active');
+  if(metricsLink) metricsLink.classList.remove('active');
   document.title='Narrative Memory · AI News Daily';
   if(push){{
     const url=new URL(window.location.href);
@@ -301,14 +306,33 @@ function setMemory({{push=true}}={{}}){{
     history.pushState({{view:'memory'}},'',url);
   }}
 }}
+function setMetrics({{push=true}}={{}}){{
+  const expected=new URL('metrics/index.html',window.location.href).href;
+  if(frame.src!==expected) frame.src='metrics/index.html';
+  frame.title='Histórico de métricas';
+  if(select) select.value='__metrics__';
+  links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
+  if(healthLink) healthLink.classList.remove('active');
+  if(memoryLink) memoryLink.classList.remove('active');
+  if(metricsLink) metricsLink.classList.add('active');
+  document.title='Histórico de métricas · AI News Daily';
+  if(push){{
+    const url=new URL(window.location.href);
+    url.searchParams.delete('episode');
+    url.searchParams.set('view','metrics');
+    history.pushState({{view:'metrics'}},'',url);
+  }}
+}}
 function setSelection(value,options={{}}){{
   if(value==='__health__') setHealth(options);
   else if(value==='__memory__') setMemory(options);
+  else if(value==='__metrics__') setMetrics(options);
   else setEpisode(value,options);
 }}
 links.forEach(link=>link.addEventListener('click',event=>{{event.preventDefault();setSelection(link.dataset.episodeId);}}));
 if(healthLink) healthLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__health__');}});
 if(memoryLink) memoryLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__memory__');}});
+if(metricsLink) metricsLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__metrics__');}});
 if(select) select.addEventListener('change',()=>setSelection(select.value));
 window.addEventListener('popstate',()=>setSelection(selectedFromUrl(),{{push:false}}));
 if(search) search.addEventListener('input',()=>{{
