@@ -275,6 +275,9 @@ jobs:
           grep -q 'data-tab="technical"' review-site/index.html
           grep -q 'data-script-editor="v1"' review-site/index.html
           grep -q 'id="scriptSaveButton"' review-site/index.html
+          grep -q 'data-script-productivity-runtime="v1"' review-site/index.html
+          grep -q 'id="scriptDiffButton"' review-site/index.html
+          grep -q 'id="scriptHistoryButton"' review-site/index.html
 
       - name: Upload full reusable Review Hub artifact
         uses: actions/upload-artifact@v4
@@ -397,6 +400,7 @@ jobs:
               && grep -q 'id="globalSearch"' /tmp/episode.html \
               && grep -q 'data-tab="overview"' /tmp/episode.html \
               && grep -q 'data-script-editor="v1"' /tmp/episode.html \
+              && grep -q 'data-script-productivity-runtime="v1"' /tmp/episode.html \
               && curl -fsSL --max-time 20 "$HEALTH_URL" -o /tmp/health.html \
               && grep -q 'data-health-page="repo-health"' /tmp/health.html \
               && curl -fsSL --max-time 20 "$MEMORY_URL" -o /tmp/memory.html \
