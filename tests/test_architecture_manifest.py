@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 7)
+        self.assertEqual(data["version"], 8)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -44,6 +44,10 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("YouTube", stages["footage_discovery"]["title"])
         self.assertIn("30-day ephemeral", stages["footage_discovery"]["outputs"])
         self.assertIn("revisión humana", stages["footage_discovery"]["authority"])
+        self.assertIn("editing_style", stages)
+        self.assertIn("Gramática audiovisual", stages["editing_style"]["title"])
+        self.assertIn("style_warnings", stages["editing_style"]["outputs"])
+        self.assertIn("editing_style.yaml", stages["editing_style"]["code"])
         self.assertIn("edit_manifest", stages)
         self.assertIn("pre-recording", stages["edit_manifest"]["title"])
         self.assertIn("edit_manifest.json", stages["edit_manifest"]["outputs"])
