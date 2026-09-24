@@ -2051,5 +2051,265 @@
         }
       ]
     }
+  ],
+  "format": {
+    "resolution": "3840x2160",
+    "frame_rate_fps": 30,
+    "audio_sample_rate_hz": 48000,
+    "aspect_ratio": "16:9"
+  },
+  "markers": [
+    {
+      "marker_id": "section_01",
+      "kind": "section",
+      "timeline_seconds": 0,
+      "label": "Apertura",
+      "section_key": "opening"
+    },
+    {
+      "marker_id": "take_opening_t01",
+      "kind": "take",
+      "timeline_seconds": 0,
+      "label": "opening_t01",
+      "take_id": "opening_t01"
+    },
+    {
+      "marker_id": "take_opening_t02",
+      "kind": "take",
+      "timeline_seconds": 38.4,
+      "label": "opening_t02",
+      "take_id": "opening_t02"
+    },
+    {
+      "marker_id": "section_02",
+      "kind": "section",
+      "timeline_seconds": 85.2,
+      "label": "Bloque 2 · la_prueba_de_la_pantalla_apagada",
+      "section_key": "beat:la_prueba_de_la_pantalla_apagada"
+    },
+    {
+      "marker_id": "take_b01_la_prueba_de_la_pantalla_apagada_t01",
+      "kind": "take",
+      "timeline_seconds": 85.2,
+      "label": "b01_la_prueba_de_la_pantalla_apagada_t01",
+      "take_id": "b01_la_prueba_de_la_pantalla_apagada_t01"
+    },
+    {
+      "marker_id": "take_b01_la_prueba_de_la_pantalla_apagada_t02",
+      "kind": "take",
+      "timeline_seconds": 120.8,
+      "label": "b01_la_prueba_de_la_pantalla_apagada_t02",
+      "take_id": "b01_la_prueba_de_la_pantalla_apagada_t02"
+    },
+    {
+      "marker_id": "section_03",
+      "kind": "section",
+      "timeline_seconds": 164,
+      "label": "Bloque 3 · memoria_que_parece_saber",
+      "section_key": "beat:memoria_que_parece_saber"
+    },
+    {
+      "marker_id": "take_b02_memoria_que_parece_saber_t01",
+      "kind": "take",
+      "timeline_seconds": 164,
+      "label": "b02_memoria_que_parece_saber_t01",
+      "take_id": "b02_memoria_que_parece_saber_t01"
+    },
+    {
+      "marker_id": "take_b02_memoria_que_parece_saber_t02",
+      "kind": "take",
+      "timeline_seconds": 199.6,
+      "label": "b02_memoria_que_parece_saber_t02",
+      "take_id": "b02_memoria_que_parece_saber_t02"
+    },
+    {
+      "marker_id": "section_04",
+      "kind": "section",
+      "timeline_seconds": 241.6,
+      "label": "Bloque 4 · resultado_no_es_capacidad",
+      "section_key": "beat:resultado_no_es_capacidad"
+    },
+    {
+      "marker_id": "take_b03_resultado_no_es_capacidad_t01",
+      "kind": "take",
+      "timeline_seconds": 241.6,
+      "label": "b03_resultado_no_es_capacidad_t01",
+      "take_id": "b03_resultado_no_es_capacidad_t01"
+    },
+    {
+      "marker_id": "take_b03_resultado_no_es_capacidad_t02",
+      "kind": "take",
+      "timeline_seconds": 278.4,
+      "label": "b03_resultado_no_es_capacidad_t02",
+      "take_id": "b03_resultado_no_es_capacidad_t02"
+    },
+    {
+      "marker_id": "take_b03_resultado_no_es_capacidad_t03",
+      "kind": "take",
+      "timeline_seconds": 317.6,
+      "label": "b03_resultado_no_es_capacidad_t03",
+      "take_id": "b03_resultado_no_es_capacidad_t03"
+    },
+    {
+      "marker_id": "section_05",
+      "kind": "section",
+      "timeline_seconds": 355.2,
+      "label": "Bloque 5 · la_salida_facil_no_basta",
+      "section_key": "beat:la_salida_facil_no_basta"
+    },
+    {
+      "marker_id": "take_b04_la_salida_facil_no_basta_t01",
+      "kind": "take",
+      "timeline_seconds": 355.2,
+      "label": "b04_la_salida_facil_no_basta_t01",
+      "take_id": "b04_la_salida_facil_no_basta_t01"
+    },
+    {
+      "marker_id": "take_b04_la_salida_facil_no_basta_t02",
+      "kind": "take",
+      "timeline_seconds": 390.4,
+      "label": "b04_la_salida_facil_no_basta_t02",
+      "take_id": "b04_la_salida_facil_no_basta_t02"
+    },
+    {
+      "marker_id": "section_06",
+      "kind": "section",
+      "timeline_seconds": 416.4,
+      "label": "Bloque 6 · aprender_el_sonido_del_motor",
+      "section_key": "beat:aprender_el_sonido_del_motor"
+    },
+    {
+      "marker_id": "take_b05_aprender_el_sonido_del_motor_t01",
+      "kind": "take",
+      "timeline_seconds": 416.4,
+      "label": "b05_aprender_el_sonido_del_motor_t01",
+      "take_id": "b05_aprender_el_sonido_del_motor_t01"
+    },
+    {
+      "marker_id": "take_b05_aprender_el_sonido_del_motor_t02",
+      "kind": "take",
+      "timeline_seconds": 452.4,
+      "label": "b05_aprender_el_sonido_del_motor_t02",
+      "take_id": "b05_aprender_el_sonido_del_motor_t02"
+    },
+    {
+      "marker_id": "take_b05_aprender_el_sonido_del_motor_t03",
+      "kind": "take",
+      "timeline_seconds": 487.6,
+      "label": "b05_aprender_el_sonido_del_motor_t03",
+      "take_id": "b05_aprender_el_sonido_del_motor_t03"
+    },
+    {
+      "marker_id": "section_07",
+      "kind": "section",
+      "timeline_seconds": 542,
+      "label": "Bloque 7 · de_entender_respuestas_a_respons",
+      "section_key": "beat:de_entender_respuestas_a_respons"
+    },
+    {
+      "marker_id": "take_b06_de_entender_respuestas_a_respons_t01",
+      "kind": "take",
+      "timeline_seconds": 542,
+      "label": "b06_de_entender_respuestas_a_respons_t01",
+      "take_id": "b06_de_entender_respuestas_a_respons_t01"
+    },
+    {
+      "marker_id": "take_b06_de_entender_respuestas_a_respons_t02",
+      "kind": "take",
+      "timeline_seconds": 584.4,
+      "label": "b06_de_entender_respuestas_a_respons_t02",
+      "take_id": "b06_de_entender_respuestas_a_respons_t02"
+    },
+    {
+      "marker_id": "section_08",
+      "kind": "section",
+      "timeline_seconds": 627.6,
+      "label": "Bloque 8 · la_firma_no_es_entendimiento",
+      "section_key": "beat:la_firma_no_es_entendimiento"
+    },
+    {
+      "marker_id": "take_b07_la_firma_no_es_entendimiento_t01",
+      "kind": "take",
+      "timeline_seconds": 627.6,
+      "label": "b07_la_firma_no_es_entendimiento_t01",
+      "take_id": "b07_la_firma_no_es_entendimiento_t01"
+    },
+    {
+      "marker_id": "take_b07_la_firma_no_es_entendimiento_t02",
+      "kind": "take",
+      "timeline_seconds": 662.8,
+      "label": "b07_la_firma_no_es_entendimiento_t02",
+      "take_id": "b07_la_firma_no_es_entendimiento_t02"
+    },
+    {
+      "marker_id": "take_b07_la_firma_no_es_entendimiento_t03",
+      "kind": "take",
+      "timeline_seconds": 706.8,
+      "label": "b07_la_firma_no_es_entendimiento_t03",
+      "take_id": "b07_la_firma_no_es_entendimiento_t03"
+    },
+    {
+      "marker_id": "section_09",
+      "kind": "section",
+      "timeline_seconds": 731.2,
+      "label": "Bloque 9 · disenar_ayuda_que_deje_criterio",
+      "section_key": "beat:disenar_ayuda_que_deje_criterio"
+    },
+    {
+      "marker_id": "take_b08_disenar_ayuda_que_deje_criterio_t01",
+      "kind": "take",
+      "timeline_seconds": 731.2,
+      "label": "b08_disenar_ayuda_que_deje_criterio_t01",
+      "take_id": "b08_disenar_ayuda_que_deje_criterio_t01"
+    },
+    {
+      "marker_id": "take_b08_disenar_ayuda_que_deje_criterio_t02",
+      "kind": "take",
+      "timeline_seconds": 767.2,
+      "label": "b08_disenar_ayuda_que_deje_criterio_t02",
+      "take_id": "b08_disenar_ayuda_que_deje_criterio_t02"
+    },
+    {
+      "marker_id": "section_10",
+      "kind": "section",
+      "timeline_seconds": 802,
+      "label": "Síntesis",
+      "section_key": "synthesis"
+    },
+    {
+      "marker_id": "take_synthesis_t01",
+      "kind": "take",
+      "timeline_seconds": 802,
+      "label": "synthesis_t01",
+      "take_id": "synthesis_t01"
+    },
+    {
+      "marker_id": "take_synthesis_t02",
+      "kind": "take",
+      "timeline_seconds": 837.2,
+      "label": "synthesis_t02",
+      "take_id": "synthesis_t02"
+    },
+    {
+      "marker_id": "take_synthesis_t03",
+      "kind": "take",
+      "timeline_seconds": 873.6,
+      "label": "synthesis_t03",
+      "take_id": "synthesis_t03"
+    },
+    {
+      "marker_id": "section_11",
+      "kind": "section",
+      "timeline_seconds": 903.6,
+      "label": "CTA",
+      "section_key": "cta"
+    },
+    {
+      "marker_id": "take_cta_t01",
+      "kind": "take",
+      "timeline_seconds": 903.6,
+      "label": "cta_t01",
+      "take_id": "cta_t01"
+    }
   ]
 }
