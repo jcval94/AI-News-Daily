@@ -1036,5 +1036,9 @@
       },
       "edit_cues": []
     }
-  ]
+  ],
+  "editing_style": {
+    "applied": false,
+    "note": "Historical recording replay references a pre-style edit manifest."
+  }
 }
