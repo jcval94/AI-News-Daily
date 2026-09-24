@@ -583,6 +583,7 @@ let running = false;
 let raf = null;
 let lastTs = null;
 let countdownActive = false;
+let countdownTimer = null;
 
 const viewport = document.getElementById('viewport');
 const text = document.getElementById('text');
@@ -649,6 +650,10 @@ function stop() {{
   lastTs = null;
   if (raf) cancelAnimationFrame(raf);
   raf = null;
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = null;
+  countdownActive = false;
+  countdown.classList.remove('visible');
   document.getElementById('start').textContent = '▶ Iniciar';
 }}
 
@@ -659,10 +664,11 @@ function play() {{
   let value = seconds;
   countdown.textContent = value;
   countdown.classList.add('visible');
-  const timer = setInterval(() => {{
+  countdownTimer = setInterval(() => {{
     value -= 1;
     if (value <= 0) {{
-      clearInterval(timer);
+      clearInterval(countdownTimer);
+      countdownTimer = null;
       countdown.classList.remove('visible');
       countdownActive = false;
       running = true;
