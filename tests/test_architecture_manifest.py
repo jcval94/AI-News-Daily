@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 8)
+        self.assertEqual(data["version"], 9)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -55,6 +55,11 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("teleprompter", stages["recording_pack"]["title"].lower())
         self.assertIn("camera_script.md", stages["recording_pack"]["outputs"])
         self.assertIn("script.txt", stages["recording_pack"]["authority"])
+        self.assertIn("virtual_timeline", stages)
+        self.assertIn("Virtual A-roll", stages["virtual_timeline"]["title"])
+        self.assertIn("virtual_timeline.json", stages["virtual_timeline"]["outputs"])
+        self.assertIn("timeline_preview.html", stages["virtual_timeline"]["outputs"])
+        self.assertIn("not frame-accurate", stages["virtual_timeline"]["authority"])
         self.assertIn("ai-news-run", stages["pages"]["inputs"])
         self.assertIn("fuente canónica", stages["pages"]["summary"])
 
