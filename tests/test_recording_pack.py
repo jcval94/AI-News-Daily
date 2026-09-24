@@ -217,5 +217,84 @@ class RecordingPackTests(unittest.TestCase):
             self.assertEqual(payload["summary"]["take_count"], 1)
 
 
+    def test_short_tail_rebalances_when_merge_would_exceed_max(self):
+        s1 = " ".join([f"a{i}" for i in range(20)]) + "."
+        s2 = " ".join([f"b{i}" for i in range(30)]) + "."
+        s3 = " ".join([f"c{i}" for i in range(15)]) + "."
+        text = f"{s1} {s2} {s3}"
+        takes = split_recording_takes(
+            text,
+            words_per_second=1.0,
+            min_seconds=20,
+            target_seconds=35,
+            max_seconds=60,
+        )
+        durations = [len(take.split()) for take in takes]
+        self.assertEqual(len(takes), 2)
+        self.assertGreaterEqual(min(durations), 20)
+        self.assertLessEqual(max(durations), 60)
+        self.assertEqual(" ".join(" ".join(takes).split()), " ".join(text.split()))
+
+    def test_existing_cta_is_not_appended_twice(self):
+        script = (
+            "Esta es la idea final del ensayo. "
+            "Si te sirvió, suscríbete y cuéntame qué piensas."
+        )
+        sections = {
+            "sections": [
+                {
+                    "section_key": "synthesis",
+                    "kind": "synthesis",
+                    "spoken_text": script,
+                    "word_count": len(script.split()),
+                    "evidence_ids": [],
+                }
+            ]
+        }
+        production = {
+            "cta_injected": False,
+            "sections": [
+                {
+                    "kind": "cta",
+                    "spoken_text": "Si te sirvió, suscríbete y cuéntame qué piensas.",
+                }
+            ],
+        }
+        pack = build_recording_pack(
+            episode_date="2026-09-24",
+            script=script,
+            script_sections=sections,
+            edit_manifest={},
+            production_script=production,
+            words_per_second=2.5,
+            min_take_seconds=1,
+            target_take_seconds=5,
+            max_take_seconds=15,
+        )
+        narration = " ".join(take["spoken_text"] for take in pack["takes"])
+        self.assertEqual(" ".join(narration.split()), " ".join(script.split()))
+        self.assertEqual(pack["summary"]["cta_word_count"], 0)
+
+    def test_teleprompter_escapes_script_closing_sequence(self):
+        pack = {
+            "episode_date": "2026-09-24",
+            "teleprompter_defaults": {},
+            "takes": [
+                {
+                    "take_id": "opening_t01",
+                    "spoken_slate": "TAKE opening_t01",
+                    "spoken_text": "Texto </script><script>alert(1)</script> seguro.",
+                    "section_label": "Apertura",
+                    "estimated_duration_seconds": 10,
+                    "delivery": {"energy": "natural", "pace": "normal", "note": ""},
+                    "edit_cues": [],
+                }
+            ],
+        }
+        output = render_teleprompter(pack)
+        self.assertNotIn("</script><script>alert(1)</script>", output)
+
+
+
 if __name__ == "__main__":
     unittest.main()
