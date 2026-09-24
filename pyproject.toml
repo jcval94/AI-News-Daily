@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "ai-news-daily"
 version = "0.3.0"
 description = "Production-oriented agentic AI-news script and multimedia pipeline with Google ADK + OpenAI"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
   "google-adk==2.6.3",
   "google-genai>=2.9,<3.0",
