@@ -44,8 +44,10 @@ on:
       - "pipeline/architecture_manifest.py"
       - "pipeline/repo_health.py"
       - "pipeline/narrative_memory*.py"
+      - "pipeline/video_metrics_dashboard.py"
       - "tests/test_repo_health.py"
       - "tests/test_narrative_memory_dashboard.py"
+      - "tests/test_video_metrics_dashboard.py"
       - "config/cost_rates.json"
       - "evals/editorial/**"
 
@@ -319,6 +321,7 @@ jobs:
           grep -q 'id="episodeFrame"' pages-site/index.html
           grep -q 'id="repoHealthLink"' pages-site/index.html
           grep -q 'id="memoryLink"' pages-site/index.html
+          grep -q 'id="metricsLink"' pages-site/index.html
           grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
 
       - name: Build repository health dashboard
@@ -347,6 +350,17 @@ jobs:
           test -s pages-site/memory/narrative-memory.json
           grep -q 'data-memory-page="narrative-memory"' pages-site/memory/index.html
           grep -q '"approved_items"' pages-site/memory/narrative-memory.json
+
+      - name: Build historical video metrics dashboard
+        run: |
+          set -euo pipefail
+          python -m pipeline.video_metrics_dashboard \
+            --episodes-root pages-site/episodes \
+            --output-dir pages-site/metrics
+          test -s pages-site/metrics/index.html
+          test -s pages-site/metrics/video-metrics-history.json
+          grep -q 'data-metrics-page="video-metrics-history"' pages-site/metrics/index.html
+          grep -q '"metric_scope": "editorial_pipeline_not_youtube_analytics"' pages-site/metrics/video-metrics-history.json
 
       - name: Upload lightweight Pages catalog snapshot
         uses: actions/upload-artifact@v4
@@ -390,12 +404,14 @@ jobs:
           EPISODE_URL="${ROOT_URL}episodes/${TARGET_DATE}/"
           HEALTH_URL="${ROOT_URL}health/"
           MEMORY_URL="${ROOT_URL}memory/"
+          METRICS_URL="${ROOT_URL}metrics/"
           for attempt in 1 2 3 4 5 6; do
             if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/catalog.html \
               && grep -q 'class="episode-sidebar"' /tmp/catalog.html \
               && grep -q 'id="episodeFrame"' /tmp/catalog.html \
               && grep -q 'id="repoHealthLink"' /tmp/catalog.html \
               && grep -q 'id="memoryLink"' /tmp/catalog.html \
+              && grep -q 'id="metricsLink"' /tmp/catalog.html \
               && curl -fsSL --max-time 20 "$EPISODE_URL" -o /tmp/episode.html \
               && grep -q 'id="globalSearch"' /tmp/episode.html \
               && grep -q 'data-tab="overview"' /tmp/episode.html \
@@ -404,7 +420,9 @@ jobs:
               && curl -fsSL --max-time 20 "$HEALTH_URL" -o /tmp/health.html \
               && grep -q 'data-health-page="repo-health"' /tmp/health.html \
               && curl -fsSL --max-time 20 "$MEMORY_URL" -o /tmp/memory.html \
-              && grep -q 'data-memory-page="narrative-memory"' /tmp/memory.html; then
+              && grep -q 'data-memory-page="narrative-memory"' /tmp/memory.html \
+              && curl -fsSL --max-time 20 "$METRICS_URL" -o /tmp/metrics.html \
+              && grep -q 'data-metrics-page="video-metrics-history"' /tmp/metrics.html; then
               echo "Pages smoke test passed: $ROOT_URL"
               exit 0
             fi
