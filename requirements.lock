@@ -124,6 +124,8 @@ multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
+opentimelineio==0.18.1
+    # via ai-news-daily (pyproject.toml)
 openai==2.54.0
     # via
     #   ai-news-daily (pyproject.toml)
