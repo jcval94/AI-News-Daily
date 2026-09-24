@@ -7,11 +7,12 @@ import os
 import re
 import subprocess
 from dataclasses import asdict, dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 from zoneinfo import ZoneInfo
 
+from pipeline.source_coverage import evaluate_source_coverage
 from pipeline.source_naming import is_supported_source, source_date
 
 
@@ -392,6 +393,63 @@ def _news_health(root: Path, as_of: date) -> tuple[list[HealthCheck], dict[str, 
     }
 
 
+def _next_scheduled_date(as_of: date) -> date:
+    for offset in range(0, 8):
+        candidate = as_of + timedelta(days=offset)
+        if candidate.weekday() in {1, 4}:  # Tuesday / Friday
+            return candidate
+    raise RuntimeError("Could not resolve next scheduled production date")
+
+
+def _next_run_readiness(root: Path, as_of: date) -> tuple[HealthCheck, dict[str, Any]]:
+    target = _next_scheduled_date(as_of)
+    payload = evaluate_source_coverage(
+        target_date=target.isoformat(),
+        news_dir=root / "news",
+        min_ratio=0.75,
+    )
+    ratio = float(payload.get("coverage_ratio", 0.0) or 0.0)
+    missing = [str(value) for value in payload.get("missing_dates", [])]
+    days_until = max(0, (target - as_of).days)
+    sufficient = bool(payload.get("sufficient"))
+
+    if sufficient:
+        status = "ok"
+        summary = "La próxima corrida programada ya tiene cobertura de fuentes suficiente."
+    elif days_until <= 1:
+        status = "critical"
+        summary = "La próxima corrida está a <=1 día y fallaría el preflight de fuentes si se ejecutara con el estado actual."
+    else:
+        status = "warn"
+        summary = "La próxima corrida todavía no reúne la cobertura mínima de fuentes."
+
+    detail = (
+        f"Target {target.isoformat()} · "
+        f"{payload.get('available_day_count', 0)}/{payload.get('expected_day_count', 0)} días "
+        f"({ratio:.1%}) · mínimo 75% · "
+        f"faltantes: {', '.join(missing) or 'ninguno'}."
+    )
+    return (
+        HealthCheck(
+            "next-run-readiness",
+            "Operación",
+            status,
+            "Readiness de próxima producción",
+            summary,
+            detail,
+            f"{ratio:.0%}",
+        ),
+        {
+            "next_production_date": target.isoformat(),
+            "next_source_coverage_ratio": ratio,
+            "next_source_sufficient": sufficient,
+            "next_source_missing_dates": missing,
+            "next_source_available_days": int(payload.get("available_day_count", 0) or 0),
+            "next_source_expected_days": int(payload.get("expected_day_count", 0) or 0),
+        },
+    )
+
+
 def _latest_episode(root: Path) -> tuple[date | None, dict[str, Any]]:
     scripts = root / "scripts"
     candidates: list[tuple[date, Path]] = []
@@ -693,6 +751,8 @@ def audit_repository(
     ]
     news_checks, news_metrics = _news_health(repo_root, as_of)
     checks.extend(news_checks)
+    readiness_check, readiness_metrics = _next_run_readiness(repo_root, as_of)
+    checks.append(readiness_check)
     production_check, production_metrics = _production_health(repo_root, as_of)
     checks.append(production_check)
     pages_check, pages_metrics = _pages_health(pages_root)
@@ -709,6 +769,7 @@ def audit_repository(
     }
     metrics = {
         **news_metrics,
+        **readiness_metrics,
         **production_metrics,
         **pages_metrics,
         **pr_metrics,
@@ -774,6 +835,10 @@ def health_document(report: dict[str, Any]) -> str:
     warns = int(report.get("status_counts", {}).get("warn", 0) or 0)
     latest_news = metrics.get("latest_news_date") or "—"
     latest_episode = metrics.get("latest_episode_date") or "—"
+    next_coverage = metrics.get("next_source_coverage_ratio")
+    next_coverage_text = (
+        f"{float(next_coverage):.0%}" if next_coverage is not None else "—"
+    )
     open_prs = metrics.get("open_pr_count")
     pages_count = metrics.get("pages_episode_count")
 
@@ -791,7 +856,7 @@ body{{min-height:100vh}}.shell{{width:min(1180px,calc(100% - 32px));margin:0 aut
 .topbar{{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:20px}}a{{color:#bdeaff;text-decoration:none}}.back{{padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:#101a25}}
 .hero{{border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,#0d1721,#102234);padding:24px}}.eyebrow{{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:850}}h1{{font-size:clamp(30px,5vw,55px);letter-spacing:-.04em;line-height:1;margin:9px 0 12px}}.hero p{{color:#b3c3d2;line-height:1.55;max-width:780px}}
 .overall{{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.05em}}.overall.ok{{background:#15382d;color:#a9efd2}}.overall.warn{{background:#3a2c16;color:#ffd993}}.overall.critical{{background:#421d20;color:#ffb1b1}}
-.kpis{{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:14px 0 24px}}.kpi{{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:13px}}.kpi span{{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}}.kpi strong{{display:block;margin-top:7px;font-size:19px}}
+.kpis{{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin:14px 0 24px}}.kpi{{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:13px}}.kpi span{{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}}.kpi strong{{display:block;margin-top:7px;font-size:19px}}
 .controls{{display:flex;gap:10px;align-items:center;margin:0 0 14px}}#healthSearch{{flex:1;border:1px solid var(--line);border-radius:11px;background:#0c141e;color:var(--text);padding:11px 12px;outline:none}}#healthSearch:focus{{border-color:#3e87a8;box-shadow:0 0 0 3px #16435b55}}
 .checks{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}.check-card{{position:relative;border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:15px;min-height:170px}}.check-card[hidden]{{display:none}}.check-top{{display:flex;justify-content:space-between;gap:8px;align-items:center}}.status{{font-size:9px;font-weight:900;letter-spacing:.07em;padding:5px 7px;border-radius:999px}}.status.ok{{background:#15382d;color:#a9efd2}}.status.warn{{background:#3a2c16;color:#ffd993}}.status.critical{{background:#421d20;color:#ffb1b1}}.status.info{{background:#1a2b3b;color:#b5d9ee}}.category{{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}}.check-card h3{{font-size:15px;margin:11px 0 7px}}.check-card p{{font-size:12px;color:#b4c2cf;line-height:1.5;margin:0}}.detail{{margin-top:10px;padding-top:9px;border-top:1px solid #263448;color:var(--muted);font-size:10px;line-height:1.45;overflow-wrap:anywhere}}.value{{display:block;margin-top:10px;font-size:18px}}.foot{{color:var(--muted);font-size:10px;margin-top:18px}}
 @media(max-width:980px){{.kpis{{grid-template-columns:repeat(3,minmax(0,1fr))}}.checks{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}@media(max-width:650px){{.shell{{width:min(100% - 20px,1180px)}}.topbar{{align-items:flex-start;flex-direction:column}}.kpis,.checks{{grid-template-columns:1fr}}}}
@@ -810,6 +875,7 @@ body{{min-height:100vh}}.shell{{width:min(1180px,calc(100% - 32px));margin:0 aut
 <div class="kpi"><span>Advertencias</span><strong>{warns}</strong></div>
 <div class="kpi"><span>Última fuente</span><strong>{_esc(latest_news)}</strong></div>
 <div class="kpi"><span>Última producción</span><strong>{_esc(latest_episode)}</strong></div>
+<div class="kpi"><span>Próxima cobertura</span><strong>{_esc(next_coverage_text)}</strong></div>
 <div class="kpi"><span>PRs abiertos</span><strong>{_esc(open_prs)}</strong></div>
 <div class="kpi"><span>Episodios en Pages</span><strong>{_esc(pages_count)}</strong></div>
 </section>

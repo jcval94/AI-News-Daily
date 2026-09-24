@@ -53,6 +53,20 @@ run-name: regression
             encoding="utf-8",
         )
 
+    def _news(self, root: Path, filename: str, value: str) -> None:
+        (root / "news" / filename).write_text(
+            (
+                "Título: Noticia de prueba\n"
+                f"Fecha: {value}\n"
+                "Fuente: Test\n"
+                "Enlace: https://example.com/noticia\n"
+                "Resumen breve: Resumen estructurado para validar cobertura.\n"
+                "Por qué importa: Evidencia de prueba para el contrato.\n"
+                "Categoría: prueba\n"
+            ),
+            encoding="utf-8",
+        )
+
     def _pages(self, root: Path, value: str) -> Path:
         pages = root / "pages"
         (pages / "episodes" / value).mkdir(parents=True)
@@ -87,9 +101,8 @@ run-name: regression
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._bootstrap(root)
-            (root / "news" / "2026-09-24-08-00-00.txt").write_text(
-                "Fecha: 2026-09-24\n", encoding="utf-8"
-            )
+            for value in ("2026-09-22", "2026-09-23", "2026-09-24"):
+                self._news(root, f"{value}-08-00-00.txt", value)
             self._approved_episode(root, "2026-09-22")
             pages = self._pages(root, "2026-09-22")
 
@@ -106,14 +119,34 @@ run-name: regression
             self.assertEqual(report["metrics"]["latest_news_date"], "2026-09-24")
             self.assertEqual(report["metrics"]["latest_episode_date"], "2026-09-22")
 
+    def test_next_scheduled_run_readiness_detects_missing_source_window(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._bootstrap(root)
+            self._news(root, "2026-09-24-12-42-52.txt", "2026-09-24")
+            self._approved_episode(root, "2026-09-22")
+
+            report = audit_repository(
+                repo_root=root,
+                as_of=date(2026, 9, 24),
+                github_snapshot=self._github(),
+            )
+            checks = {item["id"]: item for item in report["checks"]}
+
+            self.assertEqual(checks["next-run-readiness"]["status"], "critical")
+            self.assertEqual(report["metrics"]["next_production_date"], "2026-09-25")
+            self.assertAlmostEqual(report["metrics"]["next_source_coverage_ratio"], 1 / 3, places=4)
+            self.assertEqual(
+                report["metrics"]["next_source_missing_dates"],
+                ["2026-09-22", "2026-09-23"],
+            )
+
     def test_duplicate_sources_and_stale_production_are_visible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._bootstrap(root)
             for stamp in ("12-42-52", "12-43-40"):
-                (root / "news" / f"2026-09-24-{stamp}.txt").write_text(
-                    "Fecha: 2026-09-24\n", encoding="utf-8"
-                )
+                self._news(root, f"2026-09-24-{stamp}.txt", "2026-09-24")
             self._approved_episode(root, "2026-09-04")
             pages = self._pages(root, "2026-09-04")
 
@@ -146,9 +179,7 @@ steps:
 """,
                 encoding="utf-8",
             )
-            (root / "news" / "2026-09-24-12-42-52.txt").write_text(
-                "Fecha: 2026-09-24\n", encoding="utf-8"
-            )
+            self._news(root, "2026-09-24-12-42-52.txt", "2026-09-24")
             self._approved_episode(root, "2026-09-22")
 
             report = audit_repository(
@@ -177,9 +208,7 @@ jobs:
 """,
                 encoding="utf-8",
             )
-            (root / "news" / "2026-09-24.txt").write_text(
-                "Fecha: 2026-09-24\n", encoding="utf-8"
-            )
+            self._news(root, "2026-09-24.txt", "2026-09-24")
             self._approved_episode(root, "2026-09-22")
 
             report = audit_repository(
@@ -194,9 +223,7 @@ jobs:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._bootstrap(root)
-            (root / "news" / "2026-09-24.txt").write_text(
-                "Fecha: 2026-09-24\n", encoding="utf-8"
-            )
+            self._news(root, "2026-09-24.txt", "2026-09-24")
             self._approved_episode(root, "2026-09-22")
             report = audit_repository(
                 repo_root=root,
