@@ -32,6 +32,14 @@ class MediaStressTests(unittest.TestCase):
             self.assertTrue(run.write_report(Path(directory),manifest))
         self.assertEqual(manifest['summary']['missing_events'],[])
 
+    def test_search_words_need_not_be_adjacent(self):
+        from experiments.image_search import sources
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        with patch.object(sources,'api',return_value={}) as api:
+            sources.commons(SimpleNamespace(queries=['"Emu War" 1932']),{})
+        self.assertEqual(api.call_args.kwargs['gsrsearch'], '"Emu" "War" "1932" filetype:bitmap')
+
     def test_catalogue_alias_can_resolve_person_without_guessing(self):
         from experiments.image_search import sources
         from types import SimpleNamespace

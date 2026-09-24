@@ -142,7 +142,10 @@ def commons(plan, entity):
         for row in data.get("query", {}).get("pages", []):
             row["entity_anchor"] = True
             pages[row.get("pageid")] = row
-    queries = ['"' + re.sub(r'[^\w\s-]', '', q) + '" filetype:bitmap' for q in plan.queries]
+    # Search terms are an AND of escaped literal words. Quoting the entire
+    # generated phrase incorrectly required dates/places to be adjacent.
+    queries = [' '.join('"' + word + '"' for word in re.findall(r'[^\W_]+', q, re.UNICODE))
+               + ' filetype:bitmap' for q in plan.queries]
     if entity.get("status") == "resolved":
         queries.insert(0, f"haswbstatement:P180={entity['id']} filetype:bitmap")
     for query in queries[:3]:
