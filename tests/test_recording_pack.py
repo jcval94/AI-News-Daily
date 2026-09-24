@@ -218,9 +218,9 @@ class RecordingPackTests(unittest.TestCase):
 
 
     def test_short_tail_rebalances_when_merge_would_exceed_max(self):
-        s1 = " ".join([f"a{i}" for i in range(20)]) + "."
-        s2 = " ".join([f"b{i}" for i in range(30)]) + "."
-        s3 = " ".join([f"c{i}" for i in range(15)]) + "."
+        s1 = " ".join(["Apertura"] + [f"a{i}" for i in range(19)]) + "."
+        s2 = " ".join(["Desarrollo"] + [f"b{i}" for i in range(29)]) + "."
+        s3 = " ".join(["Cierre"] + [f"c{i}" for i in range(14)]) + "."
         text = f"{s1} {s2} {s3}"
         takes = split_recording_takes(
             text,
