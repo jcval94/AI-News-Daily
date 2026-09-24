@@ -112,6 +112,8 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
             self.assertEqual(report["metrics"]["cooldown_items"], 1)
             self.assertEqual(report["metrics"]["available_items"], 1)
             self.assertEqual(report["metrics"]["unique_mechanisms"], 2)
+            self.assertEqual(report["episode_usage"][0]["episode"], "2026-09-01")
+            self.assertEqual(report["episode_usage"][0]["parallels"][0]["id"], "used-case")
             self.assertEqual(report["metrics"]["scheduled_research_items"], 1)
             self.assertEqual(report["metrics"]["editorial_seed_items"], 1)
 
@@ -147,7 +149,7 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
             self.assertIn('id="mechanismFilter"', document)
             self.assertIn('id="availabilityFilter"', document)
             self.assertIn("Mecanismos narrativos", document)
-            self.assertIn("Paralelos que llegaron a episodios aprobados", document)
+            self.assertIn("Qué paralelos utilizó cada episodio", document)
             self.assertEqual(payload["metrics"]["approved_items"], 1)
             self.assertEqual(payload["items"][0]["id"], "case-a")
 
