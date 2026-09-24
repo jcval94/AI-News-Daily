@@ -18,6 +18,12 @@ def recording_pack():
             "style_id": "jc_reflective_essay_v1",
             "sha256": "abc123",
         },
+        "capture_recommendation": {
+            "resolution": "3840x2160",
+            "frame_rate_fps": 30,
+            "audio_sample_rate_hz": 48000,
+            "aspect_ratio": "16:9",
+        },
         "takes": [
             {
                 "take_id": "opening_t01",
@@ -184,6 +190,23 @@ class VirtualTimelineTests(unittest.TestCase):
         pack["takes"][1]["estimated_start_seconds"] = 11
         with self.assertRaisesRegex(ValueError, "not contiguous"):
             build_virtual_timeline(recording_pack=pack, edit_manifest=edit_manifest())
+
+
+    def test_format_and_markers_are_inherited_for_future_nle_export(self):
+        payload = build_virtual_timeline(
+            recording_pack=recording_pack(),
+            edit_manifest=edit_manifest(),
+        )
+        self.assertEqual(payload["format"]["resolution"], "3840x2160")
+        self.assertEqual(payload["format"]["frame_rate_fps"], 30)
+        self.assertEqual(payload["format"]["audio_sample_rate_hz"], 48000)
+        take_markers = [item for item in payload["markers"] if item["kind"] == "take"]
+        section_markers = [item for item in payload["markers"] if item["kind"] == "section"]
+        self.assertEqual(len(take_markers), 3)
+        self.assertGreaterEqual(len(section_markers), 2)
+        self.assertEqual(take_markers[0]["take_id"], "opening_t01")
+        self.assertEqual(take_markers[-1]["take_id"], "cta_t01")
+
 
     def test_preview_is_standalone_and_contains_tracks(self):
         payload = build_virtual_timeline(
