@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 6)
+        self.assertEqual(data["version"], 7)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -44,6 +44,13 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("YouTube", stages["footage_discovery"]["title"])
         self.assertIn("30-day ephemeral", stages["footage_discovery"]["outputs"])
         self.assertIn("revisión humana", stages["footage_discovery"]["authority"])
+        self.assertIn("edit_manifest", stages)
+        self.assertIn("pre-recording", stages["edit_manifest"]["title"])
+        self.assertIn("edit_manifest.json", stages["edit_manifest"]["outputs"])
+        self.assertIn("recording_pack", stages)
+        self.assertIn("teleprompter", stages["recording_pack"]["title"].lower())
+        self.assertIn("camera_script.md", stages["recording_pack"]["outputs"])
+        self.assertIn("script.txt", stages["recording_pack"]["authority"])
         self.assertIn("ai-news-run", stages["pages"]["inputs"])
         self.assertIn("fuente canónica", stages["pages"]["summary"])
 
