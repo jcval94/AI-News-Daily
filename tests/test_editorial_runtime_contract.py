@@ -87,6 +87,11 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         for field in fields:
             self.assertIn(field, director)
             self.assertIn(field, writer)
+        self.assertIn("copy that exact selected_news_index", director)
+        self.assertIn("never use the source `item_index`", director)
+        self.assertIn("selected_news_count", director)
+        self.assertIn("1..selected_news_count", director)
+        self.assertIn("if selected_news_count is 1", director)
 
     def test_episode_plan_requires_complete_narrative_arc(self) -> None:
         plan = valid_plan()
