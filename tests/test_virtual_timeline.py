@@ -192,6 +192,34 @@ class VirtualTimelineTests(unittest.TestCase):
             build_virtual_timeline(recording_pack=pack, edit_manifest=edit_manifest())
 
 
+
+    def test_resolved_media_gets_repo_logical_path(self):
+        edit = edit_manifest()
+        edit["timeline"][1]["media"] = {
+            "usable_for_edit": True,
+            "file": "assets/slot_001.mp4",
+            "asset_type": "video",
+            "visual_query": "documentary hands",
+            "preferred_asset_type": "video",
+            "provider": "pexels",
+            "license": "Pexels",
+            "blockers": [],
+        }
+        edit["timeline"][2]["media"] = dict(edit["timeline"][1]["media"])
+        payload = build_virtual_timeline(
+            recording_pack=recording_pack(),
+            edit_manifest=edit,
+        )
+        v2 = next(item for item in payload["tracks"] if item["track_id"] == "V2")
+        source = v2["clips"][0]["source"]
+        self.assertEqual(source["media_file"], "assets/slot_001.mp4")
+        self.assertEqual(
+            source["logical_media_path"],
+            "multimedia/2026-09-24/assets/slot_001.mp4",
+        )
+        self.assertEqual(source["reference_basis"], "repo_root")
+
+
     def test_format_and_markers_are_inherited_for_future_nle_export(self):
         payload = build_virtual_timeline(
             recording_pack=recording_pack(),
