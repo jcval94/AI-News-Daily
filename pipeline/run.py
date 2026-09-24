@@ -120,6 +120,7 @@ def materialize_selection(
             raise ValueError(f"Selector referenced duplicate news_id={news_id!r}")
         seen.add(news_id)
         record = catalog[news_id].model_dump()
+        record["selected_news_index"] = len(selected) + 1
         record["selection_reason"] = str(ref.get("selection_reason", "") or "").strip()
         selected.append(record)
     return {
