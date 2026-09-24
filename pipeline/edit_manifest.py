@@ -35,6 +35,25 @@ def _script_sha256(script: str) -> str:
     return hashlib.sha256(script.encode("utf-8")).hexdigest()
 
 
+def _normalize_text(value: str) -> str:
+    return " ".join(str(value or "").split())
+
+
+def _validate_script_alignment(script: str, script_sections: dict[str, Any]) -> None:
+    sections = script_sections.get("sections", []) if isinstance(script_sections, dict) else []
+    if not sections:
+        raise ValueError("script_sections.json is required to build edit_manifest.json")
+    joined = " ".join(
+        str(item.get("spoken_text", "") or "").strip()
+        for item in sections
+        if isinstance(item, dict)
+    )
+    if _normalize_text(joined) != _normalize_text(script):
+        raise ValueError(
+            "script_sections.json narration does not match script.txt; refusing to build a stale edit manifest"
+        )
+
+
 def _section_ranges(
     script_sections: dict[str, Any], words_per_second: float
 ) -> list[dict[str, Any]]:
@@ -111,26 +130,45 @@ def _normalize_media_segments(
     media_manifest: list[dict[str, Any]],
     duration_seconds: float,
 ) -> tuple[list[dict[str, Any]], list[str]]:
-    assets_by_slot = {
-        int(item.get("shot_number", 0) or 0): item
-        for item in media_manifest
-        if isinstance(item, dict) and int(item.get("shot_number", 0) or 0) > 0
-    }
+    assets_by_slot: dict[int, dict[str, Any]] = {}
+    for item in media_manifest:
+        if not isinstance(item, dict):
+            continue
+        try:
+            shot_number = int(item.get("shot_number", 0) or 0)
+        except (TypeError, ValueError):
+            continue
+        if shot_number <= 0:
+            continue
+        if shot_number in assets_by_slot:
+            raise ValueError(f"Duplicate multimedia manifest shot_number={shot_number}")
+        assets_by_slot[shot_number] = item
+
     warnings: list[str] = []
     segments: list[dict[str, Any]] = []
+    seen_slots: set[int] = set()
     for item in media_plan.get("segments", []) if isinstance(media_plan, dict) else []:
         if not isinstance(item, dict) or item.get("mode") != "media":
             continue
         try:
             slot_number = int(item.get("slot_number", 0) or 0)
-            start = max(0.0, float(item.get("start_seconds", 0) or 0))
-            end = min(float(duration_seconds), float(item.get("end_seconds", 0) or 0))
+            raw_start = float(item.get("start_seconds", 0) or 0)
+            raw_end = float(item.get("end_seconds", 0) or 0)
+            start = max(0.0, raw_start)
+            end = min(float(duration_seconds), raw_end)
         except (TypeError, ValueError):
             warnings.append("Ignored media cue with invalid slot/timing metadata")
             continue
         if slot_number <= 0 or end <= start + _EPSILON:
             warnings.append(f"Ignored invalid media cue for slot {slot_number}")
             continue
+        if slot_number in seen_slots:
+            raise ValueError(f"Duplicate media cue slot_number={slot_number}")
+        seen_slots.add(slot_number)
+        if raw_start < 0 or raw_end > float(duration_seconds) + _EPSILON:
+            warnings.append(
+                f"Media cue slot {slot_number} was clipped to the estimated script duration"
+            )
         asset = assets_by_slot.get(slot_number)
         if asset is None:
             warnings.append(f"Media cue slot {slot_number} has no downloaded asset")
@@ -231,15 +269,33 @@ def _asset_payload(asset: dict[str, Any] | None, cue: dict[str, Any]) -> dict[st
     if asset is None:
         return {
             "available": False,
+            "usable_for_edit": False,
+            "file_exists": False,
+            "blockers": ["missing_manifest_asset"],
             "file": "",
             "asset_type": "",
             "preferred_asset_type": str(cue.get("preferred_asset_type", "") or "image_or_video"),
             "visual_query": str(cue.get("visual_query", "") or ""),
             "on_screen_text": str(cue.get("on_screen_text", "") or ""),
         }
+
+    file_path = str(asset.get("file", "") or "").strip()
+    file_exists = asset.get("_file_exists")
+    license_valid = bool(asset.get("license_valid", False))
+    blockers: list[str] = []
+    if not file_path:
+        blockers.append("missing_file_path")
+    if file_exists is False:
+        blockers.append("missing_file")
+    if not license_valid:
+        blockers.append("license_not_validated")
+
     return {
-        "available": True,
-        "file": str(asset.get("file", "") or ""),
+        "available": bool(file_path),
+        "usable_for_edit": bool(file_path) and file_exists is not False and license_valid,
+        "file_exists": file_exists,
+        "blockers": blockers,
+        "file": file_path,
         "asset_type": str(asset.get("asset_type", "") or ""),
         "preferred_asset_type": str(
             cue.get("preferred_asset_type", "") or asset.get("asset_type", "") or "image_or_video"
@@ -249,7 +305,7 @@ def _asset_payload(asset: dict[str, Any] | None, cue: dict[str, Any]) -> dict[st
         "source_url": str(asset.get("source_url", "") or ""),
         "creator": str(asset.get("creator", "") or ""),
         "license": str(asset.get("license", "") or ""),
-        "license_valid": bool(asset.get("license_valid", False)),
+        "license_valid": license_valid,
         "requires_attribution": bool(asset.get("requires_attribution", False)),
         "visual_query": str(cue.get("visual_query", "") or asset.get("visual_query", "") or ""),
         "on_screen_text": str(cue.get("on_screen_text", "") or asset.get("on_screen_text", "") or ""),
@@ -268,11 +324,29 @@ def build_edit_manifest(
     words_per_second: float,
     source_paths: dict[str, str] | None = None,
 ) -> dict[str, Any]:
+    _validate_script_alignment(script, script_sections)
     ranges = _section_ranges(script_sections, words_per_second)
-    if not ranges:
-        raise ValueError("script_sections.json is required to build edit_manifest.json")
     duration = float(ranges[-1].get("end_seconds", 0) or 0)
+
+    plan_date = str(media_plan.get("script_date", "") or "").strip() if isinstance(media_plan, dict) else ""
+    if plan_date and plan_date != str(episode_date):
+        raise ValueError(
+            f"multimedia plan script_date={plan_date} does not match episode_date={episode_date}"
+        )
+
     cues, warnings = _normalize_media_segments(media_plan, media_manifest, duration)
+    planned_duration = media_plan.get("timeline_duration_seconds") if isinstance(media_plan, dict) else None
+    if planned_duration not in (None, ""):
+        try:
+            delta = abs(float(planned_duration) - duration)
+        except (TypeError, ValueError):
+            warnings.append("Multimedia plan has invalid timeline_duration_seconds")
+        else:
+            if delta > max(2.0, duration * 0.02):
+                warnings.append(
+                    "Multimedia plan duration differs materially from current script timing; "
+                    "recording retime is mandatory before automated placement"
+                )
 
     boundaries = {0.0, duration}
     for section in ranges:
@@ -386,6 +460,20 @@ def build_edit_manifest(
             "downloaded_asset_count": len(
                 [item for item in media_manifest if isinstance(item, dict)]
             ),
+            "usable_asset_count": sum(
+                1
+                for item in timeline
+                if item["mode"] == "media"
+                and isinstance(item.get("media"), dict)
+                and item["media"].get("usable_for_edit") is True
+            ),
+            "blocked_media_segment_count": sum(
+                1
+                for item in timeline
+                if item["mode"] == "media"
+                and isinstance(item.get("media"), dict)
+                and item["media"].get("usable_for_edit") is not True
+            ),
         },
         "validation_warnings": warnings,
         "timeline": timeline,
@@ -406,6 +494,26 @@ def write_edit_manifest(
     media_manifest = _read_json(media_dir / "manifest.json", [])
     if not isinstance(media_manifest, list):
         raise ValueError("multimedia manifest must be a JSON array")
+
+    verified_manifest: list[dict[str, Any]] = []
+    media_root = media_dir.resolve()
+    for item in media_manifest:
+        if not isinstance(item, dict):
+            verified_manifest.append(item)
+            continue
+        record = dict(item)
+        relative = str(record.get("file", "") or "").strip()
+        if relative:
+            candidate = (media_dir / relative).resolve()
+            try:
+                candidate.relative_to(media_root)
+            except ValueError as exc:
+                raise ValueError(f"Multimedia asset escapes media directory: {relative}") from exc
+            record["_file_exists"] = candidate.is_file()
+        else:
+            record["_file_exists"] = False
+        verified_manifest.append(record)
+
     state = _read_json(episode_dir / "run_state.json", {})
     episode_date = str(state.get("episode_date", "") or episode_dir.name)
     payload = build_edit_manifest(
@@ -413,7 +521,7 @@ def write_edit_manifest(
         script=script,
         script_sections=script_sections,
         media_plan=media_plan,
-        media_manifest=media_manifest,
+        media_manifest=verified_manifest,
         words_per_second=words_per_second,
     )
     destination = media_dir / "edit_manifest.json"
