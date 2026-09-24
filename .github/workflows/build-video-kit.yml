@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.otio_export; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -354,6 +354,18 @@ jobs:
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia"
 
+      - name: Export native OpenTimelineIO
+        id: otio_export
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.virtual_timeline.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.otio_export \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts"
+
       - name: Create run report
         id: report
         if: always()
@@ -397,6 +409,7 @@ jobs:
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
           steps.virtual_timeline.outcome == 'success' &&
+          steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
@@ -409,6 +422,7 @@ jobs:
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
           steps.virtual_timeline.outcome == 'success' &&
+          steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
           steps.runtime_options.outputs.promote_approved == 'true'
@@ -462,6 +476,7 @@ jobs:
           steps.production_script.outcome == 'failure' ||
           steps.recording_pack.outcome == 'failure' ||
           steps.virtual_timeline.outcome == 'failure' ||
+          steps.otio_export.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
           echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
