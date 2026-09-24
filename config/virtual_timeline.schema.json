@@ -10,6 +10,8 @@
     "timing",
     "sources",
     "editing_style",
+    "format",
+    "markers",
     "replacement_contract",
     "readiness",
     "summary",
@@ -17,9 +19,16 @@
     "tracks"
   ],
   "properties": {
-    "schema_version": {"const": 1},
-    "episode_date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
-    "status": {"const": "pre_recording_virtual_timeline"},
+    "schema_version": {
+      "const": 1
+    },
+    "episode_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "const": "pre_recording_virtual_timeline"
+    },
     "timing": {
       "type": "object",
       "required": [
@@ -32,17 +41,37 @@
         "requires_recording_retime"
       ],
       "properties": {
-        "duration_seconds": {"type": "number", "exclusiveMinimum": 0},
-        "approved_script_duration_seconds": {"type": "number", "minimum": 0},
-        "post_script_duration_seconds": {"type": "number", "minimum": 0},
-        "frame_rate_fps": {"type": "integer", "minimum": 1},
-        "frame_accurate": {"const": false},
-        "requires_recording_retime": {"const": true}
+        "duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "approved_script_duration_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "post_script_duration_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "frame_rate_fps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "frame_accurate": {
+          "const": false
+        },
+        "requires_recording_retime": {
+          "const": true
+        }
       },
       "additionalProperties": true
     },
-    "sources": {"type": "object"},
-    "editing_style": {"type": "object"},
+    "sources": {
+      "type": "object"
+    },
+    "editing_style": {
+      "type": "object"
+    },
     "replacement_contract": {
       "type": "object",
       "required": [
@@ -53,11 +82,21 @@
         "never_treat_estimated_seconds_as_source_timecode"
       ],
       "properties": {
-        "virtual_a_roll_authority": {"const": "take_id"},
-        "strategy": {"const": "replace_and_retime_after_alignment"},
-        "real_a_roll_may_change_duration": {"const": true},
-        "retime_b_roll_after_alignment": {"const": true},
-        "never_treat_estimated_seconds_as_source_timecode": {"const": true}
+        "virtual_a_roll_authority": {
+          "const": "take_id"
+        },
+        "strategy": {
+          "const": "replace_and_retime_after_alignment"
+        },
+        "real_a_roll_may_change_duration": {
+          "const": true
+        },
+        "retime_b_roll_after_alignment": {
+          "const": true
+        },
+        "never_treat_estimated_seconds_as_source_timecode": {
+          "const": true
+        }
       },
       "additionalProperties": false
     },
@@ -71,26 +110,54 @@
         "blockers_for_final"
       ],
       "properties": {
-        "virtual_timeline_contract_valid": {"const": true},
-        "ready_for_virtual_preview": {"const": true},
-        "ready_for_real_a_roll_replace": {"const": false},
-        "ready_for_automated_nle_import": {"const": false},
-        "blockers_for_final": {"type": "array", "items": {"type": "string"}}
+        "virtual_timeline_contract_valid": {
+          "const": true
+        },
+        "ready_for_virtual_preview": {
+          "const": true
+        },
+        "ready_for_real_a_roll_replace": {
+          "const": false
+        },
+        "ready_for_automated_nle_import": {
+          "const": false
+        },
+        "blockers_for_final": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       },
       "additionalProperties": false
     },
-    "summary": {"type": "object"},
-    "track_summaries": {"type": "object"},
+    "summary": {
+      "type": "object"
+    },
+    "track_summaries": {
+      "type": "object"
+    },
     "tracks": {
       "type": "array",
       "minItems": 5,
       "items": {
         "type": "object",
-        "required": ["track_id", "kind", "name", "clips"],
+        "required": [
+          "track_id",
+          "kind",
+          "name",
+          "clips"
+        ],
         "properties": {
-          "track_id": {"type": "string"},
-          "kind": {"type": "string"},
-          "name": {"type": "string"},
+          "track_id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
           "clips": {
             "type": "array",
             "items": {
@@ -108,6 +175,69 @@
             }
           }
         }
+      }
+    },
+    "format": {
+      "type": "object",
+      "required": [
+        "resolution",
+        "frame_rate_fps",
+        "audio_sample_rate_hz",
+        "aspect_ratio"
+      ],
+      "properties": {
+        "resolution": {
+          "type": "string"
+        },
+        "frame_rate_fps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "audio_sample_rate_hz": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "aspect_ratio": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "markers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "marker_id",
+          "kind",
+          "timeline_seconds",
+          "label"
+        ],
+        "properties": {
+          "marker_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "take",
+              "section"
+            ]
+          },
+          "timeline_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "label": {
+            "type": "string"
+          },
+          "take_id": {
+            "type": "string"
+          },
+          "section_key": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
       }
     }
   },
