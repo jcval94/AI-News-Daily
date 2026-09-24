@@ -462,7 +462,9 @@ async def build_review_media(
         step="review_plan_multimedia",
         trace=trace,
     )
-    raw_plan = MultimediaPlan.model_validate(editor_state.get("multimedia_plan", {})).model_dump()
+    raw_plan = MultimediaPlan.model_validate(
+        editor_state.get("multimedia_plan", {})
+    ).model_dump(exclude_unset=True)
     # Normalize every agent-selected slot first; review-specific budget selection happens below so
     # chronological slot numbers cannot silently bias the package toward the beginning.
     normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, len(timeline_slots))
