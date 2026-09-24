@@ -33,6 +33,7 @@ class EditingStyleTests(unittest.TestCase):
         self.assertEqual(self.style["enforcement"]["mode"], "observe")
         self.assertFalse(self.style["enforcement"]["promotion_blocking"])
         self.assertTrue(self.style["_sha256"])
+        self.assertEqual(self.style["_source_path"], "config/editing_style.yaml")
 
     def test_evidence_defaults_are_documentary_not_decorative(self):
         image = media_defaults(self.style, role="evidence", asset_type="image")
