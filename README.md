@@ -393,7 +393,12 @@ GitHub Pages
 
 Editorial Regression is a separate QA lane; it is not the canonical content source for Pages.
 
-The Review Hub includes script, evidence, multimedia, costs, technical diagnostics, Living Architecture, and the observed run journey. The Pages catalog also exposes a global **Repo Health** view with structural and operational checks for source freshness, canonical production freshness, duplicate daily inputs, CI/workflow status, dependency hygiene, open maintenance work, and Pages history.
+The Review Hub includes script, evidence, multimedia, costs, technical diagnostics, Living Architecture, and the observed run journey. The Pages catalog also exposes two global observability views:
+
+- **Repo Health** — structural and operational checks for source freshness, canonical production freshness, duplicate daily inputs, CI/workflow status, dependency hygiene, open maintenance work, and Pages history.
+- **Narrative Memory** — verified-library inventory, mechanism coverage, quality scores, usage by approved episode, available/cooldown state, and the factual/analogy contract for each parallel.
+
+Narrative Memory data-only commits intentionally do not trigger expensive CI/model regression or a standalone Pages deployment. The dashboard is refreshed on the next normal Editorial Review Hub deployment and exposes its snapshot date explicitly.
 
 ## Configuration
 
