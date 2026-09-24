@@ -92,3 +92,15 @@ A valid virtual timeline can be `ready_for_virtual_preview=true` while remaining
 - `ready_for_automated_nle_import=false`.
 
 That distinction prevents another false green before real recording and alignment exist.
+
+
+## Format and markers
+
+The virtual timeline inherits the Recording Pack capture recommendation instead of inventing NLE settings:
+
+- resolution;
+- frame rate;
+- audio sample rate;
+- aspect ratio.
+
+It also emits deterministic markers for every take and the first take of each section. These markers are intended to map directly into future OTIO/Resolve exports and make retakes/navigation easy without another model call.
