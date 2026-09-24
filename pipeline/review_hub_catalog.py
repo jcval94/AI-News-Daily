@@ -276,6 +276,7 @@ function setHealth({{push=true}}={{}}){{
   if(select) select.value='__health__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
   if(healthLink) healthLink.classList.add('active');
+  if(memoryLink) memoryLink.classList.remove('active');
   document.title='Salud del repo · AI News Daily';
   if(push){{
     const url=new URL(window.location.href);
