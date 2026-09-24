@@ -718,13 +718,16 @@ async def build(
                 {
                     "news_text": news_text,
                     "selected_news": selected_json,
+                    "selected_news_count": str(len(selection["items"])),
                     "voice_profile": voice_profile,
                     "discourse_profile": discourse_profile,
                     "previous_essays": previous_essays_json,
                     "novelty_feedback": novelty_feedback,
                 },
                 (
-                    "Design a novel episode thesis, evidence strategy, narrative beats, and target duration. "
+                    f"Design a novel episode thesis, evidence strategy, narrative beats, and target duration. "
+                    f"There are exactly {len(selection['items'])} selected_news items; every selected_news_index "
+                    f"must be between 1 and {len(selection['items'])}. "
                     "Do not repeat a recent essay merely with new headlines."
                 ),
                 step="plan_episode" if novelty_attempt == 1 else "replan_episode_novelty",
