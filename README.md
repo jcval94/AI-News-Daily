@@ -383,7 +383,7 @@ GitHub Pages
 
 Editorial Regression is a separate QA lane; it is not the canonical content source for Pages.
 
-The Review Hub includes script, evidence, multimedia, costs, technical diagnostics, Living Architecture, and the observed run journey.
+The Review Hub includes script, evidence, multimedia, costs, technical diagnostics, Living Architecture, and the observed run journey. The Pages catalog also exposes a global **Repo Health** view with structural and operational checks for source freshness, canonical production freshness, duplicate daily inputs, CI/workflow status, dependency hygiene, open maintenance work, and Pages history.
 
 ## Configuration
 
