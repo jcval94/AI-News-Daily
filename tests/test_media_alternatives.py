@@ -9,6 +9,17 @@ from experiments.video_search.plan import SearchPlan, identity_matches
 
 
 class AlternativeMediaTests(unittest.TestCase):
+    def test_peertube_fallback_requires_all_query_words(self):
+        base=dict(uuid='a'*8+'-aaaa-aaaa-aaaa-'+'a'*12, url='https://tube.example/videos/watch/a',
+                  privacy={'id':1}, isLive=False, nsfw=False, name='The lake that killed a village',
+                  description='Lake Nyos in 1986 was a disaster.')
+        wrong=dict(base, name='Another lake', description='A lake disaster elsewhere.')
+        with patch.object(videos,'api',side_effect=[{'data':[]},{'data':[wrong,base]}]) as call:
+            rows=videos.peertube_search('Lake Nyos disaster',5)
+        self.assertEqual(len(rows),1)
+        self.assertEqual(rows[0]['title'],base['name'])
+        self.assertEqual(call.call_args.kwargs['count'],30)
+
     def test_event_alias_can_be_compositional_but_person_cannot(self):
         topic = dict(mention='Lake Nyos disaster', queries=['Lake Nyos'], archive_terms=['Lake Nyos'],
                      match_groups=[['Lake Nyos', '1986']])

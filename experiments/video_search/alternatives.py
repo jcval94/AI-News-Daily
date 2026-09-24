@@ -7,6 +7,7 @@ from urllib.parse import urlencode, urlsplit, quote
 
 from experiments import public_media
 from experiments.video_search.providers import clean_text, duration_seconds, ProviderBlocked
+from experiments.video_search.plan import normalize
 
 
 def api(base, **params):
@@ -55,8 +56,19 @@ def peertube_search(query, limit):
     phrase = " ".join(re.findall(r"[^\W_]+", query, re.UNICODE))
     data = api("https://search.joinpeertube.org/api/v1/search/videos", search='"' + phrase + '"',
                count=min(limit, 15), nsfw="false", isLive="false")
+    items = data.get("data", [])
+    if not items:
+        # Names/events can be split by connecting words in the catalogue text.
+        # Sepia broadens with OR; enforce ALL query words ourselves before the
+        # semantic judge. A bounded fallback must not admit partial-name hits.
+        data = api("https://search.joinpeertube.org/api/v1/search/videos", search=phrase,
+                   count=30, nsfw="false", isLive="false")
+        required = set(normalize(phrase).split())
+        items = [v for v in data.get("data", []) if required and required.issubset(set(normalize(
+            str(v.get("name") or "") + " " + str(v.get("description") or v.get("truncatedDescription") or "")
+        ).split()))][:min(limit, 15)]
     rows = []
-    for item in data.get("data", []):
+    for item in items:
         if item.get("privacy", {}).get("id") != 1 or item.get("isLive") or item.get("nsfw"):
             continue
         ident = item.get("uuid", "")
