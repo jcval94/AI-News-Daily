@@ -156,6 +156,7 @@ def _presenter_track(recording_pack: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _media_track(edit_manifest: dict[str, Any]) -> list[dict[str, Any]]:
     clips: list[dict[str, Any]] = []
+    episode_date = str(edit_manifest.get("episode_date", "") or "")
     for position, cue in enumerate(_group_media_cues(edit_manifest), start=1):
         start = float(cue["start_seconds"])
         end = float(cue["end_seconds"])
@@ -163,6 +164,14 @@ def _media_track(edit_manifest: dict[str, Any]) -> list[dict[str, Any]]:
         director = cue.get("director", {}) if isinstance(cue.get("director"), dict) else {}
         usable = bool(media.get("usable_for_edit") is True)
         file_path = str(media.get("file", "") or "").strip()
+        if usable and file_path:
+            logical_media_path = (
+                file_path.replace("\\", "/")
+                if file_path.replace("\\", "/").startswith("multimedia/")
+                else f"multimedia/{episode_date}/{file_path.replace('\\\\', '/')}"
+            )
+        else:
+            logical_media_path = ""
         role = str(director.get("visual_role", "") or "media")
         query = str(media.get("visual_query", "") or "").strip()
         name = query or str(media.get("on_screen_text", "") or "").strip() or cue["cue_id"]
@@ -180,6 +189,8 @@ def _media_track(edit_manifest: dict[str, Any]) -> list[dict[str, Any]]:
                 "source": {
                     "type": "file" if usable else "generated_placeholder",
                     "media_file": file_path if usable else None,
+                    "logical_media_path": logical_media_path if usable else None,
+                    "reference_basis": "repo_root" if usable else None,
                     "asset_type": str(media.get("asset_type", "") or ""),
                     "preferred_asset_type": str(media.get("preferred_asset_type", "") or ""),
                     "provider": str(media.get("provider", "") or ""),
