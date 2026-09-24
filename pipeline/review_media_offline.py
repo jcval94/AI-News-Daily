@@ -217,7 +217,21 @@ def build_deterministic_plan(
         start = float(slot.get("start_seconds", 0) or 0)
         section_key = str(slot.get("section_key", "") or "")
         if start < OPENING_DENSE_MEDIA_SECONDS:
-            query = _OPENING_QUERIES[opening_index % len(_OPENING_QUERIES)]
+            # Keep the first opening slot on the presenter. This establishes the human
+            # narrator before the dense visual sequence while preserving >=5 media
+            # opportunities inside the first 20 seconds with the current slot cadence.
+            if opening_index == 0:
+                opening_index += 1
+                plan.append({
+                    **slot,
+                    "mode": "presenter",
+                    "visual_query": "",
+                    "on_screen_text": "",
+                    "reason": "Presenter anchor before the dense cold-open montage",
+                })
+                continue
+
+            query = _OPENING_QUERIES[(opening_index - 1) % len(_OPENING_QUERIES)]
             opening_index += 1
             plan.append({
                 **slot,
