@@ -67,7 +67,7 @@ def validate_media(path: Path, mode: str, seconds: int, expected_duration=None) 
     return media
 
 
-def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode="auto") -> dict:
+def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode="off") -> dict:
     destination = output / "videos" / (item["source"] + "_" + item["id"])
     # Work outside the uploaded directory, then atomically publish verified media.
     # Cancellation can never upload an in-progress raw download as a video asset.
@@ -139,9 +139,18 @@ def download(item: dict, output: Path, mode: str, seconds: int, transcript_mode=
         shutil.rmtree(folder, ignore_errors=True)
 
 
+def duration_priority(value):
+    if not isinstance(value, (int, float)) or not 0 < value < float("inf"):
+        return (1, 0)
+    return (0 if value <= 300 else 2, value)
+
+
 def next_candidate(candidates, attempted, successful, events, blocked_sources):
     remaining = [c for c in candidates if c["relevant"] and c["key"] not in attempted
                  and c["source"] not in blocked_sources]
+    # Stable order within each duration tier preserves semantic relevance.
+    # Known short videos first, unknown lengths second, known long videos last.
+    remaining.sort(key=lambda c: duration_priority(c.get("duration_seconds")))
     covered = {e for item in successful for e in item["events"]}
     for event in events:
         if event.mention not in covered:
@@ -200,7 +209,7 @@ def execute(args, output: Path) -> bool:
     manifest = {"schema_version": 1, "started_at": utc_now(), "description": args.description,
                 "config": {"count": args.count, "sources": args.sources.split(","),
                            "mode": args.mode, "clip_seconds": args.clip_seconds,
-                           "transcript": getattr(args, "transcript", "auto"),
+                           "transcript": getattr(args, "transcript", "off"),
                            "max_bytes_per_video": MAX_BYTES, "max_full_seconds": MAX_DURATION},
                 "github": {k: os.environ.get(k) for k in ("GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")},
                 "items": [], "discovery": [], "blocked_sources": {}}
@@ -229,7 +238,7 @@ def execute(args, output: Path) -> bool:
             print(f"Attempt {len(attempted)}: {item['source']} {item['id']}", flush=True)
             try:
                 result.update(download(item, output, args.mode, args.clip_seconds,
-                                       transcript_mode=getattr(args, "transcript", "auto")))
+                                       transcript_mode=getattr(args, "transcript", "off")))
                 successes.append(result)
             except Exception as error:
                 result.update(status="failed", error=safe_error(error))
@@ -255,7 +264,7 @@ def main() -> int:
     parser.add_argument("--mode", choices=["full", "clip"], default="full")
     parser.add_argument("--clip-seconds", type=int, default=15)
     parser.add_argument("--planner", choices=["semantic", "literal"], default="semantic")
-    parser.add_argument("--transcript", choices=["auto", "source", "off"], default="auto")
+    parser.add_argument("--transcript", choices=["auto", "source", "off"], default="off")
     parser.add_argument("--output", default="video-search-output/run")
     args = parser.parse_args()
     if not 1 <= args.count <= 25 or not 1 <= args.clip_seconds <= 60 or not 1 <= len(args.description.strip()) <= 4000:

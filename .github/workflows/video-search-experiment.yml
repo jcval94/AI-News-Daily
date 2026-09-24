@@ -23,7 +23,7 @@ on:
         options: [full, clip]
       transcript:
         description: "auto: subtítulos o transcripción del audio; source: solo subtítulos publicados"
-        default: auto
+        default: off
         type: choice
         options: [auto, source, off]
   # Branch-only entry point before the workflow exists on main. Changing this
@@ -84,7 +84,7 @@ jobs:
       VIDEO_COUNT: ${{ matrix.count }}
       VIDEO_SOURCES: ${{ matrix.sources }}
       VIDEO_MODE: ${{ matrix.mode }}
-      TRANSCRIPT_MODE: ${{ matrix.transcript || 'auto' }}
+      TRANSCRIPT_MODE: ${{ matrix.transcript || 'off' }}
       OUTPUT_DIR: video-search-output/run
     steps:
       - uses: actions/checkout@v4

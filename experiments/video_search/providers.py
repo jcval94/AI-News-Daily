@@ -73,6 +73,25 @@ def candidate(source, ident, title, description, creator, license_label, query):
             "queries": [query], "events": []}
 
 
+def duration_seconds(value):
+    """Provider duration strings: seconds, HH:MM:SS, or ISO 8601 PT."""
+    try:
+        text = str(value or "").strip()
+        match = re.fullmatch(r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?", text)
+        if match:
+            result = sum(float(v or 0) * unit for v, unit in zip(match.groups(), (3600, 60, 1)))
+        elif ":" in text:
+            parts = text.split(":")
+            if not 2 <= len(parts) <= 3:
+                return None
+            result = sum(float(v) * 60 ** i for i, v in enumerate(reversed(parts)))
+        else:
+            result = float(text)
+        return result if 0 < result < float("inf") else None
+    except (ValueError, TypeError):
+        return None
+
+
 def youtube_search(query: str, limit: int) -> list[dict]:
     key = os.environ.get("YOUTUBE_API_KEY", "")
     if key:
@@ -91,6 +110,7 @@ def youtube_search(query: str, limit: int) -> list[dict]:
                 continue
             rows.append(candidate("youtube", item["id"], snippet["title"], snippet.get("description"),
                                   snippet.get("channelTitle"), status.get("license"), query))
+            rows[-1]["duration_seconds"] = duration_seconds(item.get("contentDetails", {}).get("duration"))
         return rows
     result = subprocess.run([sys.executable, "-m", "yt_dlp", "--ignore-config", "--flat-playlist",
                              "--dump-single-json", "--no-warnings", "--retries", "0",
@@ -106,6 +126,7 @@ def youtube_search(query: str, limit: int) -> list[dict]:
             continue
         rows.append(candidate("youtube", item["id"], item.get("title"), item.get("description"),
                               item.get("channel"), "unknown", query))
+        rows[-1]["duration_seconds"] = duration_seconds(item.get("duration"))
     return rows
 
 
@@ -120,14 +141,15 @@ def archive_search(query: str, limit: int) -> list[dict]:
     for field in ("title", "subject"):
         search = f"mediatype:movies AND NOT access-restricted-item:true AND {field}:{phrase}"
         params = [("q", search), ("rows", str(budget)), ("output", "json"), ("sort[]", "downloads desc")]
-        params += [("fl[]", f) for f in ("identifier", "title", "description", "creator", "licenseurl", "rights")]
+        params += [("fl[]", f) for f in ("identifier", "title", "description", "creator", "licenseurl", "rights", "length")]
         data = request_json("https://archive.org/advancedsearch.php?" + urllib.parse.urlencode(params))
         for item in data.get("response", {}).get("docs", []):
             docs.setdefault(item["identifier"], item)
         if len(docs) >= limit:
             break
-    return [candidate("archive", v["identifier"], v.get("title"), v.get("description"),
-                      v.get("creator"), v.get("licenseurl") or v.get("rights"), query)
+    return [dict(candidate("archive", v["identifier"], v.get("title"), v.get("description"),
+                      v.get("creator"), v.get("licenseurl") or v.get("rights"), query),
+                 duration_seconds=duration_seconds(v.get("length")))
             for v in list(docs.values())[:budget]]
 
 

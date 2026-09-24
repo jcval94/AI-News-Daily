@@ -16,7 +16,7 @@ Workflow: **Experiment — Description to video artifacts**.
 - `mode`: `full` descarga el video completo dentro del presupuesto; `clip` conserva
   los primeros 15 segundos como prueba de acceso. No busca automáticamente el mejor
   instante dentro del video.
-- `transcript`: `auto` intenta subtítulos publicados y, si faltan, transcribe el audio
+- `transcript`: desactivada por defecto (`off`, sin llamadas ASR). `source` permite subtítulos existentes sin ASR; `auto` intenta subtítulos publicados y, si faltan, transcribe el audio
   descargado; `source` solo consulta subtítulos; `off` desactiva la transcripción.
 
 Mientras este workflow viva únicamente en la rama `experiment/youtube-artifacts`,
@@ -138,3 +138,5 @@ Referencias de implementación:
 [transcripción de audio](https://developers.openai.com/api/docs/guides/speech-to-text),
 [Most Replayed de YouTube](https://support.google.com/youtube/answer/12825599),
 [GitHub workflow_dispatch](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch).
+
+Desde la prueba de estrés del 24-09-2026 se priorizan candidatos relevantes con duración conocida de hasta 5 minutos, después duración desconocida y finalmente videos más largos, ordenados de menor a mayor duración. La cobertura del evento exacto conserva prioridad. El límite de seguridad sigue en 30 minutos/128 MiB, y Archive elige su derivado pequeño. Una duración desconocida no equivale a un video corto.
