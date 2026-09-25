@@ -124,6 +124,11 @@ def build_recording_ingest_contract(recording_pack: dict[str, Any]) -> dict[str,
             "preferred_camera_labels": ["camA", "cam1", "main", "camB", "cam2"],
             "external_audio_bonus": True,
             "embedded_audio_is_acceptable": True,
+            "camera_scratch_audio_recommended_for_automated_alignment": True,
+            "reason": (
+                "Keep camera scratch audio enabled even when using an external lavalier. "
+                "WhisperX can then produce video-relative word timestamps and Resolve can waveform-sync the external audio."
+            ),
         },
         "selection_policy": {
             "authority": "technical_only_not_performance_or_script_accuracy",
@@ -180,7 +185,8 @@ def render_ingest_instructions(contract: dict[str, Any]) -> str:
             "",
             "## Audio",
             "",
-            "- El video puede usar audio embebido.",
+            "- Mantén el scratch audio de cámara ENCENDIDO aunque uses lavalier.",
+            "- El scratch audio permite timestamps relativos al video y waveform sync automático en Resolve.",
             "- Si tienes lavalier/mic externo, usa el mismo take_id y retake con audio.wav, lav.wav, etc.",
             "- Un take sin audio embebido sano y sin audio externo pareado no queda listo para alignment.",
             "",
