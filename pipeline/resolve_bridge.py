@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import opentimelineio as otio
+
 from pipeline.schema_validation import validate_payload
 
 
@@ -210,6 +212,7 @@ def build_resolve_plan(
             },
         },
         "bins": [
+            "00_OTIO_Imported",
             "01_A-Roll_Placeholders",
             "02_B-Roll",
             "03_Graphics",
@@ -227,6 +230,13 @@ def build_resolve_plan(
         "imports": list(imports.values()),
         "placements": placements,
         "markers": markers,
+        "execution": {
+            "primary_strategy": "import_otio",
+            "resolve_otio_logical_path": f"scripts/{episode_date}/resolve_timeline.otio",
+            "resolve_otio_validation_logical_path": f"scripts/{episode_date}/resolve_otio_validation.json",
+            "manual_append_default": False,
+            "reason": "Resolve 21 supports native OTIO import; direct AppendToTimeline placement is not the default execution path.",
+        },
         "readiness": {
             "plan_valid": True,
             "ready_for_resolve_execution": not unique_blockers,
@@ -247,6 +257,93 @@ def build_resolve_plan(
             "duration_seconds": duration_seconds,
             "frame_rate_fps": fps,
         },
+    }
+
+
+def materialize_resolve_otio(
+    *,
+    plan: dict[str, Any],
+    source_otio_path: Path,
+    destination: Path,
+    repo_root: Path,
+) -> dict[str, Any]:
+    if not source_otio_path.is_file():
+        raise FileNotFoundError(f"Missing canonical OTIO timeline: {source_otio_path}")
+    timeline = otio.adapters.read_from_file(str(source_otio_path), adapter_name="otio_json")
+    placements = {
+        str(item.get("placement_id", "") or ""): item
+        for item in plan.get("placements", [])
+        if isinstance(item, dict)
+    }
+    expected = set(placements)
+    replaced: set[str] = set()
+
+    for track in timeline.tracks:
+        for item in track:
+            if not isinstance(item, otio.schema.Clip):
+                continue
+            metadata = item.metadata.get("ai_news_daily", {}) if item.metadata else {}
+            clip_id = str(metadata.get("clip_id", "") or "")
+            placement = placements.get(clip_id)
+            if not placement:
+                continue
+            logical = str(placement.get("logical_repo_path", "") or "")
+            physical = (repo_root / logical).resolve()
+            try:
+                physical.relative_to(repo_root.resolve())
+            except ValueError as exc:
+                raise ValueError(f"Resolve OTIO media escapes repo root: {logical}") from exc
+            if not physical.is_file():
+                raise FileNotFoundError(f"Resolve OTIO media missing: {logical}")
+            item.media_reference = otio.schema.ExternalReference(
+                target_url=physical.as_uri(),
+                metadata={
+                    "ai_news_daily": {
+                        "logical_repo_path": logical,
+                        "placeholder": bool(placement.get("placeholder")),
+                        "placement_id": clip_id,
+                    }
+                },
+            )
+            replaced.add(clip_id)
+
+    missing = sorted(expected - replaced)
+    if missing:
+        raise ValueError(
+            "Resolve OTIO could not materialize planned clips: " + ", ".join(missing[:8])
+        )
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    otio.adapters.write_to_file(timeline, str(destination), adapter_name="otio_json")
+    reloaded = otio.adapters.read_from_file(str(destination), adapter_name="otio_json")
+    external_ids: set[str] = set()
+    for track in reloaded.tracks:
+        for item in track:
+            if not isinstance(item, otio.schema.Clip):
+                continue
+            metadata = item.metadata.get("ai_news_daily", {}) if item.metadata else {}
+            clip_id = str(metadata.get("clip_id", "") or "")
+            if clip_id in expected and isinstance(item.media_reference, otio.schema.ExternalReference):
+                external_ids.add(clip_id)
+    if external_ids != expected:
+        raise ValueError("Resolve OTIO round-trip lost materialized media references")
+
+    return {
+        "schema_version": 1,
+        "valid": True,
+        "strategy": "import_otio",
+        "source_otio": str(source_otio_path),
+        "resolve_otio": str(destination),
+        "materialized_clip_count": len(replaced),
+        "planned_clip_count": len(expected),
+        "kept_unresolved_audio_placeholders": sum(
+            1
+            for track in reloaded.tracks
+            for item in track
+            if isinstance(item, otio.schema.Clip)
+            and not str((item.metadata.get("ai_news_daily", {}) if item.metadata else {}).get("clip_id", "") or "") in expected
+            and isinstance(item.media_reference, otio.schema.MissingReference)
+        ),
     }
 
 
@@ -334,6 +431,18 @@ def execute_resolve_plan(
     if blockers:
         raise RuntimeError("Resolve execution blocked by missing media: " + ", ".join(blockers))
 
+    execution = plan.get("execution", {}) if isinstance(plan.get("execution"), dict) else {}
+    if execution.get("primary_strategy") != "import_otio":
+        raise RuntimeError("Resolve Bridge v0 only executes the import_otio strategy")
+    resolve_otio_logical = str(execution.get("resolve_otio_logical_path", "") or "")
+    resolve_otio_path = (repo_root / resolve_otio_logical).resolve()
+    try:
+        resolve_otio_path.relative_to(repo_root.resolve())
+    except ValueError as exc:
+        raise RuntimeError("Resolve OTIO path escapes repository root") from exc
+    if not resolve_otio_path.is_file():
+        raise RuntimeError(f"Resolve materialized OTIO is missing: {resolve_otio_logical}")
+
     if resolve is None:
         module = load_resolve_api()
         resolve = module.scriptapp("Resolve")
@@ -367,67 +476,47 @@ def execute_resolve_plan(
     root = media_pool.GetRootFolder()
     bins = {name: _ensure_bin(media_pool, root, name) for name in plan.get("bins", [])}
 
-    imported: dict[str, Any] = {}
-    for item in plan.get("imports", []):
-        logical = str(item.get("logical_repo_path", "") or "")
-        path = (repo_root / logical).resolve()
-        if not path.is_file():
-            raise RuntimeError(f"Resolve import file missing: {logical}")
-        bin_name = str(item.get("bin", "") or "")
-        folder = bins.get(bin_name)
-        if not folder:
-            raise RuntimeError(f"Resolve bin missing from plan: {bin_name}")
-        if media_pool.SetCurrentFolder(folder) is False:
-            raise RuntimeError(f"Resolve could not select bin {bin_name!r}")
-        results = media_pool.ImportMedia([str(path)]) or []
-        if len(results) != 1:
-            raise RuntimeError(f"Resolve failed to import {logical}")
-        imported[logical] = results[0]
-
     timeline_name = str(plan["project"]["timeline_name"])
     if _timeline_exists(project, timeline_name):
         raise RuntimeError(
             f"Resolve timeline {timeline_name!r} already exists; v0 refuses destructive overwrite"
         )
-    timeline = media_pool.CreateEmptyTimeline(timeline_name)
+
+    staging = bins.get("00_OTIO_Imported") or root
+    if media_pool.SetCurrentFolder(staging) is False:
+        raise RuntimeError("Resolve could not select OTIO import staging bin")
+    timeline = media_pool.ImportTimelineFromFile(
+        str(resolve_otio_path),
+        {
+            "timelineName": timeline_name,
+            "importSourceClips": True,
+            "sourceClipsPath": str(repo_root),
+        },
+    )
     if not timeline:
-        raise RuntimeError(f"Resolve could not create timeline {timeline_name!r}")
+        raise RuntimeError("Resolve failed to import the materialized OTIO timeline")
     project.SetCurrentTimeline(timeline)
 
-    while int(timeline.GetTrackCount("video") or 0) < 4:
-        if timeline.AddTrack("video") is False:
-            raise RuntimeError("Resolve could not add required video track")
-    while int(timeline.GetTrackCount("audio") or 0) < 1:
-        if timeline.AddTrack("audio") is False:
-            raise RuntimeError("Resolve could not add required audio track")
-
     for spec in plan.get("tracks", {}).get("video", []):
-        timeline.SetTrackName("video", int(spec["index"]), str(spec["name"]))
+        index = int(spec["index"])
+        if index <= int(timeline.GetTrackCount("video") or 0):
+            timeline.SetTrackName("video", index, str(spec["name"]))
     for spec in plan.get("tracks", {}).get("audio", []):
-        timeline.SetTrackName("audio", int(spec["index"]), str(spec["name"]))
+        index = int(spec["index"])
+        if index <= int(timeline.GetTrackCount("audio") or 0):
+            timeline.SetTrackName("audio", index, str(spec["name"]))
 
-    appended = 0
-    for item in plan.get("placements", []):
-        logical = str(item["logical_repo_path"])
-        media_item = imported.get(logical)
-        if not media_item:
-            raise RuntimeError(f"Resolve placement references unimported media: {logical}")
-        duration = int(item["duration_frames"])
-        clip_info = {
-            "mediaPoolItem": media_item,
-            "startFrame": 0,
-            "endFrame": max(0, duration - 1),
-            "recordFrame": int(item["record_frame"]),
-            "trackIndex": int(item["track_index"]),
-            "mediaType": 1,
-        }
-        result = media_pool.AppendToTimeline([clip_info])
-        if not result:
-            raise RuntimeError(f"Resolve could not append placement {item['placement_id']}")
-        appended += 1
-
+    existing_markers = timeline.GetMarkers() or {}
+    existing_names = {
+        (int(frame), str(data.get("name", "") or ""))
+        for frame, data in existing_markers.items()
+        if isinstance(data, dict)
+    }
     markers_added = 0
     for marker in plan.get("markers", []):
+        identity = (int(marker["frame"]), str(marker["name"]))
+        if identity in existing_names:
+            continue
         ok = timeline.AddMarker(
             int(marker["frame"]),
             str(marker["color"]),
@@ -446,11 +535,12 @@ def execute_resolve_plan(
     return {
         "schema_version": 1,
         "status": "resolve_bridge_v0_executed",
+        "execution_strategy": "import_otio",
         "project_name": project_name,
         "timeline_name": timeline_name,
-        "imported_media_count": len(imported),
-        "appended_placement_count": appended,
-        "marker_count": markers_added,
+        "planned_media_count": len(plan.get("imports", [])),
+        "timeline_placement_count": len(plan.get("placements", [])),
+        "markers_added_after_import": markers_added,
         "real_a_roll_ingested": False,
         "final_edit_ready": False,
     }
@@ -477,6 +567,19 @@ def write_resolve_plan(
         timeline_name=timeline_name,
     )
     validate_payload(plan, "resolve_bridge_plan.schema.json")
+    source_otio = episode_dir / "timeline.otio"
+    resolve_otio = episode_dir / "resolve_timeline.otio"
+    validation = materialize_resolve_otio(
+        plan=plan,
+        source_otio_path=source_otio,
+        destination=resolve_otio,
+        repo_root=repo_root,
+    )
+    validation_path = episode_dir / "resolve_otio_validation.json"
+    validation_path.write_text(
+        json.dumps(validation, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     destination = episode_dir / "resolve_bridge_plan.json"
     destination.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return destination
