@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 11)
+        self.assertEqual(data["version"], 12)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -72,6 +72,11 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("DaVinci Resolve", stages["resolve_bridge"]["title"])
         self.assertIn("resolve_bridge_plan.json", stages["resolve_bridge"]["outputs"])
         self.assertIn("DaVinciResolveScript", stages["resolve_bridge"]["authority"])
+        self.assertIn("pre_recording_preview", stages)
+        self.assertIn("Pre-recording Preview", stages["pre_recording_preview"]["title"])
+        self.assertIn("pre_recording_preview_plan.json", stages["pre_recording_preview"]["outputs"])
+        self.assertIn("artifact aislado", stages["pre_recording_preview"]["outputs"])
+        self.assertIn("FFmpeg", stages["pre_recording_preview"]["authority"])
         self.assertIn("ai-news-run", stages["pages"]["inputs"])
         self.assertIn("fuente canónica", stages["pages"]["summary"])
 
