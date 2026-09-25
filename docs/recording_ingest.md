@@ -52,6 +52,17 @@ Rules:
 - audio labels such as `audio`, `lav`, `mic`, `micA` are supported;
 - take IDs are case-sensitive and must match the Recording Pack exactly.
 
+## Camera scratch audio
+
+Keep the camera microphone/scratch audio enabled even when the external lavalier is the audio you intend to publish.
+
+The automated local flow needs that scratch waveform for two reasons:
+
+- WhisperX can produce word timestamps in the camera video's own timebase;
+- DaVinci Resolve can use `AutoSyncAudio` in waveform mode to attach the external lav track.
+
+If the video has no scratch audio, the external recording can still be transcribed for script fidelity, but the pipeline will not pretend those timestamps are valid video trim points.
+
 ## Audio
 
 A candidate is ready for future alignment when it has:
