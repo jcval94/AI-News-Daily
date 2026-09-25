@@ -61,6 +61,14 @@ class PromotionGuardTests(unittest.TestCase):
         self.assertIn(required, promote)
         self.assertIn("steps.pre_recording_preview.outcome == 'failure'", workflow)
 
+
+    def test_asset_readiness_must_succeed_before_promotion(self) -> None:
+        workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        required = "steps.asset_readiness.outcome == 'success'"
+        self.assertGreaterEqual(workflow.count(required), 2)
+        self.assertIn("steps.asset_readiness.outcome == 'failure'", workflow)
+        self.assertIn("--enforce", workflow)
+
     def test_script_only_manual_run_cannot_promote_canonical_episode(self) -> None:
         workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
         self.assertIn(
