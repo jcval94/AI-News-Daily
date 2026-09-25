@@ -112,6 +112,7 @@ joserfc==1.7.4
     # via authlib
 jsonschema==4.26.0
     # via
+    #   ai-news-daily (pyproject.toml)
     #   google-adk
     #   litellm
 jsonschema-specifications==2025.9.1
