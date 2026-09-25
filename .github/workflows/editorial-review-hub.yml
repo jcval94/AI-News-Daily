@@ -168,8 +168,31 @@ jobs:
             fi
           fi
 
+          if [ -z "$SELECTED_RUN_ID" ]; then
+            echo "::warning::No recent production artifact resolved; falling back to canonical repository history."
+            CANONICAL_JSON=".review-candidates/canonical.json"
+            if python -m pipeline.review_source \
+              --root scripts \
+              --target-date "${INPUT_TARGET_DATE:-}" \
+              --output "$CANONICAL_JSON" >/dev/null 2>&1; then
+              CANONICAL_DIR="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["episode_dir"])' "$CANONICAL_JSON")"
+              SELECTED_TARGET_DATE="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["episode_date"])' "$CANONICAL_JSON")"
+              rm -rf .review-source
+              mkdir -p ".review-source/scripts/$SELECTED_TARGET_DATE"
+              cp -a "$CANONICAL_DIR/." ".review-source/scripts/$SELECTED_TARGET_DATE/"
+              if [ -d "multimedia/$SELECTED_TARGET_DATE" ]; then
+                mkdir -p ".review-source/multimedia/$SELECTED_TARGET_DATE"
+                cp -a "multimedia/$SELECTED_TARGET_DATE/." ".review-source/multimedia/$SELECTED_TARGET_DATE/"
+              fi
+              SELECTED_RUN_ID="canonical"
+              SELECTED_ARTIFACT_NAME="canonical-repository"
+              SELECTED_EPISODE_DIR=".review-source/scripts/$SELECTED_TARGET_DATE"
+              echo "Accepted canonical fallback episode=$SELECTED_TARGET_DATE"
+            fi
+          fi
+
           test -n "$SELECTED_RUN_ID" || {
-            echo "::error::No recent Actions artifact contains a valid episode script"
+            echo "::error::Neither recent Actions artifacts nor canonical repository history contain a valid episode script"
             exit 1
           }
           test -s "$SELECTED_EPISODE_DIR/script.txt"
