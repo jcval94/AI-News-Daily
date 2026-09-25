@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/resolve-alignment-plan-v1.json",
+  "title": "AI News Daily Resolve Alignment Plan",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "episode_date",
+    "status",
+    "project",
+    "bins",
+    "audio_sync",
+    "resolve_native_transcription",
+    "readiness",
+    "summary",
+    "takes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "episode_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "const": "resolve_alignment_media_sync_plan"
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "name",
+        "future_timeline_name"
+      ]
+    },
+    "bins": {
+      "type": "object",
+      "required": [
+        "video",
+        "audio"
+      ]
+    },
+    "audio_sync": {
+      "type": "object",
+      "required": [
+        "mode",
+        "channel",
+        "retain_embedded_audio",
+        "retain_video_metadata",
+        "use_live_resolve_enum_constants",
+        "verify_after_sync"
+      ],
+      "properties": {
+        "mode": {
+          "const": "waveform"
+        },
+        "channel": {
+          "const": "automatic"
+        },
+        "use_live_resolve_enum_constants": {
+          "const": true
+        },
+        "verify_after_sync": {
+          "const": true
+        }
+      }
+    },
+    "resolve_native_transcription": {
+      "type": "object"
+    },
+    "readiness": {
+      "type": "object",
+      "required": [
+        "plan_valid",
+        "ready_for_media_sync",
+        "ready_for_aligned_timeline_build",
+        "blockers"
+      ],
+      "properties": {
+        "plan_valid": {
+          "const": true
+        },
+        "ready_for_media_sync": {
+          "type": "boolean"
+        },
+        "ready_for_aligned_timeline_build": {
+          "type": "boolean"
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "selected_take_count",
+        "waveform_sync_pair_count",
+        "embedded_only_take_count"
+      ]
+    },
+    "takes": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}
