@@ -138,3 +138,52 @@ P1 se usa con media real.
 ## Qué sigue
 
 P1: acceptance con un episodio real. P2: aligned timeline, proxies, captions y audio normalization. P3: MCP delgado para jobs/receipts, nunca shell.
+
+## Repo → local: staging obligatorio
+
+Los requests que un agente o un commit coloque en local_handoff/requests/ son propuestas, no ejecución.
+
+Primero:
+
+~~~powershell
+.\scripts\local\stage_request.ps1 -Request local_handoff\requests\example-ingest.json
+~~~
+
+Después inspecciona:
+
+~~~powershell
+.\scripts\local\status.ps1
+~~~
+
+Dry-run del staged job:
+
+~~~powershell
+.\scripts\local\run_staged.ps1 -JobId request-ingest-20260925
+~~~
+
+Ejecución real:
+
+~~~powershell
+.\scripts\local\run_staged.ps1 -JobId request-ingest-20260925 -Execute
+~~~
+
+El staging guarda SHA-256. Si alguien modifica la copia privada después de aceptarla, run-staged falla cerrado.
+
+## Toolchain snapshot
+
+Para registrar versiones sin persistir rutas privadas:
+
+~~~powershell
+.\scripts\local\toolchain.ps1
+.\scripts\local\toolchain.ps1 -Resolve
+~~~
+
+Salida: .local/toolchain.latest.json.
+
+## Estado rápido
+
+~~~powershell
+.\scripts\local\status.ps1
+~~~
+
+Muestra preflight, requests disponibles, jobs staged y receipts sin abrir Resolve.

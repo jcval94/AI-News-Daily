@@ -41,3 +41,21 @@ Resolve UI state
 ```
 
 Resolve ejecuta contratos; no los sustituye.
+
+## local_stage
+
+`config/local/local_stage.schema.json` prueba que un request versionado fue aceptado localmente. Guarda source_repo_path + SHA-256 + staged_job_path. Un request del repo no debe ejecutarse directamente.
+
+## local_toolchain
+
+`config/local/local_toolchain.schema.json` captura versiones de Python/OpenTimelineIO/FFmpeg/ffprobe/WhisperX/Resolve sin persistir rutas absolutas.
+
+## Repo/local trust boundary
+
+~~~text
+local_handoff/requests/   = propuesta versionada
+.local/jobs/staged/       = aceptación privada + hash
+.local/jobs/receipts/     = evidencia de ejecución
+~~~
+
+Git nunca es una cola autoejecutable.
