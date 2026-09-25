@@ -103,7 +103,7 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         self.assertIn("never use the source `item_index`", director)
         self.assertIn("selected_news_count", director)
         self.assertIn("1..selected_news_count", director)
-        self.assertIn("if selected_news_count is 1", director)
+        self.assertIn("One strong piece is valid", director)
 
     def test_episode_plan_requires_primary_narrative_memory_but_not_opening(self) -> None:
         plan = valid_plan()
