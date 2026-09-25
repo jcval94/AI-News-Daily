@@ -5,6 +5,8 @@ import argparse
 import json
 import re
 import tempfile
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 from pydantic import ValidationError
 
@@ -17,12 +19,18 @@ IMAGE_SOURCES = ['commons', 'wikipedia', 'openverse', 'met', 'artic', 'loc']
 VIDEO_SOURCES = ['archive', 'commons', 'peertube', 'nasa', 'youtube']
 
 
+def need_description(need: dict) -> str:
+    """Carry the complete editorial identity into both retrieval planners."""
+    return ' | '.join(str(need[k]) for k in ('subject', 'period', 'geography') if need.get(k))
+
+
 class Acquisition:
     def __init__(self, pool: Pool):
         self.pool = pool
         self.blocked_images: set[str] = set()
         self.blocked_videos: dict[str, str] = {}
         self.model_disabled = False
+        self.active_need = None
 
     def request(self, url, **kwargs):
         if url != 'https://api.openai.com/v1/responses':
@@ -31,14 +39,26 @@ class Acquisition:
         if self.model_disabled or payload['model_calls'] >= payload['budget']['model_calls']:
             raise RuntimeError('Model budget exhausted or quota failure; no additional model calls')
         payload['model_calls'] += 1
+        body = kwargs.get('body', {})
+        call = {'attempt': payload['model_calls'], 'need_id': self.active_need,
+                'stage': body.get('text', {}).get('format', {}).get('name', 'unknown'),
+                'model': body.get('model'), 'status': 'started', 'usage': None,
+                'started_at': datetime.now(timezone.utc).isoformat(),
+                'max_output_tokens': body.get('max_output_tokens')}
+        payload['model_usage'].append(call)
         self.pool.save()  # Attempt is charged even if the request fails or the process is killed.
+        started = time.monotonic()
         try:
             response = sources.request_json(url, **kwargs)
         except Exception as error:
+            call.update(status='error', error=sources.safe_error(error), elapsed_seconds=round(time.monotonic()-started, 3))
+            self.pool.save()
             if re.search(r'quota|insufficient|401|403|429', str(error), re.I):
                 self.model_disabled = True
             raise
-        payload['model_usage'].append({'model': kwargs.get('body', {}).get('model'), 'usage': response.get('usage')})
+        call.update(model=response.get('model') or body.get('model'), response_id=response.get('id'),
+                    status=response.get('status', 'returned'), usage=response.get('usage'),
+                    elapsed_seconds=round(time.monotonic()-started, 3))
         self.pool.save()
         return response
 
@@ -51,7 +71,7 @@ class Acquisition:
         return len(p['assets']) < p['budget']['assets'] and sum(a['size_bytes'] for a in p['assets']) < p['budget']['bytes']
 
     def images(self, need):
-        description = ' | '.join(str(need[k]) for k in ('subject', 'period', 'geography') if need[k])
+        description = need_description(need)
         try:
             plan, _ = model.make_plan(description, self.request)
         except ValidationError as error:
@@ -103,7 +123,7 @@ class Acquisition:
                     self.blocked_images.add(item['source'])
 
     def videos(self, need):
-        plan, _ = videos.make_plan(need['subject'], 'semantic', self.request)
+        plan, _ = videos.make_plan(need_description(need), 'semantic', self.request)
         candidates, discovery = videos.discover(plan, [s for s in VIDEO_SOURCES if s not in self.blocked_videos])
         videos.assess_candidates(plan, candidates, self.request)
         self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'video', 'plan': plan.model_dump(), 'discovery': discovery})
@@ -140,6 +160,7 @@ class Acquisition:
     def run(self):
         needs = self.pool.payload['needs']
         for need in needs[:self.pool.payload['budget']['needs']]:
+            self.active_need = need['need_id']
             if not need['grounded']:
                 self.error(need, 'Subject not present in approved narration; acquisition refused')
                 continue
@@ -157,7 +178,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--pool', type=Path, required=True)
     args = parser.parse_args()
-    payload = json.loads((args.pool / 'asset_pool.json').read_text())
+    payload = json.loads((args.pool / 'asset_pool.json').read_text(encoding='utf-8'))
     Acquisition(Pool(args.pool, payload)).run()
 
 

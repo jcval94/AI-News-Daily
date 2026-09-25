@@ -464,25 +464,28 @@ async def build_review_media(
         raise ValueError("Could not build review-media candidate slots from script sections")
 
     trace: list[dict[str, Any]] = []
-    editor_state = await run_agent(
-        multimedia_editor_agent,
-        {
-            "final_script": script,
-            "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
-            "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
-            "max_media_downloads": max(0, max_media_downloads),
-            "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
-            "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
-        },
-        (
-            "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
-            "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
-            "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
-            "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
-        ),
-        step="review_plan_multimedia",
-        trace=trace,
-    )
+    try:
+        editor_state = await run_agent(
+            multimedia_editor_agent,
+            {
+                "final_script": script,
+                "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
+                "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
+                "max_media_downloads": max(0, max_media_downloads),
+                "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
+                "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
+            },
+            (
+                "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
+                "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
+                "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
+                "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
+            ),
+            step="review_plan_multimedia",
+            trace=trace,
+        )
+    finally:
+        write_json(output_dir / 'planning_trace.json', {'agent_trace': trace})
     raw_plan = MultimediaPlan.model_validate(
         editor_state.get("multimedia_plan", {})
     ).model_dump(exclude_unset=True)

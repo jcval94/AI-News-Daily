@@ -52,3 +52,18 @@ La aceptación en una instalación real de Resolve continúa pendiente del usuar
 
 Rollback: escoger `off` en un run nuevo; nunca editar en sitio un episodio promovido.
 El laboratorio previo permanece independiente en la rama experimental/PR #46.
+
+## Auditoría de gasto
+
+`media_cost_audit.json` registra cada intento antes de enviarlo, con necesidad,
+etapa (planificación, selección o inspección visual), modelo, hora, ID de respuesta,
+tokens de entrada/salida/caché, resultado y costo estimado. Una interrupción o un
+error sin uso reportado queda como costo desconocido, nunca como llamada gratuita.
+El costo usa `config/cost_rates.json`; no equivale a una factura ni incluye otros
+runs, escritura del guion, planificación editorial o almacenamiento. La traza
+`planning_trace.json` conserva por separado los intentos del planificador multimedia,
+incluso si falla. Pages muestra el subtotal documental y los intentos sin precio.
+
+La prueba de staging ejecuta dos casos separados: catálogo controlado sin modelo
+y búsqueda semántica real. Ambos exigen el panel de Pages, 45/5, una asignación
+documental y readiness tras cambiar de raíz. Los artefactos identifican cada caso.

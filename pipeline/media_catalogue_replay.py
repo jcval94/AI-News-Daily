@@ -18,14 +18,14 @@ def seed(episode: Path, media: Path) -> Pool:
     install_density_policy()
     from pipeline import review_media as base
     from pipeline.review_media_offline import build_deterministic_plan
-    script=(episode/'script.txt').read_text()
+    script=(episode/'script.txt').read_text(encoding='utf-8')
     if 'Platón' not in script:
         raise ValueError('Controlled replay requires the actual approved Plato narration')
-    sections=json.loads((episode/'script_sections.json').read_text())
+    sections=json.loads((episode/'script_sections.json').read_text(encoding='utf-8'))
     ranges=base.section_timeline(sections,base.CONFIG.words_per_second)
     slots=base.build_review_candidate_slots(ranges)
-    plan=build_deterministic_plan(episode_plan=json.loads((episode/'episode_plan.json').read_text()),
-          selected_news=json.loads((episode/'selected_news.json').read_text()),candidate_slots=slots,max_media_downloads=54)
+    plan=build_deterministic_plan(episode_plan=json.loads((episode/'episode_plan.json').read_text(encoding='utf-8')),
+          selected_news=json.loads((episode/'selected_news.json').read_text(encoding='utf-8')),candidate_slots=slots,max_media_downloads=54)
     plan=base.select_spread_media_budget(plan,max_media_downloads=54)
     # Curated storyboard: stock illustrates concepts, it cannot claim to show exact research.
     for segment in plan:

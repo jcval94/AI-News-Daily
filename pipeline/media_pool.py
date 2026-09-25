@@ -126,6 +126,7 @@ class Pool:
         self.used_hashes: set[str] = set()
 
     def save(self) -> None:
+        from pipeline.media_cost_audit import cost_audit
         assets = self.payload['assets']
         self.payload['summary'] = {
             'downloaded': len(assets), 'eligible': sum(a['eligible'] for a in assets),
@@ -138,6 +139,7 @@ class Pool:
         }
         validate_payload(self.payload, 'asset_pool.schema.json')
         write_json(self.root / 'asset_pool.json', self.payload)
+        write_json(self.root / 'media_cost_audit.json', cost_audit(self.payload))
 
     def add(self, path: Path, row: dict, need: dict, *, relation: str, evidence: dict) -> None:
         media = inspect_media(path)
@@ -246,7 +248,7 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
     mode = retrieval_mode()
     if mode == 'off':
         return None
-    state = json.loads((episode_dir / 'run_state.json').read_text())
+    state = json.loads((episode_dir / 'run_state.json').read_text(encoding='utf-8'))
     if state.get('status') != 'approved':
         raise ValueError('Media acquisition requires an approved episode')
     run_root = episode_dir.resolve().parents[1]
@@ -257,7 +259,7 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
     inputs = fingerprint(episode_dir)
     path = root / 'asset_pool.json'
     if path.exists():
-        payload = json.loads(path.read_text())
+        payload = json.loads(path.read_text(encoding='utf-8'))
         if payload['inputs'] != inputs:
             raise ValueError('Stale media pool: approved inputs or editing style changed; use a new run')
         pool = Pool(root, payload)
@@ -268,7 +270,7 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
         return pool
     budget = dict(DEFAULT_BUDGET)
     pool = Pool(root, {'schema_version': 1, 'inputs': inputs, 'mode': mode, 'budget': budget,
-                'needs': group_needs(segments, (episode_dir / 'script.txt').read_text()),
+                'needs': group_needs(segments, (episode_dir / 'script.txt').read_text(encoding='utf-8')),
                 'segments': segments, 'assets': [], 'diagnostics': [], 'model_calls': 0,
                 'model_usage': [], 'summary': {}, 'transcript_mode': 'off'})
     pool.save()
@@ -288,7 +290,7 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
         for temporary in root.glob(prefix):
             if temporary.is_dir():
                 shutil.rmtree(temporary)
-    pool = Pool(root, json.loads(path.read_text()))
+    pool = Pool(root, json.loads(path.read_text(encoding='utf-8')))
     pool.payload['elapsed_seconds'] = round(time.monotonic() - started, 2)
     if worker.returncode:
         pool.payload['diagnostics'].append({'error': 'Acquisition stopped; partial validated pool retained', 'exit_code': worker.returncode})
@@ -321,4 +323,6 @@ def finish_assignment(pool: Pool | None, manifest: list[dict], segments: list[di
                'unresolved_slots': [n for n, s in by_slot.items() if s.get('retrieval_status') == 'unresolved'],
                'diagnostics': pool.payload['diagnostics']}
     write_json(output_dir / 'media_pool_summary.json', summary)
+    from pipeline.media_cost_audit import cost_audit
+    write_json(output_dir / 'media_cost_audit.json', cost_audit(pool.payload))
     return sorted(by_slot.values(), key=lambda s: s['slot_number'])

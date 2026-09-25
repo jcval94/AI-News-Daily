@@ -63,15 +63,16 @@ def main():
     build_site(episode_dir=episode,media_dir=media,media_zip=bundle,
                regression_path=Path('editorial-regression.json'),cases_path=Path('evals/editorial/cases.json'),
                output_dir=root/'review-site',run_id=args.run_id)
-    manifest=json.loads((media/'manifest.json').read_text())
+    manifest=json.loads((media/'manifest.json').read_text(encoding='utf-8'))
     selected=len(manifest);opening=sum(float(a.get('start_seconds',0))<20 for a in manifest)
-    pool=json.loads((root/'media-pool/asset_pool.json').read_text())
+    pool=json.loads((root/'media-pool/asset_pool.json').read_text(encoding='utf-8'))
     assigned=sum('media_provenance' in a for a in manifest)
-    success=selected>=45 and opening>=5 and readiness['gate']['ready_to_record'] and relocated_readiness['gate']['ready_to_record'] and assigned>0
+    pages_panel = 'id="media-pool-status"' in (root/'review-site/index.html').read_text(encoding='utf-8')
+    success=selected>=45 and opening>=5 and readiness['gate']['ready_to_record'] and relocated_readiness['gate']['ready_to_record'] and assigned>0 and pages_panel
     result={'schema_version':1,'episode_date':args.date,'run_id':args.run_id,'sha':os.environ.get('GITHUB_SHA'),
             'selected':selected,'opening':opening,'pool':pool['summary'],'assigned_from_pool':assigned,
             'readiness':readiness['gate'],'relocated_readiness':relocated_readiness['gate'],
-            'pages_panel': 'id="media-pool-status"' in (root/'review-site/index.html').read_text(),
+            'pages_panel': pages_panel,
             'acceptance_mode':'controlled_catalogue_replay' if args.catalogue_replay else 'live_semantic',
             'semantic_live_status':'blocked_no_credits' if args.catalogue_replay else 'tested',
             'success':success,'promoted':False,'resolve_local_acceptance':'pending','transcript':'off'}

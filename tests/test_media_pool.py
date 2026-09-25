@@ -36,6 +36,21 @@ def add(pool, path, *, ident='1', size=(400,240), rights='CC BY 4.0', relation='
 
 
 class MediaPoolTests(unittest.TestCase):
+    def test_both_planners_receive_period_and_geography(self):
+        from pipeline.media_acquisition import Acquisition
+        with tempfile.TemporaryDirectory() as temp:
+            pool = make_pool(Path(temp))
+            acquisition = Acquisition(pool)
+            need = {'subject': 'Flood', 'period': '1919', 'geography': 'Boston'}
+            for kind, module in [('images', 'model'), ('videos', 'videos')]:
+                with self.subTest(kind=kind), patch(
+                    f'pipeline.media_acquisition.{module}.make_plan',
+                    side_effect=RuntimeError('stop before network'),
+                ) as planner:
+                    with self.assertRaisesRegex(RuntimeError, 'stop before network'):
+                        getattr(acquisition, kind)(need)
+                    self.assertEqual(planner.call_args.args[0], 'Flood | 1919 | Boston')
+
     def test_modes_fail_closed_and_default_off(self):
         with patch.dict(os.environ, {}, clear=True):
             self.assertEqual(retrieval_mode(), 'off')

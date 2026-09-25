@@ -16,7 +16,7 @@ def pool_panel(media_dir: Path) -> str:
               ('exact', 'Exactos por catálogo'), ('context', 'Contextuales'), ('low_resolution', 'Baja resolución')]
     metrics = ' · '.join(f'{label}: <strong>{esc(summary.get(key, 0))}</strong>' for key, label in labels)
     manifest_path = media_dir / 'manifest.json'
-    manifest = json.loads(manifest_path.read_text()) if manifest_path.is_file() else []
+    manifest = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path.is_file() else []
     rows = []
     for asset in manifest:
         provenance = asset.get('media_provenance')
@@ -29,9 +29,16 @@ def pool_panel(media_dir: Path) -> str:
                     esc(f"{provenance['width']}×{provenance['height']}") + ' · ' + esc(asset.get('license', '')) +
                     ' · ' + source + '<br><small>' + esc(provenance['limitation']) + '</small></li>')
     unresolved = summary.get('unresolved_slots', [])
+    audit_path = media_dir / 'media_cost_audit.json'
+    cost = ''
+    if audit_path.is_file():
+        audit = json.loads(audit_path.read_text(encoding='utf-8'))
+        cost = ('<p>Costo estimado de adquisición documental: <strong>USD ' +
+                esc(f"{audit['estimated_known_usd']:.6f}") + '</strong>. Intentos sin costo calculable: ' +
+                esc(audit['unpriced_attempts']) + '. No es una factura; excluye planificación editorial y otras ejecuciones.</p>')
     return ('<aside id="media-pool-status"><h3>Biblioteca multimedia</h3><p>Modo: ' + esc(summary['mode']) +
             '. Transcripción desactivada. Las coincidencias se respaldan en catálogo; no constituyen una verificación humana universal.</p><p>' + metrics +
-            '</p><p>Fuentes: ' + esc(', '.join(summary.get('providers', [])) or 'Sin resultados') +
+            '</p>' + cost + '<p>Fuentes: ' + esc(', '.join(summary.get('providers', [])) or 'Sin resultados') +
             '. Espacios sin resolver: ' + esc(', '.join(map(str, unresolved)) or 'Ninguno') +
             '.</p><details><summary>Procedencia de los archivos asignados</summary><ul>' + ''.join(rows) +
             '</ul></details><p>Las alternativas permanecen en el artefacto del run; no se precargan en esta página.</p></aside>')
