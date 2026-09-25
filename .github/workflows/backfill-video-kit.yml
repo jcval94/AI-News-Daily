@@ -52,7 +52,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.otio_export; print('backfill runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.asset_readiness, pipeline.otio_export; print('backfill runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Prepare isolated workspace
@@ -213,12 +213,26 @@ jobs:
             --repo-root "$RUN_ROOT" \
             --scripts-dir scripts \
             --output "$RUN_ROOT/previews/$TARGET_DATE/pre_recording_preview.mp4"
+          python -m pipeline.asset_readiness \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts \
+            --policy config/asset_readiness.yaml
           python -m pipeline.report \
             --target-date "$TARGET_DATE" \
             --build-outcome approved \
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia" \
             --editorial-dir editorial
+          export RUN_ROOT TARGET_DATE
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path(os.environ["RUN_ROOT"]) / "scripts" / os.environ["TARGET_DATE"] / "asset_readiness.json"
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          if not payload.get("gate", {}).get("ready_to_record"):
+              raise SystemExit("Backfill blocked by asset readiness: " + ", ".join(payload.get("gate", {}).get("blockers", [])))
+          PY
 
       - name: Promote approved production kit to main
         env:
