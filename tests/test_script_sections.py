@@ -6,7 +6,17 @@ from pipeline.script_sections import SectionAlignmentError, parse_sectioned_scri
 
 
 PLAN = {
+    "primary_memory_id": "memory-case",
     "opening_memory_id": "memory-case",
+    "narrative_parallels": [
+        {
+            "memory_id": "memory-case",
+            "placement": "opening",
+            "role": "historical_mirror",
+            "purpose": "Abrir con un caso verificado.",
+            "limits": "No asumir causalidad idéntica.",
+        }
+    ],
     "beats": [
         {"beat_id": "first-reveal", "kind": "reveal", "evidence_ids": ["case-a", "case-b"]},
         {"beat_id": "turn", "kind": "turn", "evidence_ids": []},
