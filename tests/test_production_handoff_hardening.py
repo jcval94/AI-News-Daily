@@ -9,6 +9,7 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             "pipeline.review_media_offline_dense",
             "pipeline.production_script",
             "pipeline.recording_pack",
+            "pipeline.recording_ingest",
             "pipeline.virtual_timeline",
             "pipeline.placeholder_media",
             "pipeline.resolve_bridge",
@@ -45,6 +46,7 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn("pipeline.resolve_bridge", workflow)
         self.assertIn("pipeline.preview_render", workflow)
         self.assertIn("pipeline.asset_readiness", workflow)
+        self.assertIn("pipeline.recording_ingest", workflow)
 
 
     def test_preview_mp4_stays_in_isolated_run_artifact(self) -> None:
@@ -56,10 +58,17 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         promote = workflow.split("- name: Promote approved episode", 1)[1].split("- name: Commit approved canonical artifacts", 1)[0]
         self.assertNotIn('"previews/$TARGET_DATE"', promote)
 
+    def test_raw_recordings_are_gitignored(self) -> None:
+        ignored = Path(".gitignore").read_text(encoding="utf-8")
+        self.assertIn("recordings/", ignored)
+
     def test_report_contract_lists_modern_handoff_artifacts(self) -> None:
         source = Path("pipeline/report.py").read_text(encoding="utf-8")
         for key in (
             '"recording_pack"',
+            '"recording_ingest_contract"',
+            '"recording_ingest_instructions"',
+            '"recording_ingest_manifest"',
             '"virtual_timeline"',
             '"timeline_otio"',
             '"placeholder_manifest"',
