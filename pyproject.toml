@@ -17,6 +17,7 @@ dependencies = [
   "Pillow>=10.4,<13.0",
   "PyYAML>=6.0,<7.0",
   "OpenTimelineIO==0.18.1",
+  "jsonschema>=4.23,<5.0",
 ]
 
 [tool.setuptools]
