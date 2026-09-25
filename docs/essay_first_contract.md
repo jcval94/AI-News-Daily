@@ -10,19 +10,24 @@ The north star remains:
 
 ## Required planning sequence
 
-1. Narrative Memory micro-story — one verified retrieved case is mandatory and should normally carry the cold open.
-2. Surprising mechanism — explain what makes the case structurally interesting rather than merely strange.
-3. Human tension — bridge that mechanism into something recognizable in the present.
-4. Central mystery — what we genuinely do not understand yet.
-5. Provisional thesis — the narrator's current reading, intentionally incomplete.
-6. Concrete scene — a real, historical, or clearly hypothetical situation that makes the abstraction visible.
-7. Evidence strategy — which recent developments can test, support, complicate, or limit the thesis.
-8. Claim Ledger — establish the factual boundary for every chosen current-news evidence item before prose is written.
-9. First reveal — what the first strong evidence changes.
-10. Narrative turn — the moment the deeper problem becomes different from the apparent initial problem.
-11. Evolved thesis — the conclusion must be richer than a paraphrase of the provisional thesis.
-12. Final payoff — return to an opening image, phrase, mystery, or motif with a changed meaning.
-13. Synthesis — return to the human question, not to a recap of headlines.
+The 20 × 3 editorial experiment changed one important default: Narrative Memory remains mandatory, but it no
+longer owns the cold open by default.
+
+1. Human tension or concrete scene — begin with something the viewer can recognize or visualize.
+2. Central mystery — what we genuinely do not understand yet.
+3. Provisional thesis — the narrator's current reading, intentionally incomplete.
+4. Evidence strategy — prefer 1–2 current cases that can actually change the argument.
+5. Claim Ledger — establish the factual boundary for every chosen current-news evidence item before prose is written.
+6. First reveal — what the first strong evidence changes.
+7. Narrative Memory selection — choose one verified retrieved case as `primary_memory_id` and assign an explicit placement.
+8. Narrative turn — the default preferred placement for the primary Narrative Memory case; use it to reframe evidence already made concrete.
+9. Complication / second reveal — prevent the historical parallel from becoming a neat but shallow analogy.
+10. Evolved thesis — the conclusion must be richer than a paraphrase of the provisional thesis.
+11. Final payoff — return to an opening image, phrase, mystery, or motif with a changed meaning.
+12. Synthesis — return to the human question, not to a recap of headlines.
+
+`placement="opening"` remains valid when the retrieved case is unmistakably the strongest hook. It is no longer
+a universal contract.
 
 The existing `EpisodePlan.narrative_arc` is the structured place to encode these dramaturgical beats. They are planning metadata, not spoken section labels.
 
@@ -55,17 +60,20 @@ This ordering is designed to prevent the previous oscillation where a factual re
 
 ## Intrigue contract
 
-The opening must use the record named by `EpisodePlan.opening_memory_id` as a verified micro-story. It should normally be developed for roughly 45–90 seconds when the material supports that depth, then bridge into the essay's human tension. Valid ways to make that story intriguing include:
+The opening should normally begin from a human tension, concrete scene, contradiction, or honest mystery. It
+must not default to a news-desk lead, and it must not spend several minutes building an abstract framework before
+the first current evidence becomes tangible.
 
-- an unexplained concrete scene;
-- a counterintuitive claim that can be supported or qualified;
-- a disturbing or difficult question;
-- a strange but verified historical fact;
-- two true facts that seem incompatible;
-- a recurring image or phrase whose meaning will change;
-- a clearly labeled hypothetical or future scene.
+Narrative Memory is tracked through `EpisodePlan.primary_memory_id` and the selected parallel's `placement`.
+The default preferred placement is `narrative_turn`: the current problem becomes concrete first, then the
+verified historical/structural case changes how we interpret it.
 
-The Narrative Memory case must not be reduced to a title, trivia fact, or decorative name-drop. Intrigue must never become dishonest clickbait. The viewer should understand the core mystery roughly within the first minute, and every major open loop must receive a real payoff.
+When placement is `opening`, the same record is also stored in `opening_memory_id` for compatibility and
+should behave as a compact verified micro-story. In any placement, the case must not be reduced to a title,
+trivia fact, or decorative name-drop.
+
+Intrigue must never become dishonest clickbait. The viewer should understand the core mystery roughly within
+the first minute, and every major open loop must receive a real payoff.
 
 ## Movement requirement
 
@@ -111,7 +119,7 @@ Reject spoken structures such as:
 - mechanically repeated mini-conclusions;
 - a conclusion that merely restates the opening thesis.
 
-Reject openings that omit the required Narrative Memory case, use it only decoratively, or default to:
+Reject scripts that omit the required primary Narrative Memory case or use it only decoratively. Reject openings that default to:
 
 - “Hoy salió una noticia…”
 - company/model/product names before the human idea is clear;
