@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 
-ARCHITECTURE_VERSION = 12
+ARCHITECTURE_VERSION = 13
 
 LAYERS = [
     {
@@ -71,6 +71,7 @@ STAGES: list[dict[str, Any]] = [
     {"id": "otio_export", "kind": "deterministic", "title": "OpenTimelineIO nativo", "summary": "Serializa el timeline abstracto a OTIO 0.18.1 con tracks, gaps, markers, MissingReference/ExternalReference y metadata de reemplazo; ejecuta round-trip read-back y valida duración, orden, clips y markers antes de promover.", "inputs": "virtual_timeline.json", "outputs": "timeline.otio + timeline_otio_validation.json", "authority": "OpenTimelineIO otio_json + Python; intercambio lossless del contrato usado, todavía pre-recording", "code": "pipeline/otio_export.py · docs/otio_export.md · build-video-kit.yml", "trace_steps": []},
     {"id": "resolve_bridge", "kind": "deterministic", "title": "DaVinci Resolve Bridge v0", "summary": "Valida bins, tracks, placements por frame y markers, materializa resolve_timeline.otio con referencias físicas V1/V2 y usa el importador OTIO nativo como vía primaria de ejecución local. Nunca sobrescribe un timeline existente.", "inputs": "virtual_timeline.json + timeline.otio + placeholder_manifest.json + multimedia resuelta", "outputs": "resolve_bridge_plan.json + resolve_timeline.otio + resolve_otio_validation.json; execution JSON solo local con --execute", "authority": "Plan/materialización: Python + OTIO; ejecución: DaVinciResolveScript local vía ImportTimelineFromFile", "code": "pipeline/resolve_bridge.py · config/resolve_bridge_plan.schema.json · docs/resolve_bridge.md", "trace_steps": []},
     {"id": "pre_recording_preview", "kind": "deterministic", "title": "Pre-recording Preview Render", "summary": "Aplana V2 sobre V1, renderiza un MP4 ligero con timing estimado, watermark permanente y audio silencioso. Si FFmpeg no puede decodificar un B-roll, sustituye solo ese tramo por un slate diagnóstico y registra la degradación.", "inputs": "resolve_bridge_plan.json + assets físicos", "outputs": "pre_recording_preview_plan.json + pre_recording_preview_validation.json canónicos; pre_recording_preview.mp4 solo en el artifact aislado del run", "authority": "Python + FFmpeg/ffprobe; preview no publicable y no frame-accurate", "code": "pipeline/preview_render.py · config/pre_recording_preview.schema.json · build-video-kit.yml", "trace_steps": []},
+    {"id": "asset_readiness", "kind": "gate", "title": "Asset Readiness Gate", "summary": "Mide cobertura por cues y segundos, separa faltantes de degradación técnica/visual y bloquea grabación si falta evidencia crítica, hay media rota o la cobertura cae bajo el umbral. Low-res puede seguir como fallback visible.", "inputs": "virtual_timeline.json + resolve_bridge_plan.json + preview validation + assets físicos + config/asset_readiness.yaml", "outputs": "asset_readiness.json + asset_readiness.html", "authority": "Python + Pillow + FFmpeg/ffprobe; gate fail-closed para ready_to_record", "code": "pipeline/asset_readiness.py · config/asset_readiness.yaml · config/asset_readiness.schema.json", "trace_steps": []},
     {"id": "report_promote", "kind": "deterministic", "title": "Estado, trazas, reporte y promoción", "summary": "Persiste evidencia del run y solo promueve si script, Production Script, Recording Pack, Virtual Timeline, Placeholder Media, OTIO, Resolve Bridge, Pre-recording Preview, reporte y multimedia densa terminaron correctamente.", "inputs": "artefactos + gate final + resultado multimedia + recording/edit handoff", "outputs": "run_state + execution_trace + run_report + canon opcional", "authority": "Python/GitHub Actions", "code": "pipeline/report.py · build-video-kit.yml", "trace_steps": []},
     {"id": "narrative_memory_observability", "kind": "deterministic", "title": "Observabilidad de Narrative Memory", "summary": "Pages cruza biblioteca verificada con episodios aprobados para mostrar cobertura, calidad, uso real, disponibilidad y cooldown sin nuevas llamadas de modelo.", "inputs": "editorial/narrative_memory.jsonl + scripts/ aprobados", "outputs": "pages-site/memory/index.html + narrative-memory.json", "authority": "Python determinista", "code": "pipeline/narrative_memory_dashboard.py · editorial-review-hub.yml", "trace_steps": []},
     {"id": "pages", "kind": "pages", "title": "Artifact productivo → Review Hub → GitHub Pages", "summary": "Pages prefiere el ai-news-run real como fuente canónica y cae a scripts/multimedia canónicos si el artifact expiró o quedó fuera de la ventana. Editorial Regression queda como lane separada de QA.", "inputs": "ai-news-run-* + pricing + historia de Review Hub", "outputs": "review-site + cost_snapshot + pages-site + health + Narrative Memory", "authority": "Workflows deterministas", "code": "editorial-review-hub.yml · editorial-regression.yml", "trace_steps": []},
@@ -99,8 +100,9 @@ DECISION_FLOW = [
     "Virtual Timeline → timeline.otio → read-back/round-trip validation",
     "timeline.otio + placeholders/assets → resolve_timeline.otio → Resolve Bridge v0 plan",
     "Resolve Bridge plan → flatten V2>V1 → pre-recording preview MP4 + validation",
-    "¿Falla multimedia, Recording Pack, Virtual Timeline, Placeholder Media, OTIO, Resolve Bridge o Preview Render? → se preserva el run, no se promueve",
-    "¿Script + Production Script + Recording Pack + Virtual Timeline + Placeholder Media + OTIO + Resolve Bridge + Preview + report + media pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
+    "Preview + assets físicos → Asset Readiness Gate → radiografía + acciones P0/P1/P2",
+    "¿Falla multimedia, Recording Pack, Virtual Timeline, Placeholder Media, OTIO, Resolve Bridge, Preview o Asset Readiness? → se preserva el run, no se promueve",
+    "¿Script + Production Script + Recording Pack + Virtual Timeline + Placeholder Media + OTIO + Resolve Bridge + Preview + Asset Readiness + report + media pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
 ]
 
 DESIGN_DECISIONS = [
@@ -117,11 +119,12 @@ DESIGN_DECISIONS = [
     ("OTIO como frontera de intercambio", "virtual_timeline.json conserva semántica de producto; timeline.otio traduce a un modelo editorial estándar y round-trip validado."),
     ("Resolve desacoplado de CI", "CI valida un resolve_bridge_plan determinista y ejecutable. Solo la máquina local con DaVinciResolveScript crea el proyecto real; GitHub Actions nunca finge tener Resolve."),
     ("Preview efímero, contrato canónico", "El MP4 pre-recording vive en el artifact aislado para no inflar Git; su plan y validación sí se promueven. Lleva watermark, timing estimado y nunca cuenta como material final."),
+    ("Readiness separa faltante de degradado", "Un fallback low-res sigue contando como media resuelta con warning; evidencia crítica faltante, archivo roto o cobertura insuficiente bloquean ready_to_record y producen acciones priorizadas."),
     ("Discovery separado de derechos", "YouTube se usa para encontrar y rankear candidatos; metadata, atribución o duración breve no se tratan como permiso de descarga, edición, publicación o fair use."),
     ("Producción es la fuente de verdad de Pages", "Review Hub observa el artifact que realmente salió de Build AI News Video Kit; Regression queda como QA independiente."),
     ("Sin LLM como controlador", "Python decide routing, retries, límites, estado y publicación."),
     ("Promoción fail-closed", "Solo una cadena completa de éxito puede tocar el episodio canónico."),
-    ("Schemas ejecutables antes de persistir", "edit_manifest, recording_pack, virtual_timeline, placeholder_manifest, resolve_bridge_plan y pre_recording_preview_plan se validan contra JSON Schema antes de escribirse; documentación y runtime comparten el mismo contrato."),
+    ("Schemas ejecutables antes de persistir", "edit_manifest, recording_pack, virtual_timeline, placeholder_manifest, resolve_bridge_plan, pre_recording_preview_plan y asset_readiness se validan contra JSON Schema antes de escribirse; documentación y runtime comparten el mismo contrato."),
     ("Identidad editorial versionada", "Cambiar modelo o prompt no redefine silenciosamente la voz del canal."),
 ]
 
