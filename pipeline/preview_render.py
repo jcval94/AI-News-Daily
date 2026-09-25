@@ -489,6 +489,7 @@ def write_preview(
     height: int = _PREVIEW_HEIGHT,
     fps: int = _PREVIEW_FPS,
     render: bool = True,
+    output_path: Path | None = None,
 ) -> tuple[Path, Path | None, Path | None]:
     resolve_plan_path = episode_dir / "resolve_bridge_plan.json"
     if not resolve_plan_path.is_file():
@@ -509,15 +510,26 @@ def write_preview(
     if not render:
         return plan_path, None, None
 
-    output_path = episode_dir / "pre_recording_preview.mp4"
+    preview_path = output_path or (episode_dir / "pre_recording_preview.mp4")
+    preview_path.parent.mkdir(parents=True, exist_ok=True)
     validation_path = episode_dir / "pre_recording_preview_validation.json"
-    render_preview(
+    validation = render_preview(
         plan=plan,
         repo_root=repo_root,
-        output_path=output_path,
+        output_path=preview_path,
         validation_path=validation_path,
     )
-    return plan_path, output_path, validation_path
+    validation["artifact_scope"] = (
+        "canonical_episode_directory"
+        if preview_path.parent.resolve() == episode_dir.resolve()
+        else "isolated_run_artifact"
+    )
+    validation["preview_path"] = str(preview_path)
+    validation_path.write_text(
+        json.dumps(validation, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return plan_path, preview_path, validation_path
 
 
 def parse_args() -> argparse.Namespace:
@@ -528,6 +540,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width", type=int, default=_PREVIEW_WIDTH)
     parser.add_argument("--height", type=int, default=_PREVIEW_HEIGHT)
     parser.add_argument("--fps", type=int, default=_PREVIEW_FPS)
+    parser.add_argument("--output", default="")
     parser.add_argument("--plan-only", action="store_true")
     return parser.parse_args()
 
@@ -543,6 +556,7 @@ def main() -> None:
         height=args.height,
         fps=args.fps,
         render=not args.plan_only,
+        output_path=Path(args.output) if args.output else None,
     )
     print(json.dumps({
         "pre_recording_preview_plan": str(plan),
