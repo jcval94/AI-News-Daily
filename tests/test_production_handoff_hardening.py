@@ -13,6 +13,7 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             "pipeline.placeholder_media",
             "pipeline.resolve_bridge",
             "pipeline.preview_render",
+            "pipeline.asset_readiness",
             "pipeline.otio_export",
             "pipeline.report",
         ):
@@ -43,6 +44,7 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn("pipeline.placeholder_media", workflow)
         self.assertIn("pipeline.resolve_bridge", workflow)
         self.assertIn("pipeline.preview_render", workflow)
+        self.assertIn("pipeline.asset_readiness", workflow)
 
 
     def test_preview_mp4_stays_in_isolated_run_artifact(self) -> None:
@@ -64,6 +66,8 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             '"resolve_bridge_plan"',
             '"pre_recording_preview_plan"',
             '"pre_recording_preview_validation"',
+            '"asset_readiness"',
+            '"asset_readiness_html"',
         ):
             self.assertIn(key, source)
 
