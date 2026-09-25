@@ -30,6 +30,7 @@
           "take_id",
           "retake_number",
           "source_relative_path",
+          "timebase",
           "language",
           "text",
           "words"
@@ -86,6 +87,12 @@
                 }
               }
             }
+          },
+          "timebase": {
+            "enum": [
+              "video_source",
+              "external_audio_source"
+            ]
           }
         }
       }
