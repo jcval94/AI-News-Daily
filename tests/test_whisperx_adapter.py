@@ -7,6 +7,8 @@ from unittest.mock import patch
 from pipeline.whisperx_adapter import (
     build_transcript_bundle,
     normalize_whisperx_result,
+    render_srt,
+    write_resolve_srt_sidecars,
     whisperx_command,
 )
 
@@ -188,6 +190,29 @@ class WhisperXAdapterTests(unittest.TestCase):
                 bundle["items"][0]["source_relative_path"],
                 "opening_t01__r01__audio.wav",
             )
+
+
+    def test_resolve_srt_sidecar_preserves_word_timing(self):
+        item = {
+            "take_id": "opening_t01",
+            "retake_number": 2,
+            "words": [
+                {"word": "Hola", "start": 1.2, "end": 1.5, "score": 0.9},
+                {"word": "mundo", "start": 1.55, "end": 2.1, "score": 0.9},
+            ],
+        }
+        rendered = render_srt(item, max_words_per_caption=10)
+        self.assertIn("00:00:01,200 --> 00:00:02,100", rendered)
+        self.assertIn("Hola mundo", rendered)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = write_resolve_srt_sidecars(
+                {"items": [item]},
+                output_dir=Path(tmp),
+            )
+            self.assertEqual(len(paths), 1)
+            self.assertEqual(paths[0].name, "opening_t01__r02.srt")
+            self.assertEqual(paths[0].read_text(encoding="utf-8"), rendered)
 
     def test_rejects_non_monotonic_word_timestamps(self):
         with self.assertRaisesRegex(ValueError, "not monotonic"):
