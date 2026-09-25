@@ -10,6 +10,7 @@ from pipeline.recording_ingest import (
     parse_capture_filename,
     scan_recordings,
     write_ingest_contract,
+    write_ingest_manifest,
 )
 
 
@@ -210,6 +211,27 @@ class RecordingIngestScannerTests(unittest.TestCase):
             serialized = json.dumps(manifest)
             self.assertNotIn(str(root), serialized)
             self.assertFalse(manifest["source"]["absolute_input_path_persisted"])
+
+    def test_write_manifest_validates_schema_and_persists_only_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox, contract = self._fixture(root)
+            episode = root / "scripts" / "2026-09-24"
+            episode.mkdir(parents=True)
+            (episode / "recording_ingest_contract.json").write_text(
+                json.dumps(contract),
+                encoding="utf-8",
+            )
+            manifest_path, manifest = write_ingest_manifest(
+                episode_dir=episode,
+                input_dir=inbox,
+                enforce=True,
+            )
+            self.assertTrue(manifest_path.is_file())
+            self.assertTrue(manifest["readiness"]["ready_for_alignment"])
+            saved = manifest_path.read_text(encoding="utf-8")
+            self.assertNotIn(str(root), saved)
+            self.assertIn("opening_t01__r02__camA.mp4", saved)
 
     def test_unknown_take_id_is_a_blocker_and_unmatched_file_is_only_warning(self):
         with tempfile.TemporaryDirectory() as tmp:
