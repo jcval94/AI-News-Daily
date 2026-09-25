@@ -100,9 +100,11 @@ jobs:
           path: experiments/editorial_grid_search/results
           merge-multiple: true
 
-      - name: Aggregate cross-validation results
+      - name: Aggregate and require complete 20 x 3 grid
         run: |
-          python -m experiments.editorial_grid_search.analyze             --results-root experiments/editorial_grid_search/results
+          python -m experiments.editorial_grid_search.analyze \
+            --results-root experiments/editorial_grid_search/results \
+            --require-complete
 
       - name: Commit experiment results
         shell: bash
@@ -118,6 +120,3 @@ jobs:
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin HEAD:"$GITHUB_REF_NAME"
 
-      - name: Require complete 20 x 3 grid
-        run: |
-          python -m experiments.editorial_grid_search.analyze             --results-root experiments/editorial_grid_search/results             --require-complete
