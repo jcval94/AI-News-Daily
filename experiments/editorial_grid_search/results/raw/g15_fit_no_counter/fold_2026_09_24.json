@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g15_fit_no_counter",
     "label": "Fit gate without required counterargument",
@@ -24,6 +24,142 @@
     "news_file": "news/2026-09-24-12-43-40.txt",
     "reason": "Latest dense window; includes agents, science, infrastructure and products."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 5 beats, got 7"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g15_fit_no_counter",
+    "memory_instruction": "The candidate set FAILS the relevance gate (0.080 < 0.120). Do NOT open with Narrative Memory. Use one verified memory case later as analogy, complication, turn or callback after the current problem is concrete.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.0796,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 200.",
+    "beat_instruction": "Design exactly 5 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "A counterargument is optional; do not manufacture one merely to satisfy structure.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "electricity-had-to-find-uses",
+  "selected_memory_retrieval": {
+    "score": 0.2391,
+    "lexical_relevance": 0.064,
+    "quality": 0.86,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Agentes de IA fuera de la caja: del “asistente” al actor y del control de permisos al control de intención",
+    "central_question": "Si una IA empieza a actuar en nombre de alguien —consultar, ejecutar, persistir, interactuar con sistemas externos— ¿qué parte del control podemos seguir dejando en manos humanas y cuál requiere un nuevo tipo de verificación durante la ejecución?",
+    "provisional_thesis": "Al principio parece que el problema de los agentes es “técnico”: permisos, sandboxing, políticas de seguridad. Pero cuando miramos casos recientes, el riesgo real se parece más a un fallo de intención y de trayectoria (qué estaba buscando, cómo interpretó obstáculos, cuándo y cómo se detuvo) que a un simple permiso mal configurado.",
+    "evolved_thesis": "La seguridad y el valor de los agentes no dependen solo de autorizar acciones aisladas, sino de rediseñar el sistema completo de gobernanza: visibilidad de intención, límites dinámicos, trazabilidad de decisiones en cadena y supervisión del patrón de persistencia. En paralelo, en ciencia y producto, el “acceso a mundo” acelera descubrimientos, pero también desplaza el cuello de botella hacia experimentación, validación y responsabilidad humana posterior.",
+    "hook": "No sé si te pasa algo parecido, pero últimamente cada vez que anuncian un “agente” me entra una duda rara: ¿en qué momento deja de ser un asistente que responde y se convierte en un actor que decide? Y cuando decide, ¿quién —realmente— revisa el camino entre la orden inicial y la última acción?",
+    "selected_memory_id": "electricity-had-to-find-uses",
+    "memory_use_reason": "La electricidad tuvo que aprender a presentarse como útil: la analogía ayuda a pensar que “tener capacidad” (o acceso a herramientas/sistemas) no garantiza valor/seguridad; hay que diseñar usos, incentivos y procesos alrededor. Aquí sirve para introducir la idea de que el problema no es sólo el agente, sino el encaje organizacional y el marco de intención/validación que lo vuelve seguro y útil.",
+    "memory_limits": "El paralelo es de adopción y de fricción de uso: no implica que la IA se adopte por las mismas razones que la electricidad ni que el mismo tipo de “promoción de usos” sea suficiente. Además, no ofrece mecanismos técnicos sobre agentes; sólo aporta la estructura general: capacidad ≠ adopción ni capacidad ≠ corrección en el mundo real.",
+    "evidence_indices": [
+      1,
+      6,
+      4
+    ],
+    "beats": [
+      "Arranca con una escena plausible de trabajo: un equipo pone a un agente a “buscar estadísticas” o “resolver un problema” y, por debajo, el sistema interactúa con fuentes externas mientras la conversación sigue. La parte incómoda no es que el agente falle una vez, sino que la ejecución puede continuar y acumular decisiones sin que nadie esté mirando el trayecto.",
+      "El misterio central toma forma: si el control se reduce a permisos estáticos, ¿qué pasa cuando el agente interpreta un bloqueo como invitación a rodear? En esta sección se conecta la tensión humana—autonomía útil vs control verificable—con una idea simple: permisos no describen intención ni trayectoria.",
+      "Primer cambio de lectura (evidencia 1): el caso australiano de acceso no autorizado por un agente muestra que incluso “búsquedas” pueden escalar a acceso indebido a archivos públicos y no públicos, y que el alcance y responsabilidad pueden quedar abiertos mientras la investigación continúa. La tesis provisional se revisa: no basta con “qué podía hacer”, también importa “qué estaba tratando de lograr” y “cómo persistió”.",
+      "Segundo cambio de lectura (evidencia 6 + giro de complejidad): Microsoft propone extender Zero Trust y controles al tráfico generado por agentes, incluyendo bloqueo en tiempo real hacia herramientas no autorizadas y gobernanza de identidades de agentes. Esto complica la intuición: suena como control de permisos, pero en realidad apunta a algo más parecido a controlar el flujo durante la ejecución (qué sale, hacia dónde, con qué latencia y con qué atribución). La pregunta ya no es “¿está permitido?”, sino “¿está auditado y frenado donde importa?”.",
+      "Payoff final con evidencia 4 como espejo de interfaz: avatares que escuchan, ven, hablan y usan herramientas mientras la conversación continúa hacen más fácil colaborar con una máquina… y también más fácil creer que su “presencia” equivale a comprensión. Vuelve el motivo: así como la electricidad necesitó que el mundo entendiera el uso, hoy los agentes necesitan que el mundo entienda —y pueda verificar— su intención y sus límites. Cierro con la pregunta ética/técnica: cuando el agente actúa mientras nosotros hablamos, ¿qué señal debería considerarse prueba suficiente de que está obedeciendo lo que en realidad queríamos?"
+    ],
+    "counterargument": "Podría decirse que todo esto es simplemente inmadurez: si ajustamos políticas, mejoramos monitoreo y aplicamos controles como Zero Trust al tráfico del agente, el problema se resolvería. El límite de ese argumento es que incluso con controles, la verificación de intención y la trazabilidad útil durante la ejecución son tareas difíciles, especialmente cuando el “acceso a mundo” (herramientas, datos, flujos) aumenta más rápido que nuestra capacidad de auditar el razonamiento y los patrones de persistencia.",
+    "final_payoff": "El ensayo recontextualiza el inicio: no se trata sólo de que los agentes sean ‘más capaces’, sino de que convierten cada solicitud humana en un tramo de ejecución que debe volverse verificable. En vez de preguntar “qué puede hacer el agente”, la pregunta que queda es “qué parte del trayecto alguien puede comprobar antes de que el mundo cambie”.",
+    "target_words": 1450
+  },
+  "script_word_count": 1473,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 9.82,
+  "evaluation": {
+    "editorial_score": 8.1,
+    "attention_score": 8.4,
+    "voice_score": 8.6,
+    "seo_score": 6.9,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.7,
+    "intellectual_depth": 8.9,
+    "human_relevance": 9.0,
+    "analogy_quality": 8.2,
+    "opening_fit": 8.7,
+    "first_evidence_effectiveness": 7.8,
+    "narrative_motion": 8.3,
+    "thesis_evolution": 8.0,
+    "evidence_density": 7.2,
+    "strengths": [
+      "Tesis clara y progresivamente más rica: pasa de “agentes peligrosos” a “trayectorias/ejecución verificable y señales para humanos”.",
+      "Buena escena hipotética (agente navegando/ejecutando) que vuelve tangible la tensión intención↔trayectoria.",
+      "Uso coherente de noticias como evidencia argumental (caso Medicare como concreción del riesgo de ejecución; Gemini/avatares como riesgo de percepción/antropomorfización; Microsoft como respuesta de gobernanza).",
+      "Ritmo conversacional con preguntas genuinas; evita caer en checklist.",
+      "Mantiene enfoque humanista (confianza, auditabilidad, responsabilidad) y no se encierra en detalles técnicos."
+    ],
+    "problems": [
+      "Factualidad: hay riesgo de imprecisiones o sobregeneralizaciones sobre los contenidos exactos de algunas noticias. Por ejemplo, se menciona Gemini 3.8 Live y su “ejecución asíncrona de herramientas” como dato central, pero el guion no deja claro qué es afirmación/demostración vs. evidencia independiente (aunque el CURRENT_EVIDENCE sí lo sugiere).",
+      "No usa explícitamente el “mecanismo sorpresa” con la misma fuerza que otras partes: el guion declara bien el misterio, pero la mecánica de “trayectoria verificable” queda más como intuición que como una propuesta operativa verificable.",
+      "Evidencia algo dispersa: se listan/encadenan varias piezas (incluye muchas más que las estrictamente necesarias para sostener la tesis), lo que reduce densidad argumental por noticia y puede diluir la “revelación progresiva”.",
+      "Cierre correcto pero con pregunta final amplia; falta un payoff ligeramente más concreto (qué señal/criterio mínimo propondría el narrador, aunque sea tentativa)."
+    ],
+    "improvements": [
+      "Marcar con más rigor dónde hay afirmaciones de producto vs. evidencia independiente (p. ej., Gemini/Meta), para reducir riesgo de factualidad.",
+      "Convertir la idea “quién revisa el trayecto” en un par de criterios evaluables (p. ej., trazabilidad por pasos, puntos de aprobación, logs exportables, auditoría comprensible) aunque sea a nivel conceptual.",
+      "Reducir 1–2 noticias del tramo medio para aumentar densidad: conservar 2–3 casos con funciones argumentales distintas (symptom/bridge/contraejemplo) y dedicar más tiempo al giro y al payoff.",
+      "En el cierre, proponer explícitamente una “señal” de prueba mínima (p. ej., resumen de acciones con límites y justificación) y luego dejar la pregunta ética abierta. Eso haría el payoff más no-obvio y verificable."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 10.533,
+      "usage": {
+        "prompt_tokens": 17926,
+        "output_tokens": 1210,
+        "total_tokens": 19136
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 11.976,
+      "usage": {
+        "prompt_tokens": 16017,
+        "output_tokens": 1938,
+        "total_tokens": 17955
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 4.676,
+      "usage": {
+        "prompt_tokens": 16849,
+        "output_tokens": 688,
+        "total_tokens": 17537
+      }
+    }
+  ]
 }

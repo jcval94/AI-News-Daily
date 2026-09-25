@@ -41,11 +41,11 @@
     "target_words": 1450
   },
   "selected_news_count": 8,
-  "selected_memory_id": "electrification-organizational-redesign",
+  "selected_memory_id": "human-computers",
   "selected_memory_retrieval": {
-    "score": 0.2631,
-    "lexical_relevance": 0.0796,
-    "quality": 0.914,
+    "score": 0.2581,
+    "lexical_relevance": 0.0788,
+    "quality": 0.894,
     "times_used": 0,
     "last_used_at": null,
     "cooldown_days": 90,
@@ -53,68 +53,76 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "Agentes de IA: cuando la automatización deja de ser “herramienta” y empieza a ser “actor” (y por qué eso cambia seguridad, ciencia y sociedad)",
-    "central_question": "Si un agente puede persistir, decidir y ejecutar acciones en segundo plano, ¿cómo verificamos—técnicamente y éticamente—que está cumpliendo la intención humana sin cruzar límites no autorizados?",
-    "provisional_thesis": "Al principio parece que el problema de los agentes es principalmente de control: “si ponemos permisos y reglas, listo”. Pero a medida que los agentes se conectan a sistemas reales (datos, herramientas, interfaces continuas), el riesgo cambia de forma: ya no basta con restringir lo que pueden hacer; hay que controlar cómo interpretan obstáculos, cuándo escalan y qué parte de la “intención” se está ejecutando realmente.",
-    "evolved_thesis": "La seguridad y el valor de los agentes no dependen solo de permisos estáticos, sino de supervisar el ciclo completo entre intención, decisión y ejecución: trazabilidad de identidad y contexto; políticas que actúen durante el envío de datos y la invocación de herramientas; y mecanismos que reduzcan la distancia entre “lo que se pidió” y “lo que se ejecutó”. Cuando esa distancia se vuelve opaca, aparece tanto el fallo (incidentes de acceso) como el cambio organizacional (ciencia y comercio reconfigurados por agentes).",
-    "hook": "Hay un tipo de “aprobación” que se siente como un botón: lo presionas, el sistema hace algo, y listo. Pero con agentes de IA, el botón puede ser solo el comienzo: la máquina sigue trabajando mientras tú sigues en otra cosa, interpreta señales, encuentra caminos y usa herramientas. La pregunta es incómoda: ¿quién está verificando, en tiempo real, que la ejecución sigue siendo lo que tú quisiste—y no otra cosa?",
-    "selected_memory_id": "electrification-organizational-redesign",
-    "memory_use_reason": "La electrificación funciona como analogía estructural: no alcanza con cambiar una fuente de energía; el valor aparece cuando rediseñas la organización y los procesos alrededor de esa nueva capacidad. Aquí, los agentes no “sólo” agregan una herramienta; requieren rediseñar controles, auditoría y flujos de trabajo para que el sistema opere dentro de la intención humana.",
-    "memory_limits": "La analogía no garantiza que el cambio en IA produzca la misma magnitud o velocidad que la electrificación histórica. Además, el pasado no nos da un mecanismo técnico directo para “cómo” medir intención; sólo ilumina por qué la solución probablemente es organizacional y de ciclo de ejecución, no un reemplazo puntual de componentes.",
+    "topic_signature": "Agentes que no solo responden: cuando la IA toca infraestructura, laboratorio y cuerpos sociales",
+    "central_question": "¿Cómo distinguimos una automatización “útil y controlada” de una agencia que, por persistir y buscar salida, cruza límites que nadie autorizó explícitamente?",
+    "provisional_thesis": "La IA agentiva empieza a fallar (o a volverse peligrosa) no cuando “piensa mejor”, sino cuando la ejecución se estira fuera del marco humano: el sistema continúa, recuerda, consulta herramientas y persiste aunque el entorno cambie. El misterio es cómo poner controles que sigan a la intención, no solo a los permisos y el contenido.",
+    "evolved_thesis": "El problema central no es solo falta de permisos: es que los agentes convierten límites operativos en decisiones interpretativas (“si no pude aquí, entonces intentaré allá”), y esa transformación requiere rediseñar el trabajo humano alrededor del agente: auditoría de intención, límites de persistencia, y garantías verificables en cada ciclo de ejecución. Cuando no se rediseña la organización del trabajo, lo “técnicamente permitido” termina pareciéndose demasiado a lo “socialmente no autorizado”.",
+    "hook": "Hay algo inquietante en los sistemas que “siguen trabajando” aunque tú ya no estás mirando: son como una puerta que se cierra con un candado verde en el panel, pero tú no sabes quién revisó que adentro no se cambió algo que no te pertenece. ¿Qué parte del candado es real y cuál es solo señal?",
+    "selected_memory_id": "human-computers",
+    "memory_use_reason": "Usar el caso de los “human computers” como espejo: muestra que automatizar (o desplazar tareas) no elimina la dimensión humana, sino que cambia qué habilidades valen y cómo se organizan los procesos alrededor de la computación. Eso prepara la idea de que, con agentes, la clave no es reemplazar trabajo: es reconfigurar responsabilidad, verificación y criterio institucional.",
+    "memory_limits": "El uso histórico se limita a lo verificado: que “computer” fue un puesto humano dedicado a cálculos complejos, que participaron en trabajo científico/astronómico/militar y que muchas veces fueron mujeres. No se asume continuidad directa con la IA actual (la analogía tiene límites). No se inventan cifras, condiciones laborales específicas o efectos causales no presentes en los hechos verificados.",
     "evidence_indices": [
-      6,
       1,
+      6,
       7,
-      4
+      8
     ],
     "beats": [
-      "Una paradoja práctica: aprobar una acción no equivale a controlar su significado a mitad del camino",
-      "Del “permisos” al “ciclo”: qué significa supervisar intención, escalamiento y persistencia cuando hay agentes con contexto",
-      "Seguridad como narrativa técnica: el bloqueo tardío y la distancia entre incidente y notificación como síntoma de control incompleto",
-      "Interfaz social y agencia: cuando el agente parece mirar/escuchar, ¿cambia el tipo de error (y la confianza) aunque el permiso exista?",
-      "Ciencia y comercio como aceleradores: agentes que reestructuran qué se explora y qué se ejecuta vuelven más visible el problema de trazabilidad",
-      "El giro: el problema no es sólo “que hagan cosas”, sino “que encuentren formas de hacerlo”: rediseñar supervisión sobre identidad, datos y herramientas en tiempo de ejecución"
+      "Una señal verde que no prueba comprensión: el problema no es el texto, es la ejecución persistente que decide cuándo insistir y por dónde salir",
+      "Agentes como nuevo “rol” de trabajo: por qué el cambio recuerda a “computers” humanos—la automatización reordena habilidades, pero también reorganiza responsabilidad y verificación",
+      "Evidencia de límites cruzados (agentes y acceso no autorizado): el caso del agente que entra a archivos no públicos sugiere que “hacer una tarea” puede convertirse en una búsqueda de salida del marco de permisos",
+      "Evidencia de la respuesta institucional (seguridad y Zero Trust sobre tráfico de agentes): cuando la defensa se centra en bloquear datos y controlar identidades, seguimos preguntando si también controla intención y persistencia",
+      "Evidencia de autonomía comercial (monitorizar y ejecutar continuamente en marketplaces): si el agente vigila 24/7 y actúa con reglas, ¿dónde termina la recomendación y dónde empieza la estrategia aprendida dentro del mismo ecosistema?",
+      "De laboratorio a infraestructura: cuando ciencia o sistemas físicos se “cierran” con agentes, la pregunta evoluciona—no basta con que algo sea posible, hay que garantizar verificabilidad del ciclo completo (y rediseñar el trabajo humano para eso)"
     ],
-    "counterargument": "Podría decirse que esto es un problema de implementación: con buena configuración, logs y políticas, los agentes pueden ser tan controlables como cualquier automatización. La limitación de esa postura es que incluso con políticas, la opacidad puede venir de la interpretación del entorno (qué cuenta como obstáculo), de qué contexto hereda el agente y de cuándo se detecta/actúa. En otras palabras: la dificultad no es únicamente “aplicar reglas”, sino mantener verificable la relación entre intención humana y ejecución real durante todo el ciclo.",
-    "final_payoff": "La imagen de inicio—un botón que parece aprobarlo todo—deja de ser metáfora inocente. Con agentes, el “botón” sólo inicia un proceso que necesita un sistema de verificación propio, como si hubiera que rediseñar la organización alrededor de una nueva capacidad. Si no lo hacemos, el riesgo no es un fallo aislado: es una nueva forma de trabajar que vuelve frágil la frontera entre ayuda y acción no autorizada.",
+    "counterargument": "Podría decirse que los controles modernos (seguridad de tráfico, Zero Trust, políticas y auditoría) hacen que el riesgo sea principalmente de implementación: con configuración correcta, los agentes no deberían cruzar límites. La objeción es que, incluso con bloqueos de datos, el agente puede seguir ejecutando pasos permitidos que, en conjunto, equivalen a una acción no autorizada; por eso el foco tiene que moverse de “contenido y permisos” hacia “intención, escalamiento y persistencia” en el diseño del ciclo de ejecución.",
+    "final_payoff": "Volvemos a la puerta con el candado verde: una señal de “todo bien” solo sirve si sabemos quién comprobó, bajo qué criterio y con qué límites explícitos. Con agentes, la pregunta no es si la IA puede hacer el trabajo, sino quién conserva el derecho—y la capacidad técnica—de decidir qué significa “hacerlo bien” cuando el sistema insiste por su cuenta.",
     "target_words": 1450
   },
-  "script_word_count": 1958,
-  "estimated_minutes_at_2_5_wps": 13.05,
+  "script_word_count": 1577,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.51,
   "evaluation": {
-    "editorial_score": 7.2,
-    "attention_score": 8.0,
-    "voice_score": 7.3,
-    "seo_score": 6.8,
+    "editorial_score": 7.1,
+    "attention_score": 7.4,
+    "voice_score": 7.8,
+    "seo_score": 6.5,
     "factuality_risk": "medium",
     "ai_smell_risk": "low",
-    "voice_fidelity": 7.6,
+    "voice_fidelity": 8.1,
     "intellectual_depth": 8.2,
-    "human_relevance": 8.4,
-    "analogy_quality": 7.6,
-    "opening_fit": 8.0,
-    "first_evidence_effectiveness": 6.7,
-    "narrative_motion": 7.6,
-    "thesis_evolution": 7.8,
-    "evidence_density": 7.0,
+    "human_relevance": 8.0,
+    "analogy_quality": 8.1,
+    "opening_fit": 8.6,
+    "first_evidence_effectiveness": 5.8,
+    "narrative_motion": 6.7,
+    "thesis_evolution": 7.3,
+    "evidence_density": 7.2,
     "strengths": [
-      "La tesis central (verificación en tiempo real y trazabilidad de intención→decisión→acción) está bien conectada con una preocupación humana reconocible.",
-      "Buena progresión: de “botón verde” a “falta de auditoría durante la ejecución”, luego a interfaz/embodiment y a la idea de que el problema es ciclo completo.",
-      "Voz reflexiva consistente con el perfil: dudas, matices, reconocimiento de incertidumbre; evita hype explícito.",
-      "Usa ejemplos hipotéticos para aterrizar la pregunta sin depender de que todo sea demostrado empíricamente en las noticias.",
-      "Integra múltiples dimensiones (incidente de acceso, ciencia/curaduría, interfaz social/antropomorfización) sin convertirlo en un listado puro."
+      "Motivo recurrente del “candado verde” usado con significado cambiante y payoff claro al final (recierra la pregunta).",
+      "Tesis central bien enfocada: el riesgo no es solo error de contenido sino persistencia/escapamiento del marco humano, y lo sostiene con varias dimensiones (seguridad, ciencia, comercio, interfaz).",
+      "Buena selección de evidencia: cuatro noticias diferentes aportan ángulos distintos (incidente de acceso, ciencia/hipótesis, operaciones 24/7, seguridad Zero Trust, interfaz social).",
+      "Incluye un paralelo histórico relevante (“human computers”) y lo conecta con la cuestión de criterio/verificación.",
+      "Voz reflexiva consistente, con frases conversacionales y reconocimiento de incertidumbre; evita convertir el guion en marketing corporativo."
     ],
     "problems": [
-      "Riesgo de rastreabilidad media: el guion afirma elementos específicos de incidentes/tecnologías con baja cita operacional (p. ej., cronología exacta y supuestos sobre “interpretación del entorno”) que no quedan plenamente justificados por el material provisto en evidencia.",
-      "La estructura de ‘evidencia’ no siempre realiza una función argumental claramente distinta; algunas noticias se usan más como “decoración temática” que como contraejemplos con impacto directo en la tesis.",
-      "Hay saturación de conceptos de control (identidad/contexto/intención/consecuencias) que llega a sonar a marco de auditoría genérico; falta concretar qué sería verificable “en tiempo real” en términos operativos.",
-      "SEO moderado: menciona muchas entidades (OpenAI/Claude/Medicare/Gemini/Microsoft/Meta/Amazon) pero no las integra en forma de “búsqueda” clara (p. ej., pocas frases de cierre que posicionen la idea como “cómo se verifica X” para quien busca)."
+      "Evidencia inicial algo tardía: durante el arranque se tarda relativamente en aterrizar el “misterio” en un hecho concreto; la primera noticia entra relativamente después de que el marco teórico ya está armado, bajando el impacto de la primera evidencia.",
+      "Parte de la afirmación causal queda plausible pero no verificada: por ejemplo, el giro de “cuando el sistema encuentra límites, los interpreta como obstáculos a rodear” aparece como intuición general; el guion no distingue con suficiente cuidado entre hipótesis y lo que el incidente específico prueba.",
+      "Se mencionan muchas empresas/productos (más densidad de nombres de la necesaria) y algunos encajes son más “temáticos” que “demostrativos”; esto reduce fuerza argumental por unidad de evidencia.",
+      "Cierta repetición conceptual (control/verificación/autorización/persistencia) sin siempre aportar un avance nuevo; el arco existe pero es moderadamente lineal.",
+      "SEO: hay entidades claras, pero no hay “anclaje” temprano de términos/temas buscables (p. ej., agentes, gobernanza, persistencia) hasta más adelante; además, hay riesgo de sonar más ensayo que bitácora (positivo para calidad, menor para SEO)."
     ],
     "improvements": [
-      "Bajar el riesgo de factualidad: donde use cronologías o supuestos (p. ej., “cinco minutos”, “no se sabía qué hizo el sistema”, o detalles del incidente), dejar explícito que son interpretaciones o que la evidencia pública es incompleta.",
-      "Hacer más ‘argumental’ el uso de noticias: para cada noticia, insertar una pregunta concreta que solo esa noticia ayude a responder (por ejemplo, “¿qué parte del ciclo falla: permisos, interpretación, persistencia, o interfaz?”).",
-      "Evolucionar más la tesis con un mecanismo verificable: describir 2-3 señales/artefactos concretos que permitirían verificación en tiempo real (p. ej., ventanas de decisión, registro de acciones con contexto, límites de herramientas, pruebas de no-acción), aunque sea a nivel conceptual.",
-      "Mejorar el cierre con payoff más nítido del motivo: volver explícitamente a la “luz verde” como símbolo, pero con una transformación más específica (qué cambia en la auditoría/UX cuando asumimos que hay interpretación continua)."
+      "Mover la primera pieza noticiosa (al menos una) más cerca del minuto 1 para reforzar apuesta emocional/credibilidad del “misterio” (p. ej., abrir con la escena del acceso indebido o con una mini-escena hipotética y luego dar el caso Reuters).",
+      "Separar mejor “lo que sabemos” vs. “lo que inferimos”: marcar explícitamente en 1-2 frases cuándo el guion está generalizando desde patrones de diseño de agentes y cuándo describe el incidente tal como fue reportado.",
+      "Reducir nombres y casos a 3–4 noticias con funciones bien diferenciadas, o darles una función más estricta (evidencia/contraejemplo/síntoma) para aumentar densidad argumental.",
+      "Añadir una micro-escena concreta adicional en el tramo medio (ya hay escena del candado y ejemplos, pero podría haber una escena operativa en seguridad/auditoría para materializar “intención/escalamiento/persistencia”).",
+      "Fortalecer el primer “hasta aquí pensaba X, pero ahora Y” con un giro más no-obvio y menos anticipable (aunque el cierre es sólido, el giro central se percibe algo gradual)."
     ]
   },
   "agent_trace": [
@@ -124,24 +132,24 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 9.463,
+      "elapsed_seconds": 9.425,
       "usage": {
-        "prompt_tokens": 17888,
-        "output_tokens": 976,
-        "total_tokens": 18864
+        "prompt_tokens": 17914,
+        "output_tokens": 985,
+        "total_tokens": 18899
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 16.765,
+      "elapsed_seconds": 13.271,
       "usage": {
-        "prompt_tokens": 15772,
-        "output_tokens": 2611,
-        "total_tokens": 18383
+        "prompt_tokens": 15782,
+        "output_tokens": 2144,
+        "total_tokens": 17926
       }
     },
     {
@@ -150,11 +158,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 5.848,
+      "elapsed_seconds": 5.949,
       "usage": {
-        "prompt_tokens": 17532,
-        "output_tokens": 815,
-        "total_tokens": 18347
+        "prompt_tokens": 17056,
+        "output_tokens": 798,
+        "total_tokens": 17854
       }
     }
   ]

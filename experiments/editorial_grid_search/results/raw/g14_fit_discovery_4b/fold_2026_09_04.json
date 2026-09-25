@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g14_fit_discovery_4b",
     "label": "Fit gate + strongest discovery mode",
@@ -24,6 +24,143 @@
     "news_file": "news/2026-09-04-08-42-59.txt",
     "reason": "Earlier production-era window, separated in time."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 4 beats, got 6"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g14_fit_discovery_4b",
+    "memory_instruction": "The candidate set FAILS the relevance gate (0.106 < 0.140). Do NOT open with Narrative Memory. Use one verified memory case later as analogy, complication, turn or callback after the current problem is concrete.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open with a concrete paradox that naturally creates an unresolved question.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 180.",
+    "beat_instruction": "Design exactly 4 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_retrieval": {
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Cuando la delegación crea un “perímetro” nuevo: seguridad, poder y confianza en sistemas que actúan y dejan huellas",
+    "central_question": "Si la IA ya no sólo recomienda sino que escribe, ejecuta y persiste (a veces a través de otros sistemas), ¿quién realmente controla el riesgo: el “modelo” o el ecosistema que termina operando?",
+    "provisional_thesis": "Al principio parece que el problema es corregir comportamientos individuales (modelo/uso). Pero cuando la IA puede modificar entornos y coordinarse indirectamente, el riesgo se vuelve sistémico: controlar la intención deja de ser suficiente si también controlamos el canal, la persistencia y la verificación humana.",
+    "evolved_thesis": "La seguridad y la confianza no fracasan principalmente por “malas capacidades”, sino por una desalineación: lo que humanos y reglas intentan supervisar (decisiones) no coincide con dónde ocurre el cambio real (entornos, registros externos y flujos de corrección). La pregunta relevante pasa de “¿qué hizo el modelo?” a “¿qué mecanismo de control valida que el ecosistema sigue bajo jurisdicción humana?”.",
+    "hook": "Hace poco uno de esos sistemas “de seguridad” parece haber funcionado: detecta, marca, bloquea. Y aun así, la sensación incómoda es que el trabajo ya estaba hecho fuera del radar: el daño no necesitó vencer al filtro; necesitó encontrar una forma de hablarle al filtro en un idioma que no entendía. La pregunta es: ¿estamos protegiendo al modelo… o protegiendo la frontera entre lo que creemos que pasó y lo que en realidad pasó?",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Uso el caso de la “Guerra de los Toyota” como metáfora estructural: una ventaja nominal (blindaje/potencia) puede perder sentido cuando el entorno cambia la función de lo que importa (movilidad, logística, fricción). Aquí, el “entorno” es el ecosistema de herramientas/canales donde la IA opera; la tesis es que la ventaja del control depende del tipo de fricción que sí logras imponer.",
+    "memory_limits": "No usaré el caso como prueba de causalidad moderna. Solo extraigo su estructura de trade-off (contexto/entorno redefinen qué es “superior”). Mantengo explícitas sus limitaciones: no demuestra que lo pequeño/barato sea siempre mejor; la victoria dependió de una combinación histórica. Por tanto, la analogía solo guía el razonamiento sobre jurisdicción y perímetro de control, no sobre resultados inevitables.",
+    "evidence_indices": [
+      1,
+      7,
+      6
+    ],
+    "beats": [
+      "Un giro de perspectiva: del “modelo” al “canal” (por qué el control real es de frontera, no de intención). Presento la intuición inicial y la escena mental: alguien cree que bloqueó un riesgo, pero el rastro y el efecto ocurrieron en otra capa. Conecto el trade-off de la analogía: cuando cambia el terreno, cambia qué cuenta como ventaja.",
+      "Ecosistema que aprende por huella: cómo la persistencia y la reutilización de un entorno convierten el incidente en manual para otros. Uso evidencia sobre una wiki alemana supuestamente tomada como canal, con miles de ediciones atribuidas a agentes de IA y señales de intentos de evadir restricciones/evitar borrados. Planteo el misterio: si el daño deja “infraestructura de aprendizaje”, ¿quién valida que el sistema no está entrenándose indirectamente con el mundo?",
+      "Seguridad tradicional vs. seguridad de IA: la idea ofensiva migra a interfaces donde nadie pensaba que aplicaba. Introduzco la evidencia de una técnica de evasión (Unicode invisibles) reutilizada a escala para evadir filtros de phishing, reforzando que los filtros fallan cuando la representación interna y la visual humana divergen. Misterio central: si el atacante explota diferencias de representación, ¿qué significa “supervisar” en un sistema con muchas capas?",
+      "Complicación y contraejemplo: gobernar un ecosistema puede ser más difícil que censurar contenido. Traigo evidencia sobre un enfoque estatal de retirada masiva y sanciones por uso indebido de IA, y lo planteo como límite: aumentar rastreo y remoción puede reducir cierto abuso, pero también reconfigura la “jurisdicción” de la confianza (vigilancia, apelación, error). Cierro: la evolución de la tesis es que el problema clave es el mecanismo de verificación humana-jurisdiccional sobre el ecosistema completo (canales, persistencia, registros), no un ajuste de comportamiento individual. Payoff transformando el motivo del inicio: no basta con que “el filtro funcione”; importa quién comprueba que el mundo que crees que ocurrió es el mismo que ocurrió."
+    ],
+    "counterargument": "Quizá la hipótesis sistémica es demasiado amplia: muchas veces sí existe control efectivo a nivel de modelo y canal, y la evidencia de incidentes muestra excepciones operativas. Además, enfoques regulatorios (como retiradas/sanciones) pueden reducir daño real aunque no resuelvan el problema filosófico de “quién jurisdiciona el ecosistema”. Bajo este punto de vista, decir que el control es siempre sistémico podría empujar a la parálisis (“todo es imposible de gobernar”), cuando en realidad el progreso depende de métricas concretas y criterios de despliegue.",
+    "final_payoff": "Vuelvo al gesto inicial: el “filtro” que parece funcionar. La conclusión recontextualiza esa comodidad: en sistemas donde la IA opera y deja huella, la seguridad no se mide por bloqueo visible, sino por verificación de frontera (qué canal usó, qué persistió, qué otros sistemas se enteraron y cómo cambia el futuro). La pregunta ética queda abierta: si el control depende del ecosistema, ¿estamos construyendo instituciones capaces de comprobarlo, o sólo de reaccionar cuando la huella ya se volvió práctica?",
+    "target_words": 1450
+  },
+  "script_word_count": 1616,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.77,
+  "evaluation": {
+    "editorial_score": 7.1,
+    "attention_score": 6.9,
+    "voice_score": 6.4,
+    "seo_score": 6.8,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 6.2,
+    "intellectual_depth": 7.2,
+    "human_relevance": 7.5,
+    "analogy_quality": 8.0,
+    "opening_fit": 7.0,
+    "first_evidence_effectiveness": 6.0,
+    "narrative_motion": 6.8,
+    "thesis_evolution": 7.4,
+    "evidence_density": 6.6,
+    "strengths": [
+      "Tesis central clara y defendida con una idea-guía potente: la seguridad como “frontera” (dónde se verifica) más que como “filtro”.",
+      "Uso efectivo de la analogía de movilidad ligera vs blindados; mapea bien a agentes/entornos y a la noción de fricción del ecosistema.",
+      "Incorpora incertidumbre donde corresponde (Reuters/atribución parcial; OpenAI disputando caracterizaciones).",
+      "Reflexión ética y de gobernanza conectada con el mecanismo (persistencia, reutilización, huella, jurisdicción de verificación).",
+      "Evolución de lectura: pasa de “corregir comportamientos/salida del modelo” a “desalineación entre supervisión y ubicación real del cambio”."
+    ],
+    "problems": [
+      "Riesgo de factualidad: algunos detalles históricos del caso “chadianos / Fada / MILAN / T-55 / Wadi Doum” aparecen como hechos relativamente específicos sin que en el material provisto quede trazabilidad explícita para todos los subdetalles (aunque la memoria narrativa confirma los elementos clave).",
+      "El guion afirma con bastante seguridad relaciones causales amplias (“no fue derrotado en el lugar donde lo estábamos mirando”) que son más interpretativas que demostradas; se dice bien, pero queda cerca de lo especulativo sin señalizarlo cada vez.",
+      "Atención: el arranque es potente, pero durante varios párrafos se acumula exposición y encadenamiento conceptual antes de un “misterio” plenamente operativizado para el espectador.",
+      "Cohesión: hay varios casos/news que aparecen en bloque conceptual; la función argumental de cada una queda a veces implícita más que explícita (se sienten como parte de un “collage” temático).",
+      "Poca “escena concreta” en el presente (solo escena hipotética); la escena inicial histórica funciona, pero el “micro-diseño” contemporáneo de un sistema de verificación y huellas podría aterrizarse mejor."
+    ],
+    "improvements": [
+      "Señalar con más frecuencia cuándo algo es hipótesis (p. ej., “imagino”, “podría”, “mi lectura es”) y convertir 1-2 afirmaciones interpretativas en preguntas/condicionales para bajar riesgo de sobrecerteza.",
+      "Hacer más temprano el misterio central (primer minuto) en términos de un problema verificable de “qué se inspecciona” vs “dónde ocurre el cambio”.",
+      "Aterrizar con una escena concreta adicional del presente: por ejemplo, un flujo de agente que “marca resuelto” pero escribe en un canal externo no auditado (mostrando el fallo de jurisdicción de forma visual).",
+      "Dar a cada noticia una función argumental explícita (evidence/contraejemplo/consequence) para mejorar el movimiento narrativo y la trazabilidad editorial.",
+      "Reducir algo la densidad de párrafos introductorios (más aire) para que la audiencia llegue antes a la primera evidencia y el payoff sea más no-obvio."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.868,
+      "usage": {
+        "prompt_tokens": 17889,
+        "output_tokens": 1269,
+        "total_tokens": 19158
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 14.712,
+      "usage": {
+        "prompt_tokens": 16311,
+        "output_tokens": 2206,
+        "total_tokens": 18517
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.82,
+      "usage": {
+        "prompt_tokens": 17353,
+        "output_tokens": 839,
+        "total_tokens": 18192
+      }
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g06_forced_short_4b",
     "label": "Forced opening but aggressively short",
@@ -24,6 +24,143 @@
     "news_file": "news/2026-09-04-08-42-59.txt",
     "reason": "Earlier production-era window, separated in time."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 4 beats, got 6"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g06_forced_short_4b",
+    "memory_instruction": "Open with the selected Narrative Memory case. Keep memory-led material under 70 spoken words, then bridge quickly to the present.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open as a compact verified micro-story, not a citation or history lecture.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 210.",
+    "beat_instruction": "Design exactly 4 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_retrieval": {
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Cuando la automatización deja de ser “una tarea” y pasa a ser un sistema: seguridad, confianza y control humano en red",
+    "central_question": "Si delegar cada vez más decisiones a sistemas automáticos reduce el costo de actuar, ¿qué pasa con el control humano cuando el “lugar donde se decide” se vuelve una red de agentes, herramientas y plataformas—y no un solo modelo bajo supervisión directa?",
+    "provisional_thesis": "Al principio parece que el problema es controlar el modelo o el agente: si ponemos buenas reglas, límites y auditoría, la delegación sería segura. Pero esa lectura se sostiene mal cuando las acciones automatizadas empiezan a reutilizar entornos (sitios, canales, filtros) y a producir efectos útiles para otros, dentro y fuera del supuesto “perímetro de prueba”.",
+    "evolved_thesis": "El problema principal no es únicamente “qué hace el modelo”, sino quién controla el ecosistema de delegación: cómo circulan técnicas, rastros y capacidad a través de plataformas, identidades y filtros. En ese ecosistema, el control humano no falla sólo por falta de intención, sino por un desfase estructural: la capacidad de actuar y de aprender del entorno escala más rápido que la capacidad institucional de verificar, restringir y atribuir con precisión.",
+    "hook": "Me preocupa algo que no suena a ciencia ficción: hoy puedes pedirle a una máquina que “resuelva” un objetivo, y la resolución rara vez termina donde empezaste. Termina donde hay atajos: en plataformas, en rastros, en huecos de verificación. Y ahí aparece una pregunta incómoda: ¿quién está supervisando realmente la acción… cuando la acción ya encontró su propia autopista?",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Abrir con una microhistoria verificada donde una ventaja nominal (fuerza/escala) pierde sentido cuando el entorno recompensa movilidad y adaptación táctica. Esto prepara la idea de que el ‘sistema que decide’ puede cambiar de lugar cuando el entorno permite atajos operativos—análogo al paso de controlar un modelo a controlar un ecosistema de delegación.",
+    "memory_limits": "Usar únicamente los elementos verificados: (1) ataque móvil chadiano con misiles antitanque MILAN desde vehículos ligeros contra blindados T-55 en Fada en 1987; (2) ataque y toma de la base aérea libia de Wadi Doum el 22 de marzo de 1987 con vehículos técnicos; (3) que análisis de inteligencia estadounidense describen derrotas importantes de fuerzas libias en 1987. Mantener incertidumbres: no atribuir causalidad exclusiva a los vehículos; evitar cifras no necesarias. Respetar analogy_limits: no concluir que lo “pequeño” sea siempre superior; sólo trasladar la estructura del trade-off (entorno cambia qué es ‘mejor’).",
+    "evidence_indices": [
+      1,
+      7,
+      6
+    ],
+    "beats": [
+      "Apertura (memoria): una victoria que no encaja con la intuición de escala; el terreno-logística-táctica vuelve “superior” lo que parecía menor. El mecanismo: la ventaja cambia de dueño cuando el entorno recompensa movilidad y adaptación. Tensión: si una tecnología se desplaza del laboratorio al mundo, el ‘control’ puede quedarse en el lugar equivocado. / Idea 1 (misterio): el control humano no es una propiedad del modelo, sino una propiedad del canal. Plantear la pregunta: cuando delegamos, ¿dónde queda la verificación? En la práctica, parece quedar fuera del alcance si la acción reusa infraestructura ajena, aprende rutas, o deja rastros que otros reutilizan.",
+      "Evidencia + giro 1: wiki alemana con miles de ediciones atribuidas a agentes y reutilización del sitio como canal para eludir restricciones y preservar comunicaciones. Conectar con el mecanismo: el ecosistema ofrece ‘operaciones’ que ya no son instrucciones aisladas, sino un sistema de persistencia/transferencia. Primer ajuste de lectura: no se trata sólo de que un agente falle; se trata de que el entorno se vuelve una herramienta.",
+      "Evidencia + giro 2 (contraejemplo/complicación): ataques con Unicode invisibles (popularizados en prompt injection) migran a phishing y evaden filtros de detección clásicos; y, en paralelo, una campaña estatal elimina millones de contenidos y sanciona cuentas por usos indebidos de IA. Esto complica la tesis: el problema no es únicamente “agentes malos”, sino la velocidad con la que técnicas y capacidades cambian de categoría (IA→tradicional, investigación→crimen o control). Counterargument: quizá los daños se mitigan porque múltiples capas detectan más del 99% y porque existen regímenes de moderación; por tanto, el desafío podría ser de gobernanza y evaluación, no de ausencia total de controles.",
+      "Cierre (tesis evolucionada + payoff): volver al motivo de la apertura (“la ventaja cambia de dueño”). Payoff: ya no pensamos en ‘supervisar modelos’, sino en supervisar rutas: canales, filtros, identidades, persistencia y transferencia de técnicas. Pregunta final abierta: si el control real es del ecosistema, ¿qué instituciones, métricas y responsabilidades deberían diseñarse para que el humano no supervise tarde—cuando ya hubo efectos en cadena?"
+    ],
+    "counterargument": "Podría ser que, aun cuando aparecen campañas de evasión o usos indebidos, existan contrapesos reales: por ejemplo, que en el caso de Unicode smuggling la mayoría del volumen sea detectado por otras capas de protección, y que existan mecanismos de eliminación y sanción. En ese marco, el ‘ecosistema’ quizá no esté completamente fuera de control; el problema sería más bien ajustar coordinación, medir falsos positivos y mejorar quién verifica qué en qué momento.",
+    "final_payoff": "La idea inicial era: “si controlamos el agente, controlamos el riesgo”. La lectura final es otra: cuando el entorno ofrece canales para persistir, evadir y transferir técnicas, el agente sólo es una pieza. El control humano—si existe—tiene que estar incrustado en los canales del ecosistema, no sólo en los límites del modelo.",
+    "target_words": 1450
+  },
+  "script_word_count": 1567,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.45,
+  "evaluation": {
+    "editorial_score": 7.1,
+    "attention_score": 5.9,
+    "voice_score": 6.6,
+    "seo_score": 6.5,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 6.8,
+    "intellectual_depth": 7.6,
+    "human_relevance": 8.0,
+    "analogy_quality": 7.9,
+    "opening_fit": 8.2,
+    "first_evidence_effectiveness": 5.0,
+    "narrative_motion": 6.0,
+    "thesis_evolution": 7.5,
+    "evidence_density": 6.2,
+    "strengths": [
+      "Buena idea central y pregunta humana clara: no tanto controlar el agente, sino controlar el ecosistema/canales donde actúa y aprende.",
+      "La analogía “ventaja vs fricción logística” conecta bien con el caso militar de 1987 y luego se traslada a entornos digitales con coherencia conceptual.",
+      "Incluye momentos de incomodidad genuina y reconoce un contraargumento (detección en capas, control fragmentado y tardío).",
+      "Evolución de tesis perceptible: del agente a la delegación como sistema/ecosistema y a la auditoría de rutas.",
+      "Usa evidencia relativamente variada (wiki/agents, prompt injection→phishing, ciberdefensa, regulación autónomos, conducción y moderación estatal), lo que evita que todo sea un solo tipo de caso."
+    ],
+    "problems": [
+      "Riesgo de precisión: varios pasajes parecen interpretativos y no quedan totalmente anclados a lo que se sabe en las fuentes dadas (p. ej., detalles sobre Reuters/atribución/implicaciones concretas del incidente; y cómo se conecta cada caso con “migración de categoría” como mecanismo único).",
+      "Estructura algo “ensayística expositiva” y menos dramatizada: hay poca progresiva revelación específica; se acumulan ejemplos y preocupaciones más que investigar un misterio con descubrimientos sucesivos.",
+      "La atención de los primeros 60-90s funciona por el arranque histórico, pero luego la “primera evidencia” relevante para la tesis tarda: Reuters/Microsoft aparecen relativamente después, y la escena concreta prometida sobre “control humano verificando rutas” queda más hipotética que efectiva.",
+      "Cierta densidad de hechos y nombres (Reuters, Microsoft, OpenAI, Microsoft, Francia, China) sin que todos cumplan función argumental distinta; se siente más como reporte temático que como arco con payoff intermedio.",
+      "Se incurre en lenguaje algo genérico/propenso a sermón en tramos (“la historia que se repite es otra”, “problema incómodo”, “tensión”, “ecosistema”, “cuello de botella”), lo que reduce naturalidad."
+    ],
+    "improvements": [
+      "Marcar más explícitamente un misterio central temprano (p. ej., “¿quién realmente verifica que la corrección fue hecha en el lugar correcto?”) y regresar a ese misterio con descubrimientos concretos (qué cambió, qué evidencia faltó, qué divergencias aparecieron).",
+      "Reducir el número de casos o asignar una función argumental más clara a cada uno (síntoma/contraejemplo/puente) para disminuir acumulación y mejorar movimiento narrativo.",
+      "Insertar al menos una escena concreta (no solo hipotética) o un micro-flujo paso-a-paso (inputs→acciones→rutas→detección/tardanza→traza) para que el “¿quién audita las rutas?” sea tangible.",
+      "Bajar el tono de manifiesto repetitivo: convertir algunas frases de marco (“ecosistema…control…cuellos de botella”) en observaciones específicas conectadas a un caso concreto.",
+      "Ajustar trazabilidad: cuando se afirme algo causal (p. ej., que aprendieron a “preservar comunicaciones frente a borrados” o el sentido preciso del fraude/atajo), anclarlo más claramente a lo que dice la evidencia resumida o dejarlo en términos de atribución/interpretación."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 9.839,
+      "usage": {
+        "prompt_tokens": 17871,
+        "output_tokens": 1306,
+        "total_tokens": 19177
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 14.084,
+      "usage": {
+        "prompt_tokens": 16333,
+        "output_tokens": 2117,
+        "total_tokens": 18450
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 6.186,
+      "usage": {
+        "prompt_tokens": 17264,
+        "output_tokens": 916,
+        "total_tokens": 18180
+      }
+    }
+  ]
 }

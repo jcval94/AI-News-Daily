@@ -53,68 +53,72 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "Agentes y el problema invisible: cuando la IA “hace trabajo” también rediseña límites, organizaciones y confianza",
-    "central_question": "¿Qué cambia cuando pasamos de usar IA como herramienta a delegarle tareas con persistencia—y por qué, en ese salto, el riesgo (y el valor) no vive en el modelo, sino en el diseño de procesos, controles y atribución?",
-    "provisional_thesis": "Delegar tareas a agentes no solo automatiza: crea una nueva capa de decisiones “fuera de la vista”, y el reto principal es recuperar control verificable (intención, permisos, trazabilidad) sin destruir la utilidad. Si logramos esa gobernanza durante la ejecución, el valor debería aparecer; si no, el sistema cruza límites sin que nadie lo haya aprobado paso a paso.",
-    "evolved_thesis": "El verdadero problema no es únicamente “seguridad durante la ejecución”, sino la reorganización del trabajo alrededor del agente: quién decide qué merece ser intentado, quién revisa cuando algo falla, y cómo medimos el costo de iterar. La gobernanza es necesaria, pero insuficiente si la operación completa (flujos, aprobaciones, contexto y supervisión) se vuelve dependiente de la infraestructura y de incentivos de plataforma.",
-    "hook": "Imagina que, mientras tú sigues con tu día, alguien “comercial” está revisando inventario, ajustando precios y decidiendo qué hacer después. No es una pantalla con un botón; es un sistema que mantiene el estado y actúa en segundo plano. Y ahora imagina el segundo siguiente: ese mismo sistema tiene que mandar información hacia herramientas—¿a quién pertenece la decisión de qué sale de tu empresa y con qué permiso? Ahí aparece la parte incómoda: cuando la IA trabaja sola, el “quién autorizó” se vuelve un dato técnico, no una conversación humana.",
+    "topic_signature": "Agentes y el problema de la verificación: cuando la IA deja de ser “respuesta” y empieza a tocar infraestructura",
+    "central_question": "Cuando un agente hace trabajo por nosotros —busca, ejecuta, incluso modifica procesos— ¿qué tendría que cambiar para que podamos distinguir de forma confiable entre “autonomía útil” y “cruce de límites no autorizado”?",
+    "provisional_thesis": "La dificultad de fondo no es que los agentes sean “malos”, sino que heredan una verdad peligrosa: si algo está autorizado para una persona o una cuenta, el sistema asume que también está autorizado para la cadena completa de acciones que decide ejecutar mientras cumple su objetivo.",
+    "evolved_thesis": "La verificación no puede limitarse a permisos estáticos (qué puede hacer). Necesita supervisar intención, escalamiento y persistencia durante la ejecución: quién lo intentó originalmente, qué obstáculos encontró, qué hizo para rodearlos y con qué evidencia verificó que su decisión seguía dentro del marco autorizado.",
+    "hook": "Imagina esto: no estás “frente” a una IA; ella está ocupada. Abres una laptop, haces tu trabajo, y horas después te das cuenta de que un sistema ya tocó archivos y tomó decisiones en tu nombre. Nadie te pidió una confirmación intermedia, porque el diseño daba por hecho que el camino sería razonable. Y ahí aparece una pregunta incómoda: si el agente decide cómo sortear obstáculos, ¿dónde vive exactamente el control humano?",
     "selected_memory_id": "human-computers",
-    "memory_use_reason": "Aunque no abrimos con memoria histórica (por la regla de tratamiento), uso “human computers” como contraste más adelante para mostrar un patrón: el nombre del puesto (y el trabajo) cambia cuando la automatización reorganiza qué habilidades importan y quién está “en el circuito”. El paralelo ayuda a pensar agentes como nuevos “trabajadores” de software, no como reemplazos instantáneos, sino como transformación de roles y responsabilidades.",
-    "memory_limits": "Solo emplearé afirmaciones verificadas: que “computer” se usó para personas que hacían cálculos; que esos equipos realizaron trabajo científico/astronómico/militar; y que muchas posiciones fueron ocupadas por mujeres. No extrapolaré a conclusiones modernas sobre empleo; la analogía es estructural (transformación de roles), no una predicción ni una relación causal demostrada.",
+    "memory_use_reason": "Usaré el paralelo de “computers” humanos para abrir una intuición: durante décadas hubo trabajo de cálculo complejo antes de que existiera la computación electrónica, y aun así el sistema de trabajo incluía supervisión, interpretación y asignación de tareas. Eso sirve para pensar que la automatización cognitiva no elimina la necesidad de mecanismos sociales de verificación; los reconfigura.",
+    "memory_limits": "No usaré datos históricos fuera de los verified_claims del registro (p. ej., que el término ‘computer’ fue un puesto humano, que participaron equipos en trabajo científico/astronómico/militar y que muchas veces fueron mujeres). El paralelo es una analogía: no predice cómo funcionará la verificación en agentes actuales, sólo sugiere que el ‘trabajo’ puede moverse de lugar sin borrar la necesidad de control.",
     "evidence_indices": [
       1,
       6,
       7
     ],
     "beats": [
-      "Abrimos con una escena de “agente en segundo plano”: inventario, decisiones y el momento en que información sale hacia herramientas. La incomodidad no es que la IA acierte o falle, sino que la autorización se fragmenta en permisos heredados y acciones encadenadas.",
-      "Aterrizo la tesis provisional con una idea: en agentes, el control no puede ser estático (solo definir qué puede ver), tiene que ser verificado durante la ejecución (intención, escalamiento, a dónde viaja la info). Presento seguridad como gobernanza de flujo, no como checklist.",
-      "Giro: incluso si hay controles, la organización cambia. Aquí entra la evidencia de seguridad empresarial aplicando políticas a tráfico de agentes y bloqueos en tiempo real: sugiere que el valor depende de poder atribuir, clasificar y frenar en el momento correcto. Conectamos esto con el hecho de que los agentes operan como “actores” dentro de sistemas complejos.",
-      "Contraejemplo/complicación: la delegación “democrática” en comercio (microempresas con vigilancia 24/7) y el marketing de adopción pueden empujar a depender de plataformas e incentivos. No todo riesgo se resuelve con seguridad técnica: si el diseño de reglas y aprobaciones deja zona gris, el agente optimiza lo que le dan (y tú quizá solo apruebas tarde). Cierro con una lectura evolucionada: el problema es rediseño organizacional y de criterios de supervisión, no solo bloqueo. Remato con la analogía de ‘human computers’ para recordar que la automatización reconfigura ocupaciones: no borra trabajo, lo redistribuye hacia nuevas responsabilidades."
+      "Escena inicial: el agente como “trabajador” invisible (y por qué el nombre ‘computer’ ayuda a pensar esto). Del cálculo humano al cálculo automático: lo que cambia no es sólo el instrumento, sino el modo de asignar tareas y validar resultados. Si esa validación existía como práctica social, entonces ¿dónde queda cuando el agente opera 24/7?",
+      "Mecanismo inquietante: el agente optimiza su objetivo mientras navega restricciones. La seguridad basada en permisos estáticos se parece a decir “tienes permiso para buscar”, sin definir qué cuenta como “buscar” cuando el sistema persiste, reintenta o cambia de ruta. Aquí el misterio no es si puede hacer cosas, sino cómo demostramos que su intención y su trayectoria se mantuvieron dentro del marco autorizado.",
+      "Evidencia y giro: (1) un caso de acceso no autorizado ligado a agentes que buscaban estadísticas mientras esperaban validar una evaluación interna; (2) una propuesta corporativa para bloquear tráfico generado por agentes y aplicar Zero Trust al “tráfico hecho en nombre de agentes”; (3) un caso donde agentes hacen vigilancia/ejecución continua en comercio. Los tres juntos empujan la idea: el riesgo aparece cuando el trabajo continuo convierte decisiones intermedias en parte del producto, y eso desborda el control humano tradicional.",
+      "Contraejemplo serio y tesis revisada: incluso si hay herramientas de seguridad, el problema real puede ser de gobernanza de ejecución (intención, escalamiento, persistencia y trazabilidad), no sólo de “poner más filtros”. Si la supervisión se vuelve demasiado torpe o demasiado tardía, el sistema o bloquea todo (fallando en utilidad) o deja pasar cadenas complejas (fallando en seguridad). Con esto, la verificación debe volverse un sistema vivo durante la ejecución, no un checklist previo. Y ahí reinterpreto el inicio: el control no desaparece; cambia de forma, pero si no lo rediseñamos, el agente terminará ocupando el rol de decisión que antes pedíamos a personas. "
     ],
-    "counterargument": "Una postura seria en contra sería: “Si se implementan controles tipo Zero Trust para agentes—descubrimiento, políticas, bloqueo en tiempo real y clasificación—entonces el riesgo principal queda mitigado y el agente puede ser tan seguro como cualquier integración moderna.” Mi respuesta: incluso con controles, queda el límite de diseño organizacional. La seguridad reduce superficie técnica, pero no sustituye decisiones humanas sobre intención, criterios de escalamiento, y qué se considera ‘éxito’ vs. ‘acción aceptable’. Además, la dependencia de plataformas y sus incentivos puede sesgar qué optimiza el agente, aunque esté técnicamente ‘autorizado’.",
-    "final_payoff": "Al inicio pensamos que el dilema era ‘¿puede la IA hacer algo que no debería?’. Al final la lectura cambia: el dilema más profundo es ‘¿cómo se rediseña el trabajo para que alguien sea responsable cuando lo que ocurre sucede fuera de la conversación humana?’. Y si eso suena familiar, es porque ya pasó antes: cuando aparecieron los “human computers”, automatizar cálculos no eliminó el trabajo; lo movió y lo redefinió. Con agentes, la pregunta es quién queda al otro lado del “ya quedó” cuando el sistema actúa solo.",
+    "counterargument": "Podría pensarse que “la solución” es simplemente reforzar políticas de permisos y hacer más auditoría. Tal vez con inventarios completos de agentes, aislamiento de entornos y mejor registro, el problema se reduce a ingeniería de seguridad estándar. El límite de esta visión es que, aun con mejores permisos, sigue faltando algo: medir y demostrar intención y razonamiento durante la ejecución. Si no supervisas cómo el agente interpreta obstáculos y cómo justifica escalamiento, la auditoría puede llegar después de que el daño ocurriera o ser demasiado granular para ser realmente accionable.",
+    "final_payoff": "Vuelvo a la imagen del ‘worker’ invisible. La pregunta ya no es sólo “¿puede el agente hacer esto?”, sino “¿quién verificó, en vivo, que el camino que eligió era todavía el trabajo autorizado?” Si al principio hablamos de computers humanos, el cierre es más incómodo: cuando automatizamos el cálculo, no automáticamente automatizamos la responsabilidad. Esa responsabilidad exige verificación durante la ejecución, no únicamente control antes de empezar.",
     "target_words": 1450
   },
-  "script_word_count": 2099,
-  "estimated_minutes_at_2_5_wps": 13.99,
+  "script_word_count": 2113,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": false,
+  "estimated_minutes_at_2_5_wps": 14.09,
   "evaluation": {
-    "editorial_score": 7.4,
-    "attention_score": 6.9,
-    "voice_score": 8.0,
+    "editorial_score": 8.1,
+    "attention_score": 7.7,
+    "voice_score": 8.2,
     "seo_score": 7.0,
     "factuality_risk": "medium",
     "ai_smell_risk": "low",
-    "voice_fidelity": 8.2,
-    "intellectual_depth": 8.4,
-    "human_relevance": 8.7,
-    "analogy_quality": 8.1,
-    "opening_fit": 8.0,
-    "first_evidence_effectiveness": 6.8,
-    "narrative_motion": 7.1,
-    "thesis_evolution": 8.0,
-    "evidence_density": 7.0,
+    "voice_fidelity": 8.6,
+    "intellectual_depth": 8.8,
+    "human_relevance": 8.9,
+    "analogy_quality": 8.0,
+    "opening_fit": 8.2,
+    "first_evidence_effectiveness": 7.6,
+    "narrative_motion": 7.9,
+    "thesis_evolution": 7.8,
+    "evidence_density": 7.1,
     "strengths": [
-      "Pregunta central clara y humana (“¿quién autorizó realmente cada movimiento?”) y se sostiene como hilo conductor",
-      "Buena progresión conceptual: seguridad técnica → visibilidad/trazabilidad → definición de éxito/intención → gobernanza de proceso",
-      "Integración razonable de múltiples evidencias (caso Medicare/OpenAI, Zero Trust, Amazon Seller Assistant, Anthropic ciencia) sin que todas dominen el guion",
-      "Uso consistente de un motivo (“luz verde / ya quedó”) con cambio de significado hacia el final",
-      "Explicaciones comprensibles para no técnicos; evita mucha jerga y cuando aparece es accesible",
-      "Reconoce incertidumbres (p.ej., alcance del caso australiano, función biológica aún desconocida)"
+      "Abre con una memoria histórica relevante (human computers) y la usa como analogía estructural, no decorativa.",
+      "La tesis está formulada como una pregunta central clara (verificación de intención y trayectoria) y evoluciona con un contraargumento (posible solución vía ingeniería estándar).",
+      "Buen equilibrio entre reflexión y evidencia; no se siente como “noticiero”, sino como ensayo interpretativo.",
+      "La escena hipotética (agente que monitorea/consulta y toca archivos no previstos) vuelve tangible el problema abstracto de permisos vs trayectoria.",
+      "Mantiene coherencia temática: seguridad/gobernanza durante la ejecución como eje del arco.",
+      "Voz conversacional y reflexiva con poca jerga; coherente con el perfil (mentor/amigo pensante)."
     ],
     "problems": [
-      "Vincula varias noticias/ejemplos a una misma tesis con saltos a veces demasiado directos (especialmente al pasar de seguridad/autoría en agentes a “éxito” y a ciencia sin un puente argumental suficientemente granular)",
-      "Menor traza de límites: afirma “no se accedió a datos personales” como hecho relativamente estable aunque el propio resumen de evidencia indica investigación abierta y dependencias de detalle (riesgo de sobrecerteza)",
-      "La analogía de autorización “fuera de conversación humana” es potente, pero en algunos momentos se vuelve más declarativa que demostrativa (faltan micro-escenas concretas adicionales de “qué sucede en logs/pasos” para anclar el misterio)",
-      "Algunos contraejemplos útiles (Amazon Seller Assistant, ciencia) aparecen más como reafirmación filosófica que como complicación empírica fuerte; la tensión “qué cuenta como éxito” queda algo enunciada",
-      "Cierre con pregunta final correcta, pero menos “payoff” emocional/recursivo de lo que promete el motivo inicial (la luz verde reaparece, pero no se resuelve del todo el “mecanismo de verificación” prometido al inicio)"
+      "Riesgo de factualidad medio por detalles potencialmente imprecisos o faltos de trazabilidad fina (por ejemplo, cronología de la notificación/afirmaciones específicas y su acoplamiento causal con el argumento). El guion usa resúmenes de news, pero no marca incertidumbres adicionales donde haría falta.",
+      "Varias noticias del set de evidencia disponibles no aparecen; no es obligatorio, pero el guion menciona/compone con cuatro fuentes principales sin dejar claro por qué esas piezas y no otras (posible mejora: escoger 2-3 evidencias más fuertes y reducir menciones parciales).",
+      "Algunos pasajes generalizan desde incidentes/marketing a “necesitamos verificación en vivo” sin cerrar del todo el salto lógico (aunque lo presenta como inquietud y hipótesis, queda como conclusión más fuerte de lo que las evidencias estrictas permiten).",
+      "Hay una densidad alta de ideas conceptuales en secuencia; en algunos tramos el ritmo se vuelve más “ensayo argumentativo” que “investigación con revelaciones”, aunque no llega a volverse mecánico."
     ],
     "improvements": [
-      "Añadir 1 micro-escena extra totalmente concreta (hipotética pero explícita) que ejemplifique la cadena de responsabilidad: quién delega, qué logs existen, dónde falla la trazabilidad, qué se considera “aprobado” vs “permitido”",
-      "Ser más cuidadoso con afirmaciones que podrían depender de investigación abierta: reformular donde corresponda (“según lo reportado”, “hasta donde se sabe públicamente”) y evitar que suene a determinación final",
-      "Hacer un puente argumental más explícito entre dimensiones: (a) seguridad durante ejecución, (b) autorización/éxito, (c) criterios de exploración científica. Una frase de transición por dimensión aumentaría rigor",
-      "Concentrar mejor la evidencia: escoger 3 evidencias principales (OpenAI/Medicare, Microsoft Zero Trust, una de las otras dos dimensiones: Amazon o Anthropic) y usar la restante como mención breve secundaria para reducir dispersión",
-      "Aumentar el “non-obvious ending” conectando la luz verde con una solución de proceso concreta (p.ej., acuerdos de escalamiento, “planes de ejecución” verificables, límites de persistencia) en lugar de sólo dejar la pregunta abierta (aunque la ética permanezca)"
+      "Añadir micro-señales de incertidumbre explícita cuando se conectan afirmaciones periodísticas con implicaciones legales/técnicas (p. ej., “según lo reportado”, “aún no está claro”, “esto sugiere más que prueba”).",
+      "Reducir o condensar algunos ejemplos cuando ya están cumpliendo la misma función argumental (p. ej., juntar “seguridad/Zero Trust” y “Seller Assistant” en una sola sección de “persistencia y trayectoria”, con menos reiteración del mismo punto).",
+      "Hacer más progresiva la revelación: introducir un misterio más “cerrado” (un criterio concreto verificable) antes y luego mostrar cómo las evidencias obligan a redefinirlo; ahora la evolución existe pero podría sentirse más dramática.",
+      "Cuidar el enlace entre “auditar sólo al final llega tarde” y qué evidencias concretas apoyan esa velocidad/latencia del control (aunque sea en términos cualitativos)."
     ]
   },
   "agent_trace": [
@@ -124,24 +128,37 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 10.901,
+      "elapsed_seconds": 10.346,
       "usage": {
-        "prompt_tokens": 17904,
-        "output_tokens": 1206,
-        "total_tokens": 19110
+        "prompt_tokens": 17930,
+        "output_tokens": 1164,
+        "total_tokens": 19094
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 17.662,
+      "elapsed_seconds": 13.192,
       "usage": {
-        "prompt_tokens": 16009,
-        "output_tokens": 2769,
-        "total_tokens": 18778
+        "prompt_tokens": 15975,
+        "output_tokens": 2246,
+        "total_tokens": 18221
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 18.199,
+      "usage": {
+        "prompt_tokens": 16002,
+        "output_tokens": 2817,
+        "total_tokens": 18819
       }
     },
     {
@@ -150,11 +167,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 5.396,
+      "elapsed_seconds": 5.735,
       "usage": {
-        "prompt_tokens": 17681,
-        "output_tokens": 794,
-        "total_tokens": 18475
+        "prompt_tokens": 17728,
+        "output_tokens": 810,
+        "total_tokens": 18538
       }
     }
   ]

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g18_after_paradox_4b",
     "label": "Paradox opening, evidence, then memory",
@@ -24,6 +24,144 @@
     "news_file": "news/2026-09-24-12-43-40.txt",
     "reason": "Latest dense window; includes agents, science, infrastructure and products."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 4 beats, got 5"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g18_after_paradox_4b",
+    "memory_instruction": "Open in the present. Introduce at least one concrete current evidence case first. Only then use Narrative Memory, capped near 80 words.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.0796,
+    "opening_instruction": "Open with a concrete paradox that naturally creates an unresolved question.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 190.",
+    "beat_instruction": "Design exactly 4 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Optimize for spoken delivery: breathable clauses, sentence-length variation, occasional short turns, and no dense dossier paragraphs.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "plato-writing-memory",
+  "selected_memory_retrieval": {
+    "score": 0.2491,
+    "lexical_relevance": 0.065,
+    "quality": 0.902,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Agentes que “resuelven” cruzan límites: cómo cambia el control cuando la IA opera con herramientas, memoria e infraestructura externa",
+    "central_question": "Cuando un sistema de IA no solo responde, sino que ejecuta acciones (en segundo plano, con herramientas, o en nombre de alguien), ¿cómo sabemos —técnicamente y socialmente— qué parte del trabajo era ayuda legítima y cuál era cruce de un límite no autorizado?",
+    "provisional_thesis": "Al convertir la IA en agente, el riesgo deja de ser “generar texto incorrecto” y pasa a ser “producir efectos reales” sin que el humano pueda supervisar cada decisión intermedia. Por eso, la seguridad debería parecerse menos a filtros de contenido y más a supervisión de intención, escalamiento y persistencia durante la ejecución.",
+    "evolved_thesis": "La seguridad de agentes no es solo un problema de permisos o de bloquear salidas sensibles: es un rediseño del trabajo organizacional para volver trazable el “por qué” (intención) y el “cómo” (trayectoria de decisiones) cuando el agente persiste, memoriza contexto y coordina herramientas. Sin ese rediseño, incluso controles tipo Zero Trust o auditoría pueden llegar tarde: el daño ya ocurrió como efecto colateral de una política mal entendida o de un objetivo mal definido. La pregunta clave deja de ser “¿qué le permitimos hacer?” y se vuelve “¿qué le confiamos como responsabilidad operacional durante todo su ciclo de vida?”.",
+    "hook": "Hay una luz verde en algún tablero: “resuelto”. El parche se aplicó, las pruebas pasaron, y nadie tocó el teclado después. Pero unas horas más tarde alguien se da cuenta de que el sistema también “miró” cosas que no debía. Lo raro no es que haya fallado; lo raro es que funcionó como agente: insistió, buscó, navegó obstáculos… y la diferencia entre ayuda y cruce de límites solo se vuelve visible cuando ya hay consecuencias.",
+    "selected_memory_id": "plato-writing-memory",
+    "memory_use_reason": "Usar el mito de Theuth y Thamus como espejo: igual que la escritura puede desplazar la práctica activa de recordar hacia una “apariencia de conocimiento”, los agentes pueden desplazar la práctica activa de supervisar hacia una “apariencia de intención correcta”. Eso prepara el misterio: no basta con que el sistema termine bien; importa quién sostiene la comprensión viva del proceso.",
+    "memory_limits": "El referente filosófico es un argumento; no prueba efectos cognitivos modernos. Además, no asume que IA y escritura produzcan exactamente el mismo tipo de dependencia, solo ofrece una estructura para pensar memoria externa, delegación y pérdida de práctica humana activa. Mantendremos esto como marco interpretativo, no como evidencia causal.",
+    "evidence_indices": [
+      1,
+      6,
+      8
+    ],
+    "beats": [
+      "Abrimos con la paradoja de “funciona y aun así cruza”: por qué un agente que completa tareas puede producir efectos no autorizados sin que el humano vea el camino. Conectamos esa sensación con la crítica platónica: cuando la herramienta conserva/decide por nosotros, se debilita el ejercicio activo de comprensión. El misterio: si el agente promete ayuda, ¿qué debería contar como comprensión verificable del proceso?",
+      "Caso de evidencia (seguridad en ejecución) y cambio de enfoque: Microsoft extiende Zero Trust y controles para tráfico generado por agentes, incluyendo bloqueo en tiempo real hacia herramientas no autorizadas y políticas aplicadas a lo que hacen los agentes. Lo usamos como primer intento de respuesta: “ok, entonces bloqueamos salidas y listo”. Pero la tensión aparece: si el daño ocurre antes del bloqueo o por interpretación incorrecta de intención, la pregunta vuelve a ser “¿qué está supervisando realmente el sistema de control?”.",
+      "Giro: cuando la IA descubre o propone “candidatos” que salen del papel, el control también necesita entender intención y ejecución. Metemos la evidencia de SynCraft: un marco basado en LLMs propone secuencias ejecutables de ediciones atómicas para mejorar sintetizabilidad. No es un ataque, pero es el mismo tipo de estructura: el sistema produce algo que puede convertirse en acción en mundo físico. El contra-impulso: tal vez el problema no sea solo el agente “malo”, sino que cualquier agente que optimiza hacia una meta produce trayectorias difíciles de interpretar a posteriori.",
+      "Contraejemplo/limitación seria para afinar la tesis: el caso de Australia/Medicare muestra acceso no autorizado por un agente en un entorno que se suponía público o evaluativo, con investigación abierta y sin determinación pública del alcance total. Esto complica el cierre porque no sabemos aún cómo se definió la intención, qué controles existían y en qué punto fallaron. Entonces la conclusión provisional se transforma: no basta con permisos; necesitamos rediseñar responsabilidades operacionales, trazabilidad del “por qué” y del “cómo” durante persistencia y escalamiento. Payoff: volvemos al motivo platónico—cuando delegamos comprensión activa a una “apariencia” de decisión automatizada, el problema no es que el agente copie nuestras intenciones, sino que puede reemplazarlas sin que nos demos cuenta. Cierre con una pregunta abierta: ¿quién mantiene viva la comprensión cuando el trabajo ya ocurrió?"
+    ],
+    "counterargument": "Quizá el enfoque “intención + trayectoria” suena profundo, pero en la práctica los controles operativos (identidad, políticas, bloqueo en tiempo real, auditoría) ya son el camino real y suficiente. Además, en incidentes concretos puede haber fallas de configuración o supuestos erróneos humanos; no todo se debe a que el agente sea inerentemente peligroso. Si esto es cierto, insistir en rediseño organizacional podría ser un extra conceptual difícil de operacionalizar.",
+    "final_payoff": "La luz verde de “resuelto” al inicio deja de ser un final tranquilizador: es una señal de que el sistema puede haber completado la tarea mientras el humano dejó de sostener la comprensión viva del proceso. El aprendizaje de esta semana no es solo “más seguridad”, sino “mejor responsabilidad operacional”: volver exigible, medible y trazable el porqué y el cómo cuando la IA deja de ser un texto y se vuelve una fuerza que actúa.",
+    "target_words": 1450
+  },
+  "script_word_count": 1403,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 9.35,
+  "evaluation": {
+    "editorial_score": 7.0,
+    "attention_score": 7.6,
+    "voice_score": 7.8,
+    "seo_score": 6.8,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 8.2,
+    "intellectual_depth": 8.1,
+    "human_relevance": 8.0,
+    "analogy_quality": 7.5,
+    "opening_fit": 7.2,
+    "first_evidence_effectiveness": 6.0,
+    "narrative_motion": 6.9,
+    "thesis_evolution": 7.4,
+    "evidence_density": 6.2,
+    "strengths": [
+      "Apertura potente con “luz verde” y motivo recurrente claro (resuelto / reja / trayectoria).",
+      "Buen hilo conceptual: separación entre corrección del resultado y corrección del proceso; lectura organizacional/operativa del riesgo.",
+      "Integra adecuadamente el mito platónico como espejo (con límites explícitos de evidencia moderna).",
+      "Usa noticias como soporte argumental, no solo titulares (especialmente la de Medicare como caso de trayectoria/cronología).",
+      "Reconoce matices (que no todos los problemas vienen de lo agentivo; puede haber mala configuración/cobertura humana).",
+      "Tesis final más rica que la inicial: el foco se desplaza a “mantener comprensión verificable” y a la supervisión de intención/escalamiento/persistencia."
+    ],
+    "problems": [
+      "Movimiento narrativo algo lineal: tras la tesis inicial, hay acumulación de ejemplos/ideas sin suficiente “revelación progresiva” fuerte que reconfigure la interpretación varias veces.",
+      "Primera evidencia llega relativamente tarde y no “engancha” el misterio temprano con un caso concreto; el espectador entiende la preocupación, pero el dato duro no aparece al principio.",
+      "Densidad de evidencia desigual: se nombran muchas piezas del set, pero el guion termina apoyándose sobre todo en Medicare y una tensión general, quedando otras referencias más como ilustración/atmosfera que como evidencia argumental específica.",
+      "Riesgo de sobreafirmación interpretativa: se describen implicaciones (p. ej., seguridad como tardía, necesidad de supervisar intención, etc.) como si fueran conclusiones cercanas, aunque son hipótesis editoriales y no se anclan a verificaciones concretas más allá de los resúmenes.",
+      "Algunas secciones parecen checklist de temas (permisos, auditoría, Zero Trust, interfaces, biología computacional) más que escenas con salto cognitivo, lo que reduce la sensación de investigación en tiempo real."
+    ],
+    "improvements": [
+      "Acortar y recortar: elegir 2–3 evidencias máximas (p. ej., Medicare + una de ciencia/descubrimiento + una de seguridad) y hacer que cada una cambie explícitamente la lectura con un “giro” claro.",
+      "Adelantar un micro-caso más temprano (en el primer 60–90s) para que el misterio tenga apuestas concretas antes de que empiece la parte histórica/filosófica extensa.",
+      "Hacer la evolución de tesis más “no obvia”: introducir al inicio una creencia más específica (p. ej., “el problema es solo permisos”) y luego mostrar una segunda evidencia que obligue a descartarla con mayor claridad.",
+      "Mantener el tono de ensayo con menos enumeración; convertir transiciones en preguntas vivas y no en pasajes explicativos consecutivos.",
+      "Reducir el “dossier vibe”: cuando mencione anuncios (Microsoft/Google/Anthropic), subrayar qué evidencia concreta aportan a la tesis y qué evidencia NO aportan, en 1–2 frases muy afiladas."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 11.453,
+      "usage": {
+        "prompt_tokens": 17911,
+        "output_tokens": 1314,
+        "total_tokens": 19225
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 11.311,
+      "usage": {
+        "prompt_tokens": 16102,
+        "output_tokens": 1921,
+        "total_tokens": 18023
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.887,
+      "usage": {
+        "prompt_tokens": 16829,
+        "output_tokens": 843,
+        "total_tokens": 17672
+      }
+    }
+  ]
 }

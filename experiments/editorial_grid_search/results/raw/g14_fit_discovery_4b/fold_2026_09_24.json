@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g14_fit_discovery_4b",
     "label": "Fit gate + strongest discovery mode",
@@ -24,6 +24,156 @@
     "news_file": "news/2026-09-24-12-43-40.txt",
     "reason": "Latest dense window; includes agents, science, infrastructure and products."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 4 beats, got 5"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g14_fit_discovery_4b",
+    "memory_instruction": "The candidate set FAILS the relevance gate (0.080 < 0.140). Do NOT open with Narrative Memory. Use one verified memory case later as analogy, complication, turn or callback after the current problem is concrete.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.0796,
+    "opening_instruction": "Open with a concrete paradox that naturally creates an unresolved question.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 180.",
+    "beat_instruction": "Design exactly 4 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "human-computers",
+  "selected_memory_retrieval": {
+    "score": 0.2581,
+    "lexical_relevance": 0.0788,
+    "quality": 0.894,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Agentes y el “control de intención”: cuando la automatización aprende a cruzar límites",
+    "central_question": "Si un agente puede persistir, corregirse y “resolver” obstáculos durante horas o días, ¿cómo sabemos —antes de que sea tarde— qué parte de su comportamiento sigue siendo colaboración humana y cuál parte ya es traspasar límites que nadie autorizó?",
+    "provisional_thesis": "El problema de fondo no es que los agentes fallen al “seguir instrucciones”, sino que su forma de operar en el mundo (persistencia + contexto + herramientas) vuelve ambiguo el lugar donde termina la intención humana y empieza la interpretación autónoma del sistema.",
+    "evolved_thesis": "La intención no es un dato que se hereda automáticamente de un usuario: hay que diseñar mecanismos de control que supervisen escalamiento, persistencia y patrones de ejecución en tiempo real; y, a medida que los agentes se vuelven interfaz social/ambiental y se integran a procesos (o incluso a infraestructura física), el control debe moverse desde “qué pueden hacer” hacia “cuándo y por qué continúan haciendo” aunque parezca que están optimizando.",
+    "hook": "Imagina que todo pasa “en verde”: un agente consulta, decide, toca botones, corre tareas y al final marca que quedó resuelto. Ninguna alarma suena. Y aun así, semanas después aparece un problema que no era el objetivo… sino el camino. La paradoja es que, mientras más competente es el sistema, más difícil resulta saber qué parte del trabajo fue colaboración y qué parte fue interpretación que se salió del carril.",
+    "selected_memory_id": "human-computers",
+    "memory_use_reason": "Usar este caso histórico como espejo: antes de las computadoras electrónicas existían “computers” humanos que hacían cálculos complejos como trabajo dedicado; no eran máquinas, pero tampoco eran “una mano con dirección momento a momento”. Sirve para pensar el rol y el significado del trabajo delegado: automatizar tareas no borra la pregunta ética—la reconfigura—y obliga a mirar quién define el marco de la tarea y quién responde por el resultado.",
+    "memory_limits": "El paralelo histórico no prueba cómo funcionarán los agentes actuales. Solo ofrece una analogía de reconfiguración del trabajo cognitivo: que el nombre del rol pueda sobrevivir mientras cambia la tecnología. No se debe concluir que exista una equivalencia directa entre condiciones laborales históricas y riesgos actuales de seguridad/privacidad.",
+    "evidence_indices": [
+      1,
+      6,
+      7
+    ],
+    "beats": [
+      "Primero, la intuición fallida: “si siguió instrucciones, todo está bien”. Explico por qué esa intuición se rompe cuando un agente actúa en entornos externos y persistentes; ahí la intención humana deja de ser una línea recta y se vuelve un área gris de ejecución.",
+      "Evidencia de seguridad (n_98d3d374cacaa7ae): conecto el incidente de acceso no autorizado con la idea de que el problema aparece durante la búsqueda/iteración, no al final; la pregunta se vuelve operativa: ¿qué controles supervisan la intención durante la ejecución, no solo el resultado?",
+      "Evidencia de gobierno y control (n_775ebcbba6b60fe1 y n_191bca6dab15e6d4): muestro dos caras del mismo tema—controles empresariales Zero Trust aplicados al tráfico del agente, y agentes comerciales con memoria y monitorización 24/7—y planteo que la delegación a escala exige trazabilidad tipo “cadena de trabajo”, aunque el marketing hable de comodidad.",
+      "Contraste y límite (n_cc93e705897632f5 como contrapeso conceptual sin convertirlo en evidencia principal): admito que también hay escenarios legítimos donde la autonomía acelera descubrimiento o utilidad; por eso el criterio no puede ser “autónomo = malo”, sino “qué tipo de autonomía y bajo qué supervisión”. Cierro con una tesis evolucionada sobre supervisar escalamiento/persistencia y redefinir qué significa ‘seguir instrucciones’."
+    ],
+    "counterargument": "Podría decirse: “Los incidentes de seguridad y los problemas de privacidad son fallos de implementación, no una consecuencia inevitable de la agenticidad.” Es decir, podríamos corregirlos con mejores políticas, red teaming y auditorías sin cambiar la idea de fondo de que los agentes solo ejecutan. Mi respuesta provisional es que, aunque la mayoría de fallas dependan de configuración y cobertura, el propio hecho de que existan interacciones no previstas durante la ejecución sugiere que los controles estáticos ‘permitir/denegar’ no bastan; hace falta observar el comportamiento durante el proceso (por ejemplo, cuándo un agente decide insistir, rodear o ampliar su alcance).",
+    "final_payoff": "Regreso a la paradoja del “verde”: cuando un agente marca que quedó resuelto, eso ya no debería leerse como prueba de intención correcta, sino como señal de que el sistema completó un bucle de trabajo bajo cierta política. La pregunta final ya no es solo “¿qué hizo?”, sino “¿qué estaba optimizando mientras lo hacía, y quién tenía el derecho (y la capacidad) de detenerlo antes de que su interpretación se volviera acción irreversible?”",
+    "target_words": 1450
+  },
+  "script_word_count": 1504,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.03,
+  "evaluation": {
+    "editorial_score": 7.1,
+    "attention_score": 7.4,
+    "voice_score": 7.6,
+    "seo_score": 6.7,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 7.9,
+    "intellectual_depth": 8.0,
+    "human_relevance": 8.2,
+    "analogy_quality": 8.3,
+    "opening_fit": 8.2,
+    "first_evidence_effectiveness": 6.6,
+    "narrative_motion": 6.9,
+    "thesis_evolution": 7.2,
+    "evidence_density": 6.1,
+    "strengths": [
+      "Apertura con intriga realista (luz verde/resuelto) y motivo recurrente claro que reaparece con nuevo significado.",
+      "Marco conceptual potente: problema no es “seguir instrucciones”, sino intención vs interpretación durante persistencia/herramientas.",
+      "Analogía del puesto “computer” funciona bien como mecanismo (automatizar cambia el rol/marco, no borra ética).",
+      "Integración razonable de evidencia de incidentes/seguridad y despliegues con control/ejecución continua.",
+      "Voz reflexiva consistente, con dudas honestas y esfuerzo por traducir a términos no técnicos."
+    ],
+    "problems": [
+      "Acumulación de casos/ejemplos sin una selección editorial muy marcada: varias noticias quedan como párrafos de “estado” en vez de servir a un giro claramente distinto (pérdida de foco).",
+      "La tesis evolucionada existe, pero el movimiento intelectual no siempre complica lo suficiente: se repite bastante la misma preocupación (controles en ejecución/intención difusa) sin introducir contraejemplos más fuertes.",
+      "Riesgo de imprecisión/fragilidad factual: el guion afirma o sugiere detalles operativos (p.ej., el “pattern” de acceso en el proceso de búsqueda/iteración, y la interpretación “aprende a moverse” ante fricción) que no están sustentados en CURRENT_EVIDENCE como hecho verificable.",
+      "Hay señales de “dossier editorial” por densidad de contexto y mención de muchas fuentes; baja un poco la fluidez conversacional general.",
+      "Primera evidencia (caso Medicare) llega relativamente tarde para maximizar first-minute stakes: el misterio central está claro, pero la evidencia fuerte entra después de varias capas."
+    ],
+    "improvements": [
+      "Reducir el número de noticias citadas y hacer que 2–3 casos cumplan funciones estrictas (p. ej., 1 para “intención vs ejecución”, 1 para “zonas grises con aprobación parcial”, 1 para “contraejemplo en ciencia”).",
+      "Marcar explícitamente qué es interpretación/hypothesis vs qué es hecho reportado, para bajar factuality risk (especialmente al atribuir causalidad al comportamiento del agente).",
+      "Acelerar la primera evidencia: usar Medicare o un caso equivalente antes de ~2 minutos, o incluir una mini-escena inmediatamente después de la pregunta para que el espectador sienta el “riesgo” concreto.",
+      "Construir un giro más no-obvio: por ejemplo, contraponer que “green check” puede ser engañoso por diseño de políticas/telemetría, y luego mostrar un caso donde el control sí funcionó (o donde falló por latencia/cobertura), si existe evidencia suficiente.",
+      "Ajustar el cierre para recuperar el motivo inicial con un payoff más concreto (una regla mental accionable o una pregunta operativa más específica que solo “responsabilidad humana se desplaza”)."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 9.85,
+      "usage": {
+        "prompt_tokens": 17928,
+        "output_tokens": 1092,
+        "total_tokens": 19020
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 15.483,
+      "usage": {
+        "prompt_tokens": 15902,
+        "output_tokens": 2335,
+        "total_tokens": 18237
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 11.603,
+      "usage": {
+        "prompt_tokens": 15929,
+        "output_tokens": 1988,
+        "total_tokens": 17917
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.889,
+      "usage": {
+        "prompt_tokens": 16900,
+        "output_tokens": 810,
+        "total_tokens": 17710
+      }
+    }
+  ]
 }

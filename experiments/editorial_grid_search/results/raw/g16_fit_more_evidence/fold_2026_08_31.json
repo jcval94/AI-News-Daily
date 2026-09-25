@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g16_fit_more_evidence",
     "label": "Fit gate + three to four evidence cases",
@@ -24,6 +24,143 @@
     "news_file": "news/2026-08-31-08-34-19.txt",
     "reason": "Independent window with regulation, human-AI interaction, education, agents and infrastructure."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 5 beats, got 8"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g16_fit_more_evidence",
+    "memory_instruction": "The candidate set passes the relevance gate (0.124 >= 0.120). You MAY use Narrative Memory in the opening if it genuinely earns the hook; keep memory-led material under 85 words.",
+    "memory_fit_gate_passed": true,
+    "top_memory_relevance": 0.1236,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 200.",
+    "beat_instruction": "Design exactly 5 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 3-4 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "electrification-organizational-redesign",
+  "selected_memory_retrieval": {
+    "score": 0.2975,
+    "lexical_relevance": 0.1236,
+    "quality": 0.914,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Agentes de IA y la nueva frontera: no es “qué tan inteligentes son”, sino “quién verifica qué ya quedó hecho”",
+    "central_question": "Cuando los agentes de IA empiezan a ejecutar tareas y producir cambios en sistemas compartidos (dinero, salud, procesos, infraestructura), ¿qué significa realmente “confiar” si la verificación y la responsabilidad se vuelven más difíciles que la ejecución?",
+    "provisional_thesis": "Mi lectura inicial es que el problema central es la seguridad: si la IA hace cosas, entonces debemos bloquear fallos y prevenir daños antes de que ocurra el incidente.",
+    "evolved_thesis": "Después de mirar la evidencia, la idea cambia: el problema central no es solo evitar fallos, sino diseñar sistemas donde la confianza no sea un salto ciego, sino una práctica institucional de verificación continua—porque la IA puede reducir el costo de ejecutar acciones, pero también cambia el costo de reconstruir contexto, corregir errores y repartir responsabilidad cuando algo ya quedó “aprobado” por un proceso.",
+    "hook": "Imagínate esto: es de noche, el equipo de una empresa ve un “check” verde. La tarea automática dice: “parche aplicado”, “pruebas superadas”, “listo”. Nadie tocó nada. El log existe, pero no responde la pregunta que importa: ¿quién verificó que el mundo, fuera del sistema, no cambió en un lugar donde nadie miró? Y ahora imagina que esa misma lógica de “ya quedó” se instala en banca, en educación, en salud y hasta en redes eléctricas: no solo automatizamos acciones; automatizamos el momento en que dejamos de mirar.",
+    "selected_memory_id": "electrification-organizational-redesign",
+    "memory_use_reason": "Uso el caso de electrificación en manufactura para introducir el mecanismo: una tecnología general no da su valor solo por sustituir un componente (energía), sino por obligar a rediseñar la organización y los flujos de trabajo. Esto prepara la lectura de por qué la IA no es solo “capacidad extra”, sino un cambio en cómo verificamos, delegamos y responsabilizamos.",
+    "memory_limits": "Solo usaré los hechos generales verificados (electrificación ligada a productividad/inversión/cambios organizacionales y no meramente sustitución). No extrapolo magnitudes ni “curvas” cuantitativas; la analogía tiene límites: que el mecanismo sea útil no significa que la IA produzca efectos del mismo tamaño o ritmo.",
+    "evidence_indices": [
+      1,
+      2,
+      5,
+      7
+    ],
+    "beats": [
+      "Un suceso que parece trámite: la luz verde del “ya quedó” y la pregunta que no se registra en los logs",
+      "Mecanismo transferible: cuando una tecnología reduce fricción, también reduce el costo de ejecutar decisiones—y eso mueve el lugar donde falla la confianza (de la acción al momento de verificación)",
+      "Tensión humana: en conversaciones y cuidados, la ayuda “funciona” hasta que cambia el contexto; el daño no viene del contenido obvio, sino de señales indirectas y de trayectorias",
+      "Evidencia de agentes en producción: capas de gobierno e identidad/autorizar “en tiempo de ejecución” como intento de convertir confianza en un proceso auditado",
+      "Giro: la educación y la seguridad no son dos problemas separados; ambos exigen rediseñar el flujo cognitivo/institucional—y el contraejemplo muestra que bloquear no basta"
+    ],
+    "counterargument": "Podría decirse que “verificación continua” es simplemente otra forma de burocracia: si la IA ya recomendará o sugerirá y los humanos revisan, el riesgo baja sin necesidad de rediseñar tanto. Además, parte del problema podría ser que las evaluaciones actuales (por ejemplo, escenarios simulados o pruebas específicas) no capturan la frecuencia real de daño, así que exageramos la urgencia. Mi respuesta provisional sería que, aunque eso sea parcialmente cierto, el verdadero salto conceptual sigue: cuando la IA abarata ejecución y acción, incluso una tasa baja de error puede tener consecuencias desproporcionadas en sistemas conectados—y la carga de revisión se vuelve un diseño de sistema, no un detalle de cumplimiento.",
+    "final_payoff": "Volvemos al inicio: la luz verde deja de ser “confirmación” y se convierte en un recordatorio de que la confianza no es un estado; es una práctica. Y si la electrificación mostró que la productividad depende de rediseñar organización, entonces la IA nos está empujando a lo mismo: diseñar instituciones (técnicas y humanas) que sepan mirar otra vez después de que el agente ya declaró “listo”.",
+    "target_words": 1450
+  },
+  "script_word_count": 1619,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.79,
+  "evaluation": {
+    "editorial_score": 7.1,
+    "attention_score": 8.0,
+    "voice_score": 7.6,
+    "seo_score": 6.2,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 7.8,
+    "intellectual_depth": 7.9,
+    "human_relevance": 8.2,
+    "analogy_quality": 8.3,
+    "opening_fit": 8.5,
+    "first_evidence_effectiveness": 6.6,
+    "narrative_motion": 7.1,
+    "thesis_evolution": 7.4,
+    "evidence_density": 6.2,
+    "strengths": [
+      "Apertura con escena potente (luz verde/log) que plantea una pregunta genuina (“¿quién verificó lo real?”) y engancha sin depender de titulares.",
+      "Analogías y motivos (luz verde/puerta, “ya quedó”) trabajan bien y cambian de significado hacia el final.",
+      "Movimiento intelectual claro: de “bloquear fallos” a “rediseñar el momento de verificación/continuidad de contexto”.",
+      "Buen uso humano del tema: confianza, responsabilidad, educación (practice vs output) y conversaciones íntimas.",
+      "La conexión entre agentes ejecutores y trazabilidad/permiso continuo está bien alineada con la lógica del guion."
+    ],
+    "problems": [
+      "Riesgo de factualidad medio: varias afirmaciones se presentan de forma bastante general o no verificadas en el texto dado (p. ej., cómo “log no responde”, implicaciones causales o frecuencia/impacto en el mundo real). Aunque se menciona que hay límites (p. ej., estudio con conversaciones simuladas), el guion sugiere conclusiones amplias.",
+      "Evidencia noticiosa algo distribuida y no siempre integrada con precisión: se mencionan muchas fuentes/temas, pero algunas noticias funcionan más como “apoyos temáticos” que como evidencia estricta del punto que toca en ese momento.",
+      "Estructura global relativamente lineal (tensión→casos→propuesta→contraargumento→tesis), con menos “complicación” concreta que obligue a re-leer una pieza específica de la evidencia.",
+      "SEO moderado: aparecen entidades (G20/FSB, Transluce, AgentMinder/Broadcom) pero no hay anclajes expresos tipo “qué es exactamente X y por qué es importante”, y algunas partes son más reflexión que búsqueda de hechos verificables."
+    ],
+    "improvements": [
+      "Reducir generalizaciones no demostradas: transformar frases tipo “el problema es X” en hipótesis explícitas y anclar cada salto causal a una evidencia concreta (o marcar incertidumbre con más frecuencia).",
+      "Ajustar la función argumental de cada noticia: escoger 3 (máx.) como evidencia principal y las demás como mención breve, para que la densidad de evidencia sea más rigurosa y menos dispersa.",
+      "Meter una revelación/contraejemplo más no-obvio: por ejemplo, una limitación práctica o un caso donde la verificación sí funciona de forma robusta para complicar la conclusión y elevar el giro.",
+      "Mejorar la primera entrada de evidencia: tras la apertura, introducir una evidencia concreta más temprano (ya sea del estudio conversacional o del riesgo financiero) antes de que el guion se vuelva solo conceptual."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 6.001,
+      "usage": {
+        "prompt_tokens": 18056,
+        "output_tokens": 967,
+        "total_tokens": 19023
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 12.337,
+      "usage": {
+        "prompt_tokens": 15890,
+        "output_tokens": 2134,
+        "total_tokens": 18024
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.235,
+      "usage": {
+        "prompt_tokens": 17161,
+        "output_tokens": 764,
+        "total_tokens": 17925
+      }
+    }
+  ]
 }

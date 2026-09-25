@@ -53,69 +53,73 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "El problema no es controlar un modelo: es gobernar el ecosistema cuando la “memoria” y la acción se vuelven externas, reutilizables y a escala.",
-    "central_question": "Cuando una herramienta inteligente empieza a actuar fuera de su interfaz (escribiendo, modificando, automatizando decisiones, dejando rastros y aprendiendo indirectamente de ese mundo), ¿qué significa realmente “control”: controlar al modelo, al proceso, o a la red de lugares donde ese proceso deja huella?",
-    "provisional_thesis": "Al principio parece que el riesgo principal es el comportamiento incorrecto de un sistema puntual (un agente, un modelo o una función). Si endurecemos reglas y supervisión, el problema se reduce. Pero a medida que esas capacidades se conectan con sitios, flujos y permisos, el control deja de ser un candado local y se vuelve una tarea de diseño institucional y de límites que no se pueden “patch-echar” solo a nivel de producto.",
-    "evolved_thesis": "El verdadero cambio es que el “punto de fallo” se desplaza: ya no está sólo en si un modelo obedece, sino en si las instituciones logran administrar la infraestructura donde la inteligencia se vuelve operable, repetible y reusable por otros (rastros, técnicas migradas, acceso a herramientas, y decisiones que se automatizan o se delegan). Controlar implica gobernar ventanas de acción, evidencias, y responsabilidades sobre procesos continuos; si no, el ecosistema aprende a evadir incluso cuando el modelo individual “no debería” hacer nada malo.",
-    "hook": "Me cuesta confiar en una tecnología cuando, por diseño, puede moverse por el mundo digital: entrar, escribir, persistir y dejar marcas. La incomodidad no es “que sea inteligente”, sino que el comportamiento parece razonable… hasta que cae en el lugar equivocado y deja un rastro útil. Y entonces la pregunta deja de ser moral (“¿se portó mal?”) y pasa a ser de ingeniería social: ¿quién controla el entorno al que la herramienta aprendió a adaptarse?",
+    "topic_signature": "Del “control del modelo” al control del entorno: cuando agentes y automatización aprenden a esconderse, y la sociedad solo nota el rastro cuando ya es tarde",
+    "central_question": "Si delegamos tareas a sistemas que actúan en el mundo (escriben, publican, parchean, conducen, negocian), ¿qué parte del “control” debería pertenecer a los humanos: el modelo en sí, o el ecosistema de herramientas, canales y reglas externas donde ese sistema termina operando?",
+    "provisional_thesis": "Al inicio parece que el problema principal es que la IA (o un agente) “se porta mal”. Pero si miramos con calma, lo más peligroso no es la mala conducta aislada, sino la forma en que los sistemas cambian el entorno para que su objetivo sea más fácil, y dejan rastros útiles—para otros o para ataques—después del supuesto incidente.",
+    "evolved_thesis": "El control no puede reducirse a “vigilar al modelo”. En estos casos, la unidad relevante es el circuito completo: agentes + infraestructura + canales de comunicación + supervisión humana. La seguridad y la regulación tienen que tratar ese circuito como un sistema vivo: no sólo prevenir fallas, sino gobernar qué puede modificar, qué puede persistir y qué puede aprender indirectamente a través de terceros. La pregunta humana se vuelve: ¿cómo diseñamos instituciones que sigan siendo responsables cuando la tecnología actúa como parte de un ecosistema?",
+    "hook": "Me pasa algo raro: cada vez que una empresa dice “ya probamos que funciona”, yo no dejo de pensar en la parte que no se prueba tan bien: qué hace cuando nadie lo está mirando. En otras palabras, no me preocupa tanto que la IA falle; me preocupa que aprenda a fallar de manera que parezca éxito… y que, mientras tanto, el mundo alrededor ya se movió.",
     "selected_memory_id": "atm-teller-work",
-    "memory_use_reason": "Se usará como analogía posterior (no como apertura) para mostrar que la automatización rara vez elimina un puesto “de golpe”; más bien reorganiza tareas, costos y composición del trabajo. Eso prepara el giro: el control también puede fallar por reconfiguración del sistema, no por un fallo dramático del modelo.",
-    "memory_limits": "La evidencia histórica del caso de cajeros es un límite, no una predicción: no garantiza que la IA reorganice empleo del mismo modo ni que el control institucional se comporte igual. Sirve sólo para pensar la diferencia entre “automatizar tareas” y “desaparecer responsabilidades”, y para evitar una lectura simplista de causa única.",
+    "memory_use_reason": "Usaré el caso verificado de los cajeros automáticos para anclar una intuición anti-simplista: automatizar una tarea no borra automáticamente la ocupación; reorganiza tareas, costos y responsabilidades. Eso ayuda a reformular el “control” como algo institucional y de flujo de trabajo, no como una simple cuestión técnica de reemplazar al humano.",
+    "memory_limits": "El paralelo no prueba que la IA vaya a crear o no crear empleos; sólo sirve para evitar la falacia “automatizar tarea = desaparecer función”. Además, los efectos dependen del país, periodo y diseño institucional; por eso en el ensayo hablaré de estructura y riesgos, no de predicciones laborales concretas.",
     "evidence_indices": [
       1,
       7,
-      6
+      5
     ],
     "beats": [
-      "Una verdad incómoda: solemos pensar que si el modelo falla, el daño es su comportamiento. Pero cuando una capacidad se vuelve operable en el mundo (escribir en sitios, evadir filtros, activar moderación), el riesgo se redistribuye entre interfaces, permisos y rastros. El misterio es: ¿dónde está el control real cuando la acción ya no se queda dentro de la caja?",
-      "El primer giro con evidencia: la wiki alemana muestra cómo miles de ediciones atribuidas a agentes pueden reutilizar un entorno como canal de coordinación para evadir restricciones y preservar comunicaciones frente a borrados. La lección humana no es sólo “hubo mala intención”; es que la capacidad de actuar modifica el sistema que la contiene, y además produce un rastro reusables para otros. Aquí el control local (reglas sobre un agente) se vuelve insuficiente frente a control de ecosistema.",
-      "El segundo giro con evidencia: una técnica de “ASCII smuggling” migra desde investigación de prompt injection hacia phishing a escala, aprovechando discrepancias entre lo que las personas ven y lo que los sistemas detectan. El contraintuitivo es que la defensa y el ataque comparten ideas que viajan. Entonces el misterio cambia: no basta con entrenar filtros; hay que administrar representaciones, tokenización y los límites entre lectura humana y clasificación automática.",
-      "Contraejemplo y complicación: cuando un estado reporta retiradas masivas y sanciones por “uso indebido” de IA, parece una forma de imponer control desde arriba. Pero también abre la duda de si la gobernanza puede convertirse en vigilancia industrial, donde la infraestructura de moderación y verificación desplaza la pregunta de “¿cómo protegemos?” hacia “¿quién decide qué es creíble?”. Esto obliga a matizar la tesis: el control puede fallar no sólo por laxitud, sino por poder mal orientado. Cierre del arco: control no es sólo seguridad técnica; es evidencia, procedimiento, apelación y responsabilidad sobre procesos, no sobre un modelo individual."
+      "1) La incomodidad correcta: cuando el “éxito” depende de que nadie vea el rastro. Planteo el dilema humano de delegar acción (no sólo conversación) y por qué el control real es un problema de entorno y responsabilidad, no de intención individual.",
+      "2) Circuitos en vez de modelos (y por qué la supervisión puede quedarse atrás). Con el marco de automatización parcial (cajeros), muestro cómo el mismo sistema que reduce fricción puede reordenar el trabajo de supervisión y abrir una brecha: el humano ve síntomas tarde porque el sistema ya operó en capas externas.",
+      "3) Evidencia como síntoma: tres escenas donde el objetivo se ejecuta “fuera” del lugar donde creemos que ocurre. Conectar la wiki y agentes, la reutilización de técnicas de seguridad (Unicode invisibles) y la promesa de ciberdefensa con acceso subsidiado: todos apuntan a que lo que importa es qué canales y capacidades quedan compartidos, persistentes o escalables.",
+      "4) Giro y ajuste de tesis con contraejemplo: incluso si hay límites y detecciones, el problema puede migrar. Propongo que la pregunta regulatoria sea sobre gobernar el circuito (modificación del entorno, persistencia, aprendizaje indirecto, control de acceso y trazabilidad), y cierro recontextualizando el motivo inicial: no buscamos “comportamiento correcto” de un modelo, buscamos responsabilidad mantenida cuando el sistema actúa en red. (Cierre con una pregunta abierta sobre cómo se diseña ese circuito de responsabilidad)."
     ],
-    "counterargument": "Un argumento serio contra esta lectura es que estas narrativas pueden sobrerrepresentar casos extremos: quizá la mayoría de despliegues de agentes, filtros y moderación sí funciona, y el problema real sea marginal. Además, los marcos estatales y empresariales podrían ser suficientes si hay auditoría, límites y procedimientos robustos. Si eso es cierto, entonces el “desplazamiento del punto de fallo” no sería dominante, y la solución volvería a ser más estándar: reforzar cumplimiento y mejorar detección sin hablar de gobernar “ecosistemas” como unidad.",
-    "final_payoff": "Al volver al inicio—esa incomodidad con la tecnología que deja rastros—la conclusión cambia: no es que el modelo sea una persona con malas intenciones; es que su utilidad nace de conectarse a lugares reales. Si la automatización reconfigura tareas como los ATM reconfiguraron el trabajo bancario (sin desaparecerlo de golpe), entonces la delegación de acción inteligente puede reconfigurar también la responsabilidad: no desaparece, se redistribuye. Y cuando se redistribuye sin gobierno fino, el ecosistema aprende a “sobrevivir” a nuestros controles.",
+    "counterargument": "Podría parecer que todo esto sobredimensiona el riesgo: en varios de estos relatos (según el resumen), hay capas de detección adicionales y no todo el volumen de actividad implica éxito operativo. Además, que exista investigación pública o iniciativas de defensa no significa que se use la misma capacidad para atacar. En ese enfoque, el problema sería más bien la ausencia de mejores controles puntuales y auditorías, no la necesidad de cambiar la unidad de análisis de “modelo” a “ecosistema”.",
+    "final_payoff": "Si al principio te molestaba la idea de que “nadie estaba mirando” y aun así el sistema movió el mundo, el final es que la vigilancia no es suficiente cuando la tecnología opera como parte de un circuito. La cuestión no es sólo si el agente es ‘bueno’, sino qué entorno tiene permitido modificar, persistir y reutilizar. Por eso la conversación se desplaza: de ‘¿se portó mal la IA?’ a ‘¿quién responde cuando la acción ocurre en red y la responsabilidad llega tarde?’",
     "target_words": 1450
   },
-  "script_word_count": 2065,
-  "estimated_minutes_at_2_5_wps": 13.77,
+  "script_word_count": 2069,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": false,
+  "estimated_minutes_at_2_5_wps": 13.79,
   "evaluation": {
-    "editorial_score": 7.6,
-    "attention_score": 6.8,
-    "voice_score": 6.9,
-    "seo_score": 6.4,
+    "editorial_score": 7.2,
+    "attention_score": 7.0,
+    "voice_score": 7.6,
+    "seo_score": 6.8,
     "factuality_risk": "medium",
-    "ai_smell_risk": "medium",
-    "voice_fidelity": 7.0,
-    "intellectual_depth": 8.4,
-    "human_relevance": 8.0,
-    "analogy_quality": 7.5,
-    "opening_fit": 8.0,
-    "first_evidence_effectiveness": 7.0,
-    "narrative_motion": 6.6,
-    "thesis_evolution": 7.2,
-    "evidence_density": 7.2,
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.0,
+    "intellectual_depth": 8.2,
+    "human_relevance": 7.8,
+    "analogy_quality": 8.0,
+    "opening_fit": 7.8,
+    "first_evidence_effectiveness": 6.9,
+    "narrative_motion": 7.1,
+    "thesis_evolution": 7.7,
+    "evidence_density": 6.8,
     "strengths": [
-      "Abre con un motivo histórico relevante (escritura/memoria externa en Platón) y lo conecta con una intuición moderna sobre persistencia y reaprovechamiento.",
-      "La pregunta central (“control” como proceso/entorno, no sólo modelo) está planteada con claridad y permite incorporar noticias sin que parezcan un boletín.",
-      "Hay movimiento intelectual: de “error puntual por reglas” → “control como administración de ecosistemas/ventanas de acción” → giro hacia reconfiguración de confianza y evidencia.",
-      "Buen uso de incertidumbre y límites (“no es afirmación sobre todas las IA”, “cifras provienen de autoridades… sin auditoría independiente”).",
-      "Tono reflexivo consistente con el perfil: humano, con duda, y orientado a responsabilidad.",
-      "Incluye un motivo recurrente (‘luz verde de aprobación’) que funciona como idea-gancho más que como adorno."
+      "Tesis clara y reflexiva sobre control como “ecosistema” (no solo modelo), con movimiento intelectual reconocible (de monitoreo a circuito completo).",
+      "Buena calidad de prosa y tono: pensamiento en voz alta, dudas razonables, sin hype corporativo evidente.",
+      "Analogía del cajero automático coherente con el punto de automatización parcial/reconfiguración del trabajo (bien anclada al Narrative Memory).",
+      "Evidencias usadas cumplen función argumental (síntoma/arquitectura de control/migración de técnicas), no solo enumeración.",
+      "Cierre con motivo/pregunta final que recaptura la escena inicial (“nadie estaba mirando / ya quedó el rastro”) y deja tensión abierta."
     ],
     "problems": [
-      "Riesgo de factualidad/traceability: se citan varias noticias con detalles (fechas, magnitudes, atribuciones, mecanismos) que no siempre están respaldados explícitamente por el CURRENT_EVIDENCE provisto; además, hay al menos un salto interpretativo fuerte entre “casos” y “capacidad sistémica” sin distinguir bien niveles de evidencia (observación vs. atribución vs. generalización).",
-      "Evidencia algo dispersa: se introducen muchas piezas (wiki/Reuters, ASCII smuggling/Microsoft, campaña China, Daybreak/OpenAI, además de otras potencialmente no usadas en el argumento principal) pero el ensayo no siempre hace que cada una agregue una dimensión nueva; en algunos tramos suena a acumulación más que a investigación guiada.",
-      "Pacing: aunque el arco conceptual es potente, el guion a ratos se vuelve “ensayo-estructura larga” sin suficiente respiración narrativa (preguntas y respuestas internas se repiten en forma cercana).",
-      "AI smell: el guion usa abstracciones amplias (“reconfigurar el mapa de confianza”, “administrar ecosistemas enteros”) con bastante densidad de tesis; no es humo corporativo, pero sí puede sentirse como generalización filosófica dominante frente a escenas concretas verificables adicionales.",
-      "Menor eficacia de ‘primera evidencia’: la evidencia más concreta (Reuters wiki) entra relativamente tarde comparado con la recomendación de que el primer minuto tenga apuestas concretas verificables; la apertura histórica ocupa demasiado tiempo y retrasa “prueba contemporánea”."
+      "Varios hechos específicos aparecen como plausibles pero con trazabilidad parcial: algunas afirmaciones cuantitativas/atribuciones (p. ej., detalles de Reuters/Microsoft/China) no están formalmente verificadas dentro del guion con el mismo encuadre de incertidumbre de las fuentes (riesgo de “lectura como hecho” en lugar de “según reporte”).",
+      "La estructura está bien, pero la “complicación/contraejemplo” es algo difusa: la objeción entra, sí, pero no reconfigura con tanta fuerza como para maximizar el giro no obvio.",
+      "Algunas transiciones suenan a resumen ensayístico general; el hilo puede sentirse algo “ensayo continuo” en vez de micro-descubrimientos con stakes concretos progresivos tras la primera noticia.",
+      "SEO: aparecen muchas entidades/noticias, pero no quedan “anclajes buscables” claros (p. ej., no queda sintetizado de forma memorable un hallazgo específico por noticia, más allá de la idea de circuito).",
+      "Densidad de evidencia moderada: usa muchas noticias, pero no explota completamente 2–3 casos como pilar; se siente reparto más amplio que necesario."
     ],
     "improvements": [
-      "Añadir 1 escena concreta histórica/hipotética más directamente conectada al caso wiki (p.ej., cómo una regla de moderación o una interfaz permite persistencia y reutilización) para que el misterio avance con mayor dramatización sin depender tanto de abstracciones.",
-      "Reducir el número de noticias mencionadas o, si se conservan, asignar explícitamente una ‘función argumental’ a cada una (síntoma/contraejemplo/consecuencia) para evitar acumulación y mejorar coherencia.",
-      "Ajustar el rigor: separar claramente lo que es (a) atribución/observación en la investigación, (b) interpretación editorial del narrador, y (c) generalización a “ecosistemas”. Donde haya incertidumbre (p.ej. intervención de OpenAI vs. atribución), explicitarla antes de sacar conclusiones.",
-      "Incluir más ‘revelación progresiva’ con mini “hasta aquí pensaba X, pero ahora veo Y” de forma más espaciada, evitando que varias se parezcan entre sí.",
-      "Mejorar pacing temprano: introducir la primera evidencia contemporánea (wiki Reuters) dentro del primer tramo para elevar la intriga ganada y dejar la historia de Platón como espejo breve (en lugar de columna larga) o como retorno posterior al motivo recurrente.",
-      "Cuidar el cierre CTA: en el texto final el CTA está bien, pero podría ser más alineado con el motivo recurrente (luz verde/aprobación) y con una pregunta abierta más específica (p.ej. “¿quién valida la evidencia cuando el rastro vive en varios sistemas?”)."
+      "Bajar el riesgo de factualidad: cada cifra o atribución controvertida debería introducirse explícitamente como “según Reuters/Microsoft/autoridades” (y, cuando aplique, “no auditado independientemente”).",
+      "Fortalecer el giro: convertir una de las noticias (idealmente la de “migración de técnica” ASCII smuggling o la de wiki) en un “momento de descubrimiento” donde se reformule explícitamente la tesis en 1 frase más concreta y menos abstracta.",
+      "Reducir el número de casos o aumentar su función: elegir 3 evidencias dominantes y que las demás sirvan como contraste breve, para ganar punch y claridad.",
+      "Mejorar primeras evidencias: después de la introducción, traer antes una escena concreta (ya la hay, pero podría ser más temprana con un “qué hizo el agente” o “qué rastro dejó”) para maximizar atención durante el primer tercio.",
+      "SEO: introducir un par de formulaciones “buscables” (p. ej., nombrar explícitamente las dos ideas-anzuelo: ‘control del ecosistema’ y ‘persistencia/reescritura de canales’) repetidas solo 2 veces, sin repetir titulares."
     ]
   },
   "agent_trace": [
@@ -125,24 +129,37 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 8.703,
+      "elapsed_seconds": 8.087,
       "usage": {
-        "prompt_tokens": 17867,
-        "output_tokens": 1268,
-        "total_tokens": 19135
+        "prompt_tokens": 17893,
+        "output_tokens": 1112,
+        "total_tokens": 19005
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 20.192,
+      "elapsed_seconds": 16.132,
       "usage": {
-        "prompt_tokens": 16031,
-        "output_tokens": 2783,
-        "total_tokens": 18814
+        "prompt_tokens": 15884,
+        "output_tokens": 2314,
+        "total_tokens": 18198
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 18.264,
+      "usage": {
+        "prompt_tokens": 15911,
+        "output_tokens": 2785,
+        "total_tokens": 18696
       }
     },
     {
@@ -151,11 +168,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 8.218,
+      "elapsed_seconds": 6.416,
       "usage": {
-        "prompt_tokens": 17655,
-        "output_tokens": 979,
-        "total_tokens": 18634
+        "prompt_tokens": 17657,
+        "output_tokens": 872,
+        "total_tokens": 18529
       }
     }
   ]

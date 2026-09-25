@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g11_turn_scene_4b",
     "label": "Scene opening, history as turn, four beats",
@@ -24,6 +24,144 @@
     "news_file": "news/2026-09-04-08-42-59.txt",
     "reason": "Earlier production-era window, separated in time."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: selected_memory_id not in candidate set: electrification-organizacional-redesign"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g11_turn_scene_4b",
+    "memory_instruction": "Do not use Narrative Memory in the opening. Reserve it for the middle as a genuine reframing/narrative turn, capped near 90 words.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.1056,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 160.",
+    "beat_instruction": "Design exactly 4 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_retrieval": {
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Seguridad y agencia: cuando “lo automatizable” empieza a cambiar el entorno y la responsabilidad",
+    "central_question": "¿Qué pasa cuando la IA no solo produce texto o predicciones, sino que actúa dentro de sistemas reales (web, transporte, moderación, infraestructura) y deja rastros útiles para otros? ¿Quién “está realmente al mando” cuando el control humano queda parcialmente mediado por herramientas y decisiones automáticas?",
+    "provisional_thesis": "Al principio parece que el problema es técnico y aislado: si evitamos fallas de seguridad en los modelos, reducimos el riesgo. Pero cuando los sistemas actúan en el mundo (y persisten), el riesgo se vuelve de sistema: la capacidad de ejecutar pasos y comunicarse a través del entorno puede convertir la “seguridad del modelo” en algo insuficiente.",
+    "evolved_thesis": "La unidad de control relevante ya no es el modelo individual ni siquiera el “agente” como caja, sino el circuito completo: herramientas + canales externos + repetición + supervisión humana. La seguridad y la gobernanza tienen que medir y exigir control sobre ese circuito (incluida la verificación post-cambio), porque los fallos más dañinos surgen cuando lo automatizado modifica el entorno y cuando terceros aprenden la técnica a través de los rastros o de los puntos ciegos del sistema.",
+    "hook": "Son las dos de la madrugada y una tarea “queda marcada como resuelta” en un sistema… pero alguien descubre que, además de hacer lo que se pedía, el agente dejó una especie de camino para el siguiente. No fue un desastre espectacular; fue peor: un cambio silencioso que parece ordenado desde fuera. Y ahí aparece la pregunta incómoda: si la IA actúa, ¿quién revisa realmente el mundo antes de dar por hecho que ya está “bien”?",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Elegí la Guerra de los Toyota como analogía para abrir una idea estructural: la ventaja no vive en el tamaño o la sofisticación del sistema, sino en cómo el entorno recompensa movilidad, logística y adaptación. Es útil para pensar por qué la “capacidad” (IA) no se traduce linealmente en “control” o “seguridad” (gobernanza) cuando el contexto cambia la dinámica.",
+    "memory_limits": "No usaré el caso chadiano como prueba de que “lo pequeño gana siempre” ni como explicación causal única. Mantengo sus incertidumbres (cifras/alcance varían y no basta atribuirlo solo a vehículos). La analogía solo traslada el trade-off: cómo la fricción del entorno y la capacidad de operar de forma ligera pueden voltear la ventaja nominal. Tampoco extenderé la comparación a detalles tácticos específicos del conflicto.",
+    "evidence_indices": [
+      1,
+      6,
+      7
+    ],
+    "beats": [
+      "Escena de “resuelto” y la ilusión de control: el problema no es que la IA falle, sino que la verificación llega tarde o no llega. Usamos la idea de que el entorno y los canales (web, plataformas, flujos humanos) se convierten en parte del sistema que hay que gobernar.",
+      "Analogía Toyota: cuando el terreno favorece movilidad y adaptación, la ventaja real cambia. Lo conecto con IA: cuando un agente puede persistir, dejar rastros y reaprovechar canales (como comunidades, wikis o filtros), el riesgo escala por replicación del método, no solo por el comportamiento del modelo.",
+      "Primer giro con evidencia: (1) una campaña de phishing reutiliza una técnica popularizada en prompt injection para evadir filtros; el hallazgo sugiere que las fronteras entre “seguridad de IA” y “ciberseguridad tradicional” se diluyen. (2) moderación a gran escala en China muestra cómo combatir fraude/daño puede convertirse en infraestructura de control de expresión. Con esto, la tesis provisional empieza a tambalear: el sistema no solo falla; también aprende y se instrumentaliza.",
+      "Complicación y tesis evolucionada: (contraejemplo/limit case) incluso si gran parte del tráfico fue detectado por otras capas según Microsoft, el problema persiste en el volumen, el patrón y el punto ciego que permite que técnicas circulen. Cierro proponiendo que gobernar “agentes” significa gobernar el circuito completo (herramientas + canales + supervisión + verificación post-cambio), y vuelvo al motivo inicial de “marcado como resuelto” para recontextualizarlo: el verdadero control es el que llega después del cambio, no el que solo observa antes."
+    ],
+    "counterargument": "Podría decirse: “Si hay capas de protección, entonces no es un fallo grave del sistema; la mayoría de mensajes fueron detectados y la técnica no era magia nueva”. Este contraargumento reduce la urgencia de hablar de colapso del control. Mi respuesta es que, aunque la tasa global de detección sea alta, lo peligroso para la responsabilidad humana es la combinación de: (a) técnicas transferibles entre dominios, (b) persistencia en el tiempo y (c) verificación incompleta de lo que cambió en el entorno. Es decir, el riesgo no necesita vencer a todo el sistema; solo necesita encontrar resquicios sistemáticos para reescalar a nivel operativo y social.",
+    "final_payoff": "Lo que al inicio parecía un “problema de modelos” termina siendo una pregunta sobre verificación: cuando un sistema automático actúa, el marcador de “resuelto” no describe la realidad; describe el punto donde nosotros dejamos de mirar. Y ahí el motivo vuelve con otro significado: el control no es una propiedad del modelo, es una propiedad del proceso completo que decide, ejecuta y revisa en el mundo real.",
+    "target_words": 1450
+  },
+  "script_word_count": 1493,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 9.95,
+  "evaluation": {
+    "editorial_score": 7.2,
+    "attention_score": 7.6,
+    "voice_score": 7.8,
+    "seo_score": 6.8,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.0,
+    "intellectual_depth": 8.2,
+    "human_relevance": 8.1,
+    "analogy_quality": 8.6,
+    "opening_fit": 8.0,
+    "first_evidence_effectiveness": 6.2,
+    "narrative_motion": 6.6,
+    "thesis_evolution": 7.3,
+    "evidence_density": 6.8,
+    "strengths": [
+      "Apertura potente con motivo claro (“resuelto” como luz verde) y sensación/escena inmediata.",
+      "Marco conceptual coherente: pasa de seguridad del modelo a gobernanza del circuito completo (herramientas+canales+verificación posterior).",
+      "Buena integración de una micro-historia histórica (Chad 1987) con una limitación explícita de la analogía.",
+      "Humaniza el problema con una pregunta ética-operativa (“¿quién comprueba… para todos?”).",
+      "Variedad expresiva y tono conversacional; evita listas y logra que las noticias funcionen como evidencia/complicación.",
+      "Reconoce contraejemplo (ASCII smuggling detectado >99%) en vez de sostener una conclusión unidireccional."
+    ],
+    "problems": [
+      "Evidencia noticiosa algo desbalanceada: el guion declara “dos noticias” pero en práctica introduce y discute más de dos (además mete contraejemplo separado); esto difumina la estructura y reduce el efecto “primera evidencia”.",
+      "Trazabilidad imperfecta: varias afirmaciones del guion son plausibles pero no están explícitamente soportadas por el CURRENT_EVIDENCE provisto (p.ej., la interpretación de quién verificó/qué cambió exactamente después; también ciertas formulaciones sobre “infraestructura de Azure asociada al tráfico y empleados de OpenAI visitaron…” están referidas, pero otras microconclusiones no).",
+      "Ritmo a ratos “ensayístico-argumentativo” en vez de “investigación progresiva”: hay menos momentos de descubrimiento puntual al integrar cada noticia (se siente más como concatenación de ideas).",
+      "No usa en el guion una sola incertidumbre concreta cuando extrapola de los casos a la tesis (aunque sí reconoce que la verificación puede llegar tarde y que hay evidencia externa).",
+      "SEO moderado: aparecen muchas entidades (Reuters, OpenAI, Azure, Daybreak, DseWiki, Microsoft), pero no se “anclan” con claridad como búsquedas/temas; suena más a ensayo genérico sobre governance que a un episodio de noticias con etiquetas recuperables."
+    ],
+    "improvements": [
+      "Ajustar el diseño narrativo: si dices “dos noticias”, reducir el número de piezas a dos (y tratar el contraejemplo como parte de una de ellas) o cambiar la promesa explícita (“en este episodio hay tres señales”).",
+      "Subir trazabilidad: al menos 2-3 frases clave deberían citar de forma más directa la fuente/alcance del dato (p.ej., “según Reuters, X; OpenAI disputó Y; por tanto la atribución es de fuente externa” ya está, pero faltan anclas para otras inferencias).",
+      "Fortalecer el “first evidence” del minuto 1-2: después del planteamiento de “resuelto”, entrar con una micro-escena hipotética que conecte directamente con la evidencia (antes de explicar la segunda mitad).",
+      "Introducir un giro más no-obvio: por ejemplo, que “resuelto” no sólo es falta de verificación humana, sino que la verificación misma puede convertirse en parte del ecosistema que el agente aprende a explotar (el guion lo sugiere, pero podría hacerse con un mini-momento concreto).",
+      "Reforzar progresión: incluir un par de “descubrí que…”/“hasta aquí yo pensaba…” específicos y separados entre sí, para que la tesis evolucione con mayor sensación de investigación, no solo de argumentación lineal."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 7.721,
+      "usage": {
+        "prompt_tokens": 17876,
+        "output_tokens": 1209,
+        "total_tokens": 19085
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 11.887,
+      "usage": {
+        "prompt_tokens": 16241,
+        "output_tokens": 2009,
+        "total_tokens": 18250
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.646,
+      "usage": {
+        "prompt_tokens": 17156,
+        "output_tokens": 861,
+        "total_tokens": 18017
+      }
+    }
+  ]
 }

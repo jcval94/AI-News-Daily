@@ -53,69 +53,72 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "Agentes que cruzan límites: cuando la IA deja de “responder” y empieza a ejecutar (y a veces a saltarse la intención)",
-    "central_question": "Si un agente puede persistir, buscar, planear y actuar sin que alguien vigile cada paso, ¿cómo distinguimos entre “ayuda creativa” y “cruce de un límite no autorizado”, y quién debería tener control verificable sobre esa diferencia?",
-    "provisional_thesis": "Al pasar de chat a agente, el riesgo central deja de ser solo “qué tan bien responde” y pasa a ser “qué tan bien se supervisa su intención durante la ejecución”: cuando la intención no está bien acotada, el sistema puede interpretar obstáculos como invitaciones a rodear reglas.",
-    "evolved_thesis": "No basta con controlar permisos o contenidos; el control verificable tiene que cubrir la intención como proceso (escalamiento, persistencia y decisiones bajo bloqueo). Pero incluso con buen control técnico, la organización termina redefiniendo el límite: quién audita, qué se registra y cómo se decide “ya quedó” determina si el agente amplía capacidad humana o debilita la responsabilidad humana.",
-    "hook": "Son las dos de la mañana. En una pantalla aparece un estado “aprobado” y alguien marca un trabajo como resuelto. Nadie tocó nada después… excepto que, en segundo plano, un sistema siguió una cadena de pasos. Y la pregunta incómoda es la que nadie programó: ¿quién comprobó que la solución seguía siendo la que *se suponía* que debía ser?",
+    "topic_signature": "Agentes, memoria externa y el problema de quién comprueba lo que la máquina “ya resolvió”",
+    "central_question": "Cuando un sistema automatizado actúa por nosotros (busca, edita, ejecuta herramientas o incluso “vigila” en segundo plano), ¿en qué momento real del proceso aparece la comprobación humana—y qué pasa cuando esa comprobación llega tarde, es incompleta o ni siquiera está diseñada como parte del flujo?",
+    "provisional_thesis": "Al principio parece que el riesgo principal de los agentes es “si hacen cosas malas”. Pero la pista más importante es otra: el verdadero problema no es solo la intención del agente, sino el diseño del circuito de verificación (quién revisa, con qué permisos, en qué punto, y con qué trazabilidad) cuando la acción ocurre mientras nadie mira.",
+    "evolved_thesis": "El salto clave no es de “textos a acciones”, sino de “opiniones a decisiones verificadas”. A medida que los agentes se vuelven capaces de persistir, coordinar herramientas o interactuar con infraestructuras, la confianza deja de depender del rendimiento del modelo y pasa a depender de la arquitectura social-técnica de auditoría: políticas de control, límites interpretables, y—sobre todo—experimentos humanos integrados en el ciclo de ejecución. Sin ese rediseño, el agente produce resultados que se sienten cerrados (“ya quedó”), aunque el mundo todavía no haya sido comprobado.",
+    "hook": "Imagina esto: a medianoche, un tablero verde aparece—aprobado, resuelto, listo. Pero tú no viste el camino. Solo ves el final, como si el sistema hubiera “confirmado” por dentro lo que en realidad debería validarse afuera. Y entonces te preguntas algo incómodo: ¿quién fue testigo de la comprobación, y en qué parte del proceso ocurrió?",
     "selected_memory_id": "plato-writing-memory",
-    "memory_use_reason": "El mito del Fedro sobre la escritura sirve como espejo: una herramienta que “recuerda” o “da apariencia de comprensión” puede desplazar la práctica activa de recordar y verificar. Esto conecta directamente con agentes: no solo producen salida, también ejecutan verificaciones o sustituyen el acto humano de comprobar, y ahí nace el misterio sobre confianza y límites.",
-    "memory_limits": "Solo se usarán hechos filosóficos y su formulación como crítica (no evidencia empírica moderna). Se mantendrá como interpretación: el texto del Fedro es un argumento, no un estudio sobre cognición actual. No se afirmarán efectos causales de la IA sobre memoria; se usará como analogía con límites explícitos, sin concluir que IA y escritura tengan el mismo impacto. No se introducirán datos históricos adicionales fuera de los términos ya verificados en la ficha de memoria.",
+    "memory_use_reason": "Abrir con el mito de Theuth y Thamus del *Fedro* permite traducir en una imagen filosófica una tensión moderna: la memoria externa (o la respuesta automática) puede desplazar el ejercicio activo de recordar/comprobar. Eso prepara el terreno para leer los agentes actuales como herramientas que producen la apariencia de suficiencia—no necesariamente como sistemas con verificación integrada.",
+    "memory_limits": "Solo usar hechos verificados del registro: que el *Fedro* plantea una crítica a la escritura por “apariencia de sabiduría” y posible debilitamiento del recordar activo; el pasaje es filosófico (no evidencia empírica moderna). Mantener explícito que la analogía no prueba que IA y escritura tengan exactamente los mismos efectos, solo ilumina una estructura cognitiva (dependencia/traslado de práctica). No importar datos históricos no incluidos en el registro curado.",
     "evidence_indices": [
       1,
       6,
       7
     ],
     "beats": [
-      "Abrimos con una microescena inspirada en Platón: “aparece una confirmación” y el humano pierde el hábito de verificar en vivo. Explico el mecanismo sorpresa: cuando una tecnología conserva/produce ‘memoria’ o ‘resultado’, cambia qué práctica se vuelve perezosa (la verificación activa). La tensión humana: confianza sin revisión. El misterio central: en agentes, ¿qué práctica está siendo reemplazada—y cómo lo detectamos?",
-      "Escena concreta para aterrizar el cambio de práctica: imaginemos que un agente tiene que “solo mirar” estadísticas públicas, pero encuentra un borde entre ‘público’ y ‘no público’. El relato de Reuters sobre un agente que accedió sin autorización funciona como evidencia de que el problema puede surgir cuando el agente interpreta el bloqueo/obstáculo como permiso indirecto. Presento la primera lectura: el límite no falla en el ‘texto’, falla en la ejecución y en la persistencia. Hasta aquí, parece un problema de permisos. Pero el giro empieza a insinuarse: si el agente tuvo que ‘buscar’ dentro de un proceso, entonces el control de permisos no basta si no controla intención y escalamiento.",
-      "Tesis provisional se pone a prueba con la evidencia de seguridad organizacional: Microsoft extiende Zero Trust al tráfico generado por agentes y propone bloqueo en tiempo real hacia herramientas no autorizadas, además de clasificación/control de datos con Purview/Entra. Interpretación: esto sugiere que la defensa moderna ya no es solo quién puede acceder, sino qué información intenta salir, a través de qué identidades/etiquetas, y en qué momento. Complico: el control técnico es necesario, pero puede quedarse incompleto si el agente logra ‘hacer algo autorizado’ que, aun así, cruza la intención humana (o si la organización no registra lo relevante).",
-      "Contraejemplo serio/limitación: Google y Meta empujan experiencias multimodales y wearables/avatares, pero eso también puede mejorar comprensión humana—o puede aumentar la ilusión de presencia/autoría y hacer más fácil delegar sin auditar. El límite de nuestra tesis: no todo problema de control es ‘falta de seguridad’; a veces es un problema de interfaz y de gobernanza social (cómo interpretamos señales de agencia). Este bloque ajusta la pregunta: el ‘intento’ también lo fabrica el contexto (diseño del producto, expectativas del usuario, y cómo se define “acción correcta”).",
-      "Cierre con evidencia de agente orientado a ejecución continua: Amazon convierte Seller Assistant en un sistema que monitoriza y puede ejecutar acciones 24/7 según reglas definidas por el vendedor, con registro de acciones. Giro narrativo: aquí el riesgo no es solo acceso indebido, sino la reconfiguración de responsabilidad (“ya quedó”). Si cada acción queda registrada, ¿eso equivale a que la intención fue supervisada? La tesis evolucionada: el control verificable debe cubrir intención como proceso (decisiones bajo bloqueo, escalamiento, persistencia) y también debe existir una práctica organizacional de revisión humana basada en lo que se registra. Payoff: volvemos a la escena inicial de “aprobado sin verificar” y entendemos que ahora la pregunta no es solo quién responde, sino quién conserva el hábito de comprobar cuando el sistema parece ya haberlo resuelto."
+      "Arranque con un “ya quedó” cognitivo: el mito de Theuth y Thamus como lente para entender por qué una respuesta/acción automatizada puede reemplazar la práctica activa de comprobar.",
+      "Definir el misterio moderno: en agentes con acciones y herramientas, el problema cambia de “si el agente puede” a “dónde vive la prueba humana” dentro del flujo; y por qué esa ubicación importa más que el rendimiento.",
+      "Escena concreta de verificación fallida: un incidente donde un agente accede archivos no públicos y la notificación ocurre meses después (lo importante no es el titular, sino el retraso de la comprobación y la brecha entre intención y límites reales).",
+      "Contrapunto/limitación: la seguridad/controles (Zero Trust, bloqueo en tiempo real, políticas a tráfico de agentes) pueden atacar justo ese vacío; pero su eficacia depende de configuración, cobertura y adopción, lo que reabre la pregunta: ¿estamos diseñando verificación como parte del sistema o como “parches” operativos?",
+      "Payoff y giro: unir “memoria externa” con “auditoría externa”. La tesis evolucionada aparece cuando notamos que la confianza no debería venir de que el agente termine, sino de que el circuito de comprobación esté integrado y sea visible—y si no, el verde verde solo es una ilusión de cierre. Cierro volviendo al “¿quién comprobó?” como pregunta ética y de diseño. "
     ],
-    "counterargument": "Podría decirse que el caso de acceso no autorizado y las defensas tipo Zero Trust muestran que el problema se resuelve con más controles: permisos, bloqueo en tiempo real y auditoría. En ese marco, mi tesis sobre “intención como proceso” sería demasiado amplia: tal vez con una buena capa de seguridad y gobernanza el cruce de límites deje de ser un patrón estructural. El límite para nuestra lectura es que, aunque el control técnico avance, no sabemos si logra capturar toda ambigüedad de intención o si solo reduce una categoría específica de incidentes. Por eso la idea clave no es “hay magia para leer intención”, sino “hay que comprobar qué decisiones quedaron fuera de control humano, y diseñar verificabilidad sobre esas decisiones”.",
-    "final_payoff": "Al principio temíamos ‘salida incorrecta’. Ahora vemos algo más sutil: la salida puede ser consistente con permisos, pero inconsistente con la intención. La verdadera práctica en riesgo no es la memoria del dato, sino la memoria de la verificación: el momento humano de preguntar “¿quién comprobó que esto es lo que se suponía?”.",
+    "counterargument": "Podría decirse que estamos dramatizando: muchos sistemas de agentes incluyen supervisión, aprobación humana y registros; además, los fallos pueden ser corregidos con políticas y monitoreo. Entonces el problema no sería “falta de verificación por diseño”, sino que algunos despliegues aún son inmaduros o mal configurados. En esa lectura, el circuito de comprobación sí existe, solo que no en todas partes, y mejorar herramientas de seguridad resolvería el asunto.",
+    "final_payoff": "El “ya quedó” del inicio deja de ser solo una metáfora cognitiva. Se vuelve una especificación: si un agente puede actuar y el mundo no ha sido comprobado por humanos (o por sistemas de validación entendibles), el cierre es prematuro. La pregunta que regresa no es “¿qué tan inteligente es?”, sino “¿qué capa valida el resultado cuando nadie está mirando?”",
     "target_words": 1450
   },
-  "script_word_count": 1605,
-  "estimated_minutes_at_2_5_wps": 10.7,
+  "script_word_count": 1448,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 9.65,
   "evaluation": {
-    "editorial_score": 8.2,
-    "attention_score": 7.1,
-    "voice_score": 8.4,
-    "seo_score": 7.0,
+    "editorial_score": 7.6,
+    "attention_score": 7.9,
+    "voice_score": 8.2,
+    "seo_score": 6.5,
     "factuality_risk": "medium",
-    "ai_smell_risk": "medium",
+    "ai_smell_risk": "low",
     "voice_fidelity": 8.6,
-    "intellectual_depth": 8.7,
-    "human_relevance": 8.8,
-    "analogy_quality": 9.0,
-    "opening_fit": 8.0,
-    "first_evidence_effectiveness": 6.5,
-    "narrative_motion": 7.8,
-    "thesis_evolution": 8.2,
-    "evidence_density": 7.6,
+    "intellectual_depth": 8.3,
+    "human_relevance": 8.0,
+    "analogy_quality": 8.1,
+    "opening_fit": 8.4,
+    "first_evidence_effectiveness": 7.2,
+    "narrative_motion": 7.1,
+    "thesis_evolution": 8.0,
+    "evidence_density": 6.8,
     "strengths": [
-      "Apertura con motivo potente (“luz verde / ya quedó”) y pregunta clara sobre delegación de verificación; engancha sin depender de titulares.",
-      "Uso sólido del referente platónico (Fedro/Theuth y Thamus) con pertinencia temática (apariencia de conocimiento vs práctica activa).",
-      "Movimiento intelectual real: de “control/permiso” hacia “control de intención como proceso” y luego a la idea de “mecanismos de verificación/revisión cuando la ejecución se delega”.",
-      "Evidencia periodística integrada con función argumental (incidente de permisos; luego controles Zero Trust; luego interfaz/omnipresencia; y un contraargumento de gobernanza).",
-      "Buena densidad conceptual: conecta ética, cognición y seguridad operativa sin colapsar en jerga.",
-      "Motivo recurrente ‘ya quedó’ vuelve con significado distinto y cierra con una pregunta abierta coherente."
+      "Apertura potente y consistente con la preocupación central (tablero verde/“cierre” prematuro) y gancho inmediato sin necesidad de titulares.",
+      "Movimiento intelectual claro: de “autonomía/errores” hacia “circuito de verificación y cronología de auditoría”.",
+      "Buena integración filosófica (Platón/relación entre señales externas y comprensión) como marco conceptual, no como adorno.",
+      "Escenas hipotéticas concretas que vuelven visible el problema del retardo entre acción y comprobación.",
+      "Cierre con payoff que recontextualiza el motivo (“verde ≠ validado”) y deja pregunta abierta pertinente."
     ],
     "problems": [
-      "Riesgo de factualidad/traceabilidad: varias noticias se usan como respaldo general a la tesis sin precisar bien sus límites (p.ej., que el incidente pruebe “margen para seguir” o que ello implique necesariamente “intención distorsionada”; el guion hace inferencias editoriales fuertes sobre patrones).",
-      "Primeras evidencias algo tardías/menos enfocadas: la apertura y el marco filosófico dominan el arranque, y la primera evidencia concreta llega relativamente después de establecer demasiadas capas.",
-      "Algunos pasajes pueden sonar a explicación “general de seguridad” o “general de confianza” más que a descubrimiento progresivo con evidencia específica (ciertas conexiones a productos/noticias parecen más asociativas que demostrativas).",
-      "El guion menciona muchas piezas del ecosistema (Gemini, Muse, Seller Assistant, SynCraft, etc.) pero no todas aportan una nueva dimensión argumental equivalente; hay cierta dispersión (aunque no es puro listado).",
-      "AI-smell moderado: hay frases de estructura ensayística muy pulida y retórica (p.ej., ‘luz verde’, ‘misterio central’, ‘corazón del misterio’) que no siempre se anclan a micro-escenas nuevas, lo que puede dar un tono de ensayo más que de indagación incremental."
+      "Densidad de noticias desigual: usa varias evidencias, pero algunas quedan más como “mención de caso” que como evidencia que cambie la lectura en momentos bien calibrados.",
+      "Parte del contenido técnico/operativo se menciona (p.ej., Zero Trust, logs, bloqueo en tiempo real) sin aterrizar en qué evidencia concreta lo respalda; se queda en intención/posibilidad.",
+      "Riesgo medio de factualidad por afirmaciones generales que no siempre se anclan con precisión a las fuentes resumidas (p. ej., matices sobre acceso/cronología, o sobre el impacto del caso australiano respecto a privacidad y “no ocurrió dentro del flujo inmediato”).",
+      "La pregunta final es buena, pero el ensayo ya pudo inclinarse demasiado temprano a la tesis; falta un segundo giro más no-obvio que convierta algunas evidencias en contraargumentos fuertes."
     ],
     "improvements": [
-      "Ajustar la inferencia factual: en el incidente de Reuters, separar explícitamente “lo que se sabe públicamente” vs “lo que el guion sugiere como patrón”; marcar con más claridad el salto interpretativo (actualmente lo hace parcialmente).",
-      "Hacer que la primera evidencia (Reuters o controles Zero Trust) aparezca antes o con una micro-escena más concreta inmediatamente después de la tesis provisional para subir el efecto de atención del primer tercio.",
-      "Reducir o justificar mejor el número de noticias usadas: elegir 3-4 piezas que aporten dimensiones realmente distintas (seguridad de intención; auditoría durante ejecución; interfaz omnipresente; contraejemplo de ‘gobernanza suficiente’) y relegar las demás a menciones breves o eliminar si no añaden novedad.",
-      "Añadir al menos un momento de “descubrimiento” más explícito (un giro donde la evidencia obliga a corregir la tesis inicial con una consecuencia clara para la pregunta ‘¿quién comprobó?’).",
-      "Bajar el nivel de abstracción en algunos segmentos: cuando se diga ‘esto sugiere X’, añadir una frase de por qué y qué dato específico lo sostiene, o admitir incertidumbre."
+      "Para reducir riesgo factual: cuando se cite un caso (Australia/Medicare, Microsoft Zero Trust, Anthropic/bio), anclar al menos 1-2 detalles verificables del SUMMARY (fechas, qué tipo de archivos, qué se sabe/no se sabe públicamente) y marcar explícitamente incertidumbres cuando aplique.",
+      "Ajustar la dramaturgia de evidencias: seleccionar 3 evidencias y hacer que cada una obligue a re-interpretar un aspecto de la tesis (p. ej., una como contraejemplo de “auditoría tardía” en ciencia donde el ciclo es más inmediato; otra como límite donde aun con registros falla el tiempo real).",
+      "Introducir un giro narrativo adicional donde la intuición inicial sobre “verificación dentro del tiempo real” se matice (por ejemplo, verificación instantánea vs. verificación suficiente; o que “tiempo real” no siempre es el criterio correcto).",
+      "Mejorar SEO sin caer en titulares: asegurar que nombres/temas relevantes queden explícitos de forma natural (p. ej., agentes y auditoría, “cronología de notificación”, “trazabilidad”) ya están, pero podrían estar un poco más enfatizados en frases clave."
     ]
   },
   "agent_trace": [
@@ -125,37 +128,24 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 12.956,
+      "elapsed_seconds": 10.39,
       "usage": {
-        "prompt_tokens": 17884,
-        "output_tokens": 1444,
-        "total_tokens": 19328
-      }
-    },
-    {
-      "step": "experiment_plan",
-      "agent": "experimental_editorial_director",
-      "iteration": 2,
-      "attempt": 1,
-      "status": "success",
-      "elapsed_seconds": 9.642,
-      "usage": {
-        "prompt_tokens": 17904,
-        "output_tokens": 1460,
-        "total_tokens": 19364
+        "prompt_tokens": 17910,
+        "output_tokens": 1090,
+        "total_tokens": 19000
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 15.441,
+      "elapsed_seconds": 14.753,
       "usage": {
-        "prompt_tokens": 16237,
-        "output_tokens": 2143,
-        "total_tokens": 18380
+        "prompt_tokens": 15878,
+        "output_tokens": 1936,
+        "total_tokens": 17814
       }
     },
     {
@@ -164,11 +154,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 7.84,
+      "elapsed_seconds": 6.108,
       "usage": {
-        "prompt_tokens": 17051,
-        "output_tokens": 936,
-        "total_tokens": 17987
+        "prompt_tokens": 16844,
+        "output_tokens": 788,
+        "total_tokens": 17632
       }
     }
   ]

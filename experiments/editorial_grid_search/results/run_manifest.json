@@ -23,5 +23,10 @@
   "baseline_config": "g00_current_like",
   "top_mean_balanced_score": 7.2833,
   "baseline_mean_balanced_score": 6.7267,
-  "paired_delta_vs_baseline": 0.5567
+  "paired_delta_vs_baseline": 0.5567,
+  "raw_cells": 60,
+  "script_files": 60,
+  "scores_rows": 60,
+  "scripts_index_rows": 60,
+  "artifact_recovery_source_run_id": 36073833346
 }

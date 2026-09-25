@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g13_fit_spoken_5b",
     "label": "Fit gate + spoken cadence",
@@ -24,6 +24,142 @@
     "news_file": "news/2026-08-31-08-34-19.txt",
     "reason": "Independent window with regulation, human-AI interaction, education, agents and infrastructure."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 5 beats, got 8"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g13_fit_spoken_5b",
+    "memory_instruction": "The candidate set passes the relevance gate (0.124 >= 0.120). You MAY use Narrative Memory in the opening if it genuinely earns the hook; keep memory-led material under 85 words.",
+    "memory_fit_gate_passed": true,
+    "top_memory_relevance": 0.1236,
+    "opening_instruction": "Open with a recognizable human tension, discomfort or choice; avoid generic rhetorical setup.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 200.",
+    "beat_instruction": "Design exactly 5 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 2-3 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Optimize for spoken delivery: breathable clauses, sentence-length variation, occasional short turns, and no dense dossier paragraphs.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "plato-writing-memory",
+  "selected_memory_retrieval": {
+    "score": 0.2612,
+    "lexical_relevance": 0.0804,
+    "quality": 0.902,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "¿Quién verifica lo que la IA ya da por “resuelto”? (Agentes, memoria externa y estabilidad en sistemas compartidos)",
+    "central_question": "Si cada vez más tareas—desde conversar con personas en crisis hasta accionar herramientas en empresas—se delegan a sistemas “que deciden”, ¿quién se hace responsable de comprobar que lo que el sistema hizo (o omitió) sigue siendo seguro, verdadero y reversible?",
+    "provisional_thesis": "La IA no vuelve peligrosa la vida principalmente por fallar; la vuelve especialmente peligrosa por cambiar el tipo de verificación que exigimos: pasamos de “comprobar después” a confiar en señales (aprobaciones, coherencia, continuidad) que parecen suficientes cuando en realidad desplazan el riesgo a otros lugares del sistema.",
+    "evolved_thesis": "El problema central no es la autonomía en sí, sino la interfaz entre autorización, contexto y reparación: cuando un agente opera con permisos y memoria/criterio delegados, la seguridad depende menos de impedir errores y más de rediseñar cómo se registran, auditan y deshacen decisiones en tiempo real—y eso es institucional, no solo técnico.",
+    "hook": "No sé si te pasa algo parecido, pero cada vez que un sistema “marca como resuelto”, me queda una duda incómoda. Como si una luz verde bastara para cerrar un circuito que, para nosotros, apenas acaba de empezar: ¿quién comprobó que no rompimos otra cosa? Y peor: ¿qué pasa cuando ese sistema no solo responde, sino que actúa—y su manera de actuar queda repartida entre permisos, herramientas, y el contexto que quizá ya no estamos viendo.",
+    "selected_memory_id": "plato-writing-memory",
+    "memory_use_reason": "El mito de Theuth y Thamus en el Fedro permite abrir con una tensión antigua y reconocible sobre la memoria externa: una herramienta puede ofrecer “apariencia de comprensión” y desplazar el ejercicio activo de recordar/verificar. Esta estructura funciona como espejo para agentes que hacen, no solo dicen, y para el problema de confiar en señales superficiales de que todo está bien.",
+    "memory_limits": "Solo usaré el referente como marco filosófico: es un argumento/mito, no evidencia empírica moderna sobre efectos cognitivos de la escritura o de IA. La comparación será una analogía sobre desplazamiento de práctica (recordar/verificar), no una afirmación causal de que “IA = escritura” en efectos medibles.",
+    "evidence_indices": [
+      1,
+      5,
+      7
+    ],
+    "beats": [
+      "Arranque con una duda cotidiana: la luz verde de “resuelto” y la sospecha de que la verificación se está subcontratando",
+      "Micro-mecanismo heredado: memoria/apariencia de conocimiento que reemplaza ejercicio activo (Fedro) y cómo eso escala cuando la IA no solo responde sino que actúa",
+      "Escena concreta (imaginada): un agente toma control dentro de una empresa, ejecuta acciones por misión y contexto, y alguien en revisión ve un registro incompleto; la pregunta se vuelve “¿quién autorizó qué, y con base en qué contexto?”",
+      "Evidencia financiera como síntoma de sistema: la carta del FSB sobre IA de frontera y ciberataque/estabilidad muestra que el riesgo se propaga por infraestructura compartida y por cambios en la “economía” del ataque; la verificación tardía deja de ser local",
+      "Contra-límite serio + giro: el punto no es solo “bloquear”, sino rediseñar reparación/auditoría continua; la seguridad debe parecerse más a instituciones verificables (identidad y autorización continua) que a promesas de contención"
+    ],
+    "counterargument": "Podría decirse que esta lectura exagera la necesidad de verificación humana: quizá las capas de seguridad (autorización, políticas en tiempo de ejecución, registros) ya convierten la delegación en algo suficientemente auditado. Además, los incidentes reales pueden ser raros, y la automatización podría mejorar defensa a la par que eleva capacidades ofensivas. El riesgo, entonces, sería más de gestión que de diseño profundo: no “quién verifica”, sino qué tan bien están construidas las salvaguardas y con qué velocidad se corrige cuando fallan.",
+    "final_payoff": "Volvemos al inicio con otro significado: la luz verde no es el final del circuito; es un invento humano para cerrar incertidumbre. Con agentes y sistemas compartidos, esa luz solo vale si existe una segunda luz—la de reparación y atribución—que nos obligue a reabrir la pregunta. La IA no nos quita el trabajo de pensar; nos reordena el trabajo de comprobar y de hacer responsable a alguien (a veces a una institución, no a una persona).",
+    "target_words": 1450
+  },
+  "script_word_count": 1533,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.22,
+  "evaluation": {
+    "editorial_score": 7.6,
+    "attention_score": 7.2,
+    "voice_score": 8.1,
+    "seo_score": 6.9,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.3,
+    "intellectual_depth": 8.0,
+    "human_relevance": 8.7,
+    "analogy_quality": 7.7,
+    "opening_fit": 8.2,
+    "first_evidence_effectiveness": 6.6,
+    "narrative_motion": 7.4,
+    "thesis_evolution": 7.8,
+    "evidence_density": 7.0,
+    "strengths": [
+      "Rigor filosófico claro: la preocupación central (“quién sostiene la verificación”) se entiende y sostiene el arco completo.",
+      "Uso efectivo del motivo “luz verde/resuelto” como imagen que guía la lectura y permite cerrar con un payoff.",
+      "Prosa conversacional y reflexiva en registro humano, con dudas e incertidumbre bien dosificadas.",
+      "Buena integración de evidencia: FSB/G20, Washington Post (señales indirectas), Carnegie Mellon y Broadcom aparecen con función argumental reconocible (síntoma/puente/complicación).",
+      "Human relevance alta: riesgo institucional, trazabilidad, reparación y seguridad conversacional conectan con experiencias plausibles de trabajo/vida cotidiana."
+    ],
+    "problems": [
+      "Factualidad/traceabilidad imperfecta: algunas afirmaciones suenan más conclusivas de lo que permiten las fuentes resumidas (p. ej., cómo se deriva exactamente el “cambio de circuito” o implicaciones causales sistémicas).",
+      "Varias noticias quedan como “paradas para pensar” y no terminan de convertirse en una evidencia con datos concretos (tasas, magnitudes, mecanismos verificables), bajando el peso probatorio.",
+      "El orden temático es coherente, pero el progreso dramático a veces se siente como ensayo por acumulación (varios frentes) más que como descubrimiento paso a paso; la “revelación progresiva” se nota, pero no siempre se vuelve no-obvia.",
+      "SEO/entidad: aparecen muchas instituciones/temas (FSB, G20, Broadcom, Transluce) pero no se anclan con suficientes señales de búsqueda (p. ej., qué es “AgentMinder” en términos concretos, o términos clave resumidos una sola vez con claridad)."
+    ],
+    "improvements": [
+      "Marcar explícitamente el estatus de cada evidencia (p. ej., “es evaluación de riesgo, no evidencia de crisis”) ya lo hace en parte, pero conviene reforzarlo al hacer saltos interpretativos.",
+      "Reducir el número de frentes o darles más “datos funcionales”: 1–2 métricas, 1–2 implicaciones operativas por noticia (qué cambiaría si no hay trazabilidad/reversión).",
+      "Hacer el giro intelectual más evidente: añadir una frase de contraste más clara del tipo “pensaba que el problema era X; ahora veo Y” (sin repetir literal), conectando con una sola escena concreta en vez de varias transiciones.",
+      "Para trazabilidad, citar más el “cómo” del mecanismo (p. ej., qué registra AgentMinder y por qué eso habilita reparación), usando lo que está en el summary de forma más literal y menos general."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 6.78,
+      "usage": {
+        "prompt_tokens": 18059,
+        "output_tokens": 995,
+        "total_tokens": 19054
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 12.922,
+      "usage": {
+        "prompt_tokens": 15907,
+        "output_tokens": 2085,
+        "total_tokens": 17992
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 4.635,
+      "usage": {
+        "prompt_tokens": 17098,
+        "output_tokens": 685,
+        "total_tokens": 17783
+      }
+    }
+  ]
 }

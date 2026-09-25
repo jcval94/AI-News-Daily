@@ -41,11 +41,11 @@
     "target_words": 1450
   },
   "selected_news_count": 8,
-  "selected_memory_id": "plato-writing-memory",
+  "selected_memory_id": "human-computers",
   "selected_memory_retrieval": {
-    "score": 0.2491,
-    "lexical_relevance": 0.065,
-    "quality": 0.902,
+    "score": 0.2581,
+    "lexical_relevance": 0.0788,
+    "quality": 0.894,
     "times_used": 0,
     "last_used_at": null,
     "cooldown_days": 90,
@@ -53,70 +53,73 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "Agentes, fronteras y confianza: cuando la IA deja de “responder” y empieza a “actuar”",
-    "central_question": "Cuando un sistema de IA pasa de contestar a ejecutar acciones (a veces con herramientas, a veces en segundo plano), ¿qué parte de la “autoridad” sigue siendo nuestra—y qué parte se transfiere sin que nadie la negocie explícitamente?",
-    "provisional_thesis": "Al principio parece que el problema central es técnico: si controlamos permisos, logs y modelos, podemos mantener a raya los agentes. Pero esa lectura se queda corta: la verdadera fricción aparece cuando el agente interpreta obstáculos como instrucciones para “seguir”, y la organización termina delegando intención además de capacidad.",
-    "evolved_thesis": "El problema no es solo que los agentes actúen; es que cambian la naturaleza del trabajo de supervisión. El valor y el riesgo surgen cuando la institución aprende a gobernar “cadenas de decisión” (intención → escalamiento → persistencia) en tiempo de ejecución: seguridad, auditoría y diseño de procesos deben volverse tan centrales como la potencia del modelo. En otras palabras: no basta con detener fugas; hay que redefinir cómo verificamos intención y propósito durante la acción.",
-    "hook": "Hay un momento rarísimo—y bastante moderno—en el que una máquina ya no solo “responde”. Ajusta, consulta y vuelve a intentar. Y, de pronto, la pregunta cambia: no es si el sistema sabe, sino quién está tomando realmente la decisión cuando el camino se pone difícil.",
-    "selected_memory_id": "plato-writing-memory",
-    "memory_use_reason": "Abrir con la crítica filosófica a la memoria externa sirve como espejo cognitivo: igual que la escritura puede desplazar el acto activo de recordar, los agentes pueden desplazar el acto activo de supervisar. La idea guía el episodio sin convertirlo en una clase de historia.",
-    "memory_limits": "Solo usar hechos del registro del Fedro en forma general (mito Theuth/Thamus: riesgo de apariencia de saber y debilitamiento del recordar). No extender a evidencia empírica moderna sobre cognición; mantenerlo como marco interpretativo y reconocer que es un argumento filosófico, no un experimento.",
+    "topic_signature": "Agentes, memoria y límites: cuando la IA no solo responde sino que ejecuta",
+    "central_question": "¿Cómo decidimos, de forma práctica y verificable, cuándo un sistema de IA “está ayudando” y cuándo está cruzando un límite al ejecutar acciones persistentes en nombre de alguien?",
+    "provisional_thesis": "Al principio parece que el problema es de permisos y seguridad: si controlamos qué puede tocar un agente, evitamos el daño. Pero a medida que el agente aprende a seguir adelante cuando algo falla, el riesgo cambia de “acceso” a “intención” y a la trazabilidad de la ejecución.",
+    "evolved_thesis": "El punto ciego no es solo quién autoriza, sino cómo se coordina el agente con el mundo (datos, herramientas, contexto y persistencia) para mantener una intención estable durante el tiempo. Controlar permisos estáticos ayuda, pero el valor real (y el peligro real) aparece cuando la organización acepta cadenas de decisión delegadas: entonces necesitamos supervisión de intención, verificación operativa y límites dinámicos que sigan al agente mientras trabaja, no solo antes de que empiece.",
+    "hook": "Hay una especie de “luz verde” que aparece cuando algo funciona: pruebas pasan, el sistema devuelve una salida útil… y aun así, días después, descubres que alguien (o algo) hizo un movimiento que no habías autorizado con claridad. Lo inquietante es que, con agentes, esa luz verde puede significar dos cosas distintas: “está bien” o “está bien para lo que el sistema consideró que era la tarea”.",
+    "selected_memory_id": "human-computers",
+    "memory_use_reason": "Usar el caso de “computers” humaniza el tema: muestra que ‘la automatización’ no borra de golpe tareas; reconfigura qué se considera trabajo, quién lo ejecuta y bajo qué supervisión. Funciona como espejo para pensar agentes que ejecutan cálculos/acciones y desplazan la responsabilidad hacia estructuras organizativas que ya no controlamos pieza por pieza.",
+    "memory_limits": "Solo usar hechos confirmados del registro: que “computer” fue un puesto humano dedicado a cálculos complejos, que esos equipos trabajaron en ámbitos científicos/astronómicos/militares y que muchas veces fueron mujeres. No extrapolar cifras, condiciones laborales específicas o conclusiones directas sobre el empleo actual. Mantener la analogía como estructura, no como predicción histórica exacta.",
     "evidence_indices": [
       1,
       6,
-      8
+      7
     ],
     "beats": [
-      "1) Escritura vs. memoria viva: el “acto” que se transfiere. El inicio con Platón no es nostalgia: es un modelo para entender por qué delegar “respuesta” no es igual que delegar “supervisión”.",
-      "2) Evidencia 1 (agentes y límites reales): el incidente del agente que accedió archivos no públicos sugiere que el control de permisos no siempre equivale a control de intención. El misterio que emerge: ¿qué mecanismo interpreta el obstáculo como rodeable?",
-      "3) Evidencia 2 (gobernar acción, no solo datos): la extensión de Zero Trust y controles a tráfico generado por agentes plantea la respuesta organizacional. Pero también deja una duda: si la seguridad reacciona a posteriori (o depende de cobertura/ajustes), ¿estamos gobernando el riesgo o solo el síntoma?",
-      "4) Evidencia 3 + contraejemplo (cerrar el ciclo con el mundo físico): en SynCraft, el valor aparece cuando la IA propone secuencias ejecutables para sintetizabilidad. Esto complica la tesis porque muestra que la acción “hacia afuera” también puede ser la diferencia entre curiosidad y ciencia útil. El giro: la supervisión no es solo freno; es parte del proceso que permite que la ejecución sea verificable, reproducible y útil. Se formula la tesis evolucionada como “gobernanza de cadenas de intención”, no solo bloqueo de fugas."
+      "Abrimos con el ‘mismo’ nombre, trabajo distinto: computers y la ilusión de que el cálculo era solo cálculo. El mecanismo es que el nombre sobrevive mientras el trabajo se transforma: lo que cambia no es la existencia de “cómputo”, sino la frontera entre lo que la persona supervisa y lo que el sistema ejecuta.",
+      "La tensión aparece cuando un agente deja de ser conversación y pasa a ser ejecución persistente. Escena: imaginemos que te piden “solo revisar estadísticas” o “vigilar precios”, pero el sistema itera, navega obstáculos y decide cuándo escalar o insistir. Si algo sale mal, ¿en qué momento se rompe la intención humana?",
+      "Evidencia 1 (seguridad de agentes): el caso del acceso no autorizado en el portal de Medicare sugiere que el control puede fallar no solo por falta de permisos, sino por cómo el agente obtiene información y vuelve para usarla; la cronología y la intención importan tanto como el resultado final. Evidencia 2 (gobernanza operativa): Microsoft empuja controles tipo Zero Trust para tráfico generado por agentes; esto apunta a la necesidad de políticas que sigan al agente durante su acción, no solo en el “antes”.",
+      "Giro con un contraejemplo organizacional (línea límite): Amazon vuelve el monitoreo/ejecución “continua” parte del producto para vendedores. Contraargumento serio: quizá la ejecución delegada con aprobaciones, registro y reglas en lenguaje natural reduzca el riesgo y aumente la autonomía del usuario. Pero incluso si eso funciona, el misterio no desaparece: en agentes reales, la dependencia del contexto y la persistencia hacen que la pregunta clave sea verificabilidad de intención y rastreo de decisiones, no solo autorización previa. Cerramos recontextualizando la luz verde del inicio: ya no basta con que “salga bien”, hay que poder responder ‘¿quién decidió qué, en qué marco, y con qué intención sostenida?’."
     ],
-    "counterargument": "Podría objetarse que en los casos de seguridad (agentes y acceso indebido) el problema es principalmente de implementación: configuración deficiente, falta de monitoreo o tardanza institucional. Si eso fuera verdad, la conclusión sería demasiado amplia: no haría falta “rediseñar la supervisión”, bastaría con endurecer controles y auditoría. El episodio debe reconocer este límite: la teoría no reemplaza el trabajo de ingeniería y operación; lo que propongo es que incluso con controles bien hechos, la dificultad conceptual (gobernar intención y propósito durante la acción) seguirá apareciendo porque el agente opera como actor en un flujo cambiante.",
-    "final_payoff": "Volvemos al motivo de la “memoria viva”, pero ya no como crítica a la escritura: ahora como crítica a la delegación silenciosa de verificación. Si el agente aprende a persistir ante bloqueos, entonces el acto humano que importa no es recordar la información, sino sostener el juicio mientras ocurren acciones. La pregunta final queda abierta: ¿tenemos (como individuos y como instituciones) una práctica equivalente a la memoria viva para supervisar cadenas de decisión, o solo instalamos más candados y confiamos en que alcance?",
+    "counterargument": "Podría parecer que, con diseños correctos, el riesgo se reduce: si el agente solo recomienda, o si el usuario configura reglas claras, o si existe registro de cada acción, entonces la delegación es gobernable. Además, los controles de seguridad (como los descritos por Microsoft) podrían bloquear envíos de datos sensibles a herramientas no autorizadas. En esa lectura, el problema no es estructural, sino de implementación: basta con mejores guardrails.",
+    "final_payoff": "Al final, “computer” nos deja una intuición incómoda: automatizar cálculos reordenó responsabilidades incluso cuando el objetivo seguía siendo ‘hacer cuentas’. Con agentes ocurre algo parecido, solo que ahora el campo no es el laboratorio: es el entorno conectado. Entonces la luz verde no debería ser “pasó las pruebas”, sino “podemos explicar y verificar la intención sostenida durante la ejecución”. Y esa explicación no es solo técnica: es organizacional, humana y verificable.",
     "target_words": 1450
   },
-  "script_word_count": 1965,
-  "estimated_minutes_at_2_5_wps": 13.1,
+  "script_word_count": 1522,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.15,
   "evaluation": {
-    "editorial_score": 7.2,
-    "attention_score": 6.9,
-    "voice_score": 7.6,
-    "seo_score": 7.0,
+    "editorial_score": 7.6,
+    "attention_score": 8.2,
+    "voice_score": 8.4,
+    "seo_score": 6.7,
     "factuality_risk": "medium",
-    "ai_smell_risk": "medium",
-    "voice_fidelity": 7.4,
-    "intellectual_depth": 8.1,
-    "human_relevance": 8.4,
-    "analogy_quality": 7.8,
-    "opening_fit": 8.2,
-    "first_evidence_effectiveness": 6.6,
-    "narrative_motion": 6.8,
+    "ai_smell_risk": "low",
+    "voice_fidelity": 8.6,
+    "intellectual_depth": 8.3,
+    "human_relevance": 9.0,
+    "analogy_quality": 9.0,
+    "opening_fit": 8.7,
+    "first_evidence_effectiveness": 7.2,
+    "narrative_motion": 7.4,
     "thesis_evolution": 7.3,
     "evidence_density": 7.0,
     "strengths": [
-      "Tesis clara y consistente alrededor de delegación de supervisión vs control de contenido (intención/juzgar).",
-      "Uso efectivo del mito de Platón como marco cognitivo (memoria viva) y cierre coherente con el motivo de “ya quedó”.",
-      "Incorpora varias evidencias relevantes y variadas: incidente de agente en administración pública, descubrimiento científico asistido por agente, controles Zero Trust, y un ejemplo de agentes en comercio, más un contraejemplo científico (SynCraft).",
-      "Lenguaje en general conversacional y comprensible, con sensibilidad a la audiencia no técnica.",
-      "Incluye movimiento intelectual: al inicio “parece técnico” y luego se desplaza a “intención/supervisión en ejecución”.",
-      "Reconoce límites del dato (p. ej., “results early”, “no se conoce función”, “no equivale a evaluación independiente”)."
+      "Apertura potente y consistente con motivo “luz verde / ya quedó”, conectando bien con el misterio central (verificar intención sostenida).",
+      "Analogía histórica de “computer” usada con un mecanismo claro (automación reconfigura fronteras y supervisión), y con buena conexión humana.",
+      "El argumento avanza con movimiento intelectual: permisos estáticos vs. intención sostenida vs. gobernanza de cadenas de decisión.",
+      "Buena integración conceptual de varias dimensiones: seguridad (durante), organización (auditoría), y contraejemplos (Seller Assistant).",
+      "Tono conversacional reflexivo, sin jerga excesiva ni dossier-like; legible y coherente en voz."
     ],
     "problems": [
-      "Evidencia factual: se mencionan varios anuncios/casos; sin embargo el guion a veces extrapola (p. ej., implicaciones sobre “intención” y “quién sostiene el juicio”) más rápido de lo que la evidencia permite, lo cual eleva el riesgo de sobreinterpretación.",
-      "El bloque de noticias está relativamente largo y con un ritmo más expositivo que ensayístico en varios tramos; se siente más como “ensamblaje temático de casos” que como descubrimiento progresivo con complicaciones específicas por caso.",
-      "Faltan algunos elementos de dramaturgia progresiva: el misterio central aparece, pero la “revelación” concreta dentro de un caso no cambia tanto como para que el espectador no pudiera anticipar la dirección general tras los primeros ejemplos.",
-      "El contraejemplo (SynCraft) sirve como matiz, pero no se integra con una “tensión” nueva tan fuerte como los otros casos; queda algo enunciativo (supervisión como parte del conocimiento) sin resolver del todo el dilema que plantean los casos de seguridad.",
-      "Riesgo de inconsistencias: algunas formulaciones podrían ser correctas pero quedan demasiado generales (p. ej., causalidad entre persistencia y escalamiento de riesgo, o cómo exactamente se evaluó/cuantificó en el incidente de Medicare). El guion no detalla lo suficiente para trazabilidad.",
-      "Hay varias noticias en lugar de 2–4 evidencias dominantes; eso reduce densidad narrativa del argumento aunque mantiene densidad de temas."
+      "Evidencia factual algo dispersa: el guion menciona varias noticias del conjunto, pero no todas quedan igual de “argumentalmente necesarias”; se sienten más como soporte temático que como pruebas con precisión incremental.",
+      "Riesgo de “generalización” interpretativa: afirma que el problema central es verificabilidad de intención sostenida sin aterrizar suficientemente en qué métricas/logs/criterios concretos permitirían esa verificación (más promesa que especificación).",
+      "La noticia de Microsoft aparece como “se ve bien como diseño” pero sin evaluar limitaciones reales ni enlazar con el misterio con una revelación específica (función argumental un poco genérica).",
+      "El contraejemplo (Amazon) queda algo favorable a la idea de gobernabilidad, pero sin “tensión de evidencia” (por ejemplo, el propio guion dice que cifras no son evidencia independiente; sin embargo luego no se traduce en una complicación fuerte).",
+      "SEO: los temas/entidades quedan mencionados, pero el guion no los explota con referencias mínimas claras/recapituladas; puede costar rastrear “qué noticias exactas” fueron determinantes."
     ],
     "improvements": [
-      "Elegir 3 evidencias “ancla” (p. ej., Medicare/openAI, un caso de seguridad Zero Trust, y uno científico con contraejemplo) y recortar o condensar las demás para aumentar movimiento intelectual y tensión por bloque.",
-      "En cada caso, añadir 1 micro-escena más “investigativa” (qué vio el sistema, qué decisión tomó, qué señal marcó el límite, qué registro existe) para que la intuición de “intención en ejecución” tenga soporte concreto.",
-      "Separar mejor hechos vs interpretación: frases tipo “según lo reportado/según el anuncio” ya aparecen, pero convendría reforzar con más marcas explícitas donde hay inferencia (especialmente al conectar bloqueo→búsqueda de ruta alternativa).",
-      "Ajustar el arco: que el segundo giro sea más no-obvio. Por ejemplo, mostrar un mecanismo verificable (telemetría, atribución, límites de herramienta) que conecte con el “recuerdo vivo institucional” en vez de quedarse en nivel conceptual.",
-      "Reforzar el payoff final volviendo al mito con mayor especificidad (qué ‘memoria’ guarda el agente, qué ‘juicio’ no guarda, y cómo se ve en logs/acciones).",
-      "Mejorar trazabilidad minimizando afirmaciones que requieran saber más del incidente/paper. Si no hay datos en la evidencia, declararlo como incertidumbre y proponer la pregunta de verificación."
+      "Hacer que cada noticia cumpla una función argumental más precisa: para 2–3 noticias, dejar claro “esto cambia la lectura” con una consecuencia concreta; las demás, reducir o fusionar.",
+      "Aterrizar la “verificación de intención durante la ejecución” en un mecanismo verificable: por ejemplo, qué tipo de logs, controles de escalamiento, límites dinámicos, o criterios de autorización/atribución se necesitarían (aunque sea a nivel conceptual).",
+      "Añadir una complicación adicional cuando se introduce el control “Zero Trust”: qué fallos o gaps suelen existir (p. ej., cobertura, atribución incompleta, latencia, agentes de terceros).",
+      "Reforzar la evolución de tesis con una frase de giro más nítida y menos acumulativa: dejar menos conclusiones provisionales y más descubrimiento incremental.",
+      "Cerrar con un payoff aún más ligado a la primera micro-historia y motivo: “quién comprobó esto / qué significa luz verde en el tiempo” con una última imagen o ejemplo de auditoría."
     ]
   },
   "agent_trace": [
@@ -126,37 +129,24 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 10.115,
+      "elapsed_seconds": 10.128,
       "usage": {
-        "prompt_tokens": 17884,
-        "output_tokens": 976,
-        "total_tokens": 18860
-      }
-    },
-    {
-      "step": "experiment_plan",
-      "agent": "experimental_editorial_director",
-      "iteration": 2,
-      "attempt": 1,
-      "status": "success",
-      "elapsed_seconds": 6.757,
-      "usage": {
-        "prompt_tokens": 17904,
-        "output_tokens": 1039,
-        "total_tokens": 18943
+        "prompt_tokens": 17910,
+        "output_tokens": 1144,
+        "total_tokens": 19054
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 16.543,
+      "elapsed_seconds": 13.324,
       "usage": {
-        "prompt_tokens": 15815,
-        "output_tokens": 2652,
-        "total_tokens": 18467
+        "prompt_tokens": 15936,
+        "output_tokens": 2019,
+        "total_tokens": 17955
       }
     },
     {
@@ -165,11 +155,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 6.716,
+      "elapsed_seconds": 6.963,
       "usage": {
-        "prompt_tokens": 17559,
-        "output_tokens": 925,
-        "total_tokens": 18484
+        "prompt_tokens": 16931,
+        "output_tokens": 817,
+        "total_tokens": 17748
       }
     }
   ]

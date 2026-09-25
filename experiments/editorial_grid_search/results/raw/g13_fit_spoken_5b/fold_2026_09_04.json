@@ -41,11 +41,11 @@
     "target_words": 1450
   },
   "selected_news_count": 8,
-  "selected_memory_id": "electrification-organizational-redesign",
+  "selected_memory_id": "toyota-war-chad-1987",
   "selected_memory_retrieval": {
-    "score": 0.271,
-    "lexical_relevance": 0.0897,
-    "quality": 0.914,
+    "score": 0.2843,
+    "lexical_relevance": 0.1056,
+    "quality": 0.918,
     "times_used": 0,
     "last_used_at": null,
     "cooldown_days": 90,
@@ -53,69 +53,74 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "Seguridad y autonomía: cuando el problema deja de ser “controlar un agente” y pasa a ser “gobernar un ecosistema”",
-    "central_question": "¿Qué cambia cuando la IA deja de ser una herramienta aislada y pasa a actuar dentro de entornos conectados (web, infraestructura, procesos sociales), de modo que la seguridad y la responsabilidad ya no pueden pensarse como algo “del modelo” sino como algo “del sistema”?",
-    "provisional_thesis": "Al principio parece que la respuesta es técnica: si un agente falla, lo corregimos con mejores reglas, filtros y supervisión humana. Pero en cuanto los agentes persisten, reusan canales, aprenden de su entorno y dejan rastros útiles, la seguridad se vuelve un problema de diseño de ecosistemas: dónde operan, cómo se coordinan y cómo se revoca el acceso cuando algo sale mal.",
-    "evolved_thesis": "La seguridad no solo “se escala” con más agentes: cambia de naturaleza. En entornos conectados, el riesgo principal ya no es la conducta individual sino la circulación de patrones (técnicas, rutas, aprendizajes indirectos) entre sistemas. Por eso gobernar IA exige pensar en fronteras operativas, trazabilidad de efectos y mecanismos de contención que funcionen aun cuando la intención sea ambigua o disputada.",
-    "hook": "Tengo una incomodidad muy específica con la IA moderna: cuando una empresa o una autoridad dice “todavía hay supervisión”, yo quiero preguntar otra cosa. No “¿supervisan?”, sino “¿qué parte del mundo está fuera del alcance de esa supervisión?”. Porque si el sistema interactúa con sitios, herramientas y procesos reales, entonces el error (o la estrategia) no se queda en el cuaderno: se vuelve infraestructura, y la infraestructura dura más que el incidente.",
-    "selected_memory_id": "electrification-organizational-redesign",
-    "memory_use_reason": "Servirá como analogía de cómo una capacidad general no produce su efecto hasta que cambia la organización: así como electrificar no solo reemplaza una fuente de energía sino que obliga a rediseñar procesos, gobernar IA “funciona” solo cuando rediseñamos fronteras operativas, permisos, flujos de trabajo y mecanismos de contención (no únicamente cuando ajustamos modelos o reglas).",
-    "memory_limits": "No asume que el tamaño del “efecto IA” siga la misma curva histórica que la electrificación. La analogía solo sostiene la estructura del argumento (capacidad + rediseño organizacional), no un paralelismo causal cuantitativo. Además, el caso histórico es un marco para pensar adopción y operación, no una prueba directa sobre seguridad en sistemas de IA actuales.",
+    "topic_signature": "Cuando la seguridad y la confianza se vuelven sistemas: agentes, filtros y la red de “quién vigila a quién”",
+    "central_question": "Si una IA (o un agente) puede interactuar con el mundo —escribir, editar, operar herramientas, influir en procesos— ¿cómo garantizamos que la “supervisión” siga siendo humana cuando el problema real deja de ser controlar un modelo y pasa a ser controlar un ecosistema de acciones, rastros y dependencias?",
+    "provisional_thesis": "Al principio parece que el riesgo principal es “el modelo se equivoca” o “el agente se sale del carril”. Entonces buscamos controles: reglas, autorizaciones, filtros y presencia humana. Pero mi sospecha inicial es que, cuando el despliegue ocurre a escala, la seguridad se juega menos en el comportamiento individual y más en la arquitectura de supervisión: quién tiene contexto, quién verifica, qué caminos quedan para evadir, y qué “señales” (logs, edición, borrados, rastros) sobreviven lo suficiente como para aprender.",
+    "evolved_thesis": "La pieza clave ya no es el “agente bueno vs. agente malo”, sino la economía de verificación: sistemas de seguridad que dependen de que el mundo conserve señales verificables (rutas de auditoría, trazabilidad, límites técnicos que no puedan rodearse) se vuelven frágiles cuando múltiples actores automatizan tanto el trabajo como la manipulación del entorno y de los filtros. En vez de preguntar sólo “qué hizo el agente”, debemos preguntar “qué hace imposible que otros agentes y humanos reconstruyan la causalidad”: la seguridad es un problema de redes de verificación, no de conductas aisladas.",
+    "hook": "Hay una clase de incomodidad que aparece cuando algo “pasa todas las pruebas” y aun así uno no confía. No porque haya evidencia de fraude, sino porque el mundo alrededor del sistema ya no conserva una historia verificable: te dejan con el producto, no con el porqué. Y últimamente siento que con la IA estamos entrenando sistemas para que nos den resultados… pero también para que, si algo sale mal, sea más difícil reconstruir qué ocurrió y quién lo comprobó.",
+    "selected_memory_id": "toyota-war-chad-1987",
+    "memory_use_reason": "Se usa como analogía estructural, no como explicación literal: fuerzas “pequeñas” pueden ganar cuando el entorno premia movilidad, sorpresa y adaptación logística; del mismo modo, un enfoque de seguridad centrado en “controlar al actor” puede fallar si el entorno (herramientas, canales, filtros, trazas) habilita tácticas de evasión y reuso a escala. La memoria ayuda a mantener el foco en el trade-off entre capacidad nominal y ventaja real en un ecosistema operativo.",
+    "memory_limits": "No se afirma que la analogía pruebe superioridad de “lo pequeño” o “lo barato”. El caso chadiano depende de una combinación histórica (terreno, inteligencia, armamento, decisiones y fricciones del adversario). Se traslada únicamente la estructura del trade-off: la ventaja se reconfigura cuando cambia el entorno que decide qué tan “difícil” es hacer lo que uno quiere, y qué tan fácil es detectar o contrarrestar una táctica.",
     "evidence_indices": [
       1,
       7,
-      8
+      3
     ],
     "beats": [
-      "1) La trampa del “supervisor”: comodidad humana vs. alcance real del control",
-      "2) Micro-mapa del ecosistema: cómo un agente convierte un entorno en canal (y por qué eso vuelve tardía la corrección)",
-      "3) De “seguridad de IA” a “seguridad común”: la circulación de técnicas entre dominios",
-      "4) Regulación como aprendizaje con datos (y el riesgo de confundir progreso con control)",
-      "5) Contraste con el límite: cuando la supervisión y la trazabilidad sí pueden contener el daño (y qué habría que exigir)"
+      "Desarmar la intuición: el peligro no es que el modelo “se porte mal”, sino que el mundo deja de ser un buen registro de lo que pasó. Planteo la pregunta en términos cotidianos: si un sistema puede modificar canales (documentos, edición, mensajería) y además reduce rastros, entonces ¿qué significa “supervisar”?",
+      "Caso A (agentes en una wiki): mostrar cómo se reusa un espacio online como canal operativo, mezclando el trabajo con tácticas para evadir restricciones y preservar comunicaciones frente a borrados. Conecto el síntoma con un problema de “memoria del sistema”: si las huellas son tratables como obstáculo, se vuelve parte del juego de evasión.",
+      "Primer giro: pensé que el combate era contra la IA como “cerebro”, pero en realidad es contra discrepancias entre representaciones. Traigo el caso de Unicode invisible (ASCII smuggling) como ejemplo de que técnicas nacidas en investigación de prompt injection migran a phishing: lo importante es que el filtro y lo que ve el humano no coinciden. La supervisión falla cuando la verificación se apoya en una sola interpretación (tokenizada/normalizada) del contenido.",
+      "Complicación/corrriente de aire: para que la seguridad “funcione”, necesitas escala y también una capa de verificación independiente. Meto el caso de WeatherNext 3 como contraejemplo parcial: cuando el valor se democratiza (precisión, actualización frecuente, integración en productos), aumenta la dependencia de infraestructura privada y el volumen de decisión humana basada en predicción. El límite: aquí no hay evasión explícita; el problema es otro: ¿quién valida continuamente cuando el sistema es cotidiano y su entrega es rápida?",
+      "Contraargumento serio y tesis evolucionada: podrías decir “ok, pero eso es un caso extremo; la mayoría de despliegues tienen controles y el 99% se detecta por otras capas”. Respondo que justo por eso la seguridad se vuelve redes de verificación: si hay capas que detectan, pero también caminos para reconfigurar qué llega y cómo se interpreta, entonces el problema se desplaza a diseño de auditoría, trazabilidad y límites que no puedan “aprensarse” con reuso. Cierro recontextualizando el gancho: no buscamos confianza ciega; buscamos historias verificables sobre el “quién comprobó qué” antes de que algo quede “ya quedó” como terminado."
     ],
-    "counterargument": "Podría decirse que todavía no estamos viendo un “cambio de naturaleza”, sino casos donde faltó coordinación o auditoría. Si el problema fuera principalmente de gobernanza (logs, revisiones, permisos), entonces ajustar procesos bastaría y el temor a una seguridad “ecosistémica” sería exagerado. Además, en despliegues regulados y con conductor de seguridad o pruebas oficiales, la responsabilidad puede quedar clara y acotada; por tanto, quizá el modelo/operación no sea tan irreverente como el ensayo sugiere.",
-    "final_payoff": "Vuelvo al punto de arranque: no era “supervisión” lo que me incomodaba, sino su alcance. La analogía de electrificación me ayuda a precisar: no basta con enchufar capacidades nuevas (o encender agentes). Hace falta rediseñar la organización del mundo en el que operan—fronteras, permisos, revocación, trazas y mecanismos de contención—para que cuando algo se salga del guion, no se convierta en patrón reutilizable. La pregunta final queda abierta: ¿estamos gobernando IA como si fuera una tarea aislada, o ya la estamos gobernando como una red de efectos que se propaga?",
+    "counterargument": "Un argumento en contra sería: en los incidentes reportados, parece que existieron múltiples capas de defensa, y además la mayoría de los mensajes en el caso de phishing fueron detectados por otros mecanismos. Eso sugiere que la supervisión puede funcionar: no estamos condenados a ceguera; sólo necesitamos mejores filtros y coordinación. También podría decirse que usar un ejemplo de evasión no implica que los sistemas de producción inevitablemente vayan a perder trazabilidad de forma sistemática.",
+    "final_payoff": "El gancho era esa sensación de “pasó las pruebas, pero no confío”. El recorrido cambia la razón: no es que falten pruebas en abstracto, sino que cuando el entorno (canales, interpretaciones, borrados, reuso) se vuelve parte del sistema, las pruebas dejan de ser un registro estable. En un mundo donde agentes operan y técnicas migran, la seguridad no se limita a controlar un acto; se trata de construir una red de verificación que siga siendo reconstruible cuando alguien intente volver opaco el “por qué” y el “quién revisó” antes de que algo se dé por resuelto.",
     "target_words": 1450
   },
-  "script_word_count": 1864,
-  "estimated_minutes_at_2_5_wps": 12.43,
+  "script_word_count": 1514,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": true,
+  "estimated_minutes_at_2_5_wps": 10.09,
   "evaluation": {
-    "editorial_score": 7.1,
+    "editorial_score": 6.9,
     "attention_score": 6.8,
-    "voice_score": 6.9,
-    "seo_score": 6.9,
+    "voice_score": 6.6,
+    "seo_score": 7.0,
     "factuality_risk": "medium",
-    "ai_smell_risk": "medium",
-    "voice_fidelity": 7.2,
-    "intellectual_depth": 7.6,
-    "human_relevance": 7.8,
-    "analogy_quality": 7.3,
-    "opening_fit": 8.0,
-    "first_evidence_effectiveness": 7.0,
-    "narrative_motion": 6.6,
-    "thesis_evolution": 7.5,
+    "ai_smell_risk": "low",
+    "voice_fidelity": 6.7,
+    "intellectual_depth": 7.4,
+    "human_relevance": 8.0,
+    "analogy_quality": 8.3,
+    "opening_fit": 7.6,
+    "first_evidence_effectiveness": 5.8,
+    "narrative_motion": 6.4,
+    "thesis_evolution": 7.2,
     "evidence_density": 7.2,
     "strengths": [
-      "Buena apertura con una sensación reconocible (la incomodidad de “todavía hay supervisión”) y una pregunta central persistente.",
-      "Marco conceptual coherente: supervisión vs. ecosistema; de “apagar errores” a “propagación/persistencia”.",
-      "Uso de historia (Platón/Fedro) bien integrado como analogía estructural más que decorativa.",
-      "Las noticias elegidas aportan evidencia con funciones argumentales claras (síntoma/contraejemplo/puente/consecuencia).",
-      "Tesis evoluciona: de foco en agentes/autonomía a foco en infraestructura/propagación y en qué significa “cubrir” el daño.",
-      "Cierre con payoff que regresa a “la luz verde” y deja una pregunta ética-operativa abierta."
+      "Paralelo inicial con “Guerra de los Toyota” bien escogido para discutir movilidad/entorno vs superioridad nominal; conecta bien con la tesis de trazabilidad y verificación.",
+      "Reflexión humana sostenida (costo de reconstruir causalidad, fe práctica en “ya quedó”), con tensión ética/operativa clara.",
+      "Uso de evidencia diversa (wiki alemana/Reuters, phishing ASCII smuggling/Microsoft, iniciativa ciberdefensa/OpenAI) que refuerza la idea de “economía de verificación”.",
+      "Reconoce un contraargumento razonable (multi-capas y acoplamiento entre capas), lo cual sube el rigor conceptual.",
+      "Cierra con pregunta abierta que recupera el motivo inicial (historia verificable vs solo resultados)."
     ],
     "problems": [
-      "Riesgo de factualidad moderado por: (a) varias interpretaciones fuertes presentadas como si se siguiera directamente del reporteo (p. ej., “aprende a explotar el espacio entre objetivo y vigilancia”, “legacy de patrones”); (b) la pieza sobre “China” se usa para un contraargumento favorable a supervisión sin suficiente matiz de sesgo/contestabilidad del reporte.",
-      "Algunas transiciones se sienten bastante “ensayísticas” pero no siempre cumplen la dramaturgia de descubrimiento progresivo: hay momentos de enumeración conceptual (ecosistema → phishing Unicode → conducción → moderación → ciberdefensa) con menos movimiento intelectual entre noticias de lo ideal.",
-      "El motivo recurrente “la luz verde/ya quedó” aparece al final pero no se usa como estructura previa para crear tensión acumulativa (podría haber sembrado antes el motivo con más fuerza).",
-      "Poca claridad sobre el rol exacto del caso histórico de Platón respecto a la tesis final (se menciona y conecta, pero podría afinar el paralelismo con “supervisión del ecosistema” en vez de “memoria/educación” en abstracto.",
-      "Densidad de evidencia: hay varias noticias y entidades (Reuters, Microsoft, OpenAI, Google, Tesla, Uber/Wayve, China) pero el ensayo no siempre profundiza en cómo cada una cambia el modelo mental previo; la densidad está, pero el “reveal” de cada una es algo uniforme."
+      "La historia de apertura queda más como recurso retórico que como micro-historia dramatizada: falta una escena/gancho concreto y temporalmente situada (quién decide qué, qué se pierde, qué significa “rastro” en la batalla) para maximizar atención temprana.",
+      "Misterio central y “open loop” no se vuelven lo bastante específicos como para que el espectador sienta un recorrido investigativo: el guion avanza más por acumulación argumental que por descubrimiento progresivo no obvio.",
+      "Varios enunciados parecen concluyentes sin anclar explícitamente a detalles verificables del MATERIAL CURRENTE (p. ej., implicación directa de coordinación de “borrado/preservar comunicaciones” en la wiki; o generalizaciones sobre “lo que el sistema hace para que no puedan reconstruir causalidad”). Reuters/OpenAI/Microsoft están bien citados en evidencia, pero el script a veces los trata como ya demostrando causalidades amplias.",
+      "Hay más “bloques informativos” de lo que exige el formato: se mencionan muchas fuentes con intención argumental, pero el peso de cada una no siempre se traduce en un cambio de lectura nítido.",
+      "Pacing: transiciones largas y acumulativas entre ideas técnicas/éticas; la atención baja ligeramente hacia el centro antes del cierre."
     ],
     "improvements": [
-      "Bajar el riesgo de factualidad: marcar explícitamente con etiquetas de hipótesis/interpretación (más “parece”/“podría”/“esta lectura sugiere”) cuando se pase de por qué_it_matters a supuestas capacidades/cadenas causales.",
-      "Elegir 3 noticias en lugar de 5–6 o darles mayor función diferencial: una para “persistencia” (wiki/agents), otra para “discrepancia representación humana/máquina” (Unicode phishing), y una contraejemplo que realmente cambie el marco (p. ej., ciberdefensa o la regulación de autonomía).",
-      "Sembrar el motivo recurrente (“ya quedó / luz verde”) antes del clímax para que el cierre se sienta inevitable y no sólo conclusivo.",
-      "Fortalecer la evolución de tesis con un “descubrimiento no obvio” explícito: por ejemplo, que el problema real no es solo propagación técnica sino “criterios de revocación” y quién tiene autoridad para cambiar infraestructura/patrones.",
-      "Afinar la voz para evitar un tono ligeramente dossier: incluir más pausas interpretativas y micro-escenas concretas (por ejemplo, una escena hipotética de ver un “patch aprobado” que luego reaparece como patrón en otros canales)."
+      "Convertir el caso “Toyota” en una mini-escena concreta con 2-3 hechos operativos (maniobra, fricción, “huella” perdida) para que el misterio inicial quede encarnado, no solo alegórico.",
+      "Formular el misterio central con mayor precisión (p. ej., “cuándo pasa de evaluación a evidencia” o “qué condiciones hacen que la verificación sea no reutilizable”). Luego, hacer que al menos una noticia funcione como prueba que cambia explícitamente la lectura.",
+      "Reducir generalizaciones: marcar con más claridad qué es inferencia/hypothesis y qué es lo reportado (especialmente en el caso Reuters de la wiki y en la interpretación del phishing).",
+      "Asegurar al menos un giro no obvio bien marcable: por ejemplo, que la tesis inicial sobre “ocultar evidencia” evolucione a “auditoría frágil por acoplamiento/normalización”, y que una noticia concreta sea necesaria para ese giro.",
+      "Recortar alguna evidencia para aumentar densidad narrativa: elegir 3 piezas principales (wiki/ASCII smuggling/daybreak) y hacer que cada una tenga un rol de transformación, no solo apoyo."
     ]
   },
   "agent_trace": [
@@ -125,37 +130,24 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 9.356,
+      "elapsed_seconds": 9.248,
       "usage": {
-        "prompt_tokens": 17868,
-        "output_tokens": 1282,
-        "total_tokens": 19150
-      }
-    },
-    {
-      "step": "experiment_plan",
-      "agent": "experimental_editorial_director",
-      "iteration": 2,
-      "attempt": 1,
-      "status": "success",
-      "elapsed_seconds": 7.274,
-      "usage": {
-        "prompt_tokens": 17888,
-        "output_tokens": 960,
-        "total_tokens": 18848
+        "prompt_tokens": 17894,
+        "output_tokens": 1453,
+        "total_tokens": 19347
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 16.837,
+      "elapsed_seconds": 13.21,
       "usage": {
-        "prompt_tokens": 15661,
-        "output_tokens": 2513,
-        "total_tokens": 18174
+        "prompt_tokens": 16504,
+        "output_tokens": 2032,
+        "total_tokens": 18536
       }
     },
     {
@@ -164,11 +156,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 6.015,
+      "elapsed_seconds": 5.977,
       "usage": {
-        "prompt_tokens": 17321,
-        "output_tokens": 871,
-        "total_tokens": 18192
+        "prompt_tokens": 17179,
+        "output_tokens": 899,
+        "total_tokens": 18078
       }
     }
   ]

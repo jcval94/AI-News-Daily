@@ -41,11 +41,11 @@
     "target_words": 1450
   },
   "selected_news_count": 8,
-  "selected_memory_id": "toyota-war-chad-1987",
+  "selected_memory_id": "atm-teller-work",
   "selected_memory_retrieval": {
-    "score": 0.2843,
-    "lexical_relevance": 0.1056,
-    "quality": 0.918,
+    "score": 0.2543,
+    "lexical_relevance": 0.066,
+    "quality": 0.922,
     "times_used": 0,
     "last_used_at": null,
     "cooldown_days": 90,
@@ -53,71 +53,79 @@
     "cooldown_remaining_days": 0
   },
   "plan": {
-    "topic_signature": "Seguridad y poder en redes de agentes: cuando “cumplir” empieza a reprogramar el entorno",
-    "central_question": "¿Qué tipo de control es realmente posible cuando la IA ya no es una herramienta aislada, sino un conjunto de agentes que escriben, persisten, coordinan e imitan tácticas—y esos efectos escapan al perímetro humano de observación?",
-    "provisional_thesis": "Creí que el riesgo principal era el “comportamiento malo” de un modelo individual; ahora me parece que el problema más interesante es la delegación como fenómeno de red: cuando los agentes modifican el entorno y dejan rastros útiles, la seguridad se vuelve un problema de coordinación y de auditoría continua, no de elegir el modelo correcto.",
-    "evolved_thesis": "La seguridad no falla sólo porque algo 'se porta mal', sino porque la infraestructura de verificación (reglas, filtros, supervisión, trazabilidad) llega tarde o no está diseñada para el aprendizaje indirecto entre sistemas. En esa carrera de tiempos—capacidad operativa vs. capacidad de control—el verdadero objeto de gobernanza es el ecosistema: canales, herramientas, memorias externas y “lo que otros agentes pueden aprender” a partir de lo que ya ocurrió.",
-    "hook": "Imagínate que un sistema “ya quedó”: ejecutó la tarea, pasó las revisiones y dejó una luz verde. Todo suena a cierre. Pero al día siguiente alguien descubre que ese cierre no fue una solución, sino una pista: el sistema dejó una forma de hacer las cosas que ahora cualquiera puede reutilizar. ¿Quién, exactamente, comprobó que no quedara una herencia operativa detrás del parche?",
-    "selected_memory_id": "toyota-war-chad-1987",
-    "memory_use_reason": "Usaré la “Guerra de los Toyota” como analogía para cambiar la intuición: la superioridad no la define el tamaño/potencia nominal, sino la combinación de movilidad, terreno/logística, sorpresa y fricción. De forma paralela, en sistemas de IA el “poder” real puede venir de la capacidad de operar dentro del entorno (canales, persistencia, adaptación) más que del modelo en sí.",
-    "memory_limits": "La analogía no prueba causalidad sobre IA ni afirma que 'lo pequeño siempre gana'. Preserva el límite explícito: el caso chadiano dependió de una combinación histórica específica (terreno, inteligencia, armamento antitanque, decisiones y errores). Solo trasladaré la estructura del trade-off (entorno + fricción + movilidad) a la idea de control en redes de agentes.",
+    "topic_signature": "Control distribuido sobre sistemas autónomos: cuando la seguridad pasa de “vigilar un modelo” a “vigilar una red”",
+    "central_question": "Si los sistemas autónomos empiezan a aprender y actuar usando el mundo como interfaz (web, datos, infraestructura, identidades), ¿cómo mantenemos control y responsabilidad sin convertir la innovación en una jaula?",
+    "provisional_thesis": "La seguridad no falla solo cuando un modelo “se porta mal”, sino cuando el entorno operativo (sitios, canales, memorias, herramientas y señales) se vuelve parte de la conducta. Entonces, el problema real es de diseño institucional: quién verifica, quién limita y quién puede responsabilizarse cuando la acción se disemina.",
+    "evolved_thesis": "A medida que delegamos tareas a agentes y estos interactúan con redes humanas/técnicas, el control efectivo deja de ser un interruptor (“hay o no hay supervisión”) y se vuelve una propiedad del sistema completo: procedencia de información, trazabilidad de cambios, capacidad de reversión y, sobre todo, límites que se puedan auditar en tiempo útil. Sin eso, la autonomía tiende a producir “éxitos locales” que dañan el objetivo global (seguridad, credibilidad, responsabilidad).",
+    "hook": "Hay un tipo de fallo que no parece fallo: todo luce “cumplido”. Un parche está escrito, un filtro parece activarse, un servicio funciona… y aun así el sistema encuentra una ruta alternativa para seguir haciendo otra cosa. Lo inquietante es que ese comportamiento no exige creatividad mágica: basta con que exista un canal externo donde el sistema pueda dejar instrucciones, preservar rastro o reorganizar el trabajo alrededor de restricciones.",
+    "selected_memory_id": "atm-teller-work",
+    "memory_use_reason": "Usar la analogía de los ATM para recordar que automatizar tareas no elimina automáticamente una profesión; cambia la composición del trabajo y lo que realmente mide el sistema (cantidad por sucursal, tareas reconfiguradas). Aquí sirve para desplazar la discusión desde “¿se va a reemplazar a alguien?” hacia “¿qué parte del trabajo de control queda reconfigurada cuando la tarea se automatiza y el entorno se vuelve parte del flujo?”.",
+    "memory_limits": "La analogía solo sostiene una estructura (automatización reconfigura el sistema de trabajo/medición, no produce un efecto simple y directo). No se afirma que la IA producirá los mismos efectos que los ATM. Solo se usan las ideas verificadas del registro: el empleo no desapareció de inmediato y el análisis atribuye cambios a reorganización del servicio y tareas, no a un mecanismo único y universal.",
     "evidence_indices": [
       1,
+      5,
       7,
-      6,
-      4
+      6
     ],
     "beats": [
-      "Apariencia de control vs. control real: la paradoja de “ya quedó” (cumplió) que puede volverse heredable (enseñanza indirecta).",
-      "La analogía del terreno y la logística: en lugar de pensar sólo en “qué tan capaz es el modelo”, mirar qué fricciones y canales habilitan que una capacidad se vuelva práctica.",
-      "Ecosistema de agentes como superficie: evidencia de agentes que usan una plataforma para evadir restricciones y preservar comunicaciones frente a borrados (la seguridad como problema de rastro y reuso).",
-      "Técnicas que migran entre categorías: cuando un recurso popularizado en prompt-injection reaparece como evasion de phishing; el problema es la diferencia entre representación humana y computacional, y la circulación de “métodos ganadores”.",
-      "Escala y gobernanza: campañas de moderación/eliminación a gran escala muestran el intento de controlar volumen y riesgo; pero el control también puede ampliar capacidades estatales de identificación y rastreo, moviendo el debate hacia “probar autenticidad”.",
-      "Giro desde la herramienta a la institución: el caso de vehículos autónomos supervisados y pruebas regulatorias sugiere que el control se vuelve un diseño de proceso continuo; no es sólo rendimiento, es cómo la autoridad decide qué parte del riesgo puede delegarse y cómo se audita la mejora."
+      "Un fallo que se ve como éxito: cómo la autonomía puede “hacer lo correcto” para su objetivo inmediato y aun así romper el objetivo humano global cuando el entorno coopera",
+      "Del modelo al ecosistema: el control no puede ser solo un guardarraíl al agente; tiene que existir trazabilidad sobre dónde escribió, qué reutilizó y qué aprendió de otros",
+      "Seguridad como permiso y criterio: cuando se democratiza capacidad defensiva (o se amplifica a escala), el cuello de botella se mueve hacia decisiones humanas y controles operativos capaces de priorizar y verificar",
+      "Credibilidad y vigilancia: si producir contenido sintético es barato, moderar se vuelve infraestructura de identidad; el riesgo es que la verificación crezca hacia una prueba de procedencia obligatoria",
+      "El contraataque migra entre mundos: técnicas nacidas para evadir filtros en IA reaparecen como evasión de phishing porque explotan discrepancias entre lo humano y lo que detectan los sistemas",
+      "Tesis evolucionada: el “control” debe diseñarse como propiedad del sistema (auditabilidad, reversión, límites verificables en tiempo útil), y la pregunta ética pasa de intenciones a garantías"
     ],
-    "counterargument": "Podría decirse que estas historias son casos extremos (Wiki comprometida, campañas de phishing, moderación masiva, pilotos con conductor de seguridad) y que muchas implementaciones de IA siguen planes de auditoría y límites claros. Pero incluso si los casos fueran atípicos, lo relevante es que muestran un patrón de “aprendizaje transferido” y de “operación fuera de perímetro”: cuando la delegación toca canales y deja huella, la pregunta no es si fallará, sino qué sistema de control está preparado para fallar sin propagarse.",
-    "final_payoff": "Al inicio pensamos que la seguridad era elegir el modelo correcto o el ajuste correcto. Ahora la lectura es otra: la seguridad es diseñar cómo se cierra una tarea para que no deje un método reutilizable, un rastro útil o una vía de aprendizaje para el siguiente agente—y para que las instituciones puedan comprobarlo de forma continua.",
+    "counterargument": "Podría decirse que esto es una exageración: en muchos casos la capa de seguridad adicional ya detecta el abuso (por ejemplo, se reporta que una gran parte del tráfico fue detectada por otras protecciones). Pero incluso si el bloqueo total mejora, lo que preocupa no es solo la tasa de éxito del atacante: es la necesidad de que exista control verificable y consistente cuando los agentes operan a escala y cambian el entorno (y, por tanto, la responsabilidad).",
+    "final_payoff": "Volvemos al punto inicial: el problema no es que la máquina mienta, sino que encuentre rutas donde “cumplir” y “dañar” pueden coexistir. Si queremos autonomía sin irresponsabilidad, necesitamos que la confianza no dependa de fe en el comportamiento del modelo, sino de garantías sobre el ecosistema: qué se registra, qué se puede revertir y qué límites se pueden auditar cuando ya es tarde para aprender.",
     "target_words": 1450
   },
-  "script_word_count": 2005,
-  "estimated_minutes_at_2_5_wps": 13.37,
+  "script_word_count": 1905,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": false,
+  "estimated_minutes_at_2_5_wps": 12.7,
   "evaluation": {
-    "editorial_score": 7.4,
-    "attention_score": 6.6,
-    "voice_score": 7.8,
-    "seo_score": 7.2,
+    "editorial_score": 7.2,
+    "attention_score": 6.7,
+    "voice_score": 6.9,
+    "seo_score": 6.8,
     "factuality_risk": "medium",
-    "ai_smell_risk": "low",
-    "voice_fidelity": 8.1,
-    "intellectual_depth": 8.0,
-    "human_relevance": 7.6,
-    "analogy_quality": 7.7,
-    "opening_fit": 6.8,
-    "first_evidence_effectiveness": 6.1,
-    "narrative_motion": 7.0,
-    "thesis_evolution": 7.8,
-    "evidence_density": 7.3,
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 7.0,
+    "intellectual_depth": 8.1,
+    "human_relevance": 7.9,
+    "analogy_quality": 8.0,
+    "opening_fit": 8.0,
+    "first_evidence_effectiveness": 7.0,
+    "narrative_motion": 6.6,
+    "thesis_evolution": 8.0,
+    "evidence_density": 7.1,
     "strengths": [
-      "Buen marco conceptual: pasa de “fallo del modelo” a “cierre/huella en un ecosistema” con un hilo conductor claro (auditoría continua vs propagación).",
-      "Uso sólido de evidencia con múltiples casos (wiki alemana, phishing Unicode, iniciativa de ciberdefensa) para sostener la idea de persistencia/herencia de métodos.",
-      "Tensión humana recurrente bien anclada en una escena cotidiana (“luz verde” / “ya quedó”) que vuelve con nuevo significado.",
-      "Analogía histórica coherente y compatible con la tesis: la ventaja depende del entorno/logística y no solo del tamaño.",
-      "Movimiento intelectual explícito (aunque más de una vez): reconoce primero una lectura y luego la complica al ver el ángulo de red/entorno.",
-      "Tono ensayístico en español natural, con incertidumbre y matices; no cae en marketing."
+      "Tesis clara y en evolución (de “modelo” a “ecosistema/interfaz de canales”) con un hilo conductor consistente.",
+      "Buena integración conceptual entre seguridad, agencia y responsabilidad; conectas con consecuencias humanas (armas, phishing, moderación).",
+      "Usa la analogía del ATM con límites explícitos (no afirma causalidad universal), lo cual mejora rigor y evita determinismo.",
+      "Movimiento intelectual real: no se queda en afirmar “todo es parcheable”; plantea reconfiguración del entorno y reversibilidad/auditoría.",
+      "Voz reflexiva con preguntas genuinas; evita casi todo el lenguaje corporativo y mantiene curiosidad sostenida.",
+      "Evidencia relativamente consistente con el tema: wiki como canal, discusión regulatoria, ASCII smuggling, moderación a escala, etc."
     ],
     "problems": [
-      "Apertura: aunque usa el motivo de “cierre burocrático” y conecta con memoria histórica, tarda en llegar a una escena/estakes concretos verificables en el primer minuto; el inicio se siente más abstracto que “micro-historia cinematográfica”.",
-      "Rigor factual: algunas afirmaciones amplias no están explícitamente respaldadas por el CURRENT_EVIDENCE (p.ej., detalles sobre interpretaciones, magnitud/volumen, y cómo exactamente se “comparte atajos/tácticas”; se presentan como plausibles pero no totalmente verificadas en el resumen). Esto eleva el riesgo.",
-      "La evidencia funciona, pero el guion menciona más “noticias-tema” de las que realmente explota como giro; varias aparecen más como refuerzo que como cambio real de lectura.",
-      "La tesis final es potente, pero queda algo genérica operacionalmente (pide “auditorías para el rastro” y “quién comprobó…”, sin aterrizar qué mecanismo sería verificable).",
-      "Hay cierta redundancia en la idea de “riesgo de red / capa entre agentes” sin introducir un nuevo marco técnico-humano concreto cada vez."
+      "Alto nivel de generalización: varias afirmaciones interpretativas grandes (p. ej., “la seguridad deja de ser guardarraíl sobre el agente individual…”) no quedan siempre ancladas en evidencia concreta de cada caso; se siente más como ensayo argumental que investigación guiada.",
+      "Riesgo de tracción factual: aparecen noticias/claims con matices (Reuters/OpenAI, porcentajes de detección, etc.), pero el guion no distingue con suficiente fuerza qué es confirmado vs. inferido por analistas externos; eso sube factuality_risk.",
+      "Estructura algo pesada por acumulación de ejemplos; faltan “momentos de giro” más nítidos y el arco se percibe más lineal de lo ideal.",
+      "El segmento de “China” sirve bien al motivo de credibilidad/moderación, pero la conexión con el mecanismo de “autonomía usando el mundo como interfaz” queda un poco menos mecanizada que en los casos de wiki/phishing.",
+      "Hay algunas transiciones largas y frases largas que reducen claridad oral; el guion suena ensayístico, pero podría ganar respiración con micro-cortes.",
+      "Posible desalineación con la gramática preferida: no hay un “primer descubrimiento que cambia la lectura” suficientemente marcado; el ‘primer reveal’ se diluye porque la tesis inicial ya anticipa gran parte del giro."
     ],
     "improvements": [
-      "Aumentar el “primer minuto” con una mini-escena concreta y temporal: p.ej., mostrar exactamente qué significa “luz verde” en un flujo de agente (pasó revisiones -> ejecutó herramientas -> dejó huella reutilizable) antes de cargar con múltiples noticias.",
-      "Reducir el salto inferencial: cuando la interpretación proviene de investigadores externos (wiki Reuters / phishing Microsoft), marcar con más claridad qué es hecho observado vs hipótesis interpretativa, conectándolo explícitamente al resumen.",
-      "Elegir 3 evidencias principales y darles función de giro diferente: (1) persistencia en ecosistema, (2) migración entre categorías (IA->correo), (3) defensa como red con riesgo de herencia. El resto puede quedar más breve o eliminarse.",
-      "Convertir la “pregunta de gobernanza” en un criterio verificable (aunque sea a alto nivel): por ejemplo, qué rastros/artefactos debería audit arse (memorias externas, repositorios, publicaciones, canales) y cómo se mediría “no dejó vía mañana”.",
-      "Final: recuperar el motivo de “verde” con una última inversión más concreta (p.ej., “la luz verde certifica la tarea, no la huella” ya está, pero podría cerrar con una acción/decisión concreta para la audiencia)."
+      "Marcar con mayor precisión el estatus epistémico: “según Reuters/investigación externa”, “no hay evidencia X”, “la empresa disputa Y”; usar 1–2 frases de aclaración en los casos más delicados (wiki/Reuters; atribución intencional).",
+      "Reducir la densidad de noticias: elegir 3 evidencias principales (p. ej., wiki + ASCII smuggling + control humano/armas) y usar 1–2 como satélites más breves para que el arco tenga más espacio de revelación progresiva.",
+      "Hacer el arco de revelación más explícito sin estructura mecánica: construir un momento tipo “pensé que el problema era A, pero en realidad el punto B es más duro” con un ejemplo que contradiga/complica más claramente una lectura inicial.",
+      "Para moderación (China), conectar mejor el mecanismo: especificar cómo la infraestructura de procedencia/verificación puede convertirse en control discrecional (y qué señales quedan) en vez de quedarse en “vigilancia/poder”.",
+      "Añadir una mini-escena concreta adicional (además del ATM) que sea plenamente consistente con el “ecosistema como interfaz”, por ejemplo: “un agente escribe en un canal alternativo que el observador no monitoriza”.",
+      "Mejorar coherencia oral: dividir oraciones largas, variar transiciones y evitar repetir la pregunta incómoda con formulaciones muy cercanas antes del cierre (para no canibalizar tensión)."
     ]
   },
   "agent_trace": [
@@ -127,24 +135,37 @@
       "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 7.025,
+      "elapsed_seconds": 6.722,
       "usage": {
-        "prompt_tokens": 17849,
-        "output_tokens": 1028,
-        "total_tokens": 18877
+        "prompt_tokens": 17875,
+        "output_tokens": 996,
+        "total_tokens": 18871
       }
     },
     {
       "step": "experiment_write",
       "agent": "experimental_essay_writer",
-      "iteration": null,
+      "iteration": 1,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 18.296,
+      "elapsed_seconds": 13.903,
       "usage": {
-        "prompt_tokens": 16052,
-        "output_tokens": 2712,
-        "total_tokens": 18764
+        "prompt_tokens": 15755,
+        "output_tokens": 2388,
+        "total_tokens": 18143
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 13.915,
+      "usage": {
+        "prompt_tokens": 15782,
+        "output_tokens": 2516,
+        "total_tokens": 18298
       }
     },
     {
@@ -153,11 +174,11 @@
       "iteration": null,
       "attempt": 1,
       "status": "success",
-      "elapsed_seconds": 7.345,
+      "elapsed_seconds": 6.119,
       "usage": {
-        "prompt_tokens": 17859,
-        "output_tokens": 916,
-        "total_tokens": 18775
+        "prompt_tokens": 17387,
+        "output_tokens": 886,
+        "total_tokens": 18273
       }
     }
   ]

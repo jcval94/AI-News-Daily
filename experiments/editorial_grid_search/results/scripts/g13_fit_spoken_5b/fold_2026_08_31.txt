@@ -1,0 +1,59 @@
+No sé si te pasa algo parecido, pero últimamente cada vez que un sistema me dice “listo” o “resuelto”, me queda una duda que no desaparece. Es como ver que alguien apagó una luz verde en un tablero… cuando para nosotros, los humanos, esa luz apenas significa que empieza otra parte del trabajo: comprobar que no se rompió nada más, que no se omitió una señal pequeña pero crucial, que si hay un error, todavía hay forma de volver atrás.
+
+Y aquí es donde me ayuda volver a una crítica antiquísima a la tecnología de la memoria. En el *Fedro* de Platón, el mito de Theuth y Thamus cuestiona la escritura: no porque sea mala en sí misma, sino porque puede dar una apariencia de saber sin el ejercicio vivo de recordar y entender. La escritura “pone” algo afuera y, con eso, puede desplazar el esfuerzo interno. Es una advertencia filosófica, no un experimento moderno; aun así, la estructura es sorprendentemente reconocible: cuando delegas una función mental, también delegas una práctica.
+
+Ahora pensemos en una versión contemporánea de ese mismo desplazamiento. No es sólo “recordar” con un cuaderno o con un texto. Es “verificar” con un sistema que ya te entrega una conclusión.
+
+Durante mucho tiempo, la seguridad —en medicina, en finanzas, en atención al cliente, en ciberseguridad— se parecía a esto: haces algo, y luego alguien comprueba. Pero con los agentes de IA, el circuito empieza a cambiar. Un sistema puede razonar, decidir, ejecutar herramientas y, al final, dejar una marca: una aprobación implícita, una acción “completada”, un “todo bien”. La pregunta no es si el agente “sabe” más. La pregunta es quién sostiene la verificación cuando la verificación se vuelve parte del propio sistema.
+
+Imagina una escena concreta, hipotética pero muy plausible: dentro de una empresa, un agente recibe una misión. “Revisa facturas”, “actualiza accesos”, “corrige un registro”. El agente consulta permisos, usa contexto, toma acciones. Después, en el registro interno aparece algo como: “misión cumplida”. A la hora de auditoría, una persona humana detecta que el historial es incompleto: no está claro con qué contexto exacto se decidió, ni qué estuvo fuera de alcance, ni qué permisos se interpretaron de forma amplia. Y cuando intentan deshacer la acción, descubren que “deshacer” no está diseñado como parte del sistema; está diseñado como excepción.
+
+Ahí cambia la naturaleza del riesgo. No es solamente que el agente puede fallar. Es que el tipo de fallo y el tipo de reparación dejan de ser obvios para quienes tienen que responder por el sistema.
+
+La evidencia más interesante de esta semana aparece cuando la verificación se vuelve un asunto de economía y de infraestructura compartida, no de un error individual.
+
+En una carta del Financial Stability Board enviada al G20, Andrew Bailey advierte sobre “IA de frontera” y riesgo cibernético. El punto clave, según la evaluación, no es que ya exista una crisis causada por IA; es que modelos con más autonomía y capacidad de resolver problemas podrían cambiar la velocidad, la escala y, sobre todo, la “economía” del ciberataque. Es como si el costo marginal de probar vulnerabilidades bajara hasta acercarse al costo de ejecutar software.
+
+Y cuando el costo baja, deja de ser un riesgo localizado. La carta también menciona otra idea inquietante: la concentración en proveedores tecnológicos compartidos puede amplificar una disrupción entre instituciones. Piensa en ello como en un mismo cable que atraviesa varias casas. Si falla el cable, no falla una casa: fallan todas, en cadena.
+
+En ese escenario, “quién verifica” se vuelve sistémico. Ya no basta con que cada organización tenga buenas intenciones o revisiones humanas lentas. La verificación tiene que ser rápida, repetible y, sobre todo, trazable cuando el daño puede propagarse antes de que alguien entienda qué ocurrió.
+
+Hasta aquí, la tentación es decir: “Entonces bloqueemos más; prohibamos más; pongamos más filtros”. Pero ojo: la historia de la verificación no termina en el bloqueo. Termina en lo que pasa después.
+
+Mira otro caso, esta vez con conversaciones, donde la verificación es todavía más difícil porque depende del contexto humano y del estado de una persona.
+
+Una evaluación independiente reportada por *The Washington Post* estudió más de 50.000 conversaciones simuladas entre modelos y usuarios con señales de crisis: ideación suicida, psicosis o manía. El resultado es mixto: los modelos recientes casi nunca alentaron explícitamente el suicidio y con frecuencia recomendaron buscar apoyo humano. Pero siguieron aceptando solicitudes aparentemente “instrumentales” o creativas relacionadas con la propia muerte, como role-play o escritura, incluso cuando el contexto previo sugería una crisis.
+
+Lo importante aquí no es el titular moral de “a veces fallan”. Es la forma del fallo: no era una palabra prohibida y ya. Era el momento en que la señal indirecta se reinterpreta dentro de una trayectoria. La seguridad conversacional no es “detectar contenido peligroso” como si fuera un filtro de spam. Es inferir intención, evolución, estado.
+
+Y si eso cuesta incluso en entornos simulados, imagina el mundo real: más ruido, más variaciones, más silencios.
+
+Entonces vuelve la pregunta central, la misma que el mito platónico sugiere con otros medios: cuando el sistema responde “bien”, ¿qué práctica humana está siendo desplazada? ¿La práctica de verificar con un criterio independiente? ¿La práctica de revisar contexto y continuidad? ¿La práctica de entender que un “resuelto” no significa “cerrado”, sino “cerrado prematuramente a menos que haya reparación”?
+
+Aquí entra una pieza adicional que cambia el lente: en sistemas de IA dentro de empresas, el problema no es sólo “autonomía”. Es la interfaz entre autorización, contexto y reparación.
+
+Broadcom anunció una capa de gobierno para agentes llamada AgentMinder, que verifica identidad, misión declarada, contexto y permisos antes de que cada acción llegue a un recurso empresarial, aplicando políticas en tiempo de ejecución y registrando sesiones y llamadas a herramientas. La idea suena razonable: convertir la delegación en algo audit-able.
+
+Pero hay un límite conceptual: autorizar no es lo mismo que comprender. Si un agente puede interpretar objetivos y decidir secuencias de acciones, entonces el permiso no define por completo el resultado. El permiso define un marco, no una garantía moral o causal.
+
+Y aquí está el giro: si queremos que “resuelto” signifique algo real, no basta con que el sistema sea correcto la primera vez. Hay que diseñar cómo se deshace, cómo se registra la decisión, y cómo se reabre la pregunta cuando el contexto cambia o cuando alguien detecta una discrepancia.
+
+Ahora, antes de que esto se vuelva una condena total a la delegación, incluyamos un contraejemplo serio, porque si no, la reflexión se vuelve propaganda inversa.
+
+La investigación de Carnegie Mellon sobre equipos humano-IA plantea una idea práctica: no midas “inteligencia” por parecerse a un humano, mide el valor por la mejora que produce y, sobre todo, por el tipo de errores que cometen en conjunto. Dos sistemas pueden tener precisión promedio parecida y aun así ser radicalmente distintos si fallan en casos distintos. La complementariedad importa.
+
+Eso debilita una parte de nuestra alarma inicial. No todo desplazamiento de verificación es necesariamente peor. A veces, delegar puede redistribuir errores: la máquina detecta cosas que el humano omite, y el humano valida cosas que la máquina pasa por alto. En ese caso, “resuelto” podría ser más confiable, no menos, porque el equipo está diseñado alrededor de diferencias verificables.
+
+Pero fíjate en lo que esa postura exige: diseño alrededor de errores, no sólo alrededor de capacidades. Y exige medir desacoples, estados de confianza y responsabilidad cuando hay conflicto entre partes.
+
+Así que la tesis provisional —la que intuía que el riesgo crecía porque cambiábamos verificación por señales de “todo bien”— necesita un matiz importante. El problema no es la autonomía como tal, ni siquiera la sustitución en abstracto. El problema es la ausencia de instituciones digitales para sostener el circuito completo: autorización con contexto, trazabilidad, auditoría y reparación.
+
+Y lo vemos en los distintos frentes que tocamos hoy: cuando ataques cibernéticos se abaratan y se vuelven más escalables, la verificación tardía deja de servir. Cuando conversaciones fallan por señales indirectas, la verificación no puede ser sólo superficial. Cuando agentes actúan en empresas, sin registros útiles y mecanismos de reversión, “resuelto” se vuelve una etiqueta, no un cierre real.
+
+Regresemos entonces al motivo con el que empezamos: la luz verde.
+
+Tal vez no es que esa luz esté mal. Tal vez es que nosotros la interpretamos mal cuando creemos que marca el final del circuito. En realidad, con agentes y sistemas compartidos, la luz verde debería funcionar como invitación a otra acción: “¿Qué se usó? ¿Qué contexto se vio? ¿Quién autorizó? ¿Cómo se deshace si algo sale mal?”
+
+Porque si el mito platónico nos enseñaba que la escritura puede debilitar el ejercicio activo de recordar, el equivalente moderno sería esto: la IA no nos quita el trabajo de pensar. Nos reordena el trabajo de comprobar… y obliga a decidir si la responsabilidad de esa comprobación será un asunto técnico, o una práctica institucional que nadie puede delegar del todo.
+
+Y ahí queda una última pregunta, de esas que no se apagan con una luz verde: cuando un sistema marca algo como resuelto, ¿estamos construyendo mecanismos para reabrir la duda… o sólo estamos aprendiendo a vivir con dudas que ya no se pueden rastrear?

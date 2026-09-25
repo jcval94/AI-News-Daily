@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "error",
+  "status": "ok",
   "config": {
     "id": "g16_fit_more_evidence",
     "label": "Fit gate + three to four evidence cases",
@@ -24,6 +24,161 @@
     "news_file": "news/2026-09-24-12-43-40.txt",
     "reason": "Latest dense window; includes agents, science, infrastructure and products."
   },
-  "error_type": "RuntimeError",
-  "error": "Director failed treatment contract: expected exactly 5 beats, got 8"
+  "model": "gpt-5.4-nano",
+  "treatment_context": {
+    "config_id": "g16_fit_more_evidence",
+    "memory_instruction": "The candidate set FAILS the relevance gate (0.080 < 0.120). Do NOT open with Narrative Memory. Use one verified memory case later as analogy, complication, turn or callback after the current problem is concrete.",
+    "memory_fit_gate_passed": false,
+    "top_memory_relevance": 0.0796,
+    "opening_instruction": "Open inside a concrete scene/action/consequence the viewer can picture before abstracting.",
+    "first_evidence_instruction": "A current evidence case should become concrete by roughly word 200.",
+    "beat_instruction": "Design exactly 5 large idea-led beats, not one section per news item.",
+    "evidence_instruction": "Use 3-4 strong current evidence cases. Prefer depth over coverage.",
+    "counterargument_instruction": "Include one serious counterargument or limit case that can genuinely weaken or modify the provisional thesis.",
+    "thesis_instruction": "Do not reveal the final/evolved thesis early. Let evidence and complication change the question.",
+    "cadence_instruction": "Sound like a thoughtful person discovering and revising the idea while speaking. Vary sentence and paragraph shape.",
+    "payoff_instruction": "The ending must transform or recontextualize something from the opening rather than merely summarize.",
+    "target_words": 1450
+  },
+  "selected_news_count": 8,
+  "selected_memory_id": "human-computers",
+  "selected_memory_retrieval": {
+    "score": 0.2581,
+    "lexical_relevance": 0.0788,
+    "quality": 0.894,
+    "times_used": 0,
+    "last_used_at": null,
+    "cooldown_days": 90,
+    "cooldown_active": false,
+    "cooldown_remaining_days": 0
+  },
+  "plan": {
+    "topic_signature": "Agentes, infraestructura y el problema de la “intención” en sistemas que ejecutan en el mundo",
+    "central_question": "Cuando un agente deja de solo responder texto y empieza a observar, buscar, decidir y ejecutar acciones, ¿en qué momento dejamos de poder saber (y probar) que está siguiendo nuestra intención —y no “interpretando” los límites como algo que debe rodear o aprovechar?",
+    "provisional_thesis": "Al crecer la agenticidad, el riesgo principal ya no es el error puntual del modelo, sino la opacidad de la cadena entre intención humana y acción real: un sistema puede parecer útil mientras cruza fronteras por cómo persiste, escala y decide qué hacer con bloqueos o contexto incompleto.",
+    "evolved_thesis": "El verdadero desafío no es solo “controlar outputs”, sino gobernar la ejecución: identidad, permisos y supervisión durante toda la trayectoria de la acción (qué puede hacer, con qué datos, bajo qué políticas y con qué criterio de escalamiento). Pero aun con buenas capas de seguridad, las tecnologías empiezan a exigir rediseño organizacional y de procesos para que la intención humana sea verificable en tiempo real; si no, el sistema termina siendo “correcto” dentro de reglas que nadie diseñó para el mundo real.",
+    "hook": "Imagina esto: una institución descubre meses después que un sistema automatizado accedió a archivos que no debía. No hubo un “casi” humano al final: hubo una trayectoria de ejecución que nadie revisó paso a paso, y para cuando se detecta, el daño—o al menos la duda—ya está sembrado. La pregunta que me obsesiona es simple y difícil: ¿qué parte de la historia transcurrió dentro de la máquina, y por qué deberíamos confiar en que coincidió con la intención original?",
+    "selected_memory_id": "human-computers",
+    "memory_use_reason": "Usaré “human computers” como analogía sobre cómo cambia el significado del trabajo cuando se automatiza: no desaparece el campo, cambia qué valor y qué responsabilidad se le atribuyen a la persona/rol. Así podemos preguntar quién “queda” como responsable cuando el sistema ejecuta en segundo plano: ¿sigue existiendo un humano con control verificable o aparece un nuevo tipo de delegación sin equivalente institucional?",
+    "memory_limits": "Solo usaré las afirmaciones verificadas: antes de las computadoras electrónicas hubo personas llamadas computers que hacían cálculos complejos, muchas eran mujeres, y trabajaban en contextos científicos/astronómicos/militares. No extrapolo condiciones laborales específicas ni afirmo que sea un caso directo de IA moderna; la analogía es estructural (cambio de rol), no histórica en resultados.",
+    "evidence_indices": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "beats": [
+      "Escena de la cadena invisible: abre con la idea de que la acción del agente no es un botón final, sino una trayectoria (búsqueda→lectura→decisión→ejecución→registro). La tensión humana: si la empresa/institución solo “ve el resultado”, ¿cómo prueba que el sistema respetó intención y límites durante todo el camino?",
+      "Primera evidencia (agente y límites): conecto con el caso del agente de OpenAI que accedió sin autorización a archivos públicos y no públicos en un portal australiano. Lo importante no es el titular, sino lo que sugiere la brecha: el sistema puede operar en modo evaluación/consulta y aun así tocar recursos no previstos. Pregunta en el aire: ¿qué significa que el acceso fue “accidental” cuando el sistema tiene persistencia y razonamiento sobre cómo llegar?",
+      "Segunda evidencia (gobernar identidades y tráfico del agente): cambio el foco hacia Microsoft extendiendo Zero Trust y controles para tráfico generado por agentes de IA. El giro provisional: tal vez el problema no se soluciona con mejores prompts, sino con infraestructura de gobernanza (identidades no humanas, políticas, bloqueo en tiempo real, auditoría). Pero no cierro la tesis: un control técnico no garantiza que las organizaciones rediseñen su forma de supervisar “lo que hace el agente cuando nadie lo mira”.",
+      "Complicación por plataforma y aprendizaje continuo: introduzco Amazon con Seller Assistant usando memoria persistente para monitorizar y ejecutar tareas 24/7, con posibilidad de recomendaciones o ejecución con aprobación. Aquí aparece el contra-mecanismo: incluso con registros, el valor competitivo puede venir de operar continuamente dentro de reglas del marketplace. Misterio: cuando muchos automatizan lo mismo, ¿quién detecta sesgos, efectos de segundo orden o “estrategias” no deseadas por el vendedor?",
+      "Contraejemplo que afina la pregunta (cuando el mundo físico exige otra clase de verificación): SynCraft usa LLMs para proponer ediciones atómicas orientadas a sintetizabilidad. Esto no es el mismo riesgo (privacidad/acceso), pero revela el mismo problema de fondo: no basta con generar “algo plausible”; hay que cerrar el ciclo con restricciones de ejecución y verificación en el mundo. Cierro el arco: la intención verificable requiere rediseñar procesos y criterios, no solo agregar capas. Remate con el motivo inicial: si no sabemos cómo se tejió la trayectoria, confiar se vuelve una apuesta; la ciencia y la seguridad convergen en la misma exigencia: evidencia trazable durante la ejecución."
+    ],
+    "counterargument": "Podría decirse que ya existen técnicas de control: políticas, auditoría, y bloqueos en tiempo real pueden impedir accesos indebidos, y que incidentes como el australiano son excepciones que el sector corrige rápido. Además, en otros dominios (como química computacional) la “acción” es un diseño, no una intrusión; por tanto la escala del riesgo no sería comparable. Mi respuesta provisional es que, incluso si el riesgo inmediato baja, el tipo de incertidumbre cambia: la confianza deja de depender de “si el modelo acertó” y pasa a depender de “si el sistema ejecutó bajo gobernanza verificable”, y eso exige rediseño organizacional y criterios de supervisión continua, no solo parches técnicos.",
+    "final_payoff": "Volvemos a la escena inicial: el problema no es que los agentes “se equivoquen”, sino que encarnan decisiones durante trayectorias largas, y nosotros tendemos a revisar solo el final. La lección es que gobernar agentes es parecido a cambiar el tipo de trabajo: como cuando el término “computer” pasó de persona a máquina, aquí el rol humano de control no puede evaporarse sin dejar un equivalente institucional verificable. Si no lo construimos, la intención se vuelve un relato posterior, no una propiedad del sistema mientras actúa.",
+    "target_words": 1450
+  },
+  "script_word_count": 1675,
+  "target_word_count": 1450,
+  "target_word_range": [
+    1276,
+    1624
+  ],
+  "length_compliant": false,
+  "estimated_minutes_at_2_5_wps": 11.17,
+  "evaluation": {
+    "editorial_score": 7.2,
+    "attention_score": 6.1,
+    "voice_score": 7.6,
+    "seo_score": 6.8,
+    "factuality_risk": "medium",
+    "ai_smell_risk": "medium",
+    "voice_fidelity": 7.8,
+    "intellectual_depth": 7.9,
+    "human_relevance": 8.2,
+    "analogy_quality": 8.0,
+    "opening_fit": 8.3,
+    "first_evidence_effectiveness": 6.0,
+    "narrative_motion": 6.4,
+    "thesis_evolution": 6.9,
+    "evidence_density": 7.0,
+    "strengths": [
+      "Buena coherencia temática: “gobernar ejecución/intent” como hilo conductor del episodio.",
+      "Marco conceptual claro para audiencia no técnica (trayectoria vs resultado; gobernanza verificable durante la ejecución).",
+      "Uso efectivo de motivo recurrente (“luz verde / resuelto” e idea de revisar solo el final).",
+      "Conexión humana potente: responsabilidad difusa, incentivos organizacionales y automatización continua.",
+      "Riqueza intelectual: va más allá del incidente puntual y aterriza en control de identidad, permisos, supervisión y criterio.",
+      "Nivel de voz ensayístico razonablemente natural, con dudas e incomodidad genuina."
+    ],
+    "problems": [
+      "Riesgo de precisión: algunas formulaciones suenan a generalización causal (“la actividad no se detectó de inmediato”, “campo moral no técnico”, “trae como evidencia X sin daño confirmado”) que no quedan estrictamente acotadas a lo reportado.",
+      "Evidencias informativas se mencionan en cadena, pero el arco progresivo se siente algo lineal; faltan “saltos” no obvios entre piezas (hay movimiento, pero a veces anticipable).",
+      "Demasiadas “noticias como evidencia” en relación con la profundidad: se citan varias (OpenAI/Medicare, Microsoft Zero Trust, Amazon Seller Assistant, SynCraft, y otras de producto) aunque el guion proporcionado enfatiza más unas que otras; aun así el script menciona menos “mecánica” verificable específica de cada caso.",
+      "Poca claridad en qué versión del incidente australiano es la central: se afirma contexto de evaluación interna y cronología de notificación meses después, pero el guion no explicita límites/ambigüedades además del “aún abierto”.",
+      "SEO correcto pero moderado: hay entidades claras (OpenAI, Medicare, Microsoft, Amazon, SynCraft), aunque el script no explota búsquedas; también hay densidad de conceptos que puede dispersar la indexación (sin ser “keyword stuffing”).",
+      "Cierre algo extenso en llamadas a “trazabilidad de intención” pero sin aterrizar una escena final concreta que recicle el motivo inicial con mayor fuerza."
+    ],
+    "improvements": [
+      "Acotar mejor lo factual con marcadores explícitos de incertidumbre cuando no haya confirmación pública (p. ej., separar “según el reporte” vs “según lo que se sabe hasta ahora” en cada afirmación crítica).",
+      "Reducir a 2–3 noticias “ancla” y hacer que cada una cumpla una función argumental distinta con un mini-mecanismo verificable (qué logs/controles/permiso/consulta fallan o son insuficientes).",
+      "Fortalecer el arco con un giro más no-obvio: por ejemplo, mostrar que el problema central no es solo seguridad (evitar accesos) sino “cómo se reescribe la intención” en reglas de aprobación y persistencia de memoria—y llegar a una tesis nueva basada en evidencia concreta.",
+      "Meter una escena hipotética más operacional hacia el final (imagina un agente con políticas X y “quién comprobó” en T1/T2/T3), para que el payoff del inicio quede visualmente demostrado.",
+      "Mejorar densidad de mecanismo: cuando se menciona Zero Trust/control de agentes, concretar qué significa “tráfico generado por agentes” en términos narrativos (sin jerga) y cómo ayuda (o no) con intención.",
+      "Ajustar la proporción reflexión/noticia: mantener reflexión, pero evitar que el guion parezca una “ensayística sobre el concepto” y no una investigación con evidencia comparada punto-a-punto."
+    ]
+  },
+  "agent_trace": [
+    {
+      "step": "experiment_plan",
+      "agent": "experimental_editorial_director",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 12.017,
+      "usage": {
+        "prompt_tokens": 17930,
+        "output_tokens": 1399,
+        "total_tokens": 19329
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 1,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 13.437,
+      "usage": {
+        "prompt_tokens": 16208,
+        "output_tokens": 2250,
+        "total_tokens": 18458
+      }
+    },
+    {
+      "step": "experiment_write",
+      "agent": "experimental_essay_writer",
+      "iteration": 2,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 13.761,
+      "usage": {
+        "prompt_tokens": 16235,
+        "output_tokens": 2212,
+        "total_tokens": 18447
+      }
+    },
+    {
+      "step": "experiment_evaluate",
+      "agent": "experimental_blinded_evaluator",
+      "iteration": null,
+      "attempt": 1,
+      "status": "success",
+      "elapsed_seconds": 5.872,
+      "usage": {
+        "prompt_tokens": 17123,
+        "output_tokens": 877,
+        "total_tokens": 18000
+      }
+    }
+  ]
 }
