@@ -20,5 +20,8 @@ dependencies = [
   "jsonschema>=4.23,<5.0",
 ]
 
-[tool.setuptools]
-packages = ["app", "pipeline"]
+[project.optional-dependencies]
+media-retrieval = ["yt-dlp==2026.8.19"]
+
+[tool.setuptools.packages.find]
+include = ["app", "pipeline", "pipeline.*"]

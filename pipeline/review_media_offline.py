@@ -12,6 +12,7 @@ from pipeline.credits import write_credits
 from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset, download_video_shot_asset
 from pipeline.media_dedup import deduplicate_materialized_media
+from pipeline.media_pool import prepare_pool, finish_assignment, retrieval_mode, is_specific
 from pipeline.review_media import (
     OPENING_DENSE_MEDIA_SECONDS,
     association_label,
@@ -329,6 +330,10 @@ def build_offline_review_media(
         max_media_downloads=max_media_downloads,
     )
 
+    pool = prepare_pool(episode_dir, output_dir, plan, offline=True)
+    if pool is not None and retrieval_mode() == "integrated":
+        plan = pool.payload["segments"]
+    planned_segments = [dict(s) for s in plan if s.get("mode") == "media"]
     manifest: list[dict[str, Any]] = []
     selected_segments: list[dict[str, Any]] = []
     for segment in plan:
@@ -345,7 +350,13 @@ def build_offline_review_media(
         record: dict[str, Any] | None = None
         relative_file = ""
 
-        if preferred_video:
+        if pool is not None and retrieval_mode() == "integrated" and is_specific(segment):
+            record = pool.assign(segment, output_dir, folder)
+            if record is None:
+                selected_segments.append({**segment, "association": folder, "file": "", "retrieval_status": "unresolved"})
+                continue
+            relative_file = record["file"]
+        if record is None and preferred_video:
             video_name = media_filename(segment, extension=".mp4")
             video_destination = output_dir / folder / video_name
             video_relative = str(video_destination.relative_to(output_dir)).replace("\\", "/")
@@ -406,6 +417,8 @@ def build_offline_review_media(
         selected_segments,
         media_root=output_dir,
     )
+
+    selected_segments = finish_assignment(pool, manifest, selected_segments, planned_segments, output_dir)
 
     opening_assets = [
         item for item in manifest

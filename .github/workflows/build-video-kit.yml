@@ -28,6 +28,12 @@ on:
         required: true
         default: true
         type: boolean
+      media_retrieval_mode:
+        description: "Documentary media pool: off, isolated comparison, or assignment of verified assets"
+        required: true
+        default: "off"
+        type: choice
+        options: ["off", shadow, integrated]
       promote_approved:
         description: "Promote an approved manual run into canonical scripts/ and multimedia/. Turn off for a safe experiment."
         required: true
@@ -234,6 +240,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_RETRIEVAL_MODE: ${{ inputs.media_retrieval_mode || 'off' }}
           MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
@@ -242,6 +249,9 @@ jobs:
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
         run: |
           set -euo pipefail
+          if [ "$MEDIA_RETRIEVAL_MODE" != "off" ]; then
+            python -m pip install -c requirements.lock '.[media-retrieval]'
+          fi
           MAX_MEDIA="${MAX_MEDIA:-54}"
           OUTPUT_DIR="$RUN_ROOT/multimedia/$TARGET_DATE"
           ZIP="$RUN_ROOT/multimedia/multimedia-${TARGET_DATE}-run-${GITHUB_RUN_ID}.zip"
@@ -454,6 +464,7 @@ jobs:
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+          MEDIA_RETRIEVAL_MODE: ${{ inputs.media_retrieval_mode || 'off' }}
           MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
@@ -531,9 +542,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ai-news-run-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
-          path: ${{ steps.workspace.outputs.run_root }}/
+          path: |
+            ${{ steps.workspace.outputs.run_root }}/
+            !${{ steps.workspace.outputs.run_root }}/media-pool/
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Preserve independent media library
+        if: always() && inputs.media_retrieval_mode != 'off'
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-library-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/media-pool/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Propagate non-publishable outcome
         if: >-

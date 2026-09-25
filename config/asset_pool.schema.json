@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "inputs",
+    "mode",
+    "budget",
+    "needs",
+    "segments",
+    "assets",
+    "diagnostics",
+    "model_calls",
+    "model_usage",
+    "transcript_mode"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "mode": {
+      "enum": [
+        "off",
+        "shadow",
+        "integrated"
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "assets",
+        "bytes",
+        "seconds",
+        "model_calls",
+        "needs",
+        "images_per_need",
+        "videos_per_need"
+      ],
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "needs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "need_id",
+          "subject",
+          "slots",
+          "grounded"
+        ]
+      }
+    },
+    "segments": {
+      "type": "array"
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_asset_id",
+          "rendition_id",
+          "need_id",
+          "file",
+          "provider",
+          "provider_asset_id",
+          "source_url",
+          "license",
+          "eligible",
+          "relation",
+          "width",
+          "height",
+          "size_bytes",
+          "original_offset_seconds",
+          "sidecar_paths"
+        ],
+        "properties": {
+          "source_asset_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "rendition_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "need_id": {
+            "type": "string"
+          },
+          "relation": {
+            "enum": [
+              "exact",
+              "context"
+            ]
+          },
+          "quality": {
+            "enum": [
+              "standard",
+              "lowres"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "original_offset_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "catalogue_evidence": {
+            "type": "object",
+            "required": [
+              "field",
+              "quote",
+              "value"
+            ],
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "limitation": {
+            "type": "string"
+          },
+          "sidecar_paths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "file": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "provider_asset_id": {
+            "type": "string"
+          },
+          "source_url": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array"
+    },
+    "model_calls": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "model_usage": {
+      "type": "array"
+    },
+    "transcript_mode": {
+      "const": "off"
+    }
+  }
+}

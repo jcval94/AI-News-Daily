@@ -164,6 +164,8 @@ def _media_track(edit_manifest: dict[str, Any]) -> list[dict[str, Any]]:
         end = float(cue["end_seconds"])
         media = cue.get("media", {}) if isinstance(cue.get("media"), dict) else {}
         director = cue.get("director", {}) if isinstance(cue.get("director"), dict) else {}
+        if "media_provenance" in media:
+            validate_payload(media["media_provenance"], "media_provenance.schema.json")
         usable = bool(media.get("usable_for_edit") is True)
         file_path = str(media.get("file", "") or "").strip()
         normalized_file_path = file_path.replace("\\", "/")
@@ -197,6 +199,10 @@ def _media_track(edit_manifest: dict[str, Any]) -> list[dict[str, Any]]:
                     "asset_type": str(media.get("asset_type", "") or ""),
                     "preferred_asset_type": str(media.get("preferred_asset_type", "") or ""),
                     "provider": str(media.get("provider", "") or ""),
+                    "source_url": str(media.get("source_url", "") or ""),
+                    "creator": str(media.get("creator", "") or ""),
+                    "requires_attribution": bool(media.get("requires_attribution", False)),
+                    **({"media_provenance": media["media_provenance"]} if "media_provenance" in media else {}),
                     "license": str(media.get("license", "") or ""),
                     "usable_for_edit": usable,
                     "blockers": blockers,

@@ -258,6 +258,9 @@ class MultimediaSegment(BaseModel):
     end_seconds: float = Field(gt=0)
     mode: Literal["media"] = "media"
     visual_query: str = Field(min_length=1)
+    retrieval_subject: str = Field(default="", max_length=160, description="Exact literal person/event/place mention from approved narration; empty for conceptual stock")
+    retrieval_period: str = Field(default="", max_length=80)
+    retrieval_geography: str = Field(default="", max_length=80)
     on_screen_text: str = ""
     reason: str = ""
     visual_role: Literal[
@@ -861,6 +864,7 @@ Rules:
 - Prefer explanatory or contextual visuals over generic stock footage.
 - For historical parallels, prefer period-appropriate public-domain or Wikimedia-searchable concepts rather than generic modern stock.
 - visual_query must be a short ENGLISH query suitable for Pexels/Wikimedia Commons.
+- For a specific person, event or place already in the approved narration, set retrieval_subject to its EXACT literal mention (original language). Preserve explicit period/geography in retrieval_period/retrieval_geography; do not invent restrictions. Leave these empty for conceptual B-roll. Never introduce a new historical parallel through media retrieval.
 - on_screen_text must be Spanish and at most 8 words.
 - For every media segment, separate narrative intent from editing technique:
   - reason = why the cutaway exists in the argument;

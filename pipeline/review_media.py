@@ -15,6 +15,7 @@ from pipeline.credits import write_credits
 from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset, download_video_shot_asset
 from pipeline.media_dedup import deduplicate_materialized_media
+from pipeline.media_pool import prepare_pool, finish_assignment, retrieval_mode, is_specific
 from pipeline.run import normalize_multimedia_plan, run_agent, write_json
 
 CONFIG = PipelineConfig.from_env()
@@ -500,6 +501,8 @@ async def build_review_media(
     slot_meta = {int(slot["slot_number"]): slot for slot in timeline_slots}
 
     selected_segments: list[dict[str, Any]] = []
+    pool = prepare_pool(episode_dir, output_dir, normalized, offline=False)
+    planned_segments = [dict(s) for s in normalized if s.get("mode") == "media"]
     manifest: list[dict[str, Any]] = []
     for segment in normalized:
         if segment.get("mode") != "media":
@@ -521,7 +524,13 @@ async def build_review_media(
         preferred_video = segment.get("preferred_asset_type") == "video"
         record: dict[str, Any] | None = None
         relative_file = ""
-        if preferred_video:
+        if pool is not None and retrieval_mode() == "integrated" and is_specific(segment):
+            record = pool.assign(segment, output_dir, folder)
+            if record is None:
+                selected_segments.append({**segment, "association": folder, "file": "", "retrieval_status": "unresolved"})
+                continue
+            relative_file = record["file"]
+        if record is None and preferred_video:
             video_name = media_filename(segment, extension=".mp4")
             video_destination = output_dir / folder / video_name
             video_relative = str(video_destination.relative_to(output_dir)).replace("\\", "/")
@@ -581,6 +590,8 @@ async def build_review_media(
         warnings.append(
             f"Removed {len(duplicate_assets)} duplicate multimedia asset(s); highest source resolution was kept"
         )
+
+    selected_segments = finish_assignment(pool, manifest, selected_segments, planned_segments, output_dir)
 
     opening_assets = [
         item for item in manifest

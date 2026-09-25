@@ -3,7 +3,9 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
+
+from pipeline.media_inspection import inspect_media
 
 
 def _int(value: Any) -> int:
@@ -28,7 +30,9 @@ def _normalized_source_url(value: Any) -> str:
             parts.scheme.lower(),
             parts.netloc.lower(),
             parts.path.rstrip("/"),
-            "",
+            urlencode(sorted((k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+                             if not k.lower().startswith("utm_") and k.lower() not in
+                             {"fbclid", "gclid", "si", "feature", "token", "w", "h", "width", "height", "auto"})),
             "",
         )
     )
@@ -67,17 +71,14 @@ def asset_identity_keys(item: dict[str, Any], *, media_root: Path) -> list[str]:
     provider = str(item.get("provider", "") or "").strip().lower()
     provider_asset_id = str(item.get("provider_asset_id", "") or "").strip()
     if provider and provider_asset_id:
-        keys.append(f"provider:{provider}:{provider_asset_id}")
+        scope = (urlsplit(str(item.get("source_url", ""))).hostname or "") if provider == "peertube" else ""
+        keys.append(f"provider:{provider}:{scope}:{provider_asset_id}")
 
     source_url = _normalized_source_url(item.get("source_url"))
-    if source_url:
+    if source_url and not provider_asset_id:
         keys.append(f"source:{source_url}")
 
-    # Avoid hashing large videos/images when the provider already gives us a stable
-    # identity. Hashing is a fallback for local/legacy assets with no upstream key.
-    if keys:
-        return keys
-
+    # Exact bytes also catch copies across provider IDs; generic URLs never merge incompatible IDs.
     digest = _file_sha256(_file_path(media_root, item))
     if digest:
         keys.append(f"sha256:{digest}")
@@ -86,10 +87,12 @@ def asset_identity_keys(item: dict[str, Any], *, media_root: Path) -> list[str]:
 
 def resolution_rank(item: dict[str, Any], *, media_root: Path) -> tuple[int, int, int, int]:
     """Rank duplicate renditions with resolution as the absolute first criterion."""
-    width = _int(item.get("source_width") or item.get("width"))
-    height = _int(item.get("source_height") or item.get("height"))
-    pixels = width * height
     path = _file_path(media_root, item)
+    physical = inspect_media(path) if path and path.is_file() else {"ok": False}
+    if not physical["ok"] or item.get("license_valid") is False:
+        return 0, 0, 0, 0
+    width, height = _int(physical.get("width")), _int(physical.get("height"))
+    pixels = width * height
     try:
         file_size = path.stat().st_size if path and path.is_file() else 0
     except OSError:
@@ -106,7 +109,7 @@ def deduplicate_materialized_media(
     """Remove repeated assets and keep the highest-resolution rendition.
 
     Duplicate identity is based on provider asset ID, normalized source URL, or exact
-    file content. If duplicates differ in rendition quality, source resolution wins
+    file content. If duplicates differ in rendition quality, decoded resolution wins
     before file size. Loser files are deleted so the Review Hub and ZIP cannot surface
     them accidentally.
     """
@@ -193,9 +196,11 @@ def deduplicate_materialized_media(
         for item in deduped_manifest
         if isinstance(item, dict) and _int(item.get("shot_number")) > 0
     }
+    # Preserve the denominator and stable cue IDs. A removed file becomes an explicit
+    # unresolved need; integrated builders may refill it from distinct eligible assets.
     deduped_segments = [
-        item
+        item if _int(item.get("slot_number")) in kept_shots else
+        {**item, "file": "", "retrieval_status": "unresolved", "missing_reason": "duplicate_asset"}
         for item in selected_segments
-        if _int(item.get("slot_number")) in kept_shots
     ]
     return deduped_manifest, deduped_segments, removed
