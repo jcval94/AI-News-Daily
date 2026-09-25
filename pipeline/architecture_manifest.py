@@ -119,7 +119,7 @@ DESIGN_DECISIONS = [
     ("OTIO como frontera de intercambio", "virtual_timeline.json conserva semántica de producto; timeline.otio traduce a un modelo editorial estándar y round-trip validado."),
     ("Resolve desacoplado de CI", "CI valida un resolve_bridge_plan determinista y ejecutable. Solo la máquina local con DaVinciResolveScript crea el proyecto real; GitHub Actions nunca finge tener Resolve."),
     ("Preview efímero, contrato canónico", "El MP4 pre-recording vive en el artifact aislado para no inflar Git; su plan y validación sí se promueven. Lleva watermark, timing estimado y nunca cuenta como material final."),
-    ("Readiness separa faltante de degradado", "Un fallback low-res sigue contando como media resuelta con warning; evidencia crítica faltante, archivo roto o cobertura insuficiente bloquean ready_to_record y producen acciones priorizadas."),
+    ("Readiness separa faltante de degradado", "Un fallback low-res sigue contando como media resuelta con warning; cero cues, evidencia crítica faltante, archivo roto o cobertura insuficiente bloquean ready_to_record y producen acciones priorizadas."),
     ("Discovery separado de derechos", "YouTube se usa para encontrar y rankear candidatos; metadata, atribución o duración breve no se tratan como permiso de descarga, edición, publicación o fair use."),
     ("Producción es la fuente de verdad de Pages", "Review Hub observa el artifact que realmente salió de Build AI News Video Kit; Regression queda como QA independiente."),
     ("Sin LLM como controlador", "Python decide routing, retries, límites, estado y publicación."),
