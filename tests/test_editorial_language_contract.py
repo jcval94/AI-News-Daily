@@ -19,7 +19,8 @@ class EditorialLanguageContractTests(unittest.TestCase):
 
     def test_historical_context_is_curated_and_source_backed(self) -> None:
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
-        self.assertIn("apertura: historia verificada → mecanismo → tensión → pregunta", discourse)
+        self.assertIn("apertura: tensión/escena → misterio → evidencia temprana", discourse)
+        self.assertIn('placement="narrative_turn"', discourse)
         self.assertIn("referentes históricos curados", discourse)
         self.assertIn("plato.stanford.edu", discourse)
         self.assertIn("smithsonianmag.com", discourse)
@@ -41,11 +42,12 @@ class EditorialLanguageContractTests(unittest.TestCase):
 
         self.assertIn("la noticia no es el producto", voice)
         self.assertIn("la noticia es evidencia", voice)
-        self.assertIn("micro-historia verificada de narrative memory → mecanismo sorprendente → tensión humana → tesis → noticias como evidencia", discourse)
+        self.assertIn("tensión humana o escena concreta → misterio → evidencia actual fuerte → narrative memory como giro/reencuadre → tesis evolucionada", discourse)
         self.assertIn("news is supporting evidence, never the product itself", agent)
         self.assertIn("the essay is the product. the news is evidence", agent)
         self.assertIn("do not write a news recap", agent)
-        self.assertIn("narrative memory micro-story -> human tension", agent)
+        self.assertIn("narrative memory as a reframe/turn", agent)
+        self.assertIn("prefer 1-2 strong pieces of evidence", agent)
 
     def test_opening_rejects_news_desk_default(self) -> None:
         discourse = Path("editorial/discourse_profile.md").read_text(encoding="utf-8").lower()
