@@ -431,17 +431,30 @@ def scan_recordings(
             embedded_audio_ok = bool(
                 video and video.get("inspection", {}).get("has_audio_stream")
             )
+            usable_external_audio = external_audio
+            if external_audio:
+                external_duration = float(
+                    external_audio["inspection"].get("duration_seconds", 0) or 0
+                )
+                external_ratio = (
+                    external_duration / expected_seconds
+                    if expected_seconds > 0
+                    else 1.0
+                )
+                if external_ratio < min_duration_ratio:
+                    issues.append("external_audio_too_short")
+                    usable_external_audio = None
             audio_source = (
                 "external"
-                if external_audio
+                if usable_external_audio
                 else ("embedded" if embedded_audio_ok else "none")
             )
             if audio_source == "none":
                 usable = False
                 issues.append("missing_audio_source")
-            if external_audio:
+            if usable_external_audio:
                 sample_rate = int(
-                    external_audio["inspection"].get("sample_rate_hz", 0) or 0
+                    usable_external_audio["inspection"].get("sample_rate_hz", 0) or 0
                 )
                 if sample_rate and sample_rate != preferred_audio_rate:
                     issues.append("audio_sample_rate_differs_from_recommendation")
@@ -461,7 +474,7 @@ def scan_recordings(
                 )
                 score += min(1.0, pixels / float(3840 * 2160)) * 25.0
                 score += 5.0 if embedded_audio_ok else 0.0
-            if external_audio:
+            if usable_external_audio:
                 score += 8.0
             if not usable:
                 score = min(score, 49.0)
@@ -488,12 +501,12 @@ def scan_recordings(
                     ),
                     "selected_external_audio": (
                         {
-                            "relative_path": external_audio["relative_path"],
-                            "label": external_audio["label"],
-                            "inspection": external_audio["inspection"],
-                            "sha256": external_audio["sha256"],
+                            "relative_path": usable_external_audio["relative_path"],
+                            "label": usable_external_audio["label"],
+                            "inspection": usable_external_audio["inspection"],
+                            "sha256": usable_external_audio["sha256"],
                         }
-                        if external_audio
+                        if usable_external_audio
                         else None
                     ),
                     "audio_source": audio_source,
