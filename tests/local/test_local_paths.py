@@ -17,6 +17,25 @@ class LocalPathSafetyTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "escapes root"):
                 roots.resolve_ref({"root_id": "recordings", "relative_path": "../secret.txt"})
 
+    def test_policy_can_disable_a_known_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            roots = RootMap(
+                root,
+                root / "recordings",
+                root / "work",
+                root / "cache",
+                root / "previews",
+                allowed_roots=frozenset({"repo", "work"}),
+            )
+            with self.assertRaises(PermissionError):
+                roots.resolve_ref(
+                    {
+                        "root_id": "recordings",
+                        "relative_path": "episode/clip.mov",
+                    }
+                )
+
     def test_known_roots_are_redacted(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()
