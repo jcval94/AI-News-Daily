@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path, PureWindowsPath
 from typing import Any
 
@@ -20,6 +20,11 @@ class RootMap:
     work: Path
     cache: Path
     previews: Path
+    allowed_roots: frozenset[str] = field(
+        default_factory=lambda: frozenset(
+            {"repo", "recordings", "work", "cache", "previews"}
+        )
+    )
 
     @classmethod
     def from_config(cls, config: dict[str, Any], *, repo_root: Path) -> "RootMap":
@@ -31,12 +36,20 @@ class RootMap:
             candidate = Path(value).expanduser()
             return candidate.resolve() if candidate.is_absolute() else (repo_root / candidate).resolve()
 
+        allowed = frozenset(
+            str(item)
+            for item in config.get("security", {}).get(
+                "allowed_roots",
+                ["repo", "recordings", "work", "cache", "previews"],
+            )
+        )
         return cls(
             repo=repo_root.resolve(),
             recordings=resolve(str(paths["recordings_root"])),
             work=resolve(str(paths["work_root"])),
             cache=resolve(str(paths["cache_root"])),
             previews=resolve(str(paths["preview_root"])),
+            allowed_roots=allowed,
         )
 
     def as_dict(self) -> dict[str, Path]:
@@ -52,6 +65,8 @@ class RootMap:
         roots = self.as_dict()
         if root_id not in roots:
             raise ValueError(f"Unknown local root_id: {root_id}")
+        if root_id not in self.allowed_roots:
+            raise PermissionError(f"Local root_id is not allowed by policy: {root_id}")
         return roots[root_id]
 
     def resolve_ref(
