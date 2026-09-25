@@ -97,7 +97,7 @@ class NarrativeArc(BaseModel):
 class NarrativeParallelUse(BaseModel):
     memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
     role: Literal["historical_mirror", "analogy", "counterexample", "scene", "bridge"]
-    placement: Literal["opening", "narrative_turn", "closing_callback", "support"] = "narrative_turn"
+    placement: Literal["opening", "narrative_turn", "closing_callback", "support"] = "opening"
     purpose: str = Field(min_length=5, max_length=500)
     limits: str = Field(min_length=5, max_length=500)
 
@@ -108,7 +108,9 @@ class EpisodePlan(BaseModel):
     novelty_angle: str = Field(min_length=5, max_length=400)
     historical_mirror: str = ""
     narrative_parallels: List[NarrativeParallelUse] = Field(min_length=1, max_length=2)
-    primary_memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
+    primary_memory_id: str | None = Field(
+        default=None, pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$"
+    )
     opening_memory_id: str | None = Field(
         default=None, pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$"
     )
@@ -135,15 +137,17 @@ class EpisodePlan(BaseModel):
         memory_ids = [item.memory_id for item in self.narrative_parallels]
         if len(memory_ids) != len(set(memory_ids)):
             raise ValueError("episode_plan.narrative_parallels must use unique memory_id values")
-        if self.primary_memory_id not in memory_ids:
+        effective_primary_memory_id = self.primary_memory_id or self.opening_memory_id
+        if effective_primary_memory_id not in memory_ids:
             raise ValueError("episode_plan.primary_memory_id must reference narrative_parallels")
+        self.primary_memory_id = effective_primary_memory_id
 
         placement_by_id = {
             item.memory_id: item.placement for item in self.narrative_parallels
         }
-        primary_placement = placement_by_id[self.primary_memory_id]
+        primary_placement = placement_by_id[effective_primary_memory_id]
         if self.opening_memory_id is not None:
-            if self.opening_memory_id != self.primary_memory_id:
+            if self.opening_memory_id != effective_primary_memory_id:
                 raise ValueError(
                     "episode_plan.opening_memory_id, when present, must equal primary_memory_id"
                 )
