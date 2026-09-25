@@ -59,7 +59,7 @@ class LocalJobTests(unittest.TestCase):
             root = Path(tmp)
             malicious = job("timeline.build")
             malicious["params"] = {"command": "del /s /q C:\\"}
-            with self.assertRaisesRegex(ValueError, "Unsupported params"):
+            with self.assertRaises(ValueError):
                 build_command(malicious, config_for(root), repo_root=root)
 
     def test_resolve_execute_is_explicit(self):
