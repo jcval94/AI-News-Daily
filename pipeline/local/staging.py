@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,21 @@ def _inside(path: Path, root: Path) -> bool:
         return False
 
 
+def _assert_not_expired(job: dict[str, Any]) -> None:
+    raw = job.get("expires_at")
+    if not raw:
+        return
+    try:
+        value = str(raw).replace("Z", "+00:00")
+        expires = datetime.fromisoformat(value)
+        if expires.tzinfo is None:
+            expires = expires.replace(tzinfo=timezone.utc)
+    except ValueError as exc:
+        raise ValueError("Invalid expires_at; use ISO-8601") from exc
+    if expires.astimezone(timezone.utc) <= datetime.now(timezone.utc):
+        raise RuntimeError(f"Local request expired: {job['job_id']}")
+
+
 def canonical_job_bytes(job: dict[str, Any]) -> bytes:
     return (json.dumps(job, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
 
@@ -32,6 +48,7 @@ def stage_request(request_path: Path, *, repo_root: Path = REPO_ROOT) -> tuple[P
     if not _inside(request_path, request_root):
         raise PermissionError("Only committed local_handoff/requests jobs can be staged")
     job = read_job(request_path)
+    _assert_not_expired(job)
     raw = canonical_job_bytes(job)
     digest = hashlib.sha256(raw).hexdigest()
     staged_root = repo_root / ".local" / "jobs" / "staged"
