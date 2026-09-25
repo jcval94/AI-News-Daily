@@ -117,6 +117,7 @@ DESIGN_DECISIONS = [
     ("Producción es la fuente de verdad de Pages", "Review Hub observa el artifact que realmente salió de Build AI News Video Kit; Regression queda como QA independiente."),
     ("Sin LLM como controlador", "Python decide routing, retries, límites, estado y publicación."),
     ("Promoción fail-closed", "Solo una cadena completa de éxito puede tocar el episodio canónico."),
+    ("Schemas ejecutables antes de persistir", "edit_manifest, recording_pack, virtual_timeline, placeholder_manifest y resolve_bridge_plan se validan contra JSON Schema antes de escribirse; documentación y runtime comparten el mismo contrato."),
     ("Identidad editorial versionada", "Cambiar modelo o prompt no redefine silenciosamente la voz del canal."),
 ]
 
