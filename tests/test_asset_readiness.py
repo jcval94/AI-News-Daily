@@ -13,6 +13,7 @@ POLICY = {
     "policy_id": "test",
     "mode": "enforce",
     "thresholds": {
+        "min_planned_cue_count": 1,
         "min_resolved_cue_ratio": 0.80,
         "min_resolved_visual_seconds_ratio": 0.80,
         "max_missing_noncritical_cues": 3,
@@ -155,6 +156,19 @@ class AssetReadinessTests(unittest.TestCase):
             target = next(x for x in result["items"] if x["clip_id"] == resolve["placements"][1]["placement_id"])
             self.assertEqual(target["state"], "resolved_degraded")
             self.assertIn("preview_decode_fallback", target["issues"])
+
+
+    def test_zero_visual_cues_is_not_a_false_green(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result = build_asset_readiness(
+                virtual_timeline={"episode_date": "2026-09-24", "tracks": [{"track_id": "V2", "clips": []}]},
+                resolve_plan={"episode_date": "2026-09-24", "placements": []},
+                preview_validation=None,
+                repo_root=Path(tmp),
+                policy=POLICY,
+            )
+            self.assertFalse(result["gate"]["ready_to_record"])
+            self.assertIn("no_planned_visual_cues", result["gate"]["blockers"])
 
     def test_html_contains_operational_radiography(self):
         with tempfile.TemporaryDirectory() as tmp:
