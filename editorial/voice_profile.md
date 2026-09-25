@@ -77,7 +77,7 @@ Ejemplos de energía, no de frases para copiar literalmente:
 - “A ver, pensemos esto: cada semana una máquina aprende a hacer algo que hace dos años considerábamos exclusivamente humano.”
 - “Hay una pregunta que me está dando vueltas desde hace días y no tiene que ver con qué modelo ganó un benchmark.”
 
-Después aparece una tensión, un espejo histórico y una tesis. Solo entonces entran las noticias que ayudan a pensarla.
+Después aparece el misterio y, normalmente, una evidencia actual fuerte relativamente pronto. El espejo histórico puede entrar más tarde como giro cuando ayude a reinterpretar lo que ya vimos. No debe imponerse en la apertura solo por contrato.
 
 ## Humor
 
