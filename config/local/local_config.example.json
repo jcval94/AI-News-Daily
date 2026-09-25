@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "paths": {
+    "repo_root": "auto",
+    "recordings_root": "recordings",
+    "work_root": ".local/work",
+    "cache_root": ".local/cache",
+    "preview_root": ".local/previews"
+  },
+  "executables": {
+    "python_core": ".venv/Scripts/python.exe",
+    "whisperx_executable": "auto",
+    "ffmpeg": "auto",
+    "ffprobe": "auto"
+  },
+  "resolve": {
+    "auto_discover": true,
+    "api_root": null,
+    "script_lib": null,
+    "launch_if_needed": false,
+    "connect_timeout_seconds": 45,
+    "require_native_otio": true,
+    "project_prefix": "AI News Daily",
+    "acceptance_project_name": "__AI_NEWS_LOCAL_ACCEPTANCE__",
+    "overwrite_existing": false
+  },
+  "whisperx": {
+    "enabled": false,
+    "language": "es",
+    "model": "large-v3",
+    "device": "auto",
+    "compute_type": "auto",
+    "batch_size": 8,
+    "vad_method": "silero",
+    "allow_model_downloads": true
+  },
+  "preflight": {
+    "hard_min_free_gb": 20,
+    "target_free_multiplier": 2.5,
+    "require_windows": true
+  },
+  "security": {
+    "persist_absolute_paths": false,
+    "allow_shell": false,
+    "network_policy": "models_only",
+    "allowed_roots": [
+      "repo",
+      "recordings",
+      "work",
+      "cache",
+      "previews"
+    ]
+  }
+}

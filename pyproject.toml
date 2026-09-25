@@ -21,4 +21,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["app", "pipeline"]
+packages = ["app", "pipeline", "pipeline.local"]

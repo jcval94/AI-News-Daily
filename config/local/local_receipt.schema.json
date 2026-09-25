@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_receipt.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "operation",
+    "target_date",
+    "status",
+    "started_at",
+    "finished_at",
+    "exit_code",
+    "command",
+    "logs",
+    "privacy",
+    "result"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string"
+    },
+    "operation": {
+      "type": "string"
+    },
+    "target_date": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "success",
+        "failed",
+        "timeout"
+      ]
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "finished_at": {
+      "type": "string"
+    },
+    "exit_code": {
+      "type": "integer"
+    },
+    "command": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "logs": {
+      "type": "object",
+      "required": [
+        "stdout",
+        "stderr"
+      ]
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "absolute_paths_persisted",
+        "raw_media_uploaded"
+      ],
+      "properties": {
+        "absolute_paths_persisted": {
+          "const": false
+        },
+        "raw_media_uploaded": {
+          "const": false
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "required": [
+        "stdout_tail",
+        "stderr_tail"
+      ]
+    }
+  }
+}

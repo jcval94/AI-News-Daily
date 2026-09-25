@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_job.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "operation",
+    "target_date",
+    "mode",
+    "requested_by",
+    "created_at",
+    "timeout_seconds",
+    "params"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,95}$"
+    },
+    "operation": {
+      "enum": [
+        "media.scan",
+        "recording.ingest",
+        "recording.transcribe",
+        "recording.align",
+        "resolve.sync_audio",
+        "timeline.build",
+        "timeline.validate",
+        "resolve.import_timeline",
+        "preview.render"
+      ]
+    },
+    "target_date": {
+      "type": "string",
+      "pattern": "^\\\\d{4}-\\\\d{2}-\\\\d{2}$"
+    },
+    "mode": {
+      "enum": [
+        "plan",
+        "execute"
+      ]
+    },
+    "requested_by": {
+      "enum": [
+        "human",
+        "assistant",
+        "automation"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 10
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 7200
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "media": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "input_dir": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "recordings_root": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "transcript_bundle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "alignment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "timeline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "root_id",
+            "relative_path"
+          ],
+          "properties": {
+            "root_id": {
+              "enum": [
+                "repo",
+                "recordings",
+                "work",
+                "cache",
+                "previews"
+              ]
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "reuse_project": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
