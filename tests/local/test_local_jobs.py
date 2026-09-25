@@ -70,6 +70,33 @@ class LocalJobTests(unittest.TestCase):
             command, _ = build_command(job("resolve.import_timeline", mode="execute"), config_for(root), repo_root=root)
             self.assertIn("--execute", command)
 
+    def test_execute_requires_both_job_mode_and_cli_flag(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            result = run_job(
+                job("timeline.build", mode="execute"),
+                config_for(root),
+                repo_root=root,
+                execute=False,
+            )
+            self.assertEqual(result["status"], "dry_run")
+            self.assertFalse(result["execution_guard"]["executed"])
+            self.assertFalse(result["execution_guard"]["cli_execute_requested"])
+
+    def test_cli_execute_cannot_override_plan_mode(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            result = run_job(
+                job("timeline.build", mode="plan"),
+                config_for(root),
+                repo_root=root,
+                execute=True,
+            )
+            self.assertEqual(result["status"], "dry_run")
+            self.assertFalse(result["execution_guard"]["executed"])
+            self.assertTrue(result["execution_guard"]["cli_execute_requested"])
+            self.assertEqual(result["execution_guard"]["job_mode"], "plan")
+
     def test_dry_run_has_no_receipt_and_redacts_repo(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()
