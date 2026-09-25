@@ -24,7 +24,13 @@ class ReportTests(unittest.TestCase):
             episode_dir = scripts / "2026-08-21"
             episode_dir.mkdir(parents=True)
             (news / "2026-08-20.txt").write_text(
-                "Fuente: test\nEnlace: https://example.com\n" * 20,
+                "Título: Prueba estructurada\n"
+                "Fecha: 2026-08-20\n"
+                "Fuente: test\n"
+                "Enlace: https://example.com/article\n"
+                "Resumen breve: Esta es una noticia estructurada para probar el reporte.\n"
+                "Por qué importa: Verifica que el mismo resolver de producción alimente observabilidad.\n"
+                "Categoría: modelos\n",
                 encoding="utf-8",
             )
             (episode_dir / "run_state.json").write_text(
@@ -82,7 +88,7 @@ class ReportTests(unittest.TestCase):
             )
             self.assertTrue(report["source_window"]["available_files"][0]["sha256"])
             self.assertTrue(report["artifacts"]["run_state"]["sha256"])
-            self.assertEqual(report["schema_version"], 7)
+            self.assertEqual(report["schema_version"], 8)
             self.assertEqual(report["artifacts"]["run_state"]["path"], "scripts/2026-08-21/run_state.json")
             self.assertNotIn(".pipeline-runs", report["artifacts"]["run_state"]["path"])
             self.assertEqual(
@@ -92,6 +98,43 @@ class ReportTests(unittest.TestCase):
                 report["judges"]["voice_humanity"]["ai_smell_risk"], "medium"
             )
             self.assertTrue(report["artifacts"]["voice_profile"]["sha256"])
+
+
+    def test_report_resolves_timestamped_news_like_source_coverage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            news = root / "news"
+            scripts = root / "scripts"
+            multimedia = root / "multimedia"
+            editorial = root / "editorial"
+            news.mkdir()
+            editorial.mkdir()
+            episode_dir = scripts / "2026-08-21"
+            episode_dir.mkdir(parents=True)
+            (news / "2026-08-20-14-30-00.txt").write_text(
+                "Título: Fuente timestamped\n"
+                "Fecha: 2026-08-20\n"
+                "Fuente: test\n"
+                "Enlace: https://example.com/timestamped\n"
+                "Resumen breve: Fuente válida con hora en el nombre.\n"
+                "Por qué importa: Evita contradicción entre source coverage y run report.\n"
+                "Categoría: sociedad\n",
+                encoding="utf-8",
+            )
+            (episode_dir / "run_state.json").write_text(
+                json.dumps({"status": "script_not_approved"}),
+                encoding="utf-8",
+            )
+            report = build_report(
+                date(2026, 8, 21),
+                news,
+                scripts,
+                multimedia,
+                "script_not_approved",
+                editorial,
+            )
+            names = [item["name"] for item in report["source_window"]["available_files"]]
+            self.assertIn("2026-08-20-14-30-00.txt", names)
 
 
 if __name__ == "__main__":
