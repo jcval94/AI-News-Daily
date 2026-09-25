@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import statistics
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -112,8 +113,24 @@ def aggregate_configs(
                 "word_count_mean": mean(
                     [float(row.get("script_word_count", 0)) for row in rows]
                 ),
+                "length_compliant_rate": mean(
+                    [1.0 if bool(row.get("length_compliant", False)) else 0.0 for row in rows]
+                ),
             }
         )
+
+    baseline_rows = {
+        str(row["fold"]["id"]): float(row["balanced_score"])
+        for row in grouped.get("g00_current_like", [])
+    }
+    for item in summary:
+        deltas = [
+            float(row["balanced_score"]) - baseline_rows[str(row["fold"]["id"])]
+            for row in grouped.get(str(item["config_id"]), [])
+            if str(row["fold"]["id"]) in baseline_rows
+        ]
+        item["paired_delta_vs_baseline"] = mean(deltas)
+        item["paired_delta_worst"] = round(min(deltas), 4) if deltas else 0.0
 
     summary.sort(
         key=lambda item: (
@@ -182,6 +199,71 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
+
+
+def write_compact_outputs(
+    results_root: Path,
+    records: list[dict[str, Any]],
+) -> tuple[int, int]:
+    ordered = sorted(
+        records,
+        key=lambda row: (str(row["config"]["id"]), str(row["fold"]["id"])),
+    )
+    score_rows: list[dict[str, Any]] = []
+    index_rows: list[dict[str, Any]] = []
+
+    for row in ordered:
+        config_id = str(row["config"]["id"])
+        fold_id = str(row["fold"]["id"])
+        evaluation = row["evaluation"]
+        script_path = results_root / "scripts" / config_id / f"{fold_id}.txt"
+        compact = {
+            "config_id": config_id,
+            "fold_id": fold_id,
+            "fold_date": row["fold"].get("date"),
+            "balanced_score": float(row["balanced_score"]),
+            "editorial_score": evaluation["editorial_score"],
+            "attention_score": evaluation["attention_score"],
+            "voice_score": evaluation["voice_score"],
+            "seo_score": evaluation["seo_score"],
+            "factuality_risk": evaluation["factuality_risk"],
+            "ai_smell_risk": evaluation["ai_smell_risk"],
+            "opening_fit": evaluation["opening_fit"],
+            "first_evidence_effectiveness": evaluation["first_evidence_effectiveness"],
+            "narrative_motion": evaluation["narrative_motion"],
+            "thesis_evolution": evaluation["thesis_evolution"],
+            "evidence_density": evaluation["evidence_density"],
+            "script_word_count": row.get("script_word_count", 0),
+            "length_compliant": bool(row.get("length_compliant", False)),
+            "selected_memory_id": row.get("selected_memory_id"),
+        }
+        score_rows.append(compact)
+        index_rows.append(
+            {
+                "config_id": config_id,
+                "fold_id": fold_id,
+                "fold_date": row["fold"].get("date", ""),
+                "script_path": script_path.as_posix(),
+                "raw_path": str(row.get("_path", "")),
+                "script_exists": script_path.exists(),
+                "script_word_count": row.get("script_word_count", 0),
+                "length_compliant": bool(row.get("length_compliant", False)),
+                "balanced_score": float(row["balanced_score"]),
+                "editorial_score": evaluation["editorial_score"],
+                "attention_score": evaluation["attention_score"],
+                "voice_score": evaluation["voice_score"],
+                "seo_score": evaluation["seo_score"],
+                "factuality_risk": evaluation["factuality_risk"],
+                "ai_smell_risk": evaluation["ai_smell_risk"],
+            }
+        )
+
+    (results_root / "scores.jsonl").write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in score_rows),
+        encoding="utf-8",
+    )
+    write_csv(results_root / "scripts_index.csv", index_rows)
+    return len(score_rows), len(index_rows)
 
 
 def render_results(
@@ -307,20 +389,59 @@ def analyze(results_root: Path, require_complete: bool) -> int:
 
     write_csv(results_root / "summary.csv", summary)
     write_csv(results_root / "factor_effects.csv", effects)
+    score_rows, index_rows = write_compact_outputs(results_root, records)
     (results_root / "RESULTS.md").write_text(
         render_results(summary, effects, records, errors, expected_total) + "\n",
         encoding="utf-8",
     )
 
+    top = summary[0] if summary else {}
+    baseline = next(
+        (row for row in summary if row["config_id"] == "g00_current_like"),
+        {},
+    )
+    factuality_counts = {
+        level: sum(
+            1
+            for row in records
+            if str(row["evaluation"].get("factuality_risk", "")).lower() == level
+        )
+        for level in ("low", "medium", "high")
+    }
+    ai_smell_counts = {
+        level: sum(
+            1
+            for row in records
+            if str(row["evaluation"].get("ai_smell_risk", "")).lower() == level
+        )
+        for level in ("low", "medium", "high")
+    }
+    script_files = len(list((results_root / "scripts").glob("*/*.txt")))
+
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source_workflow_run_id": os.getenv("GITHUB_RUN_ID"),
         "configuration_count": len(configs),
         "fold_count": len(folds.get("folds", [])),
         "expected_scripts": expected_total,
         "completed_scripts": len(records),
         "error_cells": len(errors),
-        "complete": len(records) == expected_total,
+        "complete": len(records) == expected_total and script_files == expected_total,
+        "length_compliant_scripts": sum(
+            1 for row in records if bool(row.get("length_compliant", False))
+        ),
+        "factuality_risk_counts": factuality_counts,
+        "ai_smell_risk_counts": ai_smell_counts,
+        "top_config": top.get("config_id"),
+        "baseline_config": "g00_current_like",
+        "top_mean_balanced_score": top.get("balanced_mean"),
+        "baseline_mean_balanced_score": baseline.get("balanced_mean"),
+        "paired_delta_vs_baseline": top.get("paired_delta_vs_baseline"),
+        "raw_cells": len(records) + len(errors),
+        "script_files": script_files,
+        "scores_rows": score_rows,
+        "scripts_index_rows": index_rows,
     }
     (results_root / "run_manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
