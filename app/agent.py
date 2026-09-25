@@ -97,9 +97,16 @@ class NarrativeArc(BaseModel):
 class NarrativeParallelUse(BaseModel):
     memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
     role: Literal["historical_mirror", "analogy", "counterexample", "scene", "bridge"]
-    placement: Literal["opening", "narrative_turn", "closing_callback", "support"] = "opening"
+    placement: Literal["opening", "narrative_turn", "closing_callback", "support"]
     purpose: str = Field(min_length=5, max_length=500)
     limits: str = Field(min_length=5, max_length=500)
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_legacy_placement(cls, value):
+        if isinstance(value, dict) and not value.get("placement"):
+            value = {**value, "placement": "opening"}
+        return value
 
 
 class EpisodePlan(BaseModel):
@@ -108,9 +115,7 @@ class EpisodePlan(BaseModel):
     novelty_angle: str = Field(min_length=5, max_length=400)
     historical_mirror: str = ""
     narrative_parallels: List[NarrativeParallelUse] = Field(min_length=1, max_length=2)
-    primary_memory_id: str | None = Field(
-        default=None, pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$"
-    )
+    primary_memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
     opening_memory_id: str | None = Field(
         default=None, pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$"
     )
@@ -126,6 +131,15 @@ class EpisodePlan(BaseModel):
     final_synthesis: str
     closing_question: str
 
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_legacy_memory_contract(cls, value):
+        if isinstance(value, dict) and not value.get("primary_memory_id"):
+            opening_memory_id = value.get("opening_memory_id")
+            if opening_memory_id:
+                value = {**value, "primary_memory_id": opening_memory_id}
+        return value
+
     @model_validator(mode="after")
     def validate_editorial_contracts(self) -> "EpisodePlan":
         normalize = lambda value: " ".join(str(value or "").lower().split())
@@ -137,10 +151,9 @@ class EpisodePlan(BaseModel):
         memory_ids = [item.memory_id for item in self.narrative_parallels]
         if len(memory_ids) != len(set(memory_ids)):
             raise ValueError("episode_plan.narrative_parallels must use unique memory_id values")
-        effective_primary_memory_id = self.primary_memory_id or self.opening_memory_id
+        effective_primary_memory_id = self.primary_memory_id
         if effective_primary_memory_id not in memory_ids:
             raise ValueError("episode_plan.primary_memory_id must reference narrative_parallels")
-        self.primary_memory_id = effective_primary_memory_id
 
         placement_by_id = {
             item.memory_id: item.placement for item in self.narrative_parallels
