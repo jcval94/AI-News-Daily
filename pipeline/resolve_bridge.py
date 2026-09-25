@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from pipeline.schema_validation import validate_payload
+
 
 SCHEMA_VERSION = 1
 
@@ -474,6 +476,7 @@ def write_resolve_plan(
         project_name=project_name,
         timeline_name=timeline_name,
     )
+    validate_payload(plan, "resolve_bridge_plan.schema.json")
     destination = episode_dir / "resolve_bridge_plan.json"
     destination.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return destination
