@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_status.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "preflight_status",
+    "toolchain_snapshot",
+    "repo_request_count",
+    "staged_job_count",
+    "receipt_count",
+    "repo_requests",
+    "staged_jobs",
+    "latest_receipt"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "preflight_status": {
+      "enum": [
+        "pass",
+        "warn",
+        "fail",
+        "not_run"
+      ]
+    },
+    "toolchain_snapshot": {
+      "type": "boolean"
+    },
+    "repo_request_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "staged_job_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "receipt_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "repo_requests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "staged_jobs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "latest_receipt": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
