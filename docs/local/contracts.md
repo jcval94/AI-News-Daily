@@ -16,7 +16,7 @@ Todos los contratos locales son JSON Schema versionados.
 
 ## local_job
 
-`config/local/local_job.schema.json` sólo permite operaciones allowlisted. Los paths usan `root_id + relative_path`. La ejecución requiere doble consentimiento: `mode=execute` dentro del job y `--execute`/`-Execute` en el runner. Un job `mode=plan` nunca puede ser forzado a ejecutar desde CLI. No existen campos shell/cwd/env.
+`config/local/local_job.schema.json` sólo permite operaciones allowlisted. Los paths usan `root_id + relative_path`. La ejecución requiere doble consentimiento: `mode=execute` dentro del job y `--execute`/`-Execute` en el runner. Un job `mode=plan` nunca puede ser forzado a ejecutar desde CLI. Además, `run-job` es dry-run only: la ejecución real requiere una copia privada stageada y `run-staged --execute`. No existen campos shell/cwd/env.
 
 ## local_receipt
 
