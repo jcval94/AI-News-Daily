@@ -30,6 +30,7 @@ def normalize_whisperx_result(
     take_id: str,
     retake_number: int,
     source_relative_path: str,
+    timebase: str = "video_source",
 ) -> dict[str, Any]:
     raw_words = [
         item
@@ -92,6 +93,7 @@ def normalize_whisperx_result(
         "take_id": str(take_id),
         "retake_number": int(retake_number),
         "source_relative_path": str(source_relative_path),
+        "timebase": str(timebase),
         "language": str(payload.get("language", "") or "unknown"),
         "text": transcript_text,
         "words": words,
@@ -149,6 +151,7 @@ def _transcribe_one(
     take_id: str,
     retake_number: int,
     source_relative_path: str,
+    timebase: str,
     executable: str,
     model: str,
     language: str,
@@ -198,6 +201,7 @@ def _transcribe_one(
             take_id=take_id,
             retake_number=retake_number,
             source_relative_path=source_relative_path,
+            timebase=timebase,
         )
 
 
@@ -249,11 +253,25 @@ def build_transcript_bundle(
                 if isinstance(candidate.get("selected_video"), dict)
                 else {}
             )
-            source_relative = str(
-                external.get("relative_path")
-                or video.get("relative_path")
-                or ""
+            video_has_scratch_audio = bool(
+                (video.get("inspection", {}) if isinstance(video.get("inspection"), dict) else {}).get(
+                    "has_audio_stream"
+                )
             )
+            if video_has_scratch_audio:
+                source_relative = str(video.get("relative_path") or "")
+                timebase = "video_source"
+            else:
+                source_relative = str(
+                    external.get("relative_path")
+                    or video.get("relative_path")
+                    or ""
+                )
+                timebase = (
+                    "external_audio_source"
+                    if external.get("relative_path")
+                    else "video_source"
+                )
             if not source_relative:
                 raise ValueError(
                     f"No transcription source for {take_id} r{retake:02d}"
@@ -275,6 +293,7 @@ def build_transcript_bundle(
                     take_id=take_id,
                     retake_number=retake,
                     source_relative_path=source_relative,
+                    timebase=timebase,
                     executable=executable,
                     model=model,
                     language=language,
