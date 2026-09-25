@@ -227,6 +227,39 @@ class RecordingIngestScannerDeterministicTests(unittest.TestCase):
             )
             self.assertEqual(len(first["candidates"]), 2)
 
+    @patch("pipeline.recording_ingest.inspect_audio")
+    @patch("pipeline.recording_ingest.inspect_media")
+    def test_persisted_manifest_passes_schema_without_absolute_paths(
+        self, inspect_video_mock, inspect_audio_mock
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox = self._files(root)
+            inspect_video_mock.side_effect = self._video_inspection
+            inspect_audio_mock.return_value = {
+                "ok": True,
+                "kind": "audio",
+                "duration_seconds": 10.0,
+                "codec": "pcm_s16le",
+                "sample_rate_hz": 48000,
+                "channels": 2,
+            }
+            episode = root / "scripts" / "2026-09-24"
+            episode.mkdir(parents=True)
+            (episode / "recording_ingest_contract.json").write_text(
+                json.dumps(self._contract()),
+                encoding="utf-8",
+            )
+            manifest_path, manifest = write_ingest_manifest(
+                episode_dir=episode,
+                input_dir=inbox,
+                enforce=True,
+            )
+            self.assertTrue(manifest["readiness"]["ready_for_alignment"])
+            serialized = manifest_path.read_text(encoding="utf-8")
+            self.assertNotIn(str(root), serialized)
+            self.assertIn('"absolute_input_path_persisted": false', serialized)
+
     @patch("pipeline.recording_ingest.inspect_media")
     def test_missing_audio_source_makes_candidate_unusable(self, inspect_video_mock):
         with tempfile.TemporaryDirectory() as tmp:
