@@ -265,6 +265,8 @@ def build_report(
         "resolve_otio_validation": artifact_record(scripts_dir / "resolve_otio_validation.json", f"scripts/{episode}/resolve_otio_validation.json"),
         "pre_recording_preview_plan": artifact_record(scripts_dir / "pre_recording_preview_plan.json", f"scripts/{episode}/pre_recording_preview_plan.json"),
         "pre_recording_preview_validation": artifact_record(scripts_dir / "pre_recording_preview_validation.json", f"scripts/{episode}/pre_recording_preview_validation.json"),
+        "asset_readiness": artifact_record(scripts_dir / "asset_readiness.json", f"scripts/{episode}/asset_readiness.json"),
+        "asset_readiness_html": artifact_record(scripts_dir / "asset_readiness.html", f"scripts/{episode}/asset_readiness.html"),
         "multimedia_plan": artifact_record(multimedia_dir / "plan.json", f"multimedia/{episode}/plan.json"),
         "edit_manifest": artifact_record(multimedia_dir / "edit_manifest.json", f"multimedia/{episode}/edit_manifest.json"),
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
