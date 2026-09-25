@@ -260,6 +260,100 @@ class RecordingIngestScannerDeterministicTests(unittest.TestCase):
             self.assertNotIn(str(root), serialized)
             self.assertIn('"absolute_input_path_persisted": false', serialized)
 
+    @patch("pipeline.recording_ingest.inspect_audio")
+    @patch("pipeline.recording_ingest.inspect_media")
+    def test_short_external_audio_falls_back_to_embedded_audio(
+        self, inspect_video_mock, inspect_audio_mock
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox = root / "inbox"
+            inbox.mkdir()
+            for take_id in ("opening_t01", "opening_t02"):
+                (inbox / f"{take_id}__r01__camA.mp4").write_bytes(b"video")
+            (inbox / "opening_t01__r01__audio.wav").write_bytes(b"audio")
+            inspect_video_mock.return_value = {
+                "ok": True,
+                "kind": "video",
+                "width": 1920,
+                "height": 1080,
+                "duration_seconds": 10.0,
+                "codec": "h264",
+                "r_frame_rate": "30/1",
+                "has_audio_stream": True,
+                "audio_codec": "aac",
+                "audio_sample_rate_hz": 48000,
+                "audio_channels": 2,
+            }
+            inspect_audio_mock.return_value = {
+                "ok": True,
+                "kind": "audio",
+                "duration_seconds": 1.0,
+                "codec": "pcm_s16le",
+                "sample_rate_hz": 48000,
+                "channels": 2,
+            }
+            manifest = scan_recordings(
+                contract=self._contract(),
+                input_dir=inbox,
+            )
+            self.assertTrue(manifest["readiness"]["ready_for_alignment"])
+            first = next(
+                item for item in manifest["takes"] if item["take_id"] == "opening_t01"
+            )
+            self.assertEqual(first["technical_preferred"]["audio_source"], "embedded")
+            self.assertIsNone(
+                first["technical_preferred"]["selected_external_audio"]
+            )
+            self.assertIn(
+                "external_audio_too_short",
+                first["technical_preferred"]["issues"],
+            )
+
+    @patch("pipeline.recording_ingest.inspect_audio")
+    @patch("pipeline.recording_ingest.inspect_media")
+    def test_short_external_audio_blocks_when_no_embedded_audio_exists(
+        self, inspect_video_mock, inspect_audio_mock
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox = root / "inbox"
+            inbox.mkdir()
+            for take_id in ("opening_t01", "opening_t02"):
+                (inbox / f"{take_id}__r01__camA.mp4").write_bytes(b"video")
+                (inbox / f"{take_id}__r01__audio.wav").write_bytes(b"audio")
+            inspect_video_mock.return_value = {
+                "ok": True,
+                "kind": "video",
+                "width": 1920,
+                "height": 1080,
+                "duration_seconds": 10.0,
+                "codec": "h264",
+                "r_frame_rate": "30/1",
+                "has_audio_stream": False,
+                "audio_codec": "",
+                "audio_sample_rate_hz": 0,
+                "audio_channels": 0,
+            }
+            inspect_audio_mock.return_value = {
+                "ok": True,
+                "kind": "audio",
+                "duration_seconds": 1.0,
+                "codec": "pcm_s16le",
+                "sample_rate_hz": 48000,
+                "channels": 2,
+            }
+            manifest = scan_recordings(
+                contract=self._contract(),
+                input_dir=inbox,
+            )
+            self.assertFalse(manifest["readiness"]["ready_for_alignment"])
+            self.assertIn(
+                "no_usable_candidate:opening_t01",
+                manifest["readiness"]["blockers"],
+            )
+            self.assertIn("external_audio_too_short", manifest["readiness"]["warnings"])
+
     @patch("pipeline.recording_ingest.inspect_media")
     def test_missing_audio_source_makes_candidate_unusable(self, inspect_video_mock):
         with tempfile.TemporaryDirectory() as tmp:
