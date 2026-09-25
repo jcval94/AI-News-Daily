@@ -19,6 +19,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Sync latest main
+        shell: bash
+        run: git pull --rebase origin main
+
       - name: Download final 20x3 artifacts
         uses: actions/download-artifact@v4
         with:
@@ -182,7 +186,6 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add experiments/editorial_grid_search/results
           if git diff --cached --quiet; then
             echo "Nothing to recover."
