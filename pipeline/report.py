@@ -261,6 +261,8 @@ def build_report(
         "placeholder_manifest": artifact_record(scripts_dir / "placeholder_media" / "placeholder_manifest.json", f"scripts/{episode}/placeholder_media/placeholder_manifest.json"),
         "resolve_bridge_plan": artifact_record(scripts_dir / "resolve_bridge_plan.json", f"scripts/{episode}/resolve_bridge_plan.json"),
         "resolve_bridge_execution": artifact_record(scripts_dir / "resolve_bridge_execution.json", f"scripts/{episode}/resolve_bridge_execution.json"),
+        "resolve_timeline_otio": artifact_record(scripts_dir / "resolve_timeline.otio", f"scripts/{episode}/resolve_timeline.otio"),
+        "resolve_otio_validation": artifact_record(scripts_dir / "resolve_otio_validation.json", f"scripts/{episode}/resolve_otio_validation.json"),
         "multimedia_plan": artifact_record(multimedia_dir / "plan.json", f"multimedia/{episode}/plan.json"),
         "edit_manifest": artifact_record(multimedia_dir / "edit_manifest.json", f"multimedia/{episode}/edit_manifest.json"),
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
