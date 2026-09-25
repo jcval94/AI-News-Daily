@@ -443,6 +443,19 @@ NEWS_SOURCE_MODE=scheduled_window
 NEWS_LOOKBACK_DAYS=4
 ```
 
+## Local editing harness
+
+For Windows 11 + DaVinci Resolve, use the committed local harness instead of ad-hoc shell commands:
+
+```powershell
+.\scripts\local\bootstrap.ps1
+.\scripts\local\doctor.ps1 -Resolve -Deep
+```
+
+It provides root-mapped paths, environment/capability probes, declarative allowlisted jobs, idempotent receipts, Resolve OTIO acceptance tests, and privacy guards. Raw media and machine-private state remain outside Git.
+
+See [docs/local/README.md](docs/local/README.md) and [docs/local/contracts.md](docs/local/contracts.md).
+
 ## Validation
 
 Deterministic CI runs without API secrets:
