@@ -524,7 +524,12 @@ def write_preview(
         if preview_path.parent.resolve() == episode_dir.resolve()
         else "isolated_run_artifact"
     )
-    validation["preview_path"] = str(preview_path)
+    try:
+        validation["preview_path"] = preview_path.resolve().relative_to(
+            repo_root.resolve()
+        ).as_posix()
+    except ValueError:
+        validation["preview_path"] = str(preview_path)
     validation_path.write_text(
         json.dumps(validation, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
