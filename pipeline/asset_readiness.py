@@ -152,6 +152,44 @@ def build_asset_readiness(
         for issue in item["issues"]
         if issue not in {"unresolved_placeholder"}
     })
+    actions: list[dict[str, Any]] = []
+    for item in items:
+        if item["state"] == "technical_failure":
+            actions.append({
+                "priority": "P0",
+                "cue_id": item["cue_id"],
+                "action": "replace_or_reencode_asset",
+                "reason": "technical_media_failure",
+            })
+        elif item["state"] == "missing" and item["critical"]:
+            actions.append({
+                "priority": "P0",
+                "cue_id": item["cue_id"],
+                "action": "resolve_critical_visual",
+                "reason": "critical_visual_unresolved",
+            })
+        elif item["state"] == "missing":
+            actions.append({
+                "priority": "P1",
+                "cue_id": item["cue_id"],
+                "action": "resolve_visual_or_accept_presenter",
+                "reason": "noncritical_visual_unresolved",
+            })
+        elif "low_resolution" in item["issues"]:
+            actions.append({
+                "priority": "P2",
+                "cue_id": item["cue_id"],
+                "action": "prefer_higher_resolution_if_available",
+                "reason": "low_resolution",
+            })
+        elif "source_shorter_than_planned" in item["issues"]:
+            actions.append({
+                "priority": "P2",
+                "cue_id": item["cue_id"],
+                "action": "find_longer_asset_or_adjust_hold",
+                "reason": "source_shorter_than_planned",
+            })
+    actions.sort(key=lambda item: ({"P0": 0, "P1": 1, "P2": 2}.get(item["priority"], 9), item["cue_id"]))
     ready = not blockers
     return {
         "schema_version": SCHEMA_VERSION,
@@ -170,6 +208,7 @@ def build_asset_readiness(
             "resolved_cue_ratio": round(cue_ratio, 4),
             "resolved_visual_seconds_ratio": round(sec_ratio, 4),
         },
+        "actions": actions,
         "gate": {
             "ready_to_record": ready,
             "promotion_blocking": str(policy.get("mode", "enforce")) == "enforce",
@@ -208,6 +247,8 @@ def render_html(payload: dict[str, Any]) -> str:
 <div class="card"><strong>Technical failures</strong><br>{s['technical_failure_cue_count']}</div>
 </div>
 <p><strong>Blockers:</strong> {html.escape(', '.join(payload['gate']['blockers']) or 'none')}</p>
+<h2>Recommended actions</h2>
+<ul>{''.join(f"<li><strong>{html.escape(a['priority'])}</strong> · {html.escape(a['cue_id'])} · {html.escape(a['action'])}</li>" for a in payload.get('actions', [])) or '<li>none</li>'}</ul>
 <table><thead><tr><th>Cue</th><th>Role</th><th>Critical</th><th>State</th><th>Planned</th><th>Issues</th></tr></thead><tbody>{''.join(rows)}</tbody></table>
 </body></html>"""
 
