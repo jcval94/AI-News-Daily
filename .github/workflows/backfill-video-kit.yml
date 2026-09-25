@@ -52,7 +52,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage; print('backfill runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.otio_export; print('backfill runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Prepare isolated workspace
@@ -139,7 +139,73 @@ jobs:
           echo "Backfill episode status: $STATUS"
           test "$STATUS" = "approved"
 
-      - name: Promote approved script to main
+      - name: Build deterministic dense multimedia handoff
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          MAX_MEDIA: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
+        run: |
+          set -euo pipefail
+          OUTPUT_DIR="$RUN_ROOT/multimedia/$TARGET_DATE"
+          ZIP="$RUN_ROOT/multimedia/multimedia-${TARGET_DATE}-run-${GITHUB_RUN_ID}.zip"
+          rm -rf "$OUTPUT_DIR" "$ZIP"
+          python -m pipeline.review_media_offline_dense \
+            --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
+            --output-dir "$OUTPUT_DIR" \
+            --zip-out "$ZIP" \
+            --max-media-downloads "$MAX_MEDIA"
+          export OUTPUT_DIR MAX_MEDIA
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest = json.loads((Path(os.environ["OUTPUT_DIR"]) / "manifest.json").read_text(encoding="utf-8"))
+          budget = int(os.environ.get("MAX_MEDIA", "54"))
+          opening = sum(1 for item in manifest if float(item.get("start_seconds", 0) or 0) < 20)
+          if budget >= 45 and len(manifest) < 45:
+              raise SystemExit(f"Backfill dense media floor failed: expected >=45 assets, got {len(manifest)}")
+          if opening < 5:
+              raise SystemExit(f"Backfill opening media floor failed: expected >=5 assets, got {opening}")
+          PY
+
+      - name: Create production handoff contracts
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          PRODUCTION_CTA_TEXT: ${{ vars.PRODUCTION_CTA_TEXT }}
+          RECORDING_MIN_TAKE_SECONDS: ${{ vars.RECORDING_MIN_TAKE_SECONDS || '20' }}
+          RECORDING_TARGET_TAKE_SECONDS: ${{ vars.RECORDING_TARGET_TAKE_SECONDS || '35' }}
+          RECORDING_MAX_TAKE_SECONDS: ${{ vars.RECORDING_MAX_TAKE_SECONDS || '60' }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.production_script \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --words-per-second "$WORDS_PER_SECOND"
+          python -m pipeline.recording_pack \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --words-per-second "$WORDS_PER_SECOND" \
+            --min-take-seconds "$RECORDING_MIN_TAKE_SECONDS" \
+            --target-take-seconds "$RECORDING_TARGET_TAKE_SECONDS" \
+            --max-take-seconds "$RECORDING_MAX_TAKE_SECONDS"
+          python -m pipeline.virtual_timeline \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia"
+          python -m pipeline.otio_export \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts"
+          python -m pipeline.report \
+            --target-date "$TARGET_DATE" \
+            --build-outcome approved \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --editorial-dir editorial
+
+      - name: Promote approved production kit to main
         env:
           TARGET_DATE: ${{ steps.target.outputs.target_date }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
@@ -148,10 +214,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin main
-          rm -rf "scripts/$TARGET_DATE"
-          mkdir -p "scripts/$TARGET_DATE"
+          rm -rf "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          mkdir -p "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
           cp -a "$RUN_ROOT/scripts/$TARGET_DATE/." "scripts/$TARGET_DATE/"
-          git add "scripts/$TARGET_DATE"
+          cp -a "$RUN_ROOT/multimedia/$TARGET_DATE/." "multimedia/$TARGET_DATE/"
+          git add "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
           if ! git diff --cached --quiet; then
             git commit -m "backfill: promote approved episode $TARGET_DATE"
             git push origin HEAD:main
