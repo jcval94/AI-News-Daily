@@ -16,6 +16,7 @@ from pipeline.core import (
     estimate_spoken_duration_seconds,
     expected_news_dates,
 )
+from pipeline.news_resolution import load_news_for_date
 
 CONFIG = PipelineConfig.from_env()
 
@@ -60,14 +61,14 @@ def source_window(news_dir: Path, target_date: date) -> dict[str, Any]:
     files: list[dict[str, Any]] = []
     missing: list[str] = []
     for item_date in expected:
-        path = news_dir / f"{item_date.isoformat()}.txt"
-        text = read_text(path)
-        if text:
+        path, parsed = load_news_for_date(news_dir, item_date)
+        if path is not None and parsed:
             files.append(
                 {
                     "name": path.name,
                     "sha256": sha256_file(path),
                     "bytes": path.stat().st_size if path.exists() else None,
+                    "item_count": len(parsed),
                 }
             )
         else:
@@ -250,7 +251,15 @@ def build_report(
         "script_sections": artifact_record(scripts_dir / "script_sections.json", f"scripts/{episode}/script_sections.json"),
         "production_script_md": artifact_record(scripts_dir / "production_script.md", f"scripts/{episode}/production_script.md"),
         "production_script_json": artifact_record(scripts_dir / "production_script.json", f"scripts/{episode}/production_script.json"),
+        "recording_pack": artifact_record(scripts_dir / "recording_pack.json", f"scripts/{episode}/recording_pack.json"),
+        "camera_script": artifact_record(scripts_dir / "camera_script.md", f"scripts/{episode}/camera_script.md"),
+        "teleprompter": artifact_record(scripts_dir / "teleprompter.html", f"scripts/{episode}/teleprompter.html"),
+        "virtual_timeline": artifact_record(scripts_dir / "virtual_timeline.json", f"scripts/{episode}/virtual_timeline.json"),
+        "timeline_preview": artifact_record(scripts_dir / "timeline_preview.html", f"scripts/{episode}/timeline_preview.html"),
+        "timeline_otio": artifact_record(scripts_dir / "timeline.otio", f"scripts/{episode}/timeline.otio"),
+        "timeline_otio_validation": artifact_record(scripts_dir / "timeline_otio_validation.json", f"scripts/{episode}/timeline_otio_validation.json"),
         "multimedia_plan": artifact_record(multimedia_dir / "plan.json", f"multimedia/{episode}/plan.json"),
+        "edit_manifest": artifact_record(multimedia_dir / "edit_manifest.json", f"multimedia/{episode}/edit_manifest.json"),
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
         "multimedia_credits_json": artifact_record(multimedia_dir / "credits.json", f"multimedia/{episode}/credits.json"),
         "multimedia_credits_md": artifact_record(multimedia_dir / "credits.md", f"multimedia/{episode}/credits.md"),
@@ -259,7 +268,7 @@ def build_report(
     }
 
     return {
-        "schema_version": 7,
+        "schema_version": 8,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
