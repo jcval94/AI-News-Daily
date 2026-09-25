@@ -42,8 +42,8 @@ Factual sources of truth:
 - preserve Narrative Memory uncertainties and analogy_limits.
 
 Preserve EXACT hidden section markers: <!--SECTION:opening-->, every <!--SECTION:beat:BEAT_ID--> in plan order,
-and <!--SECTION:synthesis-->. Also preserve exactly once the existing <!--MEMORY:OPENING_MEMORY_ID--> marker
-inside the opening section; do not move it later than its current position. Do not add a CTA. Do not expose internal FACT/INTERPRETATION/HYPOTHESIS labels.
+and <!--SECTION:synthesis-->. Also preserve exactly once the existing <!--MEMORY:PRIMARY_MEMORY_ID--> marker
+in its current section; do not move the Narrative Memory passage to a different section. Do not add a CTA. Do not expose internal FACT/INTERPRETATION/HYPOTHESIS labels.
 The spoken result must remain approximately {CONFIG.target_min_words}-{CONFIG.target_max_words} words.
 
 Return ONLY the revised section-marked narration script.
@@ -103,8 +103,8 @@ Before returning, silently verify:
 5. hidden markers are preserved exactly once and in the original order.
 
 Preserve EXACT hidden section markers: <!--SECTION:opening-->, every <!--SECTION:beat:BEAT_ID--> in plan order,
-and <!--SECTION:synthesis-->. Also preserve exactly once the existing <!--MEMORY:OPENING_MEMORY_ID--> marker
-inside the opening section; do not move it later than its current position. Do not add a CTA. Do not expose internal planning labels.
+and <!--SECTION:synthesis-->. Also preserve exactly once the existing <!--MEMORY:PRIMARY_MEMORY_ID--> marker
+in its current section; do not move the Narrative Memory passage to a different section. Do not add a CTA. Do not expose internal planning labels.
 The spoken result must remain approximately {CONFIG.target_min_words}-{CONFIG.target_max_words} words.
 
 Return ONLY the revised section-marked narration script.
@@ -147,8 +147,8 @@ Use episode_plan.claim_ledger only as a semantic boundary: do not create facts f
 current script. Follow voice_profile closely. Preserve the essay's existing argument and evidence relationships.
 
 Preserve EXACT hidden section markers: <!--SECTION:opening-->, every <!--SECTION:beat:BEAT_ID--> in plan order,
-and <!--SECTION:synthesis-->. Also preserve exactly once the existing <!--MEMORY:OPENING_MEMORY_ID--> marker
-inside the opening section; do not move it later than its current position. Do not add a CTA. Do not expose internal planning labels.
+and <!--SECTION:synthesis-->. Also preserve exactly once the existing <!--MEMORY:PRIMARY_MEMORY_ID--> marker
+in its current section; do not move the Narrative Memory passage to a different section. Do not add a CTA. Do not expose internal planning labels.
 The spoken result must remain approximately {CONFIG.target_min_words}-{CONFIG.target_max_words} words.
 
 Return ONLY the revised section-marked narration script.
@@ -176,7 +176,7 @@ entity naturally, reducing a dead zone, paying off an already-established open l
 inside approximately {CONFIG.target_min_words}-{CONFIG.target_max_words} words.
 
 Preserve EXACT hidden section markers and their order. Also preserve exactly once the existing
-<!--MEMORY:OPENING_MEMORY_ID--> marker inside the opening section; do not move it later than its current position.
+<!--MEMORY:PRIMARY_MEMORY_ID--> marker in its current section; do not move the Narrative Memory passage to a different section.
 Do not add a CTA.
 Return ONLY the revised section-marked narration script.
 """,
