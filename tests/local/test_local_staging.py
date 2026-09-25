@@ -50,6 +50,18 @@ class LocalStagingTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "hash mismatch"):
                 load_staged_job("stage-test-0001", repo_root=root)
 
+    def test_expired_request_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            request_dir = root / "local_handoff" / "requests"
+            request_dir.mkdir(parents=True)
+            payload = sample_job()
+            payload["expires_at"] = "2020-01-01T00:00:00Z"
+            request = request_dir / "expired.json"
+            request.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "expired"):
+                stage_request(request, repo_root=root)
+
     def test_non_handoff_file_cannot_be_staged(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()
