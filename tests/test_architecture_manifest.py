@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 14)
+        self.assertEqual(data["version"], 15)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -59,6 +59,13 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("Recording Ingest", stages["recording_ingest"]["title"])
         self.assertIn("recording_ingest_contract.json", stages["recording_ingest"]["outputs"])
         self.assertIn("take_id", stages["recording_ingest"]["authority"])
+        self.assertIn("recording_alignment", stages)
+        self.assertIn("Recording Alignment", stages["recording_alignment"]["title"])
+        self.assertIn("recording_alignment_contract.json", stages["recording_alignment"]["outputs"])
+        self.assertIn("WhisperX", stages["recording_alignment"]["authority"])
+        self.assertIn("resolve_alignment", stages)
+        self.assertIn("Resolve Alignment", stages["resolve_alignment"]["title"])
+        self.assertIn("AutoSyncAudio", stages["resolve_alignment"]["authority"])
         self.assertIn("virtual_timeline", stages)
         self.assertIn("Virtual A-roll", stages["virtual_timeline"]["title"])
         self.assertIn("virtual_timeline.json", stages["virtual_timeline"]["outputs"])
