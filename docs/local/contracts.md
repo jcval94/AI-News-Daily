@@ -59,3 +59,9 @@ local_handoff/requests/   = propuesta versionada
 ~~~
 
 Git nunca es una cola autoejecutable.
+
+## Caducidad y retries
+
+`expires_at` es opcional en `local_job`. Si existe y ya venció, staging falla cerrado.
+
+Las operaciones con efectos laterales —especialmente Resolve— no tienen retry automático. Para reintentar después de revisar el fallo, crea un nuevo `job_id`; el receipt del intento anterior permanece como evidencia.
