@@ -56,3 +56,17 @@ When `edit_manifest.json` exists, overlapping media cues are attached to each ta
 ## Style traceability
 
 The Recording Pack inherits the editing-style metadata from `edit_manifest.json`. This lets recording, virtual A-roll, and later NLE timelines prove which audiovisual grammar was active without reading mutable repository state.
+
+
+## Recording ingest
+
+The Recording Pack defines stable `take_id` values; `pipeline.recording_ingest` is the next physical-media layer.
+
+Before recording, production generates:
+
+- `recording_ingest_contract.json`;
+- `recording_ingest_instructions.md`.
+
+After real camera/audio files exist, the local scanner groups retakes using the same `take_id`, validates technical health and emits `recording_ingest_manifest.json`.
+
+Raw recordings remain local and are excluded from Git. The ingest scanner never deletes retakes and its provisional selection is technical only; transcription/alignment remains authoritative for spoken-script fidelity.
