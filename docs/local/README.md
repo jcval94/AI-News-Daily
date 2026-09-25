@@ -102,11 +102,11 @@ Ejecuta:
 .\scripts\local\run_job.ps1 -Job config\local\local_job.example.json -Execute
 ```
 
-`-Execute` autoriza al runner. Las operaciones Resolve además requieren `mode=execute` dentro del job.
+`-Execute` por sí solo **no basta**. Todo job ejecutable debe declarar `mode=execute` y además debes invocar el runner con `-Execute`. Si cualquiera de los dos falta, el resultado es dry-run. Esta doble autorización aplica también a operaciones no-Resolve.
 
 ## Seguridad
 
-El executor usa `subprocess.run([...], shell=False)`, rechaza parámetros desconocidos, no acepta command/cwd/env arbitrarios, bloquea traversal/rutas absolutas, usa roots allowlisted, no borra raw media, evita overwrite por default, bloquea jobs duplicados por `job_id` y redacta roots en logs/receipts.
+El executor usa `subprocess.run([...], shell=False)`, rechaza parámetros desconocidos, no acepta command/cwd/env arbitrarios, bloquea traversal/rutas absolutas, usa roots allowlisted, no borra raw media, evita overwrite por default, bloquea jobs duplicados por `job_id` y redacta roots en logs/receipts. Si un root se elimina de `security.allowed_roots`, el resolver lo bloquea aunque siga siendo un tipo de root válido en el schema.
 
 Estado privado: `.local/`, `recordings/`, `local_cache/`, `local_exports/`, `.venv-whisperx/`.
 
