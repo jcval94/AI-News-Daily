@@ -371,19 +371,6 @@ jobs:
             --target-date "$TARGET_DATE" \
             --scripts-dir "$RUN_ROOT/scripts"
 
-      - name: Build Resolve Bridge v0 plan
-        id: resolve_bridge
-        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.placeholder_media.outcome == 'success'
-        continue-on-error: true
-        env:
-          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
-          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
-        run: |
-          python -m pipeline.resolve_bridge \
-            --target-date "$TARGET_DATE" \
-            --repo-root "$RUN_ROOT" \
-            --scripts-dir scripts
-
       - name: Export native OpenTimelineIO
         id: otio_export
         if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.virtual_timeline.outcome == 'success'
@@ -395,6 +382,19 @@ jobs:
           python -m pipeline.otio_export \
             --target-date "$TARGET_DATE" \
             --scripts-dir "$RUN_ROOT/scripts"
+
+      - name: Build Resolve Bridge v0 plan
+        id: resolve_bridge
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.placeholder_media.outcome == 'success' && steps.otio_export.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.resolve_bridge \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts
 
       - name: Create run report
         id: report
