@@ -277,7 +277,7 @@ def build_report(
     }
 
     return {
-        "schema_version": 8,
+        "schema_version": 9,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
