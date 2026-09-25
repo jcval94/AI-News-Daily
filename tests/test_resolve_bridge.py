@@ -2,8 +2,15 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import opentimelineio as otio
+
+from pipeline.otio_export import build_otio_timeline
 from pipeline.placeholder_media import build_placeholder_manifest
-from pipeline.resolve_bridge import build_resolve_plan, execute_resolve_plan
+from pipeline.resolve_bridge import (
+    build_resolve_plan,
+    execute_resolve_plan,
+    materialize_resolve_otio,
+)
 
 
 def virtual_payload():
@@ -122,15 +129,16 @@ class FakeTimeline:
     def AddMarker(self, frame, color, name, note, duration, custom_data):
         self.markers.append((frame, color, name, note, duration, custom_data))
         return True
+    def GetMarkers(self):
+        return {}
 
 
 class FakeMediaPool:
     def __init__(self):
         self.root = FakeFolder("Master")
         self.current = self.root
-        self.imports = []
-        self.appended = []
         self.timeline = None
+        self.import_timeline_call = None
     def GetRootFolder(self):
         return self.root
     def AddSubFolder(self, parent, name):
@@ -140,16 +148,12 @@ class FakeMediaPool:
     def SetCurrentFolder(self, folder):
         self.current = folder
         return True
-    def ImportMedia(self, paths):
-        item = {"path": paths[0], "bin": self.current.name}
-        self.imports.append(item)
-        return [item]
-    def CreateEmptyTimeline(self, name):
-        self.timeline = FakeTimeline(name)
+    def ImportTimelineFromFile(self, path, options):
+        self.import_timeline_call = (path, dict(options))
+        self.timeline = FakeTimeline(options["timelineName"])
+        self.timeline.video = 4
+        self.timeline.audio = 1
         return self.timeline
-    def AppendToTimeline(self, specs):
-        self.appended.extend(specs)
-        return [{"timeline_item": len(self.appended)}]
 
 
 class FakeProject:
@@ -247,7 +251,7 @@ class ResolveBridgeTests(unittest.TestCase):
                 any(item.startswith("missing_file:") for item in plan["readiness"]["blockers"])
             )
 
-    def test_fake_resolve_executes_non_destructively(self):
+    def test_materialized_resolve_otio_replaces_planned_missing_references(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             virtual, manifest = self._build(root)
@@ -256,18 +260,59 @@ class ResolveBridgeTests(unittest.TestCase):
                 placeholder_manifest=manifest,
                 repo_root=root,
             )
+            episode = root / "scripts" / "2026-09-24"
+            canonical = episode / "timeline.otio"
+            resolve_otio = episode / "resolve_timeline.otio"
+            timeline = build_otio_timeline(virtual, output_dir=episode)
+            otio.adapters.write_to_file(timeline, str(canonical), adapter_name="otio_json")
+            validation = materialize_resolve_otio(
+                plan=plan,
+                source_otio_path=canonical,
+                destination=resolve_otio,
+                repo_root=root,
+            )
+            self.assertTrue(validation["valid"])
+            self.assertEqual(validation["materialized_clip_count"], 4)
+            reloaded = otio.adapters.read_from_file(str(resolve_otio))
+            refs = [
+                item.media_reference
+                for track in reloaded.tracks
+                for item in track
+                if isinstance(item, otio.schema.Clip)
+                and str((item.metadata.get("ai_news_daily", {}) if item.metadata else {}).get("clip_id", "") or "")
+                in {p["placement_id"] for p in plan["placements"]}
+            ]
+            self.assertEqual(len(refs), 4)
+            self.assertTrue(all(isinstance(ref, otio.schema.ExternalReference) for ref in refs))
+
+    def test_fake_resolve_executes_through_native_otio_import(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            virtual, manifest = self._build(root)
+            plan = build_resolve_plan(
+                virtual_timeline=virtual,
+                placeholder_manifest=manifest,
+                repo_root=root,
+            )
+            resolve_otio = root / plan["execution"]["resolve_otio_logical_path"]
+            resolve_otio.parent.mkdir(parents=True, exist_ok=True)
+            resolve_otio.write_text("test fixture: fake Resolve does not parse OTIO", encoding="utf-8")
             fake = FakeResolve()
             result = execute_resolve_plan(plan, repo_root=root, resolve=fake)
             self.assertEqual(result["status"], "resolve_bridge_v0_executed")
-            self.assertEqual(result["imported_media_count"], 4)
-            self.assertEqual(result["appended_placement_count"], 4)
-            self.assertEqual(result["marker_count"], 2)
+            self.assertEqual(result["execution_strategy"], "import_otio")
+            self.assertEqual(result["planned_media_count"], 4)
+            self.assertEqual(result["timeline_placement_count"], 4)
+            self.assertEqual(result["markers_added_after_import"], 2)
             self.assertTrue(fake.manager.saved)
             project = fake.manager.project
             self.assertEqual(project.settings["timelineResolutionWidth"], "3840")
             self.assertEqual(project.settings["timelineFrameRate"], "30")
             self.assertEqual(project.pool.timeline.video, 4)
             self.assertEqual(project.pool.timeline.names[("video", 1)], "V1 · JC A-Roll")
+            self.assertIsNotNone(project.pool.import_timeline_call)
+            self.assertTrue(project.pool.import_timeline_call[0].endswith("resolve_timeline.otio"))
+            self.assertTrue(project.pool.import_timeline_call[1]["importSourceClips"])
             self.assertFalse(result["final_edit_ready"])
 
 
