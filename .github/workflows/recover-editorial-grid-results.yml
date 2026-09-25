@@ -34,7 +34,9 @@ jobs:
         run: |
           set -euo pipefail
           RESULTS="experiments/editorial_grid_search/results"
-          mkdir -p "$RESULTS/scripts"
+          rm -rf "$RESULTS/raw" "$RESULTS/scripts"
+          mkdir -p "$RESULTS/raw" "$RESULTS/scripts"
+          cp -R /tmp/editorial-grid/raw/. "$RESULTS/raw/"
           cp -R /tmp/editorial-grid/scripts/. "$RESULTS/scripts/"
 
           python - <<'PY'
@@ -180,6 +182,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add experiments/editorial_grid_search/results
           if git diff --cached --quiet; then
             echo "Nothing to recover."
