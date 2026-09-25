@@ -353,6 +353,8 @@ def _candidate_alignment(
         trim_policy.get("min_clip_duration_seconds", 0.50)
     ):
         issues.append("aligned_trim_too_short")
+    if str(transcript.get("timebase", "") or "video_source") != "video_source":
+        issues.append("video_timebase_requires_resolve_waveform_sync")
 
     return {
         "retake_number": int(candidate.get("retake_number", 0) or 0),
@@ -361,6 +363,7 @@ def _candidate_alignment(
         "source_relative_path": str(
             transcript.get("source_relative_path", "") or ""
         ),
+        "timebase": str(transcript.get("timebase", "") or "video_source"),
         "transcript_text": str(transcript.get("text", "") or ""),
         "word_count": len(words),
         "mean_word_confidence": (
@@ -376,7 +379,14 @@ def _candidate_alignment(
         "video": video,
         "external_audio": candidate.get("selected_external_audio"),
         "selection_score": round(composite, 4),
-        "auto_select_eligible": not issues,
+        "auto_select_eligible": not [
+            issue
+            for issue in issues
+            if issue != "video_timebase_requires_resolve_waveform_sync"
+        ],
+        "video_trim_ready": (
+            str(transcript.get("timebase", "") or "video_source") == "video_source"
+        ),
         "issues": issues,
     }
 
@@ -499,6 +509,10 @@ def build_recording_alignment(
             blockers.append(f"retake_requires_human_review:{take_id}")
         else:
             aligned_seconds += float(final["trim"]["duration_seconds"])
+            if not bool(final.get("video_trim_ready")):
+                blockers.append(
+                    f"resolve_waveform_sync_offset_required:{take_id}"
+                )
 
         take_results.append(
             {
@@ -554,6 +568,15 @@ def build_recording_alignment(
         },
         "readiness": {
             "ready_for_aligned_timeline": not unique_blockers,
+            "ready_for_resolve_handoff": not any(
+                blocker.startswith(("missing_ingest_take:", "missing_transcript_take:", "retake_requires_human_review:"))
+                for blocker in unique_blockers
+            ),
+            "requires_resolve_waveform_sync_count": sum(
+                1
+                for blocker in unique_blockers
+                if blocker.startswith("resolve_waveform_sync_offset_required:")
+            ),
             "blockers": unique_blockers,
             "warnings": sorted(warnings),
         },
