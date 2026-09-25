@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from pipeline.preview_render import build_preview_plan, render_preview
+from pipeline.preview_render import build_preview_plan, render_preview, write_preview
 
 
 def _png(path: Path, value: int) -> None:
@@ -100,6 +100,43 @@ class PreviewRenderTests(unittest.TestCase):
                     height=360,
                     fps=10,
                 )
+
+
+    @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg unavailable")
+    def test_write_preview_records_portable_isolated_artifact_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload = self._fixture(root)
+            payload["summary"]["duration_seconds"] = 2.0
+            payload["placements"] = [
+                {**payload["placements"][0], "duration_seconds": 2.0},
+                {
+                    **payload["placements"][2],
+                    "timeline_start_seconds": 0.5,
+                    "duration_seconds": 1.0,
+                },
+            ]
+            episode = root / "scripts" / "2026-09-24"
+            (episode / "resolve_bridge_plan.json").write_text(
+                json.dumps(payload),
+                encoding="utf-8",
+            )
+            output = root / "previews" / "2026-09-24" / "pre_recording_preview.mp4"
+            _, rendered, validation_path = write_preview(
+                repo_root=root,
+                episode_dir=episode,
+                width=320,
+                height=180,
+                fps=6,
+                output_path=output,
+            )
+            self.assertEqual(rendered, output)
+            validation = json.loads(validation_path.read_text(encoding="utf-8"))
+            self.assertEqual(validation["artifact_scope"], "isolated_run_artifact")
+            self.assertEqual(
+                validation["preview_path"],
+                "previews/2026-09-24/pre_recording_preview.mp4",
+            )
 
     @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg unavailable")
     def test_short_preview_is_really_encoded_and_validated(self):
