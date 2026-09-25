@@ -230,6 +230,13 @@
           "type": "boolean"
         }
       }
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 10
     }
   }
 }
