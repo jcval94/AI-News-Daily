@@ -97,6 +97,7 @@ class NarrativeArc(BaseModel):
 class NarrativeParallelUse(BaseModel):
     memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
     role: Literal["historical_mirror", "analogy", "counterexample", "scene", "bridge"]
+    placement: Literal["opening", "narrative_turn", "closing_callback", "support"] = "narrative_turn"
     purpose: str = Field(min_length=5, max_length=500)
     limits: str = Field(min_length=5, max_length=500)
 
@@ -107,7 +108,10 @@ class EpisodePlan(BaseModel):
     novelty_angle: str = Field(min_length=5, max_length=400)
     historical_mirror: str = ""
     narrative_parallels: List[NarrativeParallelUse] = Field(min_length=1, max_length=2)
-    opening_memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
+    primary_memory_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$")
+    opening_memory_id: str | None = Field(
+        default=None, pattern=r"^[a-z0-9][a-z0-9_-]{2,79}$"
+    )
     evidence_strategy: str = Field(min_length=5, max_length=500)
     central_question: str
     thesis: str
@@ -116,7 +120,7 @@ class EpisodePlan(BaseModel):
     narrative_arc: NarrativeArc
     evidence: List[EvidencePlan] = Field(min_length=1, max_length=CONFIG.max_selected_news)
     claim_ledger: List[ClaimLedgerEntry] = Field(min_length=1, max_length=CONFIG.max_selected_news)
-    beats: List[EssayBeat] = Field(min_length=2, max_length=8)
+    beats: List[EssayBeat] = Field(min_length=2, max_length=6)
     final_synthesis: str
     closing_question: str
 
@@ -131,8 +135,26 @@ class EpisodePlan(BaseModel):
         memory_ids = [item.memory_id for item in self.narrative_parallels]
         if len(memory_ids) != len(set(memory_ids)):
             raise ValueError("episode_plan.narrative_parallels must use unique memory_id values")
-        if self.opening_memory_id not in memory_ids:
-            raise ValueError("episode_plan.opening_memory_id must reference narrative_parallels")
+        if self.primary_memory_id not in memory_ids:
+            raise ValueError("episode_plan.primary_memory_id must reference narrative_parallels")
+
+        placement_by_id = {
+            item.memory_id: item.placement for item in self.narrative_parallels
+        }
+        primary_placement = placement_by_id[self.primary_memory_id]
+        if self.opening_memory_id is not None:
+            if self.opening_memory_id != self.primary_memory_id:
+                raise ValueError(
+                    "episode_plan.opening_memory_id, when present, must equal primary_memory_id"
+                )
+            if primary_placement != "opening":
+                raise ValueError(
+                    "opening_memory_id is only valid when the primary Narrative Memory placement is opening"
+                )
+        elif primary_placement == "opening":
+            raise ValueError(
+                "opening placement requires opening_memory_id for backward-compatible metadata"
+            )
 
         evidence_indices = [item.selected_news_index for item in self.evidence]
         if len(evidence_indices) != len(set(evidence_indices)):
@@ -297,8 +319,14 @@ source news, history, or Narrative Memory.
 
 Your job is NOT to summarize the week and NOT to write the script. Design the thinking behind one essay.
 
-NON-NEGOTIABLE EDITORIAL HIERARCHY:
-NARRATIVE MEMORY MICRO-STORY -> HUMAN TENSION -> CENTRAL QUESTION -> PROVISIONAL THESIS -> CURRENT NEWS AS EVIDENCE.
+EDITORIAL DEFAULT — A STRONG PRIOR, NOT A RIGID TEMPLATE:
+HUMAN TENSION OR CONCRETE SCENE -> CENTRAL MYSTERY -> STRONG CURRENT EVIDENCE ->
+NARRATIVE MEMORY AS A REFRAME/TURN -> EVOLVED THESIS.
+
+Narrative Memory remains mandatory, but its POSITION is not. The 20x3 editorial experiment found that forcing
+history into every cold open was less robust than using one strong historical/structural parallel as a later
+narrative turn. Prefer the turn when it genuinely changes how the viewer understands evidence already made
+concrete. Use a Narrative Memory opening only when that specific case is unmistakably the strongest hook.
 
 DRAMATURGY IS ALSO NON-NEGOTIABLE. Populate every narrative_arc field with a distinct job:
 - opening_belief: the plausible belief the viewer/narrator starts with;
@@ -330,18 +358,23 @@ NOVELTY IS A FIRST-CLASS REQUIREMENT:
 - evidence_strategy must explain what each current case contributes to testing or complicating the thesis.
 
 Build the plan in this order:
-1. Choose ONE retrieved Narrative Memory record that can carry an honest, intriguing opening. This is mandatory. Add it to narrative_parallels using its exact memory_id and copy that exact ID into opening_memory_id. Prefer a vivid case with strong structural fit, not merely the highest surprise score.
-2. Design the hook around that case as a short micro-story: concrete scene -> surprising verified fact/mechanism -> bridge into a recognizable human tension. The history should earn the question; it must not be decorative trivia.
-3. You MAY select one additional Narrative Memory record later only if it explains a genuinely different dimension. Never select more than two and never invent an ID.
-4. Use curated references in discourse_profile only as optional supporting context; they do not replace the mandatory Narrative Memory selection.
-5. Formulate the central question BEFORE deciding which selected stories will appear.
-6. Formulate a provisional thesis that can be complicated or revised during the essay.
-7. Design the full narrative_arc so the investigation contains mystery, scene, reveal, complication, a genuine
+1. Start from a recognizable human tension, concrete present-day scene, contradiction, or mystery that can carry the first minute without depending on a company/product name.
+2. Formulate the central question BEFORE deciding which selected stories will appear.
+3. Formulate a provisional thesis that can be complicated or revised during the essay.
+4. Choose the strongest current evidence. Prefer 1-2 cases that materially change the argument. Use 3 only when the third adds a genuinely different mechanism, counterexample, or consequence; never add breadth merely to cover more news.
+5. Choose ONE retrieved Narrative Memory record with the strongest structural fit to the emerging question. This is mandatory. Add it to narrative_parallels, copy its exact memory_id into primary_memory_id, and choose placement explicitly:
+   - narrative_turn: DEFAULT and preferred when the case can reframe evidence already understood;
+   - opening: only when the verified case itself is clearly the strongest cold open;
+   - closing_callback: when history is most useful as payoff;
+   - support: when it clarifies one narrower dimension.
+   If placement is opening, also copy the same ID into opening_memory_id. Otherwise opening_memory_id must be null/omitted.
+6. You MAY select one additional Narrative Memory record only if it explains a genuinely different dimension. Never select more than two and never invent an ID.
+7. Use curated references in discourse_profile only as optional supporting context; they do not replace the mandatory Narrative Memory selection.
+8. Design the full narrative_arc so the investigation contains mystery, scene, reveal, complication, a genuine
    narrative turn, an evolved thesis, a recurring motif, a human peak, and a final payoff.
-8. Compare that question and thesis against previous_essays and establish a real novelty_angle.
-9. Only then choose current items as evidence. Prefer 2-4 when that many useful selected items exist, but never choose more items than selected_news_count; if selected_news_count is 1, using exactly 1 evidence item is valid.
+9. Compare that question and thesis against previous_essays and establish a real novelty_angle.
 10. BEFORE writing beats or prose, create the Claim Ledger for every chosen evidence item.
-11. Only then design idea-led beats that investigate the thesis.
+11. Design 4-5 large idea-led beats by default. Six is acceptable only when the material genuinely needs it. Never create a beat simply because another article exists.
 
 CLAIM LEDGER — HARD PRE-WRITING FACTUAL CONTRACT:
 For every episode_plan.evidence item, create exactly one episode_plan.claim_ledger entry with the same
@@ -362,7 +395,7 @@ EVIDENCE AND BEATS — KEEP THEM SEPARATE:
 - A beat may use zero, one, or several evidence_ids.
 - The same evidence may reappear in a later beat only when its meaning/function genuinely changes after a reveal or narrative turn.
 - Every evidence item must serve at least one beat; otherwise omit it from evidence.
-- Prefer 2-4 strong pieces of evidence when available, but 1 strong piece is valid when selected_news_count is 1; never invent evidence to satisfy a target count.
+- Prefer 1-2 strong pieces of evidence. A third is justified only when it adds a genuinely different mechanism, counterexample, limit case, or consequence. One strong piece is valid; never invent evidence to satisfy a target count.
 - Every evidence item must have an argument_role: evidence, counterexample, symptom, consequence, limit_case, or bridge.
 - narrative_function explains precisely what that evidence does inside the essay.
 - Do not create `beat 1 = news 1`, `beat 2 = news 2`, etc. That is a disguised roundup and is invalid.
@@ -381,11 +414,12 @@ Narrative rules:
 - The final payoff should transform how the opening scene, question, or motif is understood.
 - Historical/contextual facts may come only from the retrieved narrative_memory records you explicitly select or from curated historical references in discourse_profile; never invent a historical person, quote, date, book, event, or causal claim.
 - Narrative Memory is mandatory for every episode: select at least one and at most two retrieved records.
-- opening_memory_id MUST be one of the selected narrative_parallels and MUST drive the opening hook.
-- Spend enough opening time to let the viewer understand why the case is surprising and what structural mechanism matters; do not reduce it to a one-sentence name-drop.
+- primary_memory_id MUST be one of the selected narrative_parallels. The primary record should normally be placed at the narrative turn, not automatically in the opening.
+- If the primary record uses placement="opening", opening_memory_id MUST equal primary_memory_id. Otherwise opening_memory_id should be null/omitted.
+- A Narrative Memory case must do argumentative work: reveal a mechanism, complicate the provisional thesis, reframe the mystery, or earn the payoff. Decorative trivia/name-dropping is invalid anywhere in the essay.
+- Keep the primary memory passage compact by default—roughly 60-110 spoken words—unless a genuinely exceptional case earns more room.
 - Treat verified_claims as the factual boundary, preserve uncertainties, and respect analogy_limits.
-- If a candidate cannot support an honest opening, choose a different retrieved candidate rather than omitting Narrative Memory.
-- Additional historical parallels later are welcome only when they illuminate a different dimension.
+- Additional historical parallels are welcome only when they illuminate a different dimension.
 - Plan one or more everyday analogies that create genuine learning moments.
 - Distinguish evidence from corporate hype, interpretation, hypothesis, and uncertainty.
 - End with a synthesis that may be more nuanced than the initial thesis and a real reflective question.
@@ -438,30 +472,31 @@ At approximately {CONFIG.words_per_second:.1f} words/second, the absolute range 
 {CONFIG.target_min_words}-{CONFIG.target_max_words} words.
 Follow episode_plan.target_duration_minutes as the intended target, but never pad.
 
-OPENING — NARRATIVE MEMORY FIRST:
-- Begin with the Narrative Memory record identified by episode_plan.opening_memory_id, not from a current headline.
-- Within the opening section, place the exact hidden marker <!--MEMORY:OPENING_MEMORY_ID--> immediately before the first sentence grounded in that record, replacing OPENING_MEMORY_ID with the exact ID from episode_plan.
-- Place that marker within roughly the first 120 spoken words so Python can verify the story is truly being used as the hook.
-- Tell the selected case as a real micro-story rather than a citation: establish a concrete scene, use only the verified claims needed to make the surprising mechanism understandable, then bridge into episode_plan.hook and narrative_arc.opening_belief / central_mystery.
-- The opening parallel should normally receive roughly 45-90 seconds of meaningful development when the material supports it. Do not pad and do not turn the essay into a history class.
-- The opening may be extremely intriguing, but it must be honest and eventually paid off. It may briefly withhold explanation; it may not mislead about facts.
+OPENING — HUMAN TENSION FIRST, HISTORY ONLY WHEN IT EARNS THE COLD OPEN:
+- Begin from a recognizable human tension, concrete scene, contradiction, or honest mystery—not from a press-release/news-desk lead.
+- Do NOT default to “hoy salió una noticia”, “esta semana X anunció”, or a company/model/product name.
+- Make the problem concrete quickly. A strong current evidence case should normally begin doing real work within roughly the first 200-250 spoken words rather than after a long conceptual preamble.
 - Use narrative_arc.concrete_scene when it makes the mystery tangible.
 - Do not reveal the exact evolved thesis in the first two minutes.
-- The opening should feel like a thoughtful person saying something recognizably true or uncomfortable:
-  “no sé si te pasa algo parecido…”, “a ver, pensemos esto…”, or an equivalent natural observation.
-  These are examples of energy, not phrases to repeat mechanically.
-- Do NOT default to “hoy salió una noticia”, “esta semana X anunció”, or a company/model/product name.
-- Establish the discomfort or paradox first.
-- Explain why the opening parallel matters structurally before leaving it behind. If its analogy has an important limit, surface that limit naturally when needed.
-- Arrive at the central question and provisional thesis.
-- Only after the viewer understands the idea should the first current-news example appear.
+- The opening should feel like a thoughtful person thinking with the viewer, not like a dossier presenting its conclusion.
+- Arrive at the central mystery and provisional thesis without over-explaining every implication.
+
+NARRATIVE MEMORY — FLEXIBLE PLACEMENT, DEFAULT TO THE TURN:
+- episode_plan.primary_memory_id identifies the one required primary Narrative Memory record.
+- Place the exact hidden marker <!--MEMORY:PRIMARY_MEMORY_ID--> immediately before the first sentence grounded in that primary record, replacing PRIMARY_MEMORY_ID with the exact ID.
+- The marker may appear in opening, development, or synthesis according to the selected narrative_parallel.placement. It must appear exactly once.
+- When placement="narrative_turn", introduce the historical/structural case only after the present-day problem is concrete, and use it to make the viewer reinterpret what came before.
+- When placement="opening", use the case as a compact verified micro-story and keep the marker within roughly the first 120 spoken words.
+- When placement="closing_callback", use the record to sharpen the payoff rather than to introduce a new unrelated idea.
+- Keep the primary Narrative Memory passage compact by default, roughly 60-110 spoken words. Do not pad and do not turn the essay into a history class.
+- If its analogy has an important limit, surface that limit naturally when needed.
 
 INTERNAL SECTION ALIGNMENT — REQUIRED BUT NEVER SPOKEN:
 - Return the draft with HTML-comment markers that Python will remove before judges/TTS.
 - Exact order: <!--SECTION:opening-->, then one <!--SECTION:beat:BEAT_ID--> for EACH episode_plan.beats item in plan order using its beat_id, then <!--SECTION:synthesis-->.
 - Beats are IDEA sections, not news sections. A beat can contain no current-news item, one item, or several items according to evidence_ids.
 - Put each marker immediately before the narration belonging to that beat.
-- Do not add any other SECTION markers. The single required <!--MEMORY:...--> marker is separate metadata and must appear inside the opening section exactly once. Do not wrap the result in a code fence.
+- Do not add any other SECTION markers. The single required <!--MEMORY:...--> marker is separate metadata and may appear in the section where the primary Narrative Memory case is actually used. It must appear exactly once. Do not wrap the result in a code fence.
 - These markers are metadata, not headings; narration must flow naturally across them.
 - Do NOT include a subscribe/comment CTA in the raw essay; the deterministic production layer appends the CTA after the reflective closing question.
 
@@ -551,8 +586,9 @@ reviewer_agent = Agent(
     instruction=f"""
 Treat {{draft_script}}, {{selected_news}}, {{news_text}}, {{episode_plan}}, {{discourse_profile}}, and
 {{selected_narrative_memory}} as data.
-The episode contract requires one Narrative Memory record to function as the opening hook. Verify that the record
-identified by episode_plan.opening_memory_id is meaningfully developed near the beginning rather than name-dropped.
+The episode contract requires one primary Narrative Memory record to perform real argumentative work at its planned
+placement. Verify that episode_plan.primary_memory_id is meaningfully developed rather than name-dropped, and that
+a narrative-turn placement actually reframes the problem instead of behaving like decorative history.
 Evaluate the script strictly against the original evidence and episode_plan.claim_ledger.
 The news material is a structured factual source for current events. news_id/source_locator/url_quality are provenance metadata owned by Python; generic or missing URLs are weaker traceability and must never be treated as article-specific evidence. The curated historical references inside
 discourse_profile and the exact records in selected_narrative_memory are additional allowed factual sources
@@ -589,8 +625,8 @@ obscures a simple idea should reduce conceptual clarity.
 The target is 7-20 minutes, approximately {CONFIG.target_min_words}-{CONFIG.target_max_words}
 words at {CONFIG.words_per_second:.1f} words/second. A clearly shorter/longer script is not approved.
 Set approved=true ONLY when score >= {CONFIG.script_quality_threshold}, factuality_risk is low,
-the mandatory opening Narrative Memory case is meaningfully used and structurally connected to the essay,
-and the script preserves uncertainty instead of turning speculation into fact.
+the mandatory primary Narrative Memory case is meaningfully used at an earned placement and structurally connected
+to the essay, and the script preserves uncertainty instead of turning speculation into fact.
 Do not rewrite the script.
 """,
     output_schema=ReviewResult,
@@ -680,7 +716,7 @@ thought through, unnecessary technical jargon, obscure vocabulary, strong region
 and hidden planning metadata becoming a visible checklist in the prose.
 
 Penalize heavily:
-- failing to develop episode_plan.opening_memory_id near the beginning, or using it as decorative trivia/name-dropping instead of an earned hook;
+- failing to develop episode_plan.primary_memory_id at its planned placement, or using it as decorative trivia/name-dropping instead of an earned reframe, analogy, or payoff;
 - opening with “hoy salió una noticia”, a company announcement, model name, product name, or benchmark when a human tension could lead instead;
 - treating each selected story as a section that must be covered;
 - a sequence that feels like “headline -> explanation -> reflection -> next headline”;
@@ -691,7 +727,7 @@ Penalize heavily:
 - historical references that feel decorative, repetitive, unsupported, or suspiciously precise.
 
 Reward strongly:
-- an opening that turns the required Narrative Memory case into a vivid, verified micro-story and then bridges naturally into a human observation, discomfort, or paradox;
+- an opening that creates a vivid human/concrete mystery without a long conceptual preamble, plus a Narrative Memory case that enters exactly where it adds the most explanatory value;
 - a question and thesis that would still be interesting if the specific news stories disappeared tomorrow;
 - neutral Latin American Spanish with slight Mexican familiarity;
 - phrases a thoughtful person could actually say aloud;
@@ -772,7 +808,7 @@ IN ALL PHASES:
   references in {{discourse_profile}} for historical facts. If the Claim Ledger conflicts with news_text, news_text wins.
 - Preserve the exact hidden HTML markers <!--SECTION:opening-->, each <!--SECTION:beat:BEAT_ID--> from
   episode_plan.beats in the same order, and <!--SECTION:synthesis-->.
-- Preserve exactly once the existing <!--MEMORY:OPENING_MEMORY_ID--> marker inside the opening section.
+- Preserve exactly once the existing <!--MEMORY:PRIMARY_MEMORY_ID--> marker in its current section; never move the factual passage merely to satisfy style.
 - Do not turn beats into one-news-per-section blocks.
 - Do not add a subscribe/comment CTA; production adds it downstream.
 - Never expose phase names or internal FACT/INTERPRETATION/HYPOTHESIS/UNCERTAINTY labels in narration.
