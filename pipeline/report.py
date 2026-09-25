@@ -252,6 +252,9 @@ def build_report(
         "production_script_md": artifact_record(scripts_dir / "production_script.md", f"scripts/{episode}/production_script.md"),
         "production_script_json": artifact_record(scripts_dir / "production_script.json", f"scripts/{episode}/production_script.json"),
         "recording_pack": artifact_record(scripts_dir / "recording_pack.json", f"scripts/{episode}/recording_pack.json"),
+        "recording_ingest_contract": artifact_record(scripts_dir / "recording_ingest_contract.json", f"scripts/{episode}/recording_ingest_contract.json"),
+        "recording_ingest_instructions": artifact_record(scripts_dir / "recording_ingest_instructions.md", f"scripts/{episode}/recording_ingest_instructions.md"),
+        "recording_ingest_manifest": artifact_record(scripts_dir / "recording_ingest_manifest.json", f"scripts/{episode}/recording_ingest_manifest.json"),
         "camera_script": artifact_record(scripts_dir / "camera_script.md", f"scripts/{episode}/camera_script.md"),
         "teleprompter": artifact_record(scripts_dir / "teleprompter.html", f"scripts/{episode}/teleprompter.html"),
         "virtual_timeline": artifact_record(scripts_dir / "virtual_timeline.json", f"scripts/{episode}/virtual_timeline.json"),
@@ -277,7 +280,7 @@ def build_report(
     }
 
     return {
-        "schema_version": 9,
+        "schema_version": 10,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),
