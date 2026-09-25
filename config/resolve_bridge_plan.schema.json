@@ -3,69 +3,222 @@
   "$id": "https://jcval94.github.io/AI-News-Daily/schemas/resolve-bridge-plan-v0.json",
   "title": "AI News Daily Resolve Bridge v0 Plan",
   "type": "object",
-  "required": ["schema_version","episode_date","status","project","bins","tracks","imports","placements","markers","readiness","summary"],
+  "required": [
+    "schema_version",
+    "episode_date",
+    "status",
+    "project",
+    "bins",
+    "tracks",
+    "imports",
+    "placements",
+    "markers",
+    "execution",
+    "readiness",
+    "summary"
+  ],
   "properties": {
-    "schema_version": {"const":1},
-    "episode_date": {"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}$"},
-    "status": {"const":"resolve_bridge_v0_plan"},
-    "project":{
-      "type":"object",
-      "required":["name","timeline_name","settings"],
-      "properties":{
-        "name":{"type":"string","minLength":1},
-        "timeline_name":{"type":"string","minLength":1},
-        "settings":{
-          "type":"object",
-          "required":["timelineResolutionWidth","timelineResolutionHeight","timelineFrameRate","timelinePlaybackFrameRate"]
+    "schema_version": {
+      "const": 1
+    },
+    "episode_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "const": "resolve_bridge_v0_plan"
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "name",
+        "timeline_name",
+        "settings"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeline_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "settings": {
+          "type": "object",
+          "required": [
+            "timelineResolutionWidth",
+            "timelineResolutionHeight",
+            "timelineFrameRate",
+            "timelinePlaybackFrameRate"
+          ]
         }
       }
     },
-    "bins":{"type":"array","minItems":4,"items":{"type":"string"}},
-    "tracks":{"type":"object","required":["video","audio"]},
-    "imports":{
-      "type":"array",
-      "items":{
-        "type":"object",
-        "required":["logical_repo_path","absolute_path","bin","exists","placeholder"],
-        "properties":{
-          "logical_repo_path":{"type":"string","minLength":1},
-          "absolute_path":{"type":"string","minLength":1},
-          "bin":{"type":"string","minLength":1},
-          "exists":{"type":"boolean"},
-          "placeholder":{"type":"boolean"}
+    "bins": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "tracks": {
+      "type": "object",
+      "required": [
+        "video",
+        "audio"
+      ]
+    },
+    "imports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "logical_repo_path",
+          "absolute_path",
+          "bin",
+          "exists",
+          "placeholder"
+        ],
+        "properties": {
+          "logical_repo_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "absolute_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exists": {
+            "type": "boolean"
+          },
+          "placeholder": {
+            "type": "boolean"
+          }
         }
       }
     },
-    "placements":{
-      "type":"array",
-      "items":{
-        "type":"object",
-        "required":["placement_id","track_id","track_index","logical_repo_path","record_frame","duration_frames","timeline_start_seconds","duration_seconds","placeholder"],
-        "properties":{
-          "track_id":{"enum":["V1","V2","V3","V4"]},
-          "track_index":{"type":"integer","minimum":1,"maximum":4},
-          "record_frame":{"type":"integer","minimum":0},
-          "duration_frames":{"type":"integer","minimum":1},
-          "placeholder":{"type":"boolean"}
+    "placements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "placement_id",
+          "track_id",
+          "track_index",
+          "logical_repo_path",
+          "record_frame",
+          "duration_frames",
+          "timeline_start_seconds",
+          "duration_seconds",
+          "placeholder"
+        ],
+        "properties": {
+          "track_id": {
+            "enum": [
+              "V1",
+              "V2",
+              "V3",
+              "V4"
+            ]
+          },
+          "track_index": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "record_frame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_frames": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "placeholder": {
+            "type": "boolean"
+          }
         }
       }
     },
-    "markers":{"type":"array"},
-    "readiness":{
-      "type":"object",
-      "required":["plan_valid","ready_for_resolve_execution","final_edit_ready","blockers"],
-      "properties":{
-        "plan_valid":{"const":true},
-        "ready_for_resolve_execution":{"type":"boolean"},
-        "final_edit_ready":{"const":false},
-        "blockers":{"type":"array","items":{"type":"string"}}
+    "markers": {
+      "type": "array"
+    },
+    "readiness": {
+      "type": "object",
+      "required": [
+        "plan_valid",
+        "ready_for_resolve_execution",
+        "final_edit_ready",
+        "blockers"
+      ],
+      "properties": {
+        "plan_valid": {
+          "const": true
+        },
+        "ready_for_resolve_execution": {
+          "type": "boolean"
+        },
+        "final_edit_ready": {
+          "const": false
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       },
-      "additionalProperties":false
+      "additionalProperties": false
     },
-    "summary":{
-      "type":"object",
-      "required":["import_count","placement_count","presenter_placeholder_count","broll_count","broll_placeholder_count","marker_count","duration_seconds","frame_rate_fps"]
+    "summary": {
+      "type": "object",
+      "required": [
+        "import_count",
+        "placement_count",
+        "presenter_placeholder_count",
+        "broll_count",
+        "broll_placeholder_count",
+        "marker_count",
+        "duration_seconds",
+        "frame_rate_fps"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "required": [
+        "primary_strategy",
+        "resolve_otio_logical_path",
+        "resolve_otio_validation_logical_path",
+        "manual_append_default",
+        "reason"
+      ],
+      "properties": {
+        "primary_strategy": {
+          "const": "import_otio"
+        },
+        "resolve_otio_logical_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resolve_otio_validation_logical_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manual_append_default": {
+          "const": false
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
     }
   },
-  "additionalProperties":true
+  "additionalProperties": true
 }
