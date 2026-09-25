@@ -115,5 +115,3 @@ def visual_gate(plan, decision, visual):
     if visual["kind"] != decision["depiction"]:
         return "Catalogue assessment and visible medium disagree"
     return None
-
-

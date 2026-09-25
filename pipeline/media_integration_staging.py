@@ -17,6 +17,7 @@ from pipeline.media_pool import write_json
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--catalogue-replay',action='store_true')
     parser.add_argument('--date',default='2026-09-04')
     parser.add_argument('--run-id',default=os.environ.get('GITHUB_RUN_ID','local'))
     args=parser.parse_args()
@@ -27,10 +28,15 @@ def main():
     media=root/'multimedia'/args.date
     bundle=root/'multimedia'/f'multimedia-{args.date}.zip'
     env={**os.environ,'MEDIA_RETRIEVAL_MODE':'integrated'}
-    subprocess.run([sys.executable,'-m','pipeline.review_media_dense_hardened','--episode-dir',str(episode),
+    if args.catalogue_replay:
+        from pipeline.media_catalogue_replay import seed
+        seed(episode,media)
+    builder='pipeline.review_media_offline_dense' if args.catalogue_replay else 'pipeline.review_media_dense_hardened'
+    subprocess.run([sys.executable,'-m',builder,'--episode-dir',str(episode),
                     '--output-dir',str(media),'--zip-out',str(bundle),'--max-media-downloads','54'],env=env,check=True)
     from pipeline.production_script import create_production_script
     from pipeline.recording_pack import write_recording_pack
+    from pipeline.recording_ingest import write_ingest_contract
     from pipeline.virtual_timeline import write_virtual_timeline
     from pipeline.placeholder_media import write_placeholder_media
     from pipeline.otio_export import write_otio
@@ -41,6 +47,7 @@ def main():
     from pipeline.review_hub_v13 import build_site
     create_production_script(target_date=args.date,scripts_root=root/'scripts',multimedia_root=root/'multimedia')
     write_recording_pack(episode_dir=episode,media_dir=media,words_per_second=CONFIG.words_per_second)
+    write_ingest_contract(episode_dir=episode)
     write_virtual_timeline(episode_dir=episode,media_dir=media)
     write_placeholder_media(episode_dir=episode)
     write_otio(episode_dir=episode)
@@ -65,6 +72,8 @@ def main():
             'selected':selected,'opening':opening,'pool':pool['summary'],'assigned_from_pool':assigned,
             'readiness':readiness['gate'],'relocated_readiness':relocated_readiness['gate'],
             'pages_panel': 'id="media-pool-status"' in (root/'review-site/index.html').read_text(),
+            'acceptance_mode':'controlled_catalogue_replay' if args.catalogue_replay else 'live_semantic',
+            'semantic_live_status':'blocked_no_credits' if args.catalogue_replay else 'tested',
             'success':success,'promoted':False,'resolve_local_acceptance':'pending','transcript':'off'}
     write_json(root/'integration-result.json',result)
     print(json.dumps(result,ensure_ascii=False,indent=2))

@@ -52,7 +52,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.asset_readiness, pipeline.otio_export; print('backfill runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.news_resolution, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.asset_readiness, pipeline.recording_ingest, pipeline.otio_export; print('backfill runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Prepare isolated workspace
@@ -191,6 +191,10 @@ jobs:
             --min-take-seconds "$RECORDING_MIN_TAKE_SECONDS" \
             --target-take-seconds "$RECORDING_TARGET_TAKE_SECONDS" \
             --max-take-seconds "$RECORDING_MAX_TAKE_SECONDS"
+          python -m pipeline.recording_ingest \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts
           python -m pipeline.virtual_timeline \
             --target-date "$TARGET_DATE" \
             --scripts-dir "$RUN_ROOT/scripts" \

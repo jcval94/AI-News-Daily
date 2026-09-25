@@ -1,0 +1,238 @@
+import json
+import shutil
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+
+from pipeline.recording_ingest import (
+    build_recording_ingest_contract,
+    parse_capture_filename,
+    scan_recordings,
+    write_ingest_contract,
+)
+
+
+def recording_pack():
+    return {
+        "episode_date": "2026-09-24",
+        "capture_recommendation": {
+            "resolution": "3840x2160",
+            "frame_rate_fps": 30,
+            "audio_sample_rate_hz": 48000,
+        },
+        "recording_protocol": {
+            "pre_roll_seconds": 2.0,
+            "post_roll_seconds": 2.0,
+        },
+        "takes": [
+            {
+                "take_id": "opening_t01",
+                "section_label": "Apertura",
+                "spoken_slate": "TAKE opening_t01",
+                "estimated_duration_seconds": 4.0,
+            },
+            {
+                "take_id": "opening_t02",
+                "section_label": "Apertura",
+                "spoken_slate": "TAKE opening_t02",
+                "estimated_duration_seconds": 4.0,
+            },
+        ],
+    }
+
+
+def _run(command):
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr)
+
+
+def _video(path: Path, *, size: str, duration: float, audio: bool):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    ffmpeg = shutil.which("ffmpeg")
+    command = [
+        ffmpeg,
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        f"color=c=black:s={size}:r=30:d={duration}",
+    ]
+    if audio:
+        command += [
+            "-f",
+            "lavfi",
+            "-i",
+            f"sine=frequency=440:sample_rate=48000:duration={duration}",
+            "-shortest",
+        ]
+    command += ["-c:v", "libx264", "-pix_fmt", "yuv420p"]
+    if audio:
+        command += ["-c:a", "aac"]
+    command.append(str(path))
+    _run(command)
+
+
+def _audio(path: Path, *, duration: float):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    _run([
+        shutil.which("ffmpeg"),
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        f"sine=frequency=880:sample_rate=48000:duration={duration}",
+        "-c:a",
+        "pcm_s16le",
+        str(path),
+    ])
+
+
+class RecordingIngestContractTests(unittest.TestCase):
+    def test_contract_is_stable_and_never_claims_alignment_ready(self):
+        contract = build_recording_ingest_contract(recording_pack())
+        self.assertEqual(contract["summary"]["expected_take_count"], 2)
+        self.assertTrue(contract["storage"]["never_commit_raw_recordings"])
+        self.assertTrue(contract["selection_policy"]["retain_all_retakes"])
+        self.assertEqual(
+            contract["selection_policy"]["authority"],
+            "technical_only_not_performance_or_script_accuracy",
+        )
+        self.assertFalse(contract["readiness"]["ready_for_alignment"])
+        self.assertIn("recorded_media_required", contract["readiness"]["blockers"])
+        self.assertEqual(
+            contract["expected_takes"][0]["examples"]["video_retake"],
+            "opening_t01__r02__camA.mov",
+        )
+
+    def test_filename_parser_preserves_take_and_retake_identity(self):
+        video = parse_capture_filename(Path("opening_t01__r03__camA.mov"))
+        audio = parse_capture_filename(Path("opening_t01__r03__lav.wav"))
+        unmatched = parse_capture_filename(Path("random camera file.mp4"))
+        self.assertEqual(video["take_id"], "opening_t01")
+        self.assertEqual(video["retake_number"], 3)
+        self.assertEqual(video["media_type"], "video")
+        self.assertEqual(audio["media_type"], "audio")
+        self.assertFalse(unmatched["matched"])
+
+    def test_write_contract_emits_json_and_instructions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            episode = Path(tmp) / "scripts" / "2026-09-24"
+            episode.mkdir(parents=True)
+            (episode / "recording_pack.json").write_text(
+                json.dumps(recording_pack()), encoding="utf-8"
+            )
+            json_path, md_path, payload = write_ingest_contract(episode_dir=episode)
+            self.assertTrue(json_path.is_file())
+            self.assertTrue(md_path.is_file())
+            self.assertEqual(payload["summary"]["expected_take_count"], 2)
+            instructions = md_path.read_text(encoding="utf-8")
+            self.assertIn("opening_t01__r01__camA.mov", instructions)
+            self.assertIn("scanner sólo lee", instructions)
+
+
+@unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg unavailable")
+class RecordingIngestScannerTests(unittest.TestCase):
+    def _fixture(self, root: Path, *, include_second_take: bool = True):
+        inbox = root / "inbox"
+        contract = build_recording_ingest_contract(recording_pack())
+        for take in contract["expected_takes"]:
+            take["expected_capture_seconds"] = 1.5
+
+        _video(
+            inbox / "opening_t01__r01__camA.mp4",
+            size="640x360",
+            duration=1.5,
+            audio=True,
+        )
+        _video(
+            inbox / "opening_t01__r02__camA.mp4",
+            size="1280x720",
+            duration=1.5,
+            audio=False,
+        )
+        _audio(
+            inbox / "opening_t01__r02__audio.wav",
+            duration=1.5,
+        )
+        if include_second_take:
+            _video(
+                inbox / "opening_t02__r01__camA.mp4",
+                size="1280x720",
+                duration=1.5,
+                audio=True,
+            )
+        return inbox, contract
+
+    def test_scanner_selects_technical_candidate_and_preserves_all_retakes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox, contract = self._fixture(root)
+            manifest = scan_recordings(contract=contract, input_dir=inbox)
+
+            self.assertTrue(manifest["readiness"]["ready_for_alignment"])
+            first = next(x for x in manifest["takes"] if x["take_id"] == "opening_t01")
+            self.assertEqual(first["retake_count"], 2)
+            self.assertEqual(first["technical_preferred_retake"], 2)
+            self.assertEqual(first["technical_preferred"]["audio_source"], "external")
+            self.assertEqual(len(first["candidates"]), 2)
+            self.assertEqual(
+                first["technical_preferred"]["selected_video"]["relative_path"],
+                "opening_t01__r02__camA.mp4",
+            )
+            self.assertEqual(
+                first["technical_preferred"]["selected_external_audio"]["relative_path"],
+                "opening_t01__r02__audio.wav",
+            )
+
+    def test_missing_take_blocks_alignment_without_losing_other_candidates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox, contract = self._fixture(root, include_second_take=False)
+            manifest = scan_recordings(contract=contract, input_dir=inbox)
+            self.assertFalse(manifest["readiness"]["ready_for_alignment"])
+            self.assertIn("missing_take:opening_t02", manifest["readiness"]["blockers"])
+            first = next(x for x in manifest["takes"] if x["take_id"] == "opening_t01")
+            self.assertIsNotNone(first["technical_preferred"])
+
+    def test_manifest_never_persists_absolute_machine_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox, contract = self._fixture(root)
+            manifest = scan_recordings(contract=contract, input_dir=inbox)
+            serialized = json.dumps(manifest)
+            self.assertNotIn(str(root), serialized)
+            self.assertFalse(manifest["source"]["absolute_input_path_persisted"])
+
+    def test_unknown_take_id_is_a_blocker_and_unmatched_file_is_only_warning(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox, contract = self._fixture(root)
+            _video(
+                inbox / "unknown_t99__r01__camA.mp4",
+                size="640x360",
+                duration=1.0,
+                audio=True,
+            )
+            _video(
+                inbox / "camera dump.mp4",
+                size="640x360",
+                duration=1.0,
+                audio=True,
+            )
+            manifest = scan_recordings(contract=contract, input_dir=inbox)
+            self.assertFalse(manifest["readiness"]["ready_for_alignment"])
+            self.assertIn("unknown_take_id:unknown_t99", manifest["readiness"]["blockers"])
+            self.assertEqual(manifest["summary"]["unmatched_media_file_count"], 1)
+            self.assertIn("unmatched_files:1", manifest["readiness"]["warnings"])
+
+
+if __name__ == "__main__":
+    unittest.main()

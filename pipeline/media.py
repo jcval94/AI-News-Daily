@@ -114,7 +114,7 @@ def _save_binary(data: bytes, destination: Path) -> None:
     destination.write_bytes(data)
 
 
-def search_pexels(query: str) -> dict[str, Any] | None:
+def search_pexels(query: str, *, excluded_ids: set[str] | None = None) -> dict[str, Any] | None:
     api_key = os.getenv("PEXELS_API_KEY")
     if not api_key:
         return None
@@ -126,6 +126,8 @@ def search_pexels(query: str) -> dict[str, Any] | None:
     )
     candidates: list[dict[str, Any]] = []
     for photo in response.json().get("photos", []):
+        if f"pexels:{photo.get('id')}" in (excluded_ids or set()):
+            continue
         src = photo.get("src", {}) if isinstance(photo, dict) else {}
         download_url = src.get("large2x") or src.get("large")
         if not download_url:
@@ -170,7 +172,7 @@ def _best_pexels_video_file(video: dict[str, Any]) -> dict[str, Any] | None:
     return min(files, key=rank)
 
 
-def search_pexels_video(query: str) -> dict[str, Any] | None:
+def search_pexels_video(query: str, *, excluded_ids: set[str] | None = None) -> dict[str, Any] | None:
     """Return a practical landscape Pexels clip for a concrete visual query.
 
     Pexels Video does not expose reliable descriptive text for semantic rescoring. Therefore the
@@ -190,6 +192,8 @@ def search_pexels_video(query: str) -> dict[str, Any] | None:
     ranked: list[tuple[tuple[int, int, int], dict[str, Any]]] = []
     for position, video in enumerate(videos):
         if not isinstance(video, dict):
+            continue
+        if f"pexels:{video.get('id')}" in (excluded_ids or set()):
             continue
         file_info = _best_pexels_video_file(video)
         if not file_info:
@@ -224,7 +228,7 @@ def search_pexels_video(query: str) -> dict[str, Any] | None:
     return min(ranked, key=lambda pair: pair[0])[1]
 
 
-def search_wikimedia(query: str) -> dict[str, Any] | None:
+def search_wikimedia(query: str, *, excluded_ids: set[str] | None = None) -> dict[str, Any] | None:
     response = _request(
         "GET",
         "https://commons.wikimedia.org/w/api.php",
@@ -244,6 +248,8 @@ def search_wikimedia(query: str) -> dict[str, Any] | None:
     )
     candidates: list[dict[str, Any]] = []
     for page in response.json().get("query", {}).get("pages", []):
+        if f"wikimedia_commons:{page.get('pageid') or page.get('title')}" in (excluded_ids or set()):
+            continue
         info_list = page.get("imageinfo") or []
         if not info_list:
             continue
@@ -312,7 +318,8 @@ def download_video_shot_asset(
         return None
     errors: list[str] = []
     try:
-        record = search_pexels_video(query)
+        excluded = set(shot.get("exclude_asset_ids", []))
+        record = search_pexels_video(query, excluded_ids=excluded) if excluded else search_pexels_video(query)
     except Exception as exc:
         errors.append(f"search_pexels_video: {type(exc).__name__}: {exc}")
         record = None
@@ -357,7 +364,8 @@ def download_shot_asset(
     provider_candidates: list[dict[str, Any]] = []
     for provider in (search_pexels, search_wikimedia):
         try:
-            candidate = provider(query)
+            excluded = set(shot.get("exclude_asset_ids", []))
+            candidate = provider(query, excluded_ids=excluded) if excluded else provider(query)
             if candidate:
                 provider_candidates.append(candidate)
         except Exception as exc:

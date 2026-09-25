@@ -79,4 +79,3 @@ def probe_media(path: Path, *, runner: RunCommand = subprocess.run) -> dict[str,
         "video_codec": str(video_stream.get("codec_name", "") or ""),
         "audio_codec": str(audio_stream.get("codec_name", "") or ""),
     }
-

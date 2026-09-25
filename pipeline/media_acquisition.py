@@ -6,6 +6,7 @@ import json
 import re
 import tempfile
 from pathlib import Path
+from pydantic import ValidationError
 
 from pipeline.licenses import assess_license
 from pipeline.media_pool import Pool, normalized_license
@@ -51,7 +52,10 @@ class Acquisition:
 
     def images(self, need):
         description = ' | '.join(str(need[k]) for k in ('subject', 'period', 'geography') if need[k])
-        plan, _ = model.make_plan(description, self.request)
+        try:
+            plan, _ = model.make_plan(description, self.request)
+        except ValidationError as error:
+            plan, _ = model.make_plan(description, self.request, validation_feedback=sources.safe_error(error))
         if not plan.unambiguous:
             raise ValueError('Ambiguous subject; exact retrieval refused')
         try:

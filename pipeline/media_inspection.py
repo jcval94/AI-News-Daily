@@ -68,10 +68,8 @@ def inspect_video(
         ffprobe_bin,
         "-v",
         "error",
-        "-select_streams",
-        "v:0",
         "-show_entries",
-        "stream=codec_name,width,height,r_frame_rate:format=duration",
+        "stream=index,codec_type,codec_name,width,height,r_frame_rate,sample_rate,channels:format=duration",
         "-of",
         "json",
         str(path),
@@ -94,7 +92,15 @@ def inspect_video(
             "error": "ffprobe returned invalid JSON",
         }
     streams = payload.get("streams", [])
-    if not streams:
+    video_stream = next(
+        (item for item in streams if item.get("codec_type") == "video"),
+        None,
+    )
+    audio_stream = next(
+        (item for item in streams if item.get("codec_type") == "audio"),
+        None,
+    )
+    if not video_stream:
         return {
             "ok": False,
             "kind": "video",
@@ -124,7 +130,6 @@ def inspect_video(
             "error": smoke.stderr.strip() or "video_decode_failed",
         }
 
-    stream = streams[0]
     try:
         duration = float((payload.get("format", {}) or {}).get("duration", 0) or 0)
     except (TypeError, ValueError):
@@ -132,11 +137,93 @@ def inspect_video(
     return {
         "ok": True,
         "kind": "video",
-        "width": int(stream.get("width", 0) or 0),
-        "height": int(stream.get("height", 0) or 0),
+        "width": int(video_stream.get("width", 0) or 0),
+        "height": int(video_stream.get("height", 0) or 0),
+        "duration_seconds": max(0.0, duration),
+        "codec": str(video_stream.get("codec_name", "") or ""),
+        "r_frame_rate": str(video_stream.get("r_frame_rate", "") or ""),
+        "has_audio_stream": bool(audio_stream),
+        "audio_codec": str((audio_stream or {}).get("codec_name", "") or ""),
+        "audio_sample_rate_hz": int((audio_stream or {}).get("sample_rate", 0) or 0),
+        "audio_channels": int((audio_stream or {}).get("channels", 0) or 0),
+    }
+
+
+def inspect_audio(
+    path: Path,
+    *,
+    ffprobe: str | None = None,
+    ffmpeg: str | None = None,
+    smoke_seconds: float = 0.5,
+) -> dict[str, Any]:
+    ffprobe_bin = ffprobe or shutil.which("ffprobe")
+    ffmpeg_bin = ffmpeg or shutil.which("ffmpeg")
+    if not ffprobe_bin or not ffmpeg_bin:
+        return {
+            "ok": False,
+            "kind": "audio",
+            "error_code": "ffmpeg_unavailable",
+            "error": "ffmpeg and ffprobe are required",
+        }
+    probe = subprocess.run(
+        [
+            ffprobe_bin, "-v", "error",
+            "-select_streams", "a:0",
+            "-show_entries", "stream=codec_name,sample_rate,channels:format=duration",
+            "-of", "json", str(path),
+        ],
+        capture_output=True, text=True, check=False,
+    )
+    if probe.returncode != 0:
+        return {
+            "ok": False,
+            "kind": "audio",
+            "error_code": "ffprobe_failed",
+            "error": probe.stderr.strip() or "ffprobe_failed",
+        }
+    try:
+        payload = json.loads(probe.stdout or "{}")
+    except json.JSONDecodeError:
+        return {
+            "ok": False,
+            "kind": "audio",
+            "error_code": "ffprobe_invalid_json",
+            "error": "ffprobe returned invalid JSON",
+        }
+    streams = payload.get("streams", [])
+    if not streams:
+        return {
+            "ok": False,
+            "kind": "audio",
+            "error_code": "no_audio_stream",
+            "error": "No audio stream found",
+        }
+    smoke = subprocess.run(
+        [
+            ffmpeg_bin, "-v", "error", "-t", f"{max(0.1, float(smoke_seconds)):.3f}",
+            "-i", str(path), "-vn", "-f", "null", "-"
+        ],
+        capture_output=True, text=True, check=False,
+    )
+    if smoke.returncode != 0:
+        return {
+            "ok": False,
+            "kind": "audio",
+            "error_code": "audio_decode_failed",
+            "error": smoke.stderr.strip() or "audio_decode_failed",
+        }
+    stream = streams[0]
+    try:
+        duration = float((payload.get("format", {}) or {}).get("duration", 0) or 0)
+    except (TypeError, ValueError):
+        duration = 0.0
+    return {
+        "ok": True,
+        "kind": "audio",
         "duration_seconds": max(0.0, duration),
         "codec": str(stream.get("codec_name", "") or ""),
-        "r_frame_rate": str(stream.get("r_frame_rate", "") or ""),
+        "sample_rate_hz": int(stream.get("sample_rate", 0) or 0),
+        "channels": int(stream.get("channels", 0) or 0),
     }
 
 

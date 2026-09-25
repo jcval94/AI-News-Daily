@@ -70,7 +70,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.asset_readiness, pipeline.otio_export; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.asset_readiness, pipeline.recording_ingest, pipeline.otio_export; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -356,6 +356,19 @@ jobs:
             --target-take-seconds "$RECORDING_TARGET_TAKE_SECONDS" \
             --max-take-seconds "$RECORDING_MAX_TAKE_SECONDS"
 
+      - name: Prepare recording ingest contract
+        id: recording_ingest_contract
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.recording_pack.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.recording_ingest \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts
+
       - name: Create virtual A-roll timeline
         id: virtual_timeline
         if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.recording_pack.outcome == 'success'
@@ -482,6 +495,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
+          steps.recording_ingest_contract.outcome == 'success' &&
           steps.virtual_timeline.outcome == 'success' &&
           steps.placeholder_media.outcome == 'success' &&
           steps.resolve_bridge.outcome == 'success' &&
@@ -499,6 +513,7 @@ jobs:
           steps.episode_outcome.outputs.status == 'approved' &&
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
+          steps.recording_ingest_contract.outcome == 'success' &&
           steps.virtual_timeline.outcome == 'success' &&
           steps.placeholder_media.outcome == 'success' &&
           steps.resolve_bridge.outcome == 'success' &&
@@ -568,6 +583,7 @@ jobs:
           steps.dense_media.outcome == 'failure' ||
           steps.production_script.outcome == 'failure' ||
           steps.recording_pack.outcome == 'failure' ||
+          steps.recording_ingest_contract.outcome == 'failure' ||
           steps.virtual_timeline.outcome == 'failure' ||
           steps.placeholder_media.outcome == 'failure' ||
           steps.resolve_bridge.outcome == 'failure' ||

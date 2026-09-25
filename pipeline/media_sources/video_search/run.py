@@ -204,5 +204,3 @@ def next_candidate(candidates, attempted, successful, events, blocked_sources):
     creators = [c["creator"] for c in successful]
     diverse = [c for c in remaining if creators.count(c["creator"]) < 3]
     return next(iter(diverse or remaining), None)
-
-

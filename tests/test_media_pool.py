@@ -147,3 +147,40 @@ class MediaPoolTests(unittest.TestCase):
             better={'file':'better.jpg','source_width':1280,'source_height':720}
             self.assertLess(resolution_rank(proxy,media_root=root),resolution_rank(better,media_root=root))
             self.assertEqual(resolution_rank({'file':'bad.jpg','source_width':8000,'source_height':4000},media_root=root),(0,0,0,0))
+
+
+class MediaProvenanceHandoffTests(unittest.TestCase):
+    def test_provenance_survives_virtual_timeline_otio_roundtrip_and_resolve(self):
+        import opentimelineio as otio
+        from test_virtual_timeline import recording_pack, edit_manifest
+        from pipeline.virtual_timeline import build_virtual_timeline
+        from pipeline.otio_export import build_otio_timeline, validate_roundtrip
+        from pipeline.placeholder_media import build_placeholder_manifest
+        from pipeline.resolve_bridge import build_resolve_plan, materialize_resolve_otio
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);pool=make_pool(root/'pool');add(pool,root/'source.png')
+            selected=root/'multimedia/2026-09-24'
+            record=pool.assign(segment(),selected,'beat')
+            edit=edit_manifest()
+            for cue in edit['timeline']:
+                if cue.get('mode')=='media':
+                    cue['media']=_asset_payload(record,segment())
+            virtual=build_virtual_timeline(recording_pack=recording_pack(),edit_manifest=edit)
+            clips=next(t for t in virtual['tracks'] if t['track_id']=='V2')['clips']
+            self.assertEqual(clips[0]['source']['media_provenance'],record['media_provenance'])
+            episode=root/'scripts/2026-09-24';episode.mkdir(parents=True)
+            timeline=build_otio_timeline(virtual,output_dir=episode)
+            source=episode/'timeline.otio'
+            otio.adapters.write_to_file(timeline,str(source))
+            reloaded=otio.adapters.read_from_file(str(source))
+            validate_roundtrip(source_payload=virtual,timeline=reloaded)
+            placeholder=episode/'placeholder_media';placeholder.mkdir()
+            manifest=build_placeholder_manifest(virtual_timeline=virtual,output_dir=placeholder)
+            plan=build_resolve_plan(virtual_timeline=virtual,placeholder_manifest=manifest,repo_root=root)
+            target=episode/'resolve_timeline.otio'
+            materialize_resolve_otio(plan=plan,source_otio_path=source,destination=target,repo_root=root)
+            resolved=otio.adapters.read_from_file(str(target))
+            selected_clips=[c for c in resolved.find_clips() if c.metadata.get('ai_news_daily',{}).get('track_id')=='V2']
+            self.assertTrue(selected_clips)
+            self.assertEqual(selected_clips[0].metadata['ai_news_daily']['source']['media_provenance']['rendition_id'],record['rendition_id'])
+            self.assertEqual(selected_clips[0].source_range.start_time.value,0)

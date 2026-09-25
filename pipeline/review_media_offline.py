@@ -363,6 +363,7 @@ def build_offline_review_media(
             record = download_video_shot_asset(
                 {
                     "shot_number": slot_number,
+                    "exclude_asset_ids": [f"{a.get('provider')}:{a.get('provider_asset_id')}" for a in manifest if a.get("provider_asset_id") is not None],
                     "visual_query": segment["visual_query"],
                     "on_screen_text": segment.get("on_screen_text", ""),
                 },
@@ -379,6 +380,7 @@ def build_offline_review_media(
             record = download_shot_asset(
                 {
                     "shot_number": slot_number,
+                    "exclude_asset_ids": [f"{a.get('provider')}:{a.get('provider_asset_id')}" for a in manifest if a.get("provider_asset_id") is not None],
                     "visual_query": segment["visual_query"],
                     "on_screen_text": segment.get("on_screen_text", ""),
                 },
