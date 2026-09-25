@@ -12,7 +12,11 @@ Pregunta guía del canal:
 
 Regla central:
 
-> Micro-historia verificada de Narrative Memory → mecanismo sorprendente → tensión humana → tesis → noticias como evidencia.
+> Tensión humana o escena concreta → misterio → evidencia actual fuerte → Narrative Memory como giro/reencuadre → tesis evolucionada.
+
+Esta es una **preferencia editorial, no una plantilla rígida**. Narrative Memory sigue siendo obligatoria,
+pero no debe monopolizar la apertura. El experimento 20 × 3 mostró una señal más robusta cuando la historia
+entraba después de que el problema contemporáneo ya era concreto.
 
 Regla de dramaturgia:
 
@@ -42,43 +46,47 @@ Como guía editorial:
 - una tesis con 2–4 casos realmente distintos puede sostener 10–15 minutos;
 - solo usar más casos cuando cada uno añade una dimensión nueva.
 
-No existe obligación de utilizar todas las noticias seleccionadas. Es preferible construir un gran ensayo con tres piezas de evidencia que mencionar ocho noticias de forma superficial.
+No existe obligación de utilizar todas las noticias seleccionadas. Por defecto, preferir **1–2 piezas de evidencia fuertes**. Una tercera solo entra cuando añade un mecanismo, contraejemplo, caso límite o consecuencia realmente distinto.
 
 ## Gramática principal del episodio
 
-La estructura preferida es:
+La estructura preferida, validada como dirección por el experimento 20 × 3, es:
 
-1. **Micro-historia verificada de Narrative Memory.** Un caso recuperado de la biblioteca debe abrir el episodio y ser interesante incluso sin conocer las noticias de la semana.
-2. **Mecanismo sorprendente.** Explicar qué estructura hace útil al caso; no basta con que sea raro.
-3. **Tensión humana.** Conectar ese mecanismo con una experiencia, contradicción o preocupación reconocible.
-4. **Misterio central.** La pregunta cuya respuesta todavía no conocemos.
-5. **Tesis provisional.** Una lectura inicial, deliberadamente incompleta.
-6. **Escena concreta.** Una situación imaginable que haga visible el problema.
-7. **Evidencia actual.** Una noticia entra porque ayuda a investigar el misterio.
-8. **Primera revelación.** Algo cambia en nuestra lectura inicial.
-9. **Complicación o contraejemplo.** Aparece una pieza que impide cerrar el caso demasiado pronto.
-10. **Giro narrativo.** Descubrimos que el problema importante no era exactamente el que parecía al principio.
-11. **Tesis evolucionada.** La idea final debe ser más rica, extraña o precisa que la inicial.
-12. **Payoff.** Volver a una imagen, frase, pregunta o motivo del inicio con un significado nuevo.
-13. **Pregunta final.** Dejar una tensión genuina abierta.
+1. **Tensión humana o escena concreta.** Algo que el espectador pueda sentir o visualizar antes de recibir una tesis.
+2. **Misterio central.** La pregunta cuya respuesta todavía no conocemos.
+3. **Tesis provisional.** Una lectura inicial, deliberadamente incompleta.
+4. **Evidencia actual fuerte.** Normalmente 1–2 casos; la primera evidencia debe llegar pronto y hacer trabajo real.
+5. **Primera revelación.** Algo cambia en nuestra lectura inicial.
+6. **Complicación.** La respuesta fácil deja de ser suficiente.
+7. **Narrative Memory.** Preferentemente entra aquí como giro: una historia o paralelo verificado que obliga a reinterpretar lo anterior.
+8. **Giro narrativo.** Descubrimos que el problema importante no era exactamente el que parecía al principio.
+9. **Tesis evolucionada.** La idea final debe ser más rica, extraña o precisa que la inicial.
+10. **Payoff.** Volver a una imagen, frase, pregunta o motivo con un significado nuevo.
+11. **Pregunta final.** Dejar una tensión genuina abierta.
 
-Esto es una gramática, no una plantilla. Los episodios deben variar su recorrido.
+Esto es una gramática, no una plantilla. Los episodios deben variar su recorrido. Una buena historia de Narrative
+Memory puede seguir abriendo un episodio, pero solo cuando sea claramente el mejor cold open; no por contrato.
 
-## Apertura: historia verificada → mecanismo → tensión → pregunta
+## Apertura: tensión/escena → misterio → evidencia temprana
 
-La apertura NO debe comportarse como una introducción de noticias.
+La apertura NO debe comportarse como una introducción de noticias ni como una clase de historia.
 
 La secuencia preferida es:
 
-1. **Un caso de Narrative Memory inesperado pero real.**
-2. **Una escena y uno o más hechos verificados suficientes para entender por qué sorprende.**
-3. **El mecanismo transferible que revela el caso.**
-4. **Una tensión humana o contemporánea que tenga la misma estructura.**
-5. **La pregunta del ensayo.** Solo entonces queda claro qué vamos a investigar.
+1. **Una tensión humana, escena concreta, contradicción o misterio reconocible.**
+2. **La pregunta del ensayo.**
+3. **Una tesis provisional incompleta.**
+4. **Evidencia actual suficientemente pronto** para evitar un prólogo abstracto largo.
 
-El Director debe seleccionar 1–2 registros de Narrative Memory por episodio y uno debe quedar identificado como `opening_memory_id`. El Writer debe desarrollarlo como micro-historia; mencionarlo en una frase no cumple el contrato. Como guía, el caso de apertura puede ocupar aproximadamente 45–90 segundos cuando tenga sustancia suficiente, sin convertir el episodio en una clase de historia.
+El Director debe seleccionar 1–2 registros de Narrative Memory por episodio y uno debe quedar identificado como
+`primary_memory_id`. Cada registro declara un `placement`: `narrative_turn` es el default recomendado;
+`opening` se reserva para casos excepcionalmente fuertes; `closing_callback` y `support` son alternativas válidas.
+Si el placement es `opening`, `opening_memory_id` conserva esa información de compatibilidad.
 
-La noticia puede aparecer después, como evidencia. No existe obligación de mencionar una empresa, modelo, paper o producto en los primeros segundos.
+El Writer debe desarrollar el caso principal como mecanismo explicativo real; mencionarlo en una frase no cumple
+el contrato. Como guía, el pasaje principal suele funcionar mejor de forma compacta, aproximadamente 60–110 palabras.
+
+No existe obligación de mencionar una empresa, modelo, paper o producto en los primeros segundos.
 
 Ejemplo de energía, no de texto literal:
 
@@ -239,8 +247,11 @@ Estos ejemplos pueden usarse como **fuente factual editorial adicional**. El Wri
 
 ## Uso de historia durante el episodio
 
-- Usar exactamente un paralelo de Narrative Memory como apertura obligatoria.
-- Incluir como máximo un segundo paralelo de Narrative Memory durante el desarrollo si ayuda a explicar una dimensión diferente.
+- Usar al menos un paralelo recuperado de Narrative Memory y como máximo dos.
+- Identificar uno como `primary_memory_id`.
+- Preferir `placement="narrative_turn"`: la historia entra después de que el problema actual ya es concreto y cambia su lectura.
+- Usar `placement="opening"` únicamente cuando la historia sea por sí misma el gancho más fuerte y relevante.
+- Incluir un segundo paralelo solo si explica una dimensión realmente distinta.
 - Los referentes históricos curados de este documento pueden complementar, pero no sustituir, el paralelo obligatorio recuperado de Narrative Memory.
 - No convertir el guion en clase de historia.
 - Una referencia histórica debe revelar algo: una preocupación antigua, un resultado contraintuitivo, un cambio institucional o una analogía humana útil.
