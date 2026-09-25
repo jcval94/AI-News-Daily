@@ -196,6 +196,12 @@ class EpisodePlan(BaseModel):
                 "Every episode_plan.evidence item must serve at least one narrative beat; "
                 f"unused evidence_id values={sorted(planned - used)}"
             )
+        if primary_placement == "narrative_turn" and not any(
+            beat.kind == "turn" for beat in self.beats
+        ):
+            raise ValueError(
+                "primary Narrative Memory placement narrative_turn requires at least one turn beat"
+            )
         return self
 
 
