@@ -129,6 +129,8 @@ def build_asset_readiness(
     missing_noncritical = [x for x in missing if not x["critical"]]
 
     blockers: list[str] = []
+    if planned_count < int(thresholds.get("min_planned_cue_count", 1)):
+        blockers.append("no_planned_visual_cues")
     if cue_ratio < float(thresholds.get("min_resolved_cue_ratio", 0.8)):
         blockers.append("resolved_cue_ratio_below_threshold")
     if sec_ratio < float(thresholds.get("min_resolved_visual_seconds_ratio", 0.8)):
