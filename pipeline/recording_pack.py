@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.production_script import split_sentences, word_count
+from pipeline.schema_validation import validate_payload
 
 SCHEMA_VERSION = 1
 
@@ -750,6 +751,7 @@ def write_recording_pack(
         max_take_seconds=max_take_seconds,
     )
 
+    validate_payload(pack, "recording_pack.schema.json")
     json_path = episode_dir / "recording_pack.json"
     camera_path = episode_dir / "camera_script.md"
     teleprompter_path = episode_dir / "teleprompter.html"
