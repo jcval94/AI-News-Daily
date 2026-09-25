@@ -3,6 +3,7 @@ import unittest
 from pipeline.recording_alignment import (
     build_alignment_contract,
     build_recording_alignment,
+    resolve_policy_path,
     tokenize,
 )
 
@@ -129,6 +130,14 @@ def transcript(retake, words, *, timebase="video_source", scores=None):
 
 
 class RecordingAlignmentTests(unittest.TestCase):
+    def test_policy_path_prefers_checkout_over_isolated_run_root(self):
+        resolved = resolve_policy_path(
+            __import__("pathlib").Path(".pipeline-runs/fake/run").resolve(),
+            "config/recording_alignment.yaml",
+        )
+        self.assertTrue(resolved.is_file())
+        self.assertTrue(str(resolved).endswith("config/recording_alignment.yaml"))
+
     def test_tokenizer_is_case_punctuation_and_accent_tolerant(self):
         self.assertEqual(
             tokenize("¡INTELIGENCIA, acción!"),
