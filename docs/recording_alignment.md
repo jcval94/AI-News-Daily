@@ -87,6 +87,16 @@ The adapter keeps forced alignment enabled and asks WhisperX for JSON word times
 
 When camera scratch audio exists, the adapter transcribes the camera video even if an external lav file exists. The lav remains the preferred post-production audio, but video-relative timing stays trustworthy.
 
+### Optional Resolve text workflow
+
+The WhisperX adapter also writes one SRT sidecar per take/retake under:
+
+```
+recordings/YYYY-MM-DD/transcripts/resolve_srt/
+```
+
+These files are not alignment authority. They are convenience artifacts for Resolve 21's Media Pool transcription workflow: the same word timing can be imported into Resolve for text search/editing while `recording_transcript_bundle.json` remains the reproducible machine contract.
+
 ### 3. Select retakes and calculate trims
 
 ```bash
