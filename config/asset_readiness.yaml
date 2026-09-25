@@ -3,6 +3,7 @@ policy_id: pre_recording_asset_readiness_v1
 mode: enforce
 
 thresholds:
+  min_planned_cue_count: 1
   min_resolved_cue_ratio: 0.80
   min_resolved_visual_seconds_ratio: 0.80
   max_missing_noncritical_cues: 3
