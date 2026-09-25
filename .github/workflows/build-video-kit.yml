@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.otio_export; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.otio_export; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -106,6 +106,11 @@ jobs:
           echo "lookback_days=$LOOKBACK_DAYS" >> "$GITHUB_OUTPUT"
           echo "download_multimedia=$DOWNLOAD_MULTIMEDIA" >> "$GITHUB_OUTPUT"
           echo "promote_approved=$PROMOTE_APPROVED" >> "$GITHUB_OUTPUT"
+          if [ "$PROMOTE_APPROVED" = "true" ] && [ "$DOWNLOAD_MULTIMEDIA" != "true" ]; then
+            echo "::error::Canonical promotion requires download_multimedia=true; script-only experiments must keep promote_approved=false."
+            exit 2
+          fi
+
           echo "Source mode: $SOURCE_MODE"
           echo "Lookback days: $LOOKBACK_DAYS"
           echo "Download multimedia: $DOWNLOAD_MULTIMEDIA"
@@ -354,6 +359,31 @@ jobs:
             --scripts-dir "$RUN_ROOT/scripts" \
             --multimedia-dir "$RUN_ROOT/multimedia"
 
+      - name: Generate NLE placeholder media
+        id: placeholder_media
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.virtual_timeline.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.placeholder_media \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts"
+
+      - name: Build Resolve Bridge v0 plan
+        id: resolve_bridge
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.placeholder_media.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.resolve_bridge \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts
+
       - name: Export native OpenTimelineIO
         id: otio_export
         if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.virtual_timeline.outcome == 'success'
@@ -409,6 +439,8 @@ jobs:
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
           steps.virtual_timeline.outcome == 'success' &&
+          steps.placeholder_media.outcome == 'success' &&
+          steps.resolve_bridge.outcome == 'success' &&
           steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
@@ -422,6 +454,8 @@ jobs:
           steps.production_script.outcome == 'success' &&
           steps.recording_pack.outcome == 'success' &&
           steps.virtual_timeline.outcome == 'success' &&
+          steps.placeholder_media.outcome == 'success' &&
+          steps.resolve_bridge.outcome == 'success' &&
           steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
@@ -476,6 +510,8 @@ jobs:
           steps.production_script.outcome == 'failure' ||
           steps.recording_pack.outcome == 'failure' ||
           steps.virtual_timeline.outcome == 'failure' ||
+          steps.placeholder_media.outcome == 'failure' ||
+          steps.resolve_bridge.outcome == 'failure' ||
           steps.otio_export.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
