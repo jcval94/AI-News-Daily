@@ -198,13 +198,13 @@ jobs:
           python -m pipeline.placeholder_media \
             --target-date "$TARGET_DATE" \
             --scripts-dir "$RUN_ROOT/scripts"
+          python -m pipeline.otio_export \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts"
           python -m pipeline.resolve_bridge \
             --target-date "$TARGET_DATE" \
             --repo-root "$RUN_ROOT" \
             --scripts-dir scripts
-          python -m pipeline.otio_export \
-            --target-date "$TARGET_DATE" \
-            --scripts-dir "$RUN_ROOT/scripts"
           python -m pipeline.report \
             --target-date "$TARGET_DATE" \
             --build-outcome approved \
