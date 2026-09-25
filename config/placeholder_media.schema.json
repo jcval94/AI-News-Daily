@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/placeholder-media-v1.json",
+  "title": "AI News Daily Placeholder Media",
+  "type": "object",
+  "required": ["schema_version","episode_date","status","canvas","policy","summary","items"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "episode_date": {"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}$"},
+    "status": {"const":"pre_recording_placeholder_media"},
+    "canvas": {
+      "type":"object",
+      "required":["width","height","purpose","timeline_resolution"],
+      "properties":{
+        "width":{"type":"integer","minimum":320},
+        "height":{"type":"integer","minimum":180},
+        "purpose":{"const":"lightweight_proxy_slates_for_nle"},
+        "timeline_resolution":{"type":"string"}
+      },
+      "additionalProperties":false
+    },
+    "policy":{"type":"object"},
+    "summary":{
+      "type":"object",
+      "required":["placeholder_count","presenter_placeholder_count","media_placeholder_count"]
+    },
+    "items":{
+      "type":"array",
+      "items":{
+        "type":"object",
+        "required":["placeholder_id","kind","track_id","clip_id","replace_key","timeline_start_seconds","timeline_end_seconds","duration_seconds","file","logical_repo_path","sha256","status"],
+        "properties":{
+          "placeholder_id":{"type":"string"},
+          "kind":{"enum":["presenter","media"]},
+          "track_id":{"enum":["V1","V2"]},
+          "clip_id":{"type":"string","minLength":1},
+          "take_id":{"type":["string","null"]},
+          "cue_id":{"type":["string","null"]},
+          "replace_key":{"type":"string","minLength":1},
+          "timeline_start_seconds":{"type":"number","minimum":0},
+          "timeline_end_seconds":{"type":"number","exclusiveMinimum":0},
+          "duration_seconds":{"type":"number","exclusiveMinimum":0},
+          "file":{"type":"string","minLength":1},
+          "logical_repo_path":{"type":"string","minLength":1},
+          "sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+          "status":{"const":"generated"}
+        },
+        "additionalProperties":true
+      }
+    }
+  },
+  "additionalProperties":true
+}
