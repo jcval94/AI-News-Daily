@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from pipeline.schema_validation import validate_payload
+
 
 SCHEMA_VERSION = 1
 _EPSILON = 0.02
@@ -537,6 +539,7 @@ def write_virtual_timeline(
         recording_pack=recording_pack,
         edit_manifest=edit_manifest,
     )
+    validate_payload(payload, "virtual_timeline.schema.json")
     json_path = episode_dir / "virtual_timeline.json"
     html_path = episode_dir / "timeline_preview.html"
     json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
