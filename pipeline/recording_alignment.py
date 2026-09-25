@@ -26,6 +26,16 @@ def _read_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def resolve_policy_path(repo_root: Path, value: str) -> Path:
+    candidate = Path(value)
+    if candidate.is_absolute():
+        return candidate
+    checkout_relative = candidate.resolve()
+    if checkout_relative.is_file():
+        return checkout_relative
+    return (repo_root / candidate).resolve()
+
+
 def _read_policy(path: Path) -> dict[str, Any]:
     payload = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -664,7 +674,7 @@ def main() -> None:
     args = parse_args()
     root = Path(args.repo_root).resolve()
     episode_dir = root / args.scripts_dir / args.target_date
-    policy_path = root / args.policy
+    policy_path = resolve_policy_path(root, args.policy)
     contract_path, _ = write_alignment_contract(
         episode_dir=episode_dir,
         policy_path=policy_path,
