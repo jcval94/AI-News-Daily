@@ -5,7 +5,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from pipeline.asset_readiness import build_asset_readiness, render_html
+from pipeline.asset_readiness import build_asset_readiness, render_html, write_asset_readiness
 
 
 POLICY = {
@@ -169,6 +169,56 @@ class AssetReadinessTests(unittest.TestCase):
             )
             self.assertFalse(result["gate"]["ready_to_record"])
             self.assertIn("no_planned_visual_cues", result["gate"]["blockers"])
+
+
+    def test_enforced_block_persists_diagnosis_before_raising(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            episode = root / "scripts" / "2026-09-24"
+            episode.mkdir(parents=True)
+            virtual = {
+                "episode_date": "2026-09-24",
+                "tracks": [{
+                    "track_id": "V2",
+                    "clips": [{
+                        "clip_id": "broll_001_slot_001",
+                        "cue_id": "slot_001",
+                        "status": "placeholder",
+                        "duration_seconds": 5.0,
+                        "director": {"visual_role": "evidence"},
+                        "source": {},
+                    }],
+                }],
+            }
+            resolve = {
+                "episode_date": "2026-09-24",
+                "placements": [{
+                    "placement_id": "broll_001_slot_001",
+                    "track_id": "V2",
+                    "timeline_start_seconds": 0.0,
+                    "duration_seconds": 5.0,
+                    "logical_repo_path": "scripts/2026-09-24/placeholder_media/v2/slot_001.png",
+                    "placeholder": True,
+                }],
+            }
+            (episode / "virtual_timeline.json").write_text(json.dumps(virtual), encoding="utf-8")
+            (episode / "resolve_bridge_plan.json").write_text(json.dumps(resolve), encoding="utf-8")
+            policy_path = root / "asset_readiness.yaml"
+            import yaml
+            policy_path.write_text(yaml.safe_dump(POLICY), encoding="utf-8")
+
+            with self.assertRaisesRegex(RuntimeError, "Asset readiness gate blocked"):
+                write_asset_readiness(
+                    repo_root=root,
+                    episode_dir=episode,
+                    policy_path=policy_path,
+                    enforce=True,
+                )
+            self.assertTrue((episode / "asset_readiness.json").is_file())
+            self.assertTrue((episode / "asset_readiness.html").is_file())
+            saved = json.loads((episode / "asset_readiness.json").read_text(encoding="utf-8"))
+            self.assertFalse(saved["gate"]["ready_to_record"])
+            self.assertIn("critical_visual_unresolved", saved["gate"]["blockers"])
 
     def test_html_contains_operational_radiography(self):
         with tempfile.TemporaryDirectory() as tmp:
