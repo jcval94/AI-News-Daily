@@ -12,6 +12,7 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             "pipeline.virtual_timeline",
             "pipeline.placeholder_media",
             "pipeline.resolve_bridge",
+            "pipeline.preview_render",
             "pipeline.otio_export",
             "pipeline.report",
         ):
@@ -41,6 +42,17 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
         self.assertIn("pipeline.placeholder_media", workflow)
         self.assertIn("pipeline.resolve_bridge", workflow)
+        self.assertIn("pipeline.preview_render", workflow)
+
+
+    def test_preview_mp4_stays_in_isolated_run_artifact(self) -> None:
+        workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn(
+            '$RUN_ROOT/previews/$TARGET_DATE/pre_recording_preview.mp4',
+            workflow,
+        )
+        promote = workflow.split("- name: Promote approved episode", 1)[1].split("- name: Commit approved canonical artifacts", 1)[0]
+        self.assertNotIn('"previews/$TARGET_DATE"', promote)
 
     def test_report_contract_lists_modern_handoff_artifacts(self) -> None:
         source = Path("pipeline/report.py").read_text(encoding="utf-8")
@@ -50,6 +62,8 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             '"timeline_otio"',
             '"placeholder_manifest"',
             '"resolve_bridge_plan"',
+            '"pre_recording_preview_plan"',
+            '"pre_recording_preview_validation"',
         ):
             self.assertIn(key, source)
 
