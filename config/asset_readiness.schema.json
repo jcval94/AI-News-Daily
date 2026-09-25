@@ -1,48 +1,175 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"https://jcval94.github.io/AI-News-Daily/schemas/asset-readiness-v1.json",
-  "title":"AI News Daily Asset Readiness",
-  "type":"object",
-  "required":["schema_version","episode_date","status","policy","summary","gate","items"],
-  "properties":{
-    "schema_version":{"const":1},
-    "episode_date":{"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}$"},
-    "status":{"enum":["ready_to_record","blocked_before_recording"]},
-    "policy":{"type":"object"},
-    "summary":{
-      "type":"object",
-      "required":["planned_cue_count","resolved_cue_count","missing_cue_count","degraded_cue_count","technical_failure_cue_count","unresolved_critical_cue_count","planned_visual_seconds","resolved_visual_seconds","resolved_cue_ratio","resolved_visual_seconds_ratio"]
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/asset-readiness-v1.json",
+  "title": "AI News Daily Asset Readiness",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "episode_date",
+    "status",
+    "policy",
+    "summary",
+    "actions",
+    "gate",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
     },
-    "gate":{
-      "type":"object",
-      "required":["ready_to_record","promotion_blocking","blockers","warnings"],
-      "properties":{
-        "ready_to_record":{"type":"boolean"},
-        "promotion_blocking":{"type":"boolean"},
-        "blockers":{"type":"array","items":{"type":"string"}},
-        "warnings":{"type":"array","items":{"type":"string"}}
+    "episode_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "enum": [
+        "ready_to_record",
+        "blocked_before_recording"
+      ]
+    },
+    "policy": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "planned_cue_count",
+        "resolved_cue_count",
+        "missing_cue_count",
+        "degraded_cue_count",
+        "technical_failure_cue_count",
+        "unresolved_critical_cue_count",
+        "planned_visual_seconds",
+        "resolved_visual_seconds",
+        "resolved_cue_ratio",
+        "resolved_visual_seconds_ratio"
+      ]
+    },
+    "gate": {
+      "type": "object",
+      "required": [
+        "ready_to_record",
+        "promotion_blocking",
+        "blockers",
+        "warnings"
+      ],
+      "properties": {
+        "ready_to_record": {
+          "type": "boolean"
+        },
+        "promotion_blocking": {
+          "type": "boolean"
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-    "items":{
-      "type":"array",
-      "items":{
-        "type":"object",
-        "required":["cue_id","clip_id","visual_role","critical","state","planned_seconds","placeholder","logical_repo_path","issues","inspection"],
-        "properties":{
-          "cue_id":{"type":"string","minLength":1},
-          "clip_id":{"type":"string","minLength":1},
-          "visual_role":{"type":"string"},
-          "critical":{"type":"boolean"},
-          "state":{"enum":["resolved_clean","resolved_degraded","missing","technical_failure"]},
-          "planned_seconds":{"type":"number","exclusiveMinimum":0},
-          "placeholder":{"type":"boolean"},
-          "logical_repo_path":{"type":"string"},
-          "issues":{"type":"array","items":{"type":"string"}},
-          "inspection":{"type":"object"}
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cue_id",
+          "clip_id",
+          "visual_role",
+          "critical",
+          "state",
+          "planned_seconds",
+          "placeholder",
+          "logical_repo_path",
+          "issues",
+          "inspection"
+        ],
+        "properties": {
+          "cue_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clip_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "visual_role": {
+            "type": "string"
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "state": {
+            "enum": [
+              "resolved_clean",
+              "resolved_degraded",
+              "missing",
+              "technical_failure"
+            ]
+          },
+          "planned_seconds": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "placeholder": {
+            "type": "boolean"
+          },
+          "logical_repo_path": {
+            "type": "string"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "inspection": {
+            "type": "object"
+          }
         },
-        "additionalProperties":true
+        "additionalProperties": true
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "priority",
+          "cue_id",
+          "action",
+          "reason"
+        ],
+        "properties": {
+          "priority": {
+            "enum": [
+              "P0",
+              "P1",
+              "P2"
+            ]
+          },
+          "cue_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
-  "additionalProperties":true
+  "additionalProperties": true
 }
