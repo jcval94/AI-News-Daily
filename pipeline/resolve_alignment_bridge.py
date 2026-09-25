@@ -9,6 +9,7 @@ from pipeline.resolve_bridge import (
     _ensure_bin,
     load_resolve_api,
 )
+from pipeline.schema_validation import validate_payload
 
 
 SCHEMA_VERSION = 1
@@ -94,7 +95,9 @@ def build_resolve_alignment_plan(
             }
         )
         if timebase != "video_source":
-            blockers.append(f"video_timebase_unresolved:{take_id}")
+            blockers.append(
+                f"camera_scratch_audio_missing_for_automated_waveform_sync:{take_id}"
+            )
 
     unique_blockers = sorted(set(blockers))
     return {
@@ -391,6 +394,7 @@ def main() -> None:
         if args.output
         else alignment_path.with_name("resolve_alignment_plan.json")
     )
+    validate_payload(plan, "resolve_alignment_plan.schema.json")
     output_path.write_text(
         json.dumps(plan, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
