@@ -96,13 +96,7 @@ Dry-run:
 .\scripts\local\run_job.ps1 -Job config\local\local_job.example.json
 ```
 
-Ejecuta:
-
-```powershell
-.\scripts\local\run_job.ps1 -Job config\local\local_job.example.json -Execute
-```
-
-`-Execute` por sí solo **no basta**. Todo job ejecutable debe declarar `mode=execute` y además debes invocar el runner con `-Execute`. Si cualquiera de los dos falta, el resultado es dry-run. Esta doble autorización aplica también a operaciones no-Resolve.
+La ejecución directa desde un JSON del repo está deshabilitada. `run_job.ps1` es sólo para validación/dry-run. Para ejecutar, el request debe entrar por `local_handoff/requests/`, pasar por staging privado y después usar `run_staged.ps1 -Execute`.
 
 ## Seguridad
 
@@ -146,7 +140,8 @@ Los requests que un agente o un commit coloque en local_handoff/requests/ son pr
 Primero:
 
 ~~~powershell
-.\scripts\local\stage_request.ps1 -Request local_handoff\requests\example-ingest.json
+Copy-Item local_handoff\examples\example-ingest.json local_handoff\requests\my-ingest.json
+.\scripts\local\stage_request.ps1 -Request local_handoff\requests\my-ingest.json
 ~~~
 
 Después inspecciona:
