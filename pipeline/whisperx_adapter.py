@@ -324,6 +324,58 @@ def build_transcript_bundle(
     }
 
 
+
+def _srt_timestamp(seconds: float) -> str:
+    total_ms = max(0, int(round(float(seconds) * 1000)))
+    hours, remainder = divmod(total_ms, 3_600_000)
+    minutes, remainder = divmod(remainder, 60_000)
+    secs, millis = divmod(remainder, 1000)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
+
+
+def render_srt(item: dict[str, Any], *, max_words_per_caption: int = 10) -> str:
+    words = [dict(x) for x in item.get("words", []) if isinstance(x, dict)]
+    if not words:
+        raise ValueError("Cannot render SRT without word timestamps")
+    max_words = max(1, int(max_words_per_caption))
+    blocks: list[str] = []
+    for index in range(0, len(words), max_words):
+        chunk = words[index : index + max_words]
+        start = float(chunk[0].get("start", 0) or 0)
+        end = float(chunk[-1].get("end", start) or start)
+        text = " ".join(str(word.get("word", "") or "").strip() for word in chunk).strip()
+        if not text:
+            continue
+        blocks.extend(
+            [
+                str(len(blocks) // 4 + 1),
+                f"{_srt_timestamp(start)} --> {_srt_timestamp(end)}",
+                text,
+                "",
+            ]
+        )
+    return "\n".join(blocks).rstrip() + "\n"
+
+
+def write_resolve_srt_sidecars(
+    bundle: dict[str, Any],
+    *,
+    output_dir: Path,
+) -> list[Path]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+    for item in bundle.get("items", []):
+        if not isinstance(item, dict):
+            continue
+        take_id = str(item.get("take_id", "") or "").strip()
+        retake = int(item.get("retake_number", 0) or 0)
+        if not take_id or retake <= 0:
+            continue
+        path = output_dir / f"{take_id}__r{retake:02d}.srt"
+        path.write_text(render_srt(item), encoding="utf-8")
+        paths.append(path)
+    return paths
+
 def write_transcript_bundle(
     *,
     ingest_manifest_path: Path,
@@ -356,6 +408,17 @@ def write_transcript_bundle(
     )
     validate_payload(bundle, "recording_transcript_bundle.schema.json")
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    sidecars = write_resolve_srt_sidecars(
+        bundle,
+        output_dir=output_path.parent / "resolve_srt",
+    )
+    bundle["resolve_srt_sidecars"] = [
+        path.relative_to(output_path.parent).as_posix() for path in sidecars
+    ]
     output_path.write_text(
         json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -400,6 +463,7 @@ def main() -> None:
                 "transcript_bundle": str(output_path),
                 "item_count": len(bundle["items"]),
                 "provider": bundle["provider"],
+                "resolve_srt_sidecars": len(bundle.get("resolve_srt_sidecars", [])),
             },
             ensure_ascii=False,
             indent=2,
