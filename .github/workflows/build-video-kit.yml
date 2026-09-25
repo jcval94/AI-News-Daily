@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.otio_export; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.otio_export; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -396,6 +396,24 @@ jobs:
             --repo-root "$RUN_ROOT" \
             --scripts-dir scripts
 
+      - name: Render pre-recording preview
+        id: pre_recording_preview
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.resolve_bridge.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          command -v ffmpeg >/dev/null
+          command -v ffprobe >/dev/null
+          mkdir -p "$RUN_ROOT/previews/$TARGET_DATE"
+          python -m pipeline.preview_render \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts \
+            --output "$RUN_ROOT/previews/$TARGET_DATE/pre_recording_preview.mp4"
+
       - name: Create run report
         id: report
         if: always()
@@ -441,6 +459,7 @@ jobs:
           steps.virtual_timeline.outcome == 'success' &&
           steps.placeholder_media.outcome == 'success' &&
           steps.resolve_bridge.outcome == 'success' &&
+          steps.pre_recording_preview.outcome == 'success' &&
           steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
@@ -456,6 +475,7 @@ jobs:
           steps.virtual_timeline.outcome == 'success' &&
           steps.placeholder_media.outcome == 'success' &&
           steps.resolve_bridge.outcome == 'success' &&
+          steps.pre_recording_preview.outcome == 'success' &&
           steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
@@ -512,6 +532,7 @@ jobs:
           steps.virtual_timeline.outcome == 'failure' ||
           steps.placeholder_media.outcome == 'failure' ||
           steps.resolve_bridge.outcome == 'failure' ||
+          steps.pre_recording_preview.outcome == 'failure' ||
           steps.otio_export.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
