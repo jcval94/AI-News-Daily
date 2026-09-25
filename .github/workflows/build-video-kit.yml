@@ -64,7 +64,7 @@ jobs:
       - name: Validate deterministic contracts
         run: |
           python -m compileall app pipeline
-          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.otio_export; print('runtime imports ok')"
+          python -c "import app.agent, pipeline.run_hardened, pipeline.runtime_hardening, pipeline.source_coverage, pipeline.production_script, pipeline.recording_pack, pipeline.virtual_timeline, pipeline.placeholder_media, pipeline.resolve_bridge, pipeline.preview_render, pipeline.asset_readiness, pipeline.otio_export; print('runtime imports ok')"
           python -m unittest discover -s tests -v
 
       - name: Resolve script date
@@ -414,6 +414,21 @@ jobs:
             --scripts-dir scripts \
             --output "$RUN_ROOT/previews/$TARGET_DATE/pre_recording_preview.mp4"
 
+      - name: Evaluate asset readiness gate
+        id: asset_readiness
+        if: always() && steps.episode_outcome.outputs.status == 'approved' && steps.pre_recording_preview.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          python -m pipeline.asset_readiness \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts \
+            --policy config/asset_readiness.yaml \
+            --enforce
+
       - name: Create run report
         id: report
         if: always()
@@ -460,6 +475,7 @@ jobs:
           steps.placeholder_media.outcome == 'success' &&
           steps.resolve_bridge.outcome == 'success' &&
           steps.pre_recording_preview.outcome == 'success' &&
+          steps.asset_readiness.outcome == 'success' &&
           steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
@@ -476,6 +492,7 @@ jobs:
           steps.placeholder_media.outcome == 'success' &&
           steps.resolve_bridge.outcome == 'success' &&
           steps.pre_recording_preview.outcome == 'success' &&
+          steps.asset_readiness.outcome == 'success' &&
           steps.otio_export.outcome == 'success' &&
           steps.report.outcome == 'success' &&
           (steps.runtime_options.outputs.download_multimedia != 'true' || steps.dense_media.outcome == 'success') &&
@@ -533,6 +550,7 @@ jobs:
           steps.placeholder_media.outcome == 'failure' ||
           steps.resolve_bridge.outcome == 'failure' ||
           steps.pre_recording_preview.outcome == 'failure' ||
+          steps.asset_readiness.outcome == 'failure' ||
           steps.otio_export.outcome == 'failure' ||
           steps.report.outcome == 'failure'
         run: |
