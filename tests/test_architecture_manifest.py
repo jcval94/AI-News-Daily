@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 10)
+        self.assertEqual(data["version"], 11)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -65,6 +65,13 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("timeline.otio", stages["otio_export"]["outputs"])
         self.assertIn("round-trip", stages["otio_export"]["summary"])
         self.assertIn("otio_export.py", stages["otio_export"]["code"])
+        self.assertIn("placeholder_media", stages)
+        self.assertIn("Placeholder media", stages["placeholder_media"]["title"])
+        self.assertIn("placeholder_manifest.json", stages["placeholder_media"]["outputs"])
+        self.assertIn("resolve_bridge", stages)
+        self.assertIn("DaVinci Resolve", stages["resolve_bridge"]["title"])
+        self.assertIn("resolve_bridge_plan.json", stages["resolve_bridge"]["outputs"])
+        self.assertIn("DaVinciResolveScript", stages["resolve_bridge"]["authority"])
         self.assertIn("ai-news-run", stages["pages"]["inputs"])
         self.assertIn("fuente canónica", stages["pages"]["summary"])
 
