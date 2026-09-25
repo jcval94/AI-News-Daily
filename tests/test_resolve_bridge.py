@@ -15,6 +15,7 @@ from pipeline.resolve_bridge import (
 
 def virtual_payload():
     return {
+        "schema_version": 1,
         "episode_date": "2026-09-24",
         "timing": {"duration_seconds": 20},
         "format": {
