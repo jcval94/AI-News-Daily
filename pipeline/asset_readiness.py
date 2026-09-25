@@ -22,6 +22,16 @@ def _read_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def resolve_policy_path(repo_root: Path, value: str) -> Path:
+    candidate = Path(value)
+    if candidate.is_absolute():
+        return candidate
+    checkout_relative = candidate.resolve()
+    if checkout_relative.is_file():
+        return checkout_relative
+    return (repo_root / candidate).resolve()
+
+
 def _read_policy(path: Path) -> dict[str, Any]:
     payload = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -301,7 +311,7 @@ def main() -> None:
     json_path, html_path, payload = write_asset_readiness(
         repo_root=root,
         episode_dir=episode,
-        policy_path=root / args.policy,
+        policy_path=resolve_policy_path(root, args.policy),
         enforce=args.enforce,
     )
     print(json.dumps({
