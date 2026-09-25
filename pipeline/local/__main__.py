@@ -122,8 +122,10 @@ def main() -> None:
         raise SystemExit(0 if payload["status"] in {"pass", "warn"} else 2)
 
     if args.command == "run-job":
+        if args.execute:
+            raise RuntimeError("Direct execution from a repo JSON is disabled. Use stage-request then run-staged --execute.")
         job = read_job(Path(args.job))
-        payload = run_job(job, config, repo_root=REPO_ROOT, execute=args.execute)
+        payload = run_job(job, config, repo_root=REPO_ROOT, execute=False)
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         raise SystemExit(0 if payload["status"] in {"dry_run", "success"} else 3)
 
