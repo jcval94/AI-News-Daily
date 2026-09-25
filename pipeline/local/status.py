@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.local.config import REPO_ROOT
+from pipeline.schema_validation import validate_payload
 
 
 def _read_json(path: Path) -> dict[str, Any] | None:
@@ -27,7 +28,7 @@ def build_status(*, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     receipt_files = sorted(receipts.glob("*.json")) if receipts.is_dir() else []
     preflight = _read_json(local / "preflight.latest.json")
     toolchain = _read_json(local / "toolchain.latest.json")
-    return {
+    payload = {
         "schema_version": 1,
         "preflight_status": preflight.get("status") if preflight else "not_run",
         "toolchain_snapshot": bool(toolchain),
@@ -38,3 +39,5 @@ def build_status(*, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "staged_jobs": [p.stem for p in staged_files],
         "latest_receipt": receipt_files[-1].name if receipt_files else None,
     }
+    validate_payload(payload, "local/local_status.schema.json")
+    return payload
