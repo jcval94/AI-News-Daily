@@ -40,5 +40,26 @@ class PromotionGuardTests(unittest.TestCase):
 
 
 
+    def test_placeholder_and_resolve_plan_must_succeed_before_promotion(self) -> None:
+        workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        for required in (
+            "steps.placeholder_media.outcome == 'success'",
+            "steps.resolve_bridge.outcome == 'success'",
+        ):
+            self.assertGreaterEqual(workflow.count(required), 2)
+            self.assertIn(required.replace("== 'success'", "== 'failure'"), workflow)
+
+    def test_script_only_manual_run_cannot_promote_canonical_episode(self) -> None:
+        workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn(
+            'Canonical promotion requires download_multimedia=true',
+            workflow,
+        )
+        self.assertIn(
+            '[ "$PROMOTE_APPROVED" = "true" ] && [ "$DOWNLOAD_MULTIMEDIA" != "true" ]',
+            workflow,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
