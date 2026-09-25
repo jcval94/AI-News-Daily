@@ -99,8 +99,8 @@ DECISION_FLOW = [
     "Virtual Timeline → timeline.otio → read-back/round-trip validation",
     "timeline.otio + placeholders/assets → resolve_timeline.otio → Resolve Bridge v0 plan",
     "Resolve Bridge plan → flatten V2>V1 → pre-recording preview MP4 + validation",
-    "¿Multimedia solicitada no cumple su gate o falla Recording Pack/Virtual Timeline/OTIO? → se preserva el run, no se promueve",
-    "¿Script + Production Script + Recording Pack + Virtual Timeline + OTIO + report + media solicitada pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
+    "¿Falla multimedia, Recording Pack, Virtual Timeline, Placeholder Media, OTIO, Resolve Bridge o Preview Render? → se preserva el run, no se promueve",
+    "¿Script + Production Script + Recording Pack + Virtual Timeline + Placeholder Media + OTIO + Resolve Bridge + Preview + report + media pasan? → approved/promoción → ai-news-run → Review Hub/Pages",
 ]
 
 DESIGN_DECISIONS = [
@@ -121,7 +121,7 @@ DESIGN_DECISIONS = [
     ("Producción es la fuente de verdad de Pages", "Review Hub observa el artifact que realmente salió de Build AI News Video Kit; Regression queda como QA independiente."),
     ("Sin LLM como controlador", "Python decide routing, retries, límites, estado y publicación."),
     ("Promoción fail-closed", "Solo una cadena completa de éxito puede tocar el episodio canónico."),
-    ("Schemas ejecutables antes de persistir", "edit_manifest, recording_pack, virtual_timeline, placeholder_manifest y resolve_bridge_plan se validan contra JSON Schema antes de escribirse; documentación y runtime comparten el mismo contrato."),
+    ("Schemas ejecutables antes de persistir", "edit_manifest, recording_pack, virtual_timeline, placeholder_manifest, resolve_bridge_plan y pre_recording_preview_plan se validan contra JSON Schema antes de escribirse; documentación y runtime comparten el mismo contrato."),
     ("Identidad editorial versionada", "Cambiar modelo o prompt no redefine silenciosamente la voz del canal."),
 ]
 
