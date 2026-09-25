@@ -157,7 +157,7 @@ class ResolveAlignmentBridgeTests(unittest.TestCase):
         )
         self.assertFalse(plan["readiness"]["ready_for_media_sync"])
         self.assertIn(
-            "video_timebase_unresolved:opening_t01",
+            "camera_scratch_audio_missing_for_automated_waveform_sync:opening_t01",
             plan["readiness"]["blockers"],
         )
 
