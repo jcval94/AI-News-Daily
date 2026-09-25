@@ -10,6 +10,7 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             "pipeline.production_script",
             "pipeline.recording_pack",
             "pipeline.recording_ingest",
+            "pipeline.recording_alignment",
             "pipeline.virtual_timeline",
             "pipeline.placeholder_media",
             "pipeline.resolve_bridge",
@@ -47,6 +48,9 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn("pipeline.preview_render", workflow)
         self.assertIn("pipeline.asset_readiness", workflow)
         self.assertIn("pipeline.recording_ingest", workflow)
+        self.assertIn("pipeline.recording_alignment", workflow)
+        self.assertIn("pipeline.resolve_alignment_bridge", workflow)
+        self.assertIn("pipeline.whisperx_adapter", workflow)
 
 
     def test_preview_mp4_stays_in_isolated_run_artifact(self) -> None:
@@ -69,6 +73,10 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             '"recording_ingest_contract"',
             '"recording_ingest_instructions"',
             '"recording_ingest_manifest"',
+            '"recording_alignment_contract"',
+            '"recording_alignment"',
+            '"resolve_alignment_plan"',
+            '"resolve_alignment_execution"',
             '"virtual_timeline"',
             '"timeline_otio"',
             '"placeholder_manifest"',

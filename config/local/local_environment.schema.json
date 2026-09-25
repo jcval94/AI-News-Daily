@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_environment.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "os",
+    "python",
+    "gpu",
+    "resolve",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "os": {
+      "type": "object",
+      "required": [
+        "system",
+        "release",
+        "machine"
+      ]
+    },
+    "python": {
+      "type": "object",
+      "required": [
+        "version",
+        "minimum_repo_version"
+      ]
+    },
+    "gpu": {
+      "type": "object",
+      "required": [
+        "nvidia_smi",
+        "cuda_hint",
+        "gpu_names"
+      ]
+    },
+    "resolve": {
+      "type": "object",
+      "required": [
+        "sdk_discovered",
+        "readme_discovered",
+        "connected",
+        "version",
+        "native_otio_smoke"
+      ]
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "absolute_paths_persisted"
+      ],
+      "properties": {
+        "absolute_paths_persisted": {
+          "const": false
+        }
+      }
+    }
+  }
+}

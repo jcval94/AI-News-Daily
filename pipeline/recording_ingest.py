@@ -124,6 +124,11 @@ def build_recording_ingest_contract(recording_pack: dict[str, Any]) -> dict[str,
             "preferred_camera_labels": ["camA", "cam1", "main", "camB", "cam2"],
             "external_audio_bonus": True,
             "embedded_audio_is_acceptable": True,
+            "camera_scratch_audio_recommended_for_automated_alignment": True,
+            "reason": (
+                "Keep camera scratch audio enabled even when using an external lavalier. "
+                "WhisperX can then produce video-relative word timestamps and Resolve can waveform-sync the external audio."
+            ),
         },
         "selection_policy": {
             "authority": "technical_only_not_performance_or_script_accuracy",
@@ -180,7 +185,8 @@ def render_ingest_instructions(contract: dict[str, Any]) -> str:
             "",
             "## Audio",
             "",
-            "- El video puede usar audio embebido.",
+            "- Mantén el scratch audio de cámara ENCENDIDO aunque uses lavalier.",
+            "- El scratch audio permite timestamps relativos al video y waveform sync automático en Resolve.",
             "- Si tienes lavalier/mic externo, usa el mismo take_id y retake con audio.wav, lav.wav, etc.",
             "- Un take sin audio embebido sano y sin audio externo pareado no queda listo para alignment.",
             "",
@@ -431,17 +437,30 @@ def scan_recordings(
             embedded_audio_ok = bool(
                 video and video.get("inspection", {}).get("has_audio_stream")
             )
+            usable_external_audio = external_audio
+            if external_audio:
+                external_duration = float(
+                    external_audio["inspection"].get("duration_seconds", 0) or 0
+                )
+                external_ratio = (
+                    external_duration / expected_seconds
+                    if expected_seconds > 0
+                    else 1.0
+                )
+                if external_ratio < min_duration_ratio:
+                    issues.append("external_audio_too_short")
+                    usable_external_audio = None
             audio_source = (
                 "external"
-                if external_audio
+                if usable_external_audio
                 else ("embedded" if embedded_audio_ok else "none")
             )
             if audio_source == "none":
                 usable = False
                 issues.append("missing_audio_source")
-            if external_audio:
+            if usable_external_audio:
                 sample_rate = int(
-                    external_audio["inspection"].get("sample_rate_hz", 0) or 0
+                    usable_external_audio["inspection"].get("sample_rate_hz", 0) or 0
                 )
                 if sample_rate and sample_rate != preferred_audio_rate:
                     issues.append("audio_sample_rate_differs_from_recommendation")
@@ -461,7 +480,7 @@ def scan_recordings(
                 )
                 score += min(1.0, pixels / float(3840 * 2160)) * 25.0
                 score += 5.0 if embedded_audio_ok else 0.0
-            if external_audio:
+            if usable_external_audio:
                 score += 8.0
             if not usable:
                 score = min(score, 49.0)
@@ -488,12 +507,12 @@ def scan_recordings(
                     ),
                     "selected_external_audio": (
                         {
-                            "relative_path": external_audio["relative_path"],
-                            "label": external_audio["label"],
-                            "inspection": external_audio["inspection"],
-                            "sha256": external_audio["sha256"],
+                            "relative_path": usable_external_audio["relative_path"],
+                            "label": usable_external_audio["label"],
+                            "inspection": usable_external_audio["inspection"],
+                            "sha256": usable_external_audio["sha256"],
                         }
-                        if external_audio
+                        if usable_external_audio
                         else None
                     ),
                     "audio_source": audio_source,

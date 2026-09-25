@@ -1,0 +1,39 @@
+schema_version: 1
+policy_id: recording_alignment_v1
+language: es
+
+transcription:
+  primary_provider: whisperx_local
+  resolve_native_role: diagnostic_optional
+  require_word_timestamps: true
+  transcribe_all_usable_retakes: true
+
+selection:
+  max_word_error_rate_for_auto_select: 0.12
+  min_expected_word_coverage_for_auto_select: 0.94
+  min_mean_word_confidence_when_available: 0.55
+  ambiguity_score_margin: 0.03
+  weights:
+    transcript_accuracy: 0.65
+    expected_word_coverage: 0.20
+    mean_word_confidence: 0.10
+    technical_ingest_score: 0.05
+
+trimming:
+  pre_word_handle_seconds: 0.30
+  post_word_handle_seconds: 0.45
+  min_clip_duration_seconds: 0.50
+
+resolve:
+  primary_postproduction_host: davinci_resolve
+  external_audio_sync: waveform
+  retain_embedded_audio_during_sync: true
+  create_new_aligned_timeline: true
+  never_overwrite_existing_timeline: true
+  native_transcription_is_not_alignment_authority: true
+
+principles:
+  - "Transcript fidelity outranks the ingest technical preference."
+  - "WhisperX is an optional local timing engine, not a repository dependency."
+  - "Resolve owns waveform sync and timeline execution; JSON/OTIO remain the neutral contract."
+  - "Low-confidence or ambiguous retake selection requires human review."

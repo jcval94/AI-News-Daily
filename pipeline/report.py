@@ -255,6 +255,10 @@ def build_report(
         "recording_ingest_contract": artifact_record(scripts_dir / "recording_ingest_contract.json", f"scripts/{episode}/recording_ingest_contract.json"),
         "recording_ingest_instructions": artifact_record(scripts_dir / "recording_ingest_instructions.md", f"scripts/{episode}/recording_ingest_instructions.md"),
         "recording_ingest_manifest": artifact_record(scripts_dir / "recording_ingest_manifest.json", f"scripts/{episode}/recording_ingest_manifest.json"),
+        "recording_alignment_contract": artifact_record(scripts_dir / "recording_alignment_contract.json", f"scripts/{episode}/recording_alignment_contract.json"),
+        "recording_alignment": artifact_record(scripts_dir / "recording_alignment.json", f"scripts/{episode}/recording_alignment.json"),
+        "resolve_alignment_plan": artifact_record(scripts_dir / "resolve_alignment_plan.json", f"scripts/{episode}/resolve_alignment_plan.json"),
+        "resolve_alignment_execution": artifact_record(scripts_dir / "resolve_alignment_execution.json", f"scripts/{episode}/resolve_alignment_execution.json"),
         "camera_script": artifact_record(scripts_dir / "camera_script.md", f"scripts/{episode}/camera_script.md"),
         "teleprompter": artifact_record(scripts_dir / "teleprompter.html", f"scripts/{episode}/teleprompter.html"),
         "virtual_timeline": artifact_record(scripts_dir / "virtual_timeline.json", f"scripts/{episode}/virtual_timeline.json"),
@@ -281,7 +285,7 @@ def build_report(
     }
 
     return {
-        "schema_version": 10,
+        "schema_version": 11,
         "episode_date": episode,
         "run_id": os.getenv("EPISODE_RUN_ID") or os.getenv("GITHUB_RUN_ID"),
         "git_sha": os.getenv("GITHUB_SHA"),

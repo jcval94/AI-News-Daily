@@ -5,7 +5,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from pipeline.asset_readiness import build_asset_readiness, render_html, write_asset_readiness
+from pipeline.asset_readiness import build_asset_readiness, render_html, resolve_policy_path, write_asset_readiness
 
 
 POLICY = {
@@ -78,6 +78,14 @@ def payloads(root: Path):
 
 
 class AssetReadinessTests(unittest.TestCase):
+    def test_policy_path_prefers_checkout_over_isolated_run_root(self):
+        resolved = resolve_policy_path(
+            Path(".pipeline-runs/fake/run").resolve(),
+            "config/asset_readiness.yaml",
+        )
+        self.assertTrue(resolved.is_file())
+        self.assertTrue(str(resolved).endswith("config/asset_readiness.yaml"))
+
     def test_eighty_percent_coverage_with_low_res_warning_can_be_ready(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_config.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "paths",
+    "executables",
+    "resolve",
+    "whisperx",
+    "preflight",
+    "security"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repo_root",
+        "recordings_root",
+        "work_root",
+        "cache_root",
+        "preview_root"
+      ],
+      "properties": {
+        "repo_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordings_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "work_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cache_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preview_root": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "executables": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "python_core",
+        "whisperx_executable",
+        "ffmpeg",
+        "ffprobe"
+      ],
+      "properties": {
+        "python_core": {
+          "type": "string",
+          "minLength": 1
+        },
+        "whisperx_executable": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ffmpeg": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ffprobe": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "resolve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "auto_discover",
+        "api_root",
+        "script_lib",
+        "launch_if_needed",
+        "connect_timeout_seconds",
+        "require_native_otio",
+        "project_prefix",
+        "acceptance_project_name",
+        "overwrite_existing"
+      ],
+      "properties": {
+        "auto_discover": {
+          "type": "boolean"
+        },
+        "api_root": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "script_lib": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "launch_if_needed": {
+          "const": false
+        },
+        "connect_timeout_seconds": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 300
+        },
+        "require_native_otio": {
+          "type": "boolean"
+        },
+        "project_prefix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acceptance_project_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "overwrite_existing": {
+          "const": false
+        }
+      }
+    },
+    "whisperx": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "language",
+        "model",
+        "device",
+        "compute_type",
+        "batch_size",
+        "vad_method",
+        "allow_model_downloads"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "string",
+          "minLength": 2
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "device": {
+          "enum": [
+            "auto",
+            "cuda",
+            "cpu"
+          ]
+        },
+        "compute_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "batch_size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "vad_method": {
+          "enum": [
+            "silero",
+            "pyannote"
+          ]
+        },
+        "allow_model_downloads": {
+          "type": "boolean"
+        }
+      }
+    },
+    "preflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hard_min_free_gb",
+        "target_free_multiplier",
+        "require_windows"
+      ],
+      "properties": {
+        "hard_min_free_gb": {
+          "type": "number",
+          "minimum": 0
+        },
+        "target_free_multiplier": {
+          "type": "number",
+          "minimum": 1
+        },
+        "require_windows": {
+          "type": "boolean"
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "persist_absolute_paths",
+        "allow_shell",
+        "network_policy",
+        "allowed_roots"
+      ],
+      "properties": {
+        "persist_absolute_paths": {
+          "const": false
+        },
+        "allow_shell": {
+          "const": false
+        },
+        "network_policy": {
+          "enum": [
+            "offline",
+            "models_only"
+          ]
+        },
+        "allowed_roots": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "repo",
+              "recordings",
+              "work",
+              "cache",
+              "previews"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

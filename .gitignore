@@ -6,3 +6,7 @@ __pycache__/
 .DS_Store
 
 recordings/
+.local/
+local_cache/
+local_exports/
+.venv-whisperx/
