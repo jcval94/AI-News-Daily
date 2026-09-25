@@ -939,7 +939,11 @@ async def build(
             "discourse_profile": discourse_profile,
             "selected_narrative_memory": selected_narrative_memory_json,
         }
-        opening_memory_id = str(episode_plan.get("opening_memory_id", "") or "")
+        primary_memory_id = str(
+            episode_plan.get("primary_memory_id")
+            or episode_plan.get("opening_memory_id")
+            or ""
+        )
         sectioned_draft_script = ""
         draft_script = ""
         script_alignment: dict[str, Any] = {}
@@ -953,8 +957,9 @@ async def build(
                     "Rewrite the same planned essay because the previous draft violated only the hidden "
                     f"structure contract: {writer_structure_error}. Do not change the episode plan or factual "
                     "claims merely to repair metadata. Return narration only. The first non-whitespace characters "
-                    f"MUST be <!--SECTION:opening--><!--MEMORY:{opening_memory_id}-->. Preserve exactly one "
-                    "SECTION marker for every planned section in order and exactly one MEMORY marker."
+                    "MUST be <!--SECTION:opening-->. Preserve exactly one SECTION marker for every planned section "
+                    f"in order and exactly one <!--MEMORY:{primary_memory_id}--> marker in the section required by "
+                    "the primary narrative_parallel.placement."
                 )
             )
             writer_state = await run_agent(

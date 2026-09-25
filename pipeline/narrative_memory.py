@@ -286,10 +286,18 @@ def resolve_selected_memory(
     if len(refs) > max_selected:
         raise ValueError(f"episode_plan selects more than {max_selected} narrative parallels")
 
-    opening_memory_id = str(plan.get("opening_memory_id", "") or "").strip()
-    ref_ids = [str(ref.get("memory_id", "") or "").strip() for ref in refs if isinstance(ref, dict)]
-    if not opening_memory_id or opening_memory_id not in ref_ids:
-        raise ValueError("episode_plan.opening_memory_id must reference a selected narrative parallel")
+    primary_memory_id = str(
+        plan.get("primary_memory_id") or plan.get("opening_memory_id") or ""
+    ).strip()
+    ref_ids = [
+        str(ref.get("memory_id", "") or "").strip()
+        for ref in refs
+        if isinstance(ref, dict)
+    ]
+    if not primary_memory_id or primary_memory_id not in ref_ids:
+        raise ValueError(
+            "episode_plan.primary_memory_id must reference a selected narrative parallel"
+        )
 
     catalog = {str(item.get("id", "")): item for item in candidates}
     selected: list[dict[str, Any]] = []

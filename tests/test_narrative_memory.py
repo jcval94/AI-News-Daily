@@ -117,6 +117,23 @@ class NarrativeMemoryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             resolve_selected_memory({"narrative_parallels": []}, [_item("allowed")])
 
+    def test_plan_can_select_primary_memory_without_opening_contract(self) -> None:
+        candidates = [_item("allowed")]
+        plan = {
+            "primary_memory_id": "allowed",
+            "narrative_parallels": [
+                {
+                    "memory_id": "allowed",
+                    "role": "historical_mirror",
+                    "placement": "narrative_turn",
+                    "purpose": "Reencuadrar el argumento.",
+                    "limits": "No asumir causalidad idéntica.",
+                }
+            ],
+        }
+        selected = resolve_selected_memory(plan, candidates)
+        self.assertEqual([item["id"] for item in selected], ["allowed"])
+
     def test_plan_can_only_select_from_retrieved_set(self) -> None:
         candidates = [_item("allowed")]
         plan = {

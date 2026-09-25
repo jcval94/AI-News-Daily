@@ -72,22 +72,48 @@ def parse_sectioned_script(value: str, episode_plan: dict[str, Any]) -> tuple[st
         raise SectionAlignmentError(f"Section markers must be exactly {expected}; got {keys}")
 
     opening_memory_id = str(episode_plan.get("opening_memory_id", "") or "").strip()
+    primary_memory_id = str(
+        episode_plan.get("primary_memory_id") or opening_memory_id or ""
+    ).strip()
+    if not primary_memory_id:
+        raise SectionAlignmentError("episode_plan is missing primary_memory_id")
+
+    parallels = episode_plan.get("narrative_parallels", [])
+    parallel = next(
+        (
+            item
+            for item in parallels
+            if isinstance(item, dict)
+            and str(item.get("memory_id", "") or "").strip() == primary_memory_id
+        ),
+        None,
+    )
+    if parallel is None:
+        raise SectionAlignmentError(
+            "episode_plan.primary_memory_id must reference narrative_parallels"
+        )
+    planned_placement = str(
+        parallel.get("placement")
+        or ("opening" if opening_memory_id == primary_memory_id else "narrative_turn")
+    ).strip()
+
     memory_matches = list(MEMORY_MARKER_RE.finditer(text))
-    if not opening_memory_id:
-        raise SectionAlignmentError("episode_plan is missing opening_memory_id")
     if len(memory_matches) != 1:
         raise SectionAlignmentError(
             f"Script must contain exactly one Narrative Memory marker; got {len(memory_matches)}"
         )
-    if memory_matches[0].group(1) != opening_memory_id:
+    if memory_matches[0].group(1) != primary_memory_id:
         raise SectionAlignmentError(
-            "Narrative Memory marker must match episode_plan.opening_memory_id"
+            "Narrative Memory marker must match episode_plan.primary_memory_id"
         )
 
     beats = _beat_by_key(episode_plan)
     sections: list[dict[str, Any]] = []
     clean_parts: list[str] = []
     memory_metadata: dict[str, Any] = {}
+    first_evidence_start_word: int | None = None
+    cumulative_words = 0
+
     for index, match in enumerate(matches):
         start = match.end()
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
@@ -96,47 +122,94 @@ def parse_sectioned_script(value: str, episode_plan: dict[str, Any]) -> tuple[st
             raise SectionAlignmentError(f"Section {match.group(1)} is empty")
         if MARKER_RE.search(raw_spoken):
             raise SectionAlignmentError("Nested section marker detected")
+
         key = match.group(1)
+        beat = beats.get(key, {})
         section_memory_matches = list(MEMORY_MARKER_RE.finditer(raw_spoken))
-        if key != "opening" and section_memory_matches:
-            raise SectionAlignmentError("Narrative Memory marker must appear inside opening")
-        if key == "opening":
-            if len(section_memory_matches) != 1:
-                raise SectionAlignmentError(
-                    "Opening must contain exactly one Narrative Memory marker"
-                )
+        if len(section_memory_matches) > 1:
+            raise SectionAlignmentError(
+                f"Section {key} contains more than one Narrative Memory marker"
+            )
+
+        if section_memory_matches:
             marker = section_memory_matches[0]
             words_before_marker = len(
                 MEMORY_MARKER_RE.sub("", raw_spoken[: marker.start()]).split()
             )
-            if words_before_marker > 120:
+            if planned_placement == "opening":
+                if key != "opening":
+                    raise SectionAlignmentError(
+                        "Narrative Memory planned for opening must appear inside opening"
+                    )
+                if words_before_marker > 120:
+                    raise SectionAlignmentError(
+                        "Narrative Memory marker appears too late in opening "
+                        f"({words_before_marker} words; max 120)"
+                    )
+            elif planned_placement == "narrative_turn":
+                if not key.startswith("beat:") or beat.get("kind") != "turn":
+                    raise SectionAlignmentError(
+                        "Narrative Memory planned as narrative_turn must appear inside a turn beat"
+                    )
+            elif planned_placement == "closing_callback":
+                if key != "synthesis":
+                    raise SectionAlignmentError(
+                        "Narrative Memory planned as closing_callback must appear inside synthesis"
+                    )
+            elif planned_placement == "support":
+                if not key.startswith("beat:"):
+                    raise SectionAlignmentError(
+                        "Narrative Memory planned as support must appear inside a development beat"
+                    )
+            else:
                 raise SectionAlignmentError(
-                    "Narrative Memory marker appears too late in opening "
-                    f"({words_before_marker} words; max 120)"
+                    f"Unsupported Narrative Memory placement={planned_placement!r}"
                 )
+
             memory_metadata = {
-                "opening_memory_id": opening_memory_id,
-                "marker_words_from_opening_start": words_before_marker,
+                "primary_memory_id": primary_memory_id,
+                "opening_memory_id": (
+                    primary_memory_id if planned_placement == "opening" else None
+                ),
+                "placement": planned_placement,
+                "section_key": key,
+                "marker_words_from_section_start": words_before_marker,
             }
+
         spoken = MEMORY_MARKER_RE.sub("", raw_spoken).strip()
         if not spoken:
-            raise SectionAlignmentError(f"Section {match.group(1)} is empty after metadata removal")
-        beat = beats.get(key, {})
+            raise SectionAlignmentError(
+                f"Section {match.group(1)} is empty after metadata removal"
+            )
+        evidence_ids = list(beat.get("evidence_ids", [])) if beat else []
         section: dict[str, Any] = {
             "section_key": key,
-            "kind": "opening" if key == "opening" else "synthesis" if key == "synthesis" else "development",
+            "kind": (
+                "opening"
+                if key == "opening"
+                else "synthesis"
+                if key == "synthesis"
+                else "development"
+            ),
             "beat_id": key.split(":", 1)[1] if key.startswith("beat:") else None,
             "beat_kind": beat.get("kind") if beat else None,
-            "evidence_ids": list(beat.get("evidence_ids", [])) if beat else [],
+            "evidence_ids": evidence_ids,
             "spoken_text": spoken,
             "word_count": len(spoken.split()),
         }
+        if first_evidence_start_word is None and evidence_ids:
+            first_evidence_start_word = cumulative_words
         sections.append(section)
         clean_parts.append(spoken)
+        cumulative_words += section["word_count"]
+
+    if not memory_metadata:
+        raise SectionAlignmentError("Narrative Memory marker was not assigned to a section")
 
     clean_script = "\n\n".join(clean_parts).strip()
     return clean_script, {
-        "schema_version": 3,
+        "schema_version": 4,
         "sections": sections,
         "narrative_memory": memory_metadata,
+        "first_evidence_start_word": first_evidence_start_word,
     }

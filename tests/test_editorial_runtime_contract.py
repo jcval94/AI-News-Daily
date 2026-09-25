@@ -94,24 +94,38 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         for field in fields:
             self.assertIn(field, director)
             self.assertIn(field, writer)
-        self.assertIn("opening_memory_id", director)
-        self.assertIn("opening_memory_id", writer)
-        self.assertIn("mandatory", director)
+        self.assertIn("primary_memory_id", director)
+        self.assertIn("primary_memory_id", writer)
+        self.assertIn("narrative_turn", director)
+        self.assertIn("flexible placement", writer.lower())
         self.assertIn("micro-story", writer)
         self.assertIn("copy that exact selected_news_index", director)
         self.assertIn("never use the source `item_index`", director)
         self.assertIn("selected_news_count", director)
         self.assertIn("1..selected_news_count", director)
-        self.assertIn("if selected_news_count is 1", director)
+        self.assertIn("one strong piece is valid", director)
 
-    def test_episode_plan_requires_narrative_memory_opening(self) -> None:
+    def test_episode_plan_requires_primary_narrative_memory_but_not_opening(self) -> None:
         plan = valid_plan()
         plan["narrative_parallels"] = []
         with self.assertRaises(ValidationError):
             EpisodePlan.model_validate(plan)
 
+        legacy = EpisodePlan.model_validate(valid_plan())
+        self.assertEqual(legacy.primary_memory_id, "plato-writing-memory")
+        self.assertEqual(legacy.opening_memory_id, "plato-writing-memory")
+
+        turn_plan = valid_plan()
+        turn_plan["narrative_parallels"][0]["placement"] = "narrative_turn"
+        turn_plan["primary_memory_id"] = "plato-writing-memory"
+        turn_plan["opening_memory_id"] = None
+        validated = EpisodePlan.model_validate(turn_plan)
+        self.assertEqual(validated.primary_memory_id, "plato-writing-memory")
+        self.assertIsNone(validated.opening_memory_id)
+
         mismatch = valid_plan()
-        mismatch["opening_memory_id"] = "not-selected"
+        mismatch["primary_memory_id"] = "not-selected"
+        mismatch["opening_memory_id"] = None
         with self.assertRaises(ValidationError):
             EpisodePlan.model_validate(mismatch)
 

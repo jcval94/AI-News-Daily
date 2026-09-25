@@ -6,7 +6,17 @@ from pipeline.script_sections import SectionAlignmentError, parse_sectioned_scri
 
 
 PLAN = {
+    "primary_memory_id": "memory-case",
     "opening_memory_id": "memory-case",
+    "narrative_parallels": [
+        {
+            "memory_id": "memory-case",
+            "placement": "opening",
+            "role": "historical_mirror",
+            "purpose": "Abrir con un caso verificado.",
+            "limits": "No asumir causalidad idéntica.",
+        }
+    ],
     "beats": [
         {"beat_id": "first-reveal", "kind": "reveal", "evidence_ids": ["case-a", "case-b"]},
         {"beat_id": "turn", "kind": "turn", "evidence_ids": []},
@@ -25,14 +35,70 @@ class ScriptSectionTests(unittest.TestCase):
         clean, payload = parse_sectioned_script(marked, PLAN)
         self.assertNotIn("SECTION", clean)
         self.assertNotIn("MEMORY", clean)
-        self.assertEqual(payload["schema_version"], 3)
+        self.assertEqual(payload["schema_version"], 4)
+        self.assertEqual(payload["narrative_memory"]["primary_memory_id"], "memory-case")
         self.assertEqual(payload["narrative_memory"]["opening_memory_id"], "memory-case")
+        self.assertEqual(payload["narrative_memory"]["placement"], "opening")
+        self.assertEqual(payload["narrative_memory"]["section_key"], "opening")
         self.assertEqual(
             [item["section_key"] for item in payload["sections"]],
             ["opening", "beat:first-reveal", "beat:turn", "synthesis"],
         )
         self.assertEqual(payload["sections"][1]["evidence_ids"], ["case-a", "case-b"])
         self.assertEqual(payload["sections"][2]["evidence_ids"], [])
+
+    def test_narrative_turn_memory_marker_is_allowed_inside_turn_beat(self) -> None:
+        plan = {
+            "primary_memory_id": "memory-case",
+            "narrative_parallels": [
+                {
+                    "memory_id": "memory-case",
+                    "placement": "narrative_turn",
+                    "role": "historical_mirror",
+                    "purpose": "Reencuadrar el problema después de volverlo concreto.",
+                    "limits": "No asumir causalidad idéntica.",
+                }
+            ],
+            "beats": [
+                {"beat_id": "evidence", "kind": "evidence", "evidence_ids": ["case-a"]},
+                {"beat_id": "turn", "kind": "turn", "evidence_ids": []},
+            ],
+        }
+        marked = (
+            "<!--SECTION:opening-->Tensión humana concreta. "
+            "<!--SECTION:beat:evidence-->Aquí entra evidencia actual. "
+            "<!--SECTION:beat:turn--><!--MEMORY:memory-case-->La historia cambia cómo entendemos el caso. "
+            "<!--SECTION:synthesis-->Cierre."
+        )
+        clean, payload = parse_sectioned_script(marked, plan)
+        self.assertNotIn("MEMORY", clean)
+        self.assertEqual(payload["narrative_memory"]["placement"], "narrative_turn")
+        self.assertEqual(payload["narrative_memory"]["section_key"], "beat:turn")
+        self.assertEqual(payload["first_evidence_start_word"], 3)
+
+    def test_narrative_turn_memory_marker_in_opening_is_rejected(self) -> None:
+        plan = {
+            "primary_memory_id": "memory-case",
+            "narrative_parallels": [
+                {
+                    "memory_id": "memory-case",
+                    "placement": "narrative_turn",
+                    "role": "historical_mirror",
+                    "purpose": "Reencuadrar.",
+                    "limits": "No equivalencia causal.",
+                }
+            ],
+            "beats": [
+                {"beat_id": "turn", "kind": "turn", "evidence_ids": []},
+            ],
+        }
+        marked = (
+            "<!--SECTION:opening--><!--MEMORY:memory-case-->Historia demasiado pronto. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre."
+        )
+        with self.assertRaises(SectionAlignmentError):
+            parse_sectioned_script(marked, plan)
 
     def test_trailing_marker_only_debris_is_ignored(self) -> None:
         marked = (
