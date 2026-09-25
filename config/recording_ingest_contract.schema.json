@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/recording-ingest-contract-v1.json",
+  "title": "AI News Daily Recording Ingest Contract",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "episode_date",
+    "status",
+    "sources",
+    "storage",
+    "naming",
+    "technical_policy",
+    "selection_policy",
+    "future_alignment",
+    "readiness",
+    "summary",
+    "expected_takes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "episode_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "const": "awaiting_recorded_media"
+    },
+    "sources": {
+      "type": "object",
+      "required": [
+        "recording_pack"
+      ]
+    },
+    "storage": {
+      "type": "object",
+      "required": [
+        "recommended_local_root",
+        "recommended_inbox",
+        "media_is_local_only",
+        "never_commit_raw_recordings",
+        "manifest_stores_relative_paths_only",
+        "scanner_never_deletes_or_moves_source_files"
+      ]
+    },
+    "naming": {
+      "type": "object",
+      "required": [
+        "grammar",
+        "retake_number_format",
+        "video_labels",
+        "audio_labels",
+        "video_extensions",
+        "audio_extensions",
+        "case_sensitive_take_id",
+        "examples"
+      ]
+    },
+    "technical_policy": {
+      "type": "object",
+      "required": [
+        "preferred_resolution",
+        "preferred_frame_rate_fps",
+        "preferred_audio_sample_rate_hz",
+        "minimum_short_edge_px",
+        "minimum_usable_duration_ratio",
+        "long_capture_warning_ratio",
+        "preferred_camera_labels",
+        "external_audio_bonus",
+        "embedded_audio_is_acceptable"
+      ]
+    },
+    "selection_policy": {
+      "type": "object",
+      "required": [
+        "authority",
+        "retain_all_retakes",
+        "never_delete_nonselected_retakes",
+        "technical_preferred_is_provisional",
+        "later_alignment_may_select_another_retake",
+        "tie_breaker"
+      ],
+      "properties": {
+        "authority": {
+          "const": "technical_only_not_performance_or_script_accuracy"
+        },
+        "retain_all_retakes": {
+          "const": true
+        },
+        "never_delete_nonselected_retakes": {
+          "const": true
+        },
+        "technical_preferred_is_provisional": {
+          "const": true
+        },
+        "later_alignment_may_select_another_retake": {
+          "const": true
+        }
+      }
+    },
+    "future_alignment": {
+      "type": "object",
+      "required": [
+        "stable_join_key",
+        "requires_transcription",
+        "must_compare_transcript_to_recording_pack_spoken_text",
+        "expected_output"
+      ]
+    },
+    "readiness": {
+      "type": "object",
+      "required": [
+        "contract_valid",
+        "ready_for_scan",
+        "ready_for_alignment",
+        "blockers"
+      ],
+      "properties": {
+        "contract_valid": {
+          "const": true
+        },
+        "ready_for_scan": {
+          "const": true
+        },
+        "ready_for_alignment": {
+          "const": false
+        },
+        "blockers": {
+          "type": "array",
+          "contains": {
+            "const": "recorded_media_required"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "expected_take_count"
+      ]
+    },
+    "expected_takes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "take_id",
+          "section_label",
+          "spoken_slate",
+          "expected_spoken_seconds",
+          "expected_capture_seconds",
+          "video_required",
+          "audio_requirement",
+          "examples"
+        ],
+        "properties": {
+          "take_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_spoken_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "expected_capture_seconds": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "video_required": {
+            "const": true
+          },
+          "audio_requirement": {
+            "const": "embedded_or_paired_external"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
