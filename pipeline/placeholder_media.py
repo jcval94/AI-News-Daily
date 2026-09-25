@@ -10,6 +10,8 @@ from typing import Any
 
 from PIL import Image, ImageDraw, ImageFont
 
+from pipeline.schema_validation import validate_payload
+
 
 SCHEMA_VERSION = 1
 
@@ -261,6 +263,7 @@ def write_placeholder_media(
         width=width,
         height=height,
     )
+    validate_payload(manifest, "placeholder_media.schema.json")
     destination = output_dir / "placeholder_manifest.json"
     destination.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
