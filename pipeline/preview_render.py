@@ -11,6 +11,7 @@ from typing import Any
 
 from PIL import Image, ImageDraw, ImageFont
 
+from pipeline.media_inspection import inspect_media, media_kind, safe_repo_path
 from pipeline.schema_validation import validate_payload
 
 
@@ -39,19 +40,11 @@ def _font(size: int) -> ImageFont.ImageFont:
 
 
 def _source_kind(path: str) -> str:
-    suffix = Path(path).suffix.lower()
-    if suffix in {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff"}:
-        return "image"
-    return "video"
+    return media_kind(path)
 
 
 def _safe_repo_path(repo_root: Path, logical: str) -> Path:
-    path = (repo_root / logical).resolve()
-    try:
-        path.relative_to(repo_root.resolve())
-    except ValueError as exc:
-        raise ValueError(f"Preview media path escapes repository root: {logical}") from exc
-    return path
+    return safe_repo_path(repo_root, logical)
 
 
 def _select_visible_placement(
@@ -221,50 +214,6 @@ def build_preview_plan(
     }
 
 
-def _probe_video(path: Path, ffprobe: str) -> dict[str, Any]:
-    command = [
-        ffprobe,
-        "-v",
-        "error",
-        "-select_streams",
-        "v:0",
-        "-show_entries",
-        "stream=codec_name,width,height,r_frame_rate:format=duration",
-        "-of",
-        "json",
-        str(path),
-    ]
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
-    if result.returncode != 0:
-        return {"ok": False, "error": result.stderr.strip() or "ffprobe_failed"}
-    try:
-        payload = json.loads(result.stdout or "{}")
-    except json.JSONDecodeError:
-        return {"ok": False, "error": "ffprobe_invalid_json"}
-    streams = payload.get("streams", [])
-    if not streams:
-        return {"ok": False, "error": "no_video_stream"}
-    return {"ok": True, "payload": payload}
-
-
-def _decode_smoke(path: Path, ffmpeg: str) -> tuple[bool, str]:
-    command = [
-        ffmpeg,
-        "-v",
-        "error",
-        "-t",
-        "0.5",
-        "-i",
-        str(path),
-        "-an",
-        "-f",
-        "null",
-        "-",
-    ]
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
-    return result.returncode == 0, result.stderr.strip()
-
-
 def _diagnostic_slate(
     path: Path,
     *,
@@ -349,30 +298,30 @@ def render_preview(
             source = _safe_repo_path(repo_root, logical)
             kind = str(segment.get("source_kind", "") or _source_kind(logical))
             runtime = source
-            if kind == "video":
-                probe = _probe_video(source, ffprobe_bin)
-                smoke_ok, smoke_error = _decode_smoke(source, ffmpeg_bin) if probe.get("ok") else (False, str(probe.get("error")))
-                if not probe.get("ok") or not smoke_ok:
-                    runtime = temp / f"fallback_{index:03d}.png"
-                    _diagnostic_slate(
-                        runtime,
-                        width=width,
-                        height=height,
-                        title=str(segment.get("cue_id") or segment.get("placement_id") or "media"),
-                        logical_path=logical,
-                    )
-                    segment["runtime_source_kind"] = "image"
-                    warnings.append({
-                        "code": "preview_decode_fallback",
-                        "segment_id": segment.get("segment_id"),
-                        "placement_id": segment.get("placement_id"),
-                        "logical_repo_path": logical,
-                        "detail": smoke_error or str(probe.get("error", "")),
-                    })
-                else:
-                    segment["runtime_source_kind"] = "video"
-            else:
+            inspection = inspect_media(
+                source,
+                ffprobe=ffprobe_bin,
+                ffmpeg=ffmpeg_bin,
+            )
+            if kind == "video" and not inspection.get("ok"):
+                runtime = temp / f"fallback_{index:03d}.png"
+                _diagnostic_slate(
+                    runtime,
+                    width=width,
+                    height=height,
+                    title=str(segment.get("cue_id") or segment.get("placement_id") or "media"),
+                    logical_path=logical,
+                )
                 segment["runtime_source_kind"] = "image"
+                warnings.append({
+                    "code": "preview_decode_fallback",
+                    "segment_id": segment.get("segment_id"),
+                    "placement_id": segment.get("placement_id"),
+                    "logical_repo_path": logical,
+                    "detail": str(inspection.get("error", "") or inspection.get("error_code", "")),
+                })
+            else:
+                segment["runtime_source_kind"] = "image" if kind == "image" else "video"
             runtime_sources.append(runtime)
 
         watermark = temp / "watermark.png"
