@@ -238,7 +238,7 @@ def run_job(
         if command else ["<IN_PROCESS_OTIO_VALIDATION>"]
     )
 
-    if not execute:
+    if not execute or str(job.get("mode", "plan")) != "execute":
         return {
             "schema_version": 1,
             "job_id": job["job_id"],
@@ -249,6 +249,11 @@ def run_job(
                 k: roots.redact(str(v)) for k, v in metadata.items() if k != "path"
             },
             "privacy": {"absolute_paths_persisted": False, "raw_media_uploaded": False},
+            "execution_guard": {
+                "cli_execute_requested": bool(execute),
+                "job_mode": str(job.get("mode", "plan")),
+                "executed": False,
+            },
         }
 
     local_root = repo_root / ".local"
