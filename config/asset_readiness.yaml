@@ -1,0 +1,27 @@
+schema_version: 1
+policy_id: pre_recording_asset_readiness_v1
+mode: enforce
+
+thresholds:
+  min_resolved_cue_ratio: 0.80
+  min_resolved_visual_seconds_ratio: 0.80
+  max_missing_noncritical_cues: 3
+  max_unresolved_critical_cues: 0
+  max_technical_failure_cues: 0
+
+quality:
+  min_short_edge_px: 720
+  min_video_duration_ratio: 0.75
+  low_resolution_blocks: false
+  short_video_blocks: false
+  missing_license_label_blocks: false
+
+critical_visual_roles:
+  - evidence
+  - historical_mirror
+
+principles:
+  - "A technically broken file is not ready just because it exists."
+  - "Low-resolution fallback remains usable but must be visible as degraded."
+  - "Critical evidence cues must resolve before recording."
+  - "Coverage is measured both by cue count and planned visual seconds."
