@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 from typing import Any
 
-_WINDOWS_ABS_RE = re.compile(r"(?i)(?<![\\w])(?:[a-z]:\\\\|\\\\\\\\)[^\\r\\n\\"']+")
+_WINDOWS_ABS_RE = re.compile(r'''(?i)(?<![\w])(?:[a-z]:\\|\\\\)[^\r\n"']+''')
 
 
 def looks_absolute(value: str) -> bool:
@@ -90,8 +90,8 @@ class RootMap:
         )
         for raw, token in replacements:
             text = text.replace(raw, token)
-            text = text.replace(raw.replace("\\\\", "/"), token)
+            text = text.replace(raw.replace("\\", "/"), token)
         home = str(Path.home())
         text = text.replace(home, "<HOME>")
-        text = text.replace(home.replace("\\\\", "/"), "<HOME>")
+        text = text.replace(home.replace("\\", "/"), "<HOME>")
         return _WINDOWS_ABS_RE.sub("<ABSOLUTE_WINDOWS_PATH>", text)
