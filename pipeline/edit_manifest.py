@@ -11,6 +11,7 @@ from pipeline.editing_style import (
     media_defaults,
     public_style_metadata,
 )
+from pipeline.schema_validation import validate_payload
 
 SCHEMA_VERSION = 1
 _EPSILON = 0.02
@@ -581,6 +582,7 @@ def write_edit_manifest(
         words_per_second=words_per_second,
         editing_style=style,
     )
+    validate_payload(payload, "edit_manifest.schema.json")
     destination = media_dir / "edit_manifest.json"
     destination.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
