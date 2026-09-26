@@ -9,6 +9,27 @@ from pipeline.costs import build_cost_snapshot
 
 
 class CostSnapshotTests(unittest.TestCase):
+    def test_documentary_cost_preserves_cache_and_unknown_attempts(self) -> None:
+        from pipeline.media_cost_audit import cost_audit
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            media = root / "media"
+            media.mkdir()
+            audit = cost_audit({"model_calls": 2, "model_usage": [
+                {"model": "gpt-5.4-nano", "stage": "image_assessment", "status": "success",
+                 "usage": {"input_tokens": 1000, "input_tokens_details": {"cached_tokens": 500},
+                           "output_tokens": 100, "output_tokens_details": {"reasoning_tokens": 20}}},
+                {"model": "gpt-5.4-nano", "stage": "image_plan", "status": "started"},
+            ]})
+            (media / "media_cost_audit.json").write_text(json.dumps(audit), encoding="utf-8")
+            snapshot = build_cost_snapshot(episode_dir=root / "episode", media_dir=media,
+                media_zip=root / "media.zip", output_dir=root / "site")
+            self.assertAlmostEqual(snapshot["totals"]["known_openai_cost_usd"], .000235, places=8)
+            self.assertEqual(snapshot["usage"]["documentary_acquisition_unpriced_attempts"], 1)
+            self.assertFalse(snapshot["coverage"]["known_direct_total_is_complete"])
+            self.assertEqual(snapshot["attempts"][0]["billable_output_tokens"], 100)
+            self.assertEqual(snapshot["attempts"][0]["cached_input_tokens"], 500)
+
     def test_cost_snapshot_prices_observed_usage_and_marks_unknown_failures(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

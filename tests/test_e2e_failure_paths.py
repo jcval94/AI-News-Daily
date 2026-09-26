@@ -92,6 +92,31 @@ def write_news(news: Path) -> None:
 
 
 class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
+    async def test_unknown_memory_id_gets_one_repair_then_stops_before_writer(self) -> None:
+        plans = []
+        async def fake(agent, state, prompt, *, step, trace, iteration=None):
+            if step == "select_news":
+                return {"selected_news": {"items": [{"news_id": TEST_NEWS_ID, "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
+            self.assertEqual(step, "plan_episode")
+            plans.append(prompt)
+            plan = plan_payload()
+            plan["narrative_parallels"][0]["memory_id"] = "invented-memory"
+            plan["opening_memory_id"] = "invented-memory"
+            return {"episode_plan": plan}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            news = root / "news"
+            news.mkdir()
+            write_news(news)
+            with patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), patch.object(pipeline_run, "run_agent", side_effect=fake):
+                with self.assertRaisesRegex(ValueError, "outside retrieval set"):
+                    await pipeline_run.build(target_date=date(2026, 8, 21), news_dir=news,
+                        scripts_root=root / "scripts", multimedia_root=root / "media",
+                        history_scripts_root=root / "history", max_media_downloads=0, download_multimedia=False)
+            self.assertEqual(len(plans), 2)
+            self.assertIn("invented-memory", plans[1])
+            self.assertIn("allowed IDs", plans[0])
+
     async def test_voice_failure_stops_before_multimedia(self) -> None:
         steps: list[str] = []
 

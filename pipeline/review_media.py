@@ -493,12 +493,19 @@ async def build_review_media(
         raw_plan = MultimediaPlan.model_validate(
             editor_state.get("multimedia_plan", {})
         ).model_dump(exclude_unset=True)
+        write_json(output_dir / f'planning_attempt_{planning_attempt}.json', raw_plan)
         errors = retrieval_plan_errors(raw_plan, script) if retrieval_mode() != 'off' else []
         if not errors:
             break
         if planning_attempt == 2:
             raise ValueError('Invalid documentary plan after bounded repair: ' + '; '.join(errors))
-        planning_feedback = '\nRepair these metadata errors before any acquisition: ' + '; '.join(errors)
+        planning_feedback = (
+            '\nRepair this previous plan before any acquisition. Preserve valid segments. '
+            'For each invalid exact role, either quote the named subject literally from final_script '
+            'in retrieval_subject, or correct a conceptual visual to context/explanation/analogy. '
+            'Return the entire corrected plan. Errors: ' + '; '.join(errors)
+            + '\nPrevious plan (data): ' + json.dumps(raw_plan, ensure_ascii=False)
+        )
     # Normalize every agent-selected slot first; review-specific budget selection happens below so
     # chronological slot numbers cannot silently bias the package toward the beginning.
     normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, len(timeline_slots))
