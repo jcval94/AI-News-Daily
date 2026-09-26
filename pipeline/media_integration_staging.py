@@ -74,7 +74,7 @@ def main():
             'readiness':readiness['gate'],'relocated_readiness':relocated_readiness['gate'],
             'pages_panel': pages_panel,
             'acceptance_mode':'controlled_catalogue_replay' if args.catalogue_replay else 'live_semantic',
-            'semantic_live_status':'blocked_no_credits' if args.catalogue_replay else 'tested',
+            'semantic_live_status':'not_exercised' if args.catalogue_replay else 'tested',
             'success':success,'promoted':False,'resolve_local_acceptance':'pending','transcript':'off'}
     write_json(root/'integration-result.json',result)
     print(json.dumps(result,ensure_ascii=False,indent=2))

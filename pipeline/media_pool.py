@@ -91,7 +91,7 @@ def group_needs(segments: list[dict], script: str) -> list[dict]:
         subject = str(segment.get('retrieval_subject') or segment.get('visual_query') or '').strip()
         explicit = str(segment.get('retrieval_subject') or '').strip()
         # New explicit subjects must be literal grounded mentions in the approved script.
-        grounded = not explicit or ' '.join(explicit.casefold().split()) in folded_script
+        grounded = bool(subject) and ' '.join(subject.casefold().split()) in folded_script
         identity = {"subject": subject, "period": str(segment.get('retrieval_period', '')),
                     "geography": str(segment.get('retrieval_geography', '')),
                     "role": segment.get('visual_role') or 'context', "exact_required": True,

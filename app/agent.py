@@ -865,6 +865,8 @@ Rules:
 - For historical parallels, prefer period-appropriate public-domain or Wikimedia-searchable concepts rather than generic modern stock.
 - visual_query must be a short ENGLISH query suitable for Pexels/Wikimedia Commons.
 - For a specific person, event or place already in the approved narration, set retrieval_subject to its EXACT literal mention (original language). Preserve explicit period/geography in retrieval_period/retrieval_geography; do not invent restrictions. Leave these empty for conceptual B-roll. Never introduce a new historical parallel through media retrieval.
+- evidence and historical_mirror are exact documentary requirements: use them only with a nonempty retrieval_subject quoting the approved narration. A generic teacher, parchment, dashboard or laboratory is context/analogy/explanation, never documentary evidence of a named person or event.
+- When illustrating a named historical parallel, select at least one cataloguable depiction of that actual subject (for example a catalogued bust of Platón when the narration names Platón), rather than substituting anonymous old objects. Keep other conceptual illustrations explicitly contextual.
 - on_screen_text must be Spanish and at most 8 words.
 - For every media segment, separate narrative intent from editing technique:
   - reason = why the cutaway exists in the argument;

@@ -136,7 +136,7 @@ class RecordingAlignmentTests(unittest.TestCase):
             "config/recording_alignment.yaml",
         )
         self.assertTrue(resolved.is_file())
-        self.assertTrue(str(resolved).endswith("config/recording_alignment.yaml"))
+        self.assertTrue(resolved.as_posix().endswith("config/recording_alignment.yaml"))
 
     def test_tokenizer_is_case_punctuation_and_accent_tolerant(self):
         self.assertEqual(

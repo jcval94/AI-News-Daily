@@ -80,6 +80,8 @@ class MediaPoolTests(unittest.TestCase):
         self.assertEqual(needs[0]['slots'],[1,2]); self.assertFalse(needs[1]['grounded'])
         different=group_needs([segment(),segment(2,retrieval_period='1987')], 'Einstein')
         self.assertEqual(len(different),2)
+        generic = group_needs([segment(retrieval_subject='', visual_query='anonymous old parchment')], 'Einstein')
+        self.assertFalse(generic[0]['grounded'])
 
     def test_assignment_selects_later_high_resolution_distinct_identity_per_slot(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -117,9 +119,15 @@ class MediaPoolTests(unittest.TestCase):
     def test_relative_paths_and_symlink_escape(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);bundle=root/'bundle';bundle.mkdir()
-            (bundle/'escape').symlink_to(root,target_is_directory=True)
-            for path in ['../x','/tmp/x','escape/x','a\\b']:
+            for path in ['../x','/tmp/x','a\\b']:
                 with self.assertRaises(ValueError): safe_path(bundle,path)
+            try:
+                (bundle/'escape').symlink_to(root,target_is_directory=True)
+            except OSError as error:
+                if getattr(error, 'winerror', None) == 1314:
+                    self.skipTest('Windows requires symlink privilege; traversal checks passed')
+                raise
+            with self.assertRaises(ValueError): safe_path(bundle,'escape/x')
 
     def test_stale_pool_and_offline_no_model(self):
         with tempfile.TemporaryDirectory() as temp:

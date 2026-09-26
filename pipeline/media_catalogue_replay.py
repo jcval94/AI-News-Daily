@@ -28,10 +28,17 @@ def seed(episode: Path, media: Path) -> Pool:
           selected_news=json.loads((episode/'selected_news.json').read_text(encoding='utf-8')),candidate_slots=slots,max_media_downloads=54)
     plan=base.select_spread_media_budget(plan,max_media_downloads=54)
     # Curated storyboard: stock illustrates concepts, it cannot claim to show exact research.
-    for segment in plan:
+    contextual_queries = (
+        'researcher reading documents', 'hands writing notebook', 'library books shelves',
+        'person working laptop', 'teacher writing whiteboard', 'team discussing research',
+        'close up book pages', 'person reading library', 'desk paper notes',
+        'student taking notes', 'scientist laboratory equipment', 'computer screen data',
+    )
+    for ordinal, segment in enumerate(plan):
         if segment.get('mode')=='media':
             segment['visual_role']='context'
             segment['director_note']='Conceptual B-roll; does not depict the exact study or historical event.'
+            segment['visual_query'] = contextual_queries[ordinal % len(contextual_queries)]
     target_range=next(r for r in ranges if 'Platón' in str(r)) if any('Platón' in str(r) for r in ranges) else None
     # Use the actual aligned section text to locate the reference, not an arbitrary new event.
     if target_range is None:
@@ -45,7 +52,7 @@ def seed(episode: Path, media: Path) -> Pool:
     needs=group_needs(plan,script)
     root=episode.resolve().parents[1]/'media-pool'
     pool=Pool(root,{'schema_version':1,'mode':'integrated','inputs':fingerprint(episode),'budget':dict(DEFAULT_BUDGET),
-        'needs':needs,'segments':plan,'assets':[],'diagnostics':[{'acceptance_mode':'controlled_catalogue_replay','semantic_live_status':'blocked_no_credits','storyboard_authority':'isolated curated acceptance fixture; not canonical'}],
+        'needs':needs,'segments':plan,'assets':[],'diagnostics':[{'acceptance_mode':'controlled_catalogue_replay','semantic_live_status':'not_exercised','storyboard_authority':'isolated curated acceptance fixture; not canonical'}],
         'model_calls':0,'model_usage':[],'transcript_mode':'off'})
     pool.save()
     request=model.Plan(subject='Plato',kind='person',unambiguous=True,interpretation='Catalogued ancient portrait of Plato; not a photograph of the living person',

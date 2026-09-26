@@ -38,12 +38,25 @@ jobs:
           else
             python -m pipeline.media_integration_staging
           fi
+      - name: Preserve lightweight audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-audit-${{ matrix.mode }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/**/*.json
+            !.pipeline-runs/**/*-relocated/**
+          if-no-files-found: warn
+          retention-days: 30
+          include-hidden-files: true
       - name: Preserve handoff and evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: media-integration-${{ matrix.mode }}-${{ github.run_id }}
-          path: .pipeline-runs/
+          path: |
+            .pipeline-runs/
+            !.pipeline-runs/**/*-relocated/**
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: true
