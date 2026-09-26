@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_stage.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "source_repo_path",
+    "request_sha256",
+    "staged_job_path",
+    "staged_at",
+    "execution_requires_local_consent"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 8
+    },
+    "source_repo_path": {
+      "type": "string",
+      "pattern": "^local_handoff/requests/"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "staged_job_path": {
+      "type": "string",
+      "pattern": "^\\.local/jobs/staged/"
+    },
+    "staged_at": {
+      "type": "string",
+      "minLength": 10
+    },
+    "execution_requires_local_consent": {
+      "const": true
+    }
+  }
+}

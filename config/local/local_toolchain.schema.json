@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_toolchain.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "python",
+    "packages",
+    "tools",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "python": {
+      "type": "object",
+      "required": [
+        "version",
+        "executable_redacted"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "executable_redacted": {
+          "type": "string"
+        }
+      }
+    },
+    "packages": {
+      "type": "object",
+      "required": [
+        "opentimelineio"
+      ],
+      "properties": {
+        "opentimelineio": {
+          "type": "string"
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "present",
+          "version"
+        ],
+        "properties": {
+          "present": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "absolute_paths_persisted"
+      ],
+      "properties": {
+        "absolute_paths_persisted": {
+          "const": false
+        }
+      }
+    }
+  }
+}
