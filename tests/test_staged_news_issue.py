@@ -5,36 +5,71 @@ import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
-from zoneinfo import ZoneInfo
 from unittest.mock import patch
+from zoneinfo import ZoneInfo
 
 from pipeline.staged_news_issue import process_event
 
 TZ = ZoneInfo("America/Mexico_City")
 
 
-def story(i: int, *, title: str | None = None, url: str | None = None, summary_prefix: str = "") -> str:
+def story(
+    i: int,
+    *,
+    title: str | None = None,
+    url: str | None = None,
+    summary_prefix: str = "",
+    item_date: str = "2026-09-26",
+    variant: str = "current",
+) -> str:
     return (
-        f"Título: {title or f'Caso {i} con cambio relevante'}\n"
-        "Fecha: 2026-09-26\n"
-        f"Fuente: Fuente {i}\n"
-        f"Enlace: {url or f'https://example.com/news/caso-{i}'}\n"
+        f"Título: {title or f'Caso {variant} {i} con cambio relevante'}\n"
+        f"Fecha: {item_date}\n"
+        f"Fuente: Fuente {variant} {i}\n"
+        f"Enlace: {url or f'https://example.com/news/{variant}-caso-{i}'}\n"
         f"Resumen breve: {summary_prefix}Este es un resumen factual suficientemente extenso para validar el contrato del digest diario, distinguiendo lo ocurrido de cualquier interpretación posterior y evitando afirmaciones no verificadas.\n"
         "Por qué importa: La problemática general muestra un cambio estructural concreto y la tensión enfrenta capacidad nueva contra una restricción humana real. ¿Qué cambia cuando esta capacidad deja de ser excepcional y pasa a integrarse en decisiones cotidianas? La consecuencia humana afecta la forma de trabajar y decidir. Hipótesis editorial: provisionalmente, el valor podría desplazarse hacia supervisión y criterio. Qué habría que investigar: evidencia independiente, estadísticas, experimentos, casos reales, expertos y contraargumentos antes de sostener la hipótesis.\n"
         "Categoría: investigación\n"
     )
 
 
-def digest(stamp: str = "2026-09-26 08:00:00", *, first_title: str | None = None, first_url: str | None = None, first_summary_prefix: str = "") -> str:
+def digest(
+    stamp: str = "2026-09-26 08:00:00",
+    *,
+    first_title: str | None = None,
+    first_url: str | None = None,
+    first_summary_prefix: str = "",
+    item_date: str = "2026-09-26",
+    variant: str = "current",
+) -> str:
     body = [f"# AI News Daily — {stamp} America/Mexico_City", ""]
     for i in range(1, 6):
-        body.append(story(i, title=first_title if i == 1 else None, url=first_url if i == 1 else None, summary_prefix=first_summary_prefix if i == 1 else ""))
+        body.append(
+            story(
+                i,
+                title=first_title if i == 1 else None,
+                url=first_url if i == 1 else None,
+                summary_prefix=first_summary_prefix if i == 1 else "",
+                item_date=item_date,
+                variant=variant,
+            )
+        )
         body.append("")
     return "\n".join(body).strip()
 
 
 def event(path: Path, body: str, stamp: str = "2026-09-26 08:00:00") -> None:
-    path.write_text(json.dumps({"issue": {"title": f"AI_NEWS_STAGING — {stamp} America/Mexico_City", "body": body}}), encoding="utf-8")
+    path.write_text(
+        json.dumps(
+            {
+                "issue": {
+                    "title": f"AI_NEWS_STAGING — {stamp} America/Mexico_City",
+                    "body": body,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
 
 
 class StagedNewsIssueTests(unittest.TestCase):
@@ -75,15 +110,29 @@ class StagedNewsIssueTests(unittest.TestCase):
             news.mkdir()
             old_title = "Caso repetido"
             old_url = "https://example.com/news/repetido"
-            old = digest("2026-09-25 08:00:00", first_title=old_title, first_url=old_url)
-            old = old.replace("Fecha: 2026-09-26", "Fecha: 2026-09-25")
+            old = digest(
+                "2026-09-25 08:00:00",
+                first_title=old_title,
+                first_url=old_url,
+                item_date="2026-09-25",
+                variant="previous",
+            )
             (news / "2026-09-25-08-00-00.txt").write_text(old + "\n", encoding="utf-8")
+
             ev = root / "event.json"
-            event(ev, digest(first_title=old_title, first_url=old_url))
+            event(ev, digest(first_title=old_title, first_url=old_url, variant="new"))
             with self.assertRaisesRegex(ValueError, "repetición reciente"):
                 process_event(ev, news)
 
-            event(ev, digest(first_title=old_title, first_url=old_url, first_summary_prefix="Esta es una actualización material: "))
+            event(
+                ev,
+                digest(
+                    first_title=old_title,
+                    first_url=old_url,
+                    first_summary_prefix="Esta es una actualización material: ",
+                    variant="new",
+                ),
+            )
             status, _ = process_event(ev, news)
             self.assertEqual(status, "created")
 
