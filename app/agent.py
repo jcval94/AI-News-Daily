@@ -297,6 +297,21 @@ class MultimediaPlan(BaseModel):
     segments: List[MultimediaSegment] = Field(default_factory=list)
 
 
+class DocumentaryMultimediaSegment(MultimediaSegment):
+    visual_role: Literal["evidence", "historical_mirror"]
+    retrieval_subject: str = Field(min_length=1, max_length=160,
+        description="REQUIRED exact literal named subject from approved narration; anonymous parchment is not documentary evidence")
+
+
+class ContextualMultimediaSegment(MultimediaSegment):
+    visual_role: Literal["explanation", "context", "analogy", "contrast", "emotional_grounding", "rhythm"]
+
+
+class EditorialMultimediaPlan(BaseModel):
+    # Constrain new model output while still reading legacy MultimediaPlan artifacts.
+    segments: List[DocumentaryMultimediaSegment | ContextualMultimediaSegment] = Field(default_factory=list)
+
+
 selector_agent = Agent(
     name="news_relevance_selector",
     model=model(),
@@ -879,6 +894,6 @@ Rules:
 - Avoid copyrighted movie/TV footage and fabricated screenshots.
 - The first 15 seconds already contain deterministic 3-second slots; honor them.
 """,
-    output_schema=MultimediaPlan,
+    output_schema=EditorialMultimediaPlan,
     output_key="multimedia_plan",
 )

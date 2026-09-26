@@ -482,7 +482,10 @@ async def build_review_media(
                     "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
                     "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
                     "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
-                    "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
+                    "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors. "
+                    "When narration names a historical person or event, include a cataloguable depiction of that actual subject "
+                    "with retrieval_subject copied literally from narration. Use context for anonymous objects; "
+                    "historical_mirror and evidence require a named subject, never anonymous parchment."
                 ) + planning_feedback,
                 step="review_plan_multimedia",
                 trace=trace,
