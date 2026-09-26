@@ -313,6 +313,19 @@ jobs:
           grep -q 'id="scriptDiffButton"' review-site/index.html
           grep -q 'id="scriptHistoryButton"' review-site/index.html
 
+      - name: Preserve Pages cost audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-cost-audit-${{ github.run_id }}
+          path: |
+            review-media/**/planning_trace.json
+            review-media/**/media_cost_audit.json
+            review-media/**/review_media_origin.json
+            review-site/downloads/cost_snapshot.json
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Upload full reusable Review Hub artifact
         uses: actions/upload-artifact@v4
         with:
