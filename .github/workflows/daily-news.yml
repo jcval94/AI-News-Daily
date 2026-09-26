@@ -1,6 +1,10 @@
 name: Generate Daily AI News
 
 on:
+  push:
+    paths:
+      - "pipeline/daily_news.py"
+      - ".github/workflows/daily-news.yml"
   schedule:
     # Mexico City is UTC-6 year-round under the current time-zone rules.
     - cron: "15 14 * * *"
