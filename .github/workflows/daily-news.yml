@@ -1,0 +1,108 @@
+name: Generate Daily AI News
+
+on:
+  schedule:
+    # Mexico City is UTC-6 year-round under the current time-zone rules.
+    - cron: "15 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-news-daily-source-main
+  cancel-in-progress: false
+
+jobs:
+  generate-daily-news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+
+      - name: Install daily-news dependencies
+        run: python -m pip install "openai==2.54.0" "pydantic==2.13.4"
+
+      - name: Require OpenAI API key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          test -n "$OPENAI_API_KEY" || {
+            echo "OPENAI_API_KEY is not configured in repository Actions secrets."
+            exit 1
+          }
+
+      - name: Generate digest when today's valid digest is missing
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DAILY_NEWS_MODEL: ${{ vars.DAILY_NEWS_MODEL || 'gpt-5.6-terra' }}
+          DAILY_NEWS_REASONING: ${{ vars.DAILY_NEWS_REASONING || 'high' }}
+        run: |
+          python -m pipeline.daily_news || {
+            echo "First generation attempt failed; retrying once after 10 seconds."
+            sleep 10
+            python -m pipeline.daily_news
+          }
+
+      - name: Validate and commit only the generated digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          TODAY="$(TZ=America/Mexico_City date +%F)"
+          mapfile -t CHANGES < <(git status --porcelain --untracked-files=all -- news/)
+
+          if [ "${#CHANGES[@]}" -eq 0 ]; then
+            echo "No digest change to commit (today already had a valid digest)."
+            exit 0
+          fi
+
+          if [ "${#CHANGES[@]}" -ne 1 ]; then
+            printf 'Unexpected news/ changes:\n%s\n' "${CHANGES[*]}"
+            exit 1
+          fi
+
+          STATUS="${CHANGES[0]:0:2}"
+          FILE="${CHANGES[0]:3}"
+          if [ "$STATUS" != "??" ]; then
+            echo "Generator must only create one new untracked digest; got status '$STATUS' for '$FILE'."
+            exit 1
+          fi
+          if [[ ! "$FILE" =~ ^news/${TODAY}-[0-9]{2}-[0-9]{2}-[0-9]{2}\.txt$ ]]; then
+            echo "Unexpected generated path: $FILE"
+            exit 1
+          fi
+
+          python -m pipeline.daily_news --validate "$FILE"
+
+          git fetch origin main
+          if git ls-tree -r --name-only origin/main -- news/ | grep -Eq "^news/${TODAY}(-|\\.txt$)"; then
+            echo "A digest for $TODAY appeared on origin/main during this run; not publishing a duplicate."
+            rm -f -- "$FILE"
+            exit 0
+          fi
+
+          git rebase origin/main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "$FILE"
+
+          mapfile -t STAGED < <(git diff --cached --name-only)
+          if [ "${#STAGED[@]}" -ne 1 ] || [ "${STAGED[0]}" != "$FILE" ]; then
+            printf 'Refusing commit; staged files were:\n%s\n' "${STAGED[*]}"
+            exit 1
+          fi
+
+          git commit -m "Add AI news digest for $TODAY"
+          git push origin HEAD:main
