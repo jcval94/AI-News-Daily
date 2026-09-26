@@ -82,6 +82,22 @@ def is_specific(segment: dict) -> bool:
     return bool(segment.get('retrieval_subject')) or segment.get('visual_role') in CRITICAL_ROLES
 
 
+def retrieval_plan_errors(plan: dict, script: str) -> list[str]:
+    text = ' '.join(script.casefold().split())
+    errors = []
+    for segment in plan.get('segments', []):
+        subject = str(segment.get('retrieval_subject') or '').strip()
+        if segment.get('visual_role') in CRITICAL_ROLES and not subject:
+            errors.append(f"slot {segment['slot_number']}: exact documentary role requires a literal retrieval_subject; conceptual imagery must use context/explanation/analogy")
+        if subject and ' '.join(subject.casefold().split()) not in text:
+            errors.append(f"slot {segment['slot_number']}: retrieval_subject is absent from approved narration")
+        for key in ('retrieval_period', 'retrieval_geography'):
+            value = str(segment.get(key) or '').strip()
+            if value and ' '.join(value.casefold().split()) not in text:
+                errors.append(f"slot {segment['slot_number']}: {key} must quote narration or remain empty; do not infer a restriction")
+    return errors
+
+
 def group_needs(segments: list[dict], script: str) -> list[dict]:
     grouped: dict[str, dict] = {}
     folded_script = ' '.join(script.casefold().split())
@@ -89,8 +105,7 @@ def group_needs(segments: list[dict], script: str) -> list[dict]:
         if segment.get('mode') != 'media' or not is_specific(segment):
             continue
         subject = str(segment.get('retrieval_subject') or segment.get('visual_query') or '').strip()
-        explicit = str(segment.get('retrieval_subject') or '').strip()
-        # New explicit subjects must be literal grounded mentions in the approved script.
+        # Every subject must be a grounded mention, including legacy critical queries.
         grounded = bool(subject) and ' '.join(subject.casefold().split()) in folded_script
         identity = {"subject": subject, "period": str(segment.get('retrieval_period', '')),
                     "geography": str(segment.get('retrieval_geography', '')),
@@ -99,6 +114,9 @@ def group_needs(segments: list[dict], script: str) -> list[dict]:
         key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:20]
         need = grouped.setdefault(key, {**identity, 'need_id': key, 'slots': [], 'grounded': grounded})
         need['slots'].append(int(segment['slot_number']))
+        query = str(segment.get('visual_query') or '').strip()
+        if query and query not in need.setdefault('visual_queries', []):
+            need['visual_queries'].append(query)
     return list(grouped.values())
 
 

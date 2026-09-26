@@ -34,6 +34,22 @@ def _beat_by_key(episode_plan: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def writer_marker_contract(plan: dict[str, Any]) -> str:
+    """Render concrete section IDs so the writer need not infer placement metadata."""
+    memory = plan.get('primary_memory_id') or plan.get('opening_memory_id') or ''
+    parallel = next((p for p in plan.get('narrative_parallels', []) if p.get('memory_id') == memory), {})
+    placement = parallel.get('placement', 'opening')
+    sections = expected_section_keys(plan)
+    if placement == 'opening': allowed = ['opening']
+    elif placement == 'closing_callback': allowed = ['synthesis']
+    else:
+        allowed = [key for key, beat in _beat_by_key(plan).items() if placement == 'support' or beat.get('kind') == 'turn']
+    return ('\nExact SECTION order: ' + ' '.join(f'<!--SECTION:{key}-->' for key in sections) +
+            f'\nEmit <!--MEMORY:{memory}--> exactly once in the entire draft, inside ONE of these sections: ' +
+            ', '.join(allowed) + '. Never place it in any other section or in an explanation of the format. '
+            'Other selected memory records do not receive a MEMORY marker. Do not repeat the marker in a callback.')
+
+
 def _trim_empty_trailing_markers(
     text: str, matches: list[re.Match[str]], expected: list[str]
 ) -> tuple[str, list[re.Match[str]]]:

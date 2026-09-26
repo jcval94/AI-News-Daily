@@ -250,7 +250,12 @@ jobs:
               --max-media-downloads "$MAX_MEDIA"
           }
 
-          if [ -n "${OPENAI_API_KEY:-}" ]; then
+          if python -m pipeline.review_media_reuse \
+            --episode-dir "$EPISODE_DIR" \
+            --output-dir "review-media/$TARGET_DATE" \
+            --zip-out "$ZIP"; then
+            echo "Validated episode media reused without model calls"
+          elif [ -n "${OPENAI_API_KEY:-}" ]; then
             set +e
             timeout 12m python -m pipeline.review_media_dense_hardened \
               --episode-dir "$EPISODE_DIR" \

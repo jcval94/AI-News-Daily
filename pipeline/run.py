@@ -61,7 +61,7 @@ from pipeline.narrative_memory import (
     resolve_selected_memory,
 )
 from pipeline.news import NewsItem, parse_news_file
-from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script
+from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script, writer_marker_contract
 
 APP_NAME = "ai_news_daily_video"
 USER_ID = "github_actions"
@@ -965,6 +965,7 @@ async def build(
                     "the primary narrative_parallel.placement."
                 )
             )
+            writer_prompt += writer_marker_contract(episode_plan)
             writer_state = await run_agent(
                 writer_agent,
                 writer_context,

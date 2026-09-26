@@ -67,3 +67,16 @@ incluso si falla. Pages muestra el subtotal documental y los intentos sin precio
 La prueba de staging ejecuta dos casos separados: catálogo controlado sin modelo
 y búsqueda semántica real. Ambos exigen el panel de Pages, 45/5, una asignación
 documental y readiness tras cambiar de raíz. Los artefactos identifican cada caso.
+
+Pages primero verifica y reutiliza los archivos del episodio extraído: licencia,
+decodificación, identidad única, cantidad, apertura y readiness cuando existe.
+Conserva el pool y su auditoría sin nuevas llamadas. Un replay de integración se
+etiqueta como prueba no promovida, y no se presenta como ejecución de producción.
+Si el paquete es incompleto o inválido, se usa la reconstrucción existente.
+
+Antes de adquirir, el plan documental exige sujetos y restricciones presentes en
+la narración. Hay como máximo una reparación del plan inválido, registrada en la
+traza. Las fotos de esculturas antiguas se clasifican como `object_photo`; la
+identidad sigue dependiendo de evidencia literal del catálogo y de los controles
+de licencia. Los rechazos de adquisición conservan el plan y las decisiones para
+evitar repetir llamadas solo para diagnosticar un error.

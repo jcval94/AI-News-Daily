@@ -464,31 +464,41 @@ async def build_review_media(
         raise ValueError("Could not build review-media candidate slots from script sections")
 
     trace: list[dict[str, Any]] = []
-    try:
-        editor_state = await run_agent(
-            multimedia_editor_agent,
-            {
-                "final_script": script,
-                "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
-                "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
-                "max_media_downloads": max(0, max_media_downloads),
-                "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
-                "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
-            },
-            (
-                "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
-                "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
-                "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
-                "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
-            ),
-            step="review_plan_multimedia",
-            trace=trace,
-        )
-    finally:
-        write_json(output_dir / 'planning_trace.json', {'agent_trace': trace})
-    raw_plan = MultimediaPlan.model_validate(
-        editor_state.get("multimedia_plan", {})
-    ).model_dump(exclude_unset=True)
+    from pipeline.media_pool import retrieval_plan_errors
+    planning_feedback = ''
+    for planning_attempt in range(1, 3):
+        try:
+            editor_state = await run_agent(
+                multimedia_editor_agent,
+                {
+                    "final_script": script,
+                    "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
+                    "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
+                    "max_media_downloads": max(0, max_media_downloads),
+                    "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
+                    "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
+                },
+                (
+                    "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
+                    "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
+                    "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
+                    "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
+                ) + planning_feedback,
+                step="review_plan_multimedia",
+                trace=trace,
+                iteration=planning_attempt,
+            )
+        finally:
+            write_json(output_dir / 'planning_trace.json', {'agent_trace': trace})
+        raw_plan = MultimediaPlan.model_validate(
+            editor_state.get("multimedia_plan", {})
+        ).model_dump(exclude_unset=True)
+        errors = retrieval_plan_errors(raw_plan, script) if retrieval_mode() != 'off' else []
+        if not errors:
+            break
+        if planning_attempt == 2:
+            raise ValueError('Invalid documentary plan after bounded repair: ' + '; '.join(errors))
+        planning_feedback = '\nRepair these metadata errors before any acquisition: ' + '; '.join(errors)
     # Normalize every agent-selected slot first; review-specific budget selection happens below so
     # chronological slot numbers cannot silently bias the package toward the beginning.
     normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, len(timeline_slots))

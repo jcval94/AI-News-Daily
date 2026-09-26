@@ -36,6 +36,14 @@ def add(pool, path, *, ident='1', size=(400,240), rights='CC BY 4.0', relation='
 
 
 class MediaPoolTests(unittest.TestCase):
+    def test_documentary_plan_rejects_generic_evidence_and_invented_constraints(self):
+        from pipeline.media_pool import retrieval_plan_errors
+        plan = {'segments': [segment(retrieval_subject='', visual_query='generic laboratory')]}
+        self.assertTrue(retrieval_plan_errors(plan, 'Einstein'))
+        plan = {'segments': [segment(retrieval_period='1919', retrieval_geography='Germany')]}
+        self.assertEqual(len(retrieval_plan_errors(plan, 'Einstein')), 2)
+        self.assertEqual(retrieval_plan_errors(plan, 'Einstein in Germany, 1919'), [])
+
     def test_both_planners_receive_period_and_geography(self):
         from pipeline.media_acquisition import Acquisition
         with tempfile.TemporaryDirectory() as temp:

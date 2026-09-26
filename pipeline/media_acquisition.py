@@ -21,7 +21,10 @@ VIDEO_SOURCES = ['archive', 'commons', 'peertube', 'nasa', 'youtube']
 
 def need_description(need: dict) -> str:
     """Carry the complete editorial identity into both retrieval planners."""
-    return ' | '.join(str(need[k]) for k in ('subject', 'period', 'geography') if need.get(k))
+    description = ' | '.join(str(need[k]) for k in ('subject', 'period', 'geography') if need.get(k))
+    if need.get('visual_queries'):
+        description += ' | Requested depiction: ' + '; '.join(need['visual_queries'][:4])
+    return description
 
 
 class Acquisition:
@@ -83,8 +86,10 @@ class Acquisition:
         except Exception as error:
             entity = {'status': 'unavailable', 'reason': sources.safe_error(error)}
         candidates, discovery = sources.discover(plan, [s for s in IMAGE_SOURCES if s not in self.blocked_images], entity)
-        self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'image', 'queries': plan.queries, 'discovery': discovery})
+        self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'image', 'plan': plan.model_dump(), 'queries': plan.queries, 'discovery': discovery})
         decisions, _ = model.assess(plan, candidates, entity, self.request, editorial_pack=True)
+        self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'image_assessment', 'decisions': decisions})
+        self.pool.save()
         accepted = 0
         # Larger catalogued variants first. Every physical file is decoded again before assignment.
         candidates.sort(key=lambda c: (c.get('width') or 0) * (c.get('height') or 0), reverse=True)

@@ -66,7 +66,14 @@ def _discover_production_media(episode_dir: Path) -> Path | None:
     root = _artifact_root(episode_dir)
     if root is None:
         return None
+    # An approved script replay does not establish canonical production provenance.
+    staging = _read_json(root / "integration-result.json", {})
+    if staging and not staging.get("promoted"):
+        return None
     candidate = root / "multimedia" / episode_dir.name
+    origin = _read_json(candidate / "review_media_origin.json", {})
+    if origin.get("kind") in {"staging", "reused_staging"}:
+        return None
     return candidate if (candidate / "manifest.json").exists() else None
 
 

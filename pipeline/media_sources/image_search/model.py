@@ -85,7 +85,7 @@ a person or choose an arbitrary meaning of an ambiguous name. Explain interpreta
 Use the full canonical name for a person. Queries: 1-2 concise phrases in English/input language. Search uses an AND of literal words: use the bare subject name or a known full-name alias, without adding photo, photograph, portrait, image, or other format qualifiers.
 museum_query: short English collection term, e.g. Roman for Ancient Rome, not a verbose sentence.
 Dates refer to the subject period, NOT the date of a modern photograph of an ancient object/site.
-date_start and date_end must ALWAYS be both null or both integer years; never return one null boundary. For a named person, use both null unless the user explicitly restricts the date of the desired photographs. A biographical event year does not constrain the portrait date. Use null dates when no historical period is requested. For people who lived before photography existed, allow historical_artwork with explicit catalogue attribution (e.g. an ancient bust); never pretend it is a photograph of the living person. Otherwise default named people to person_photo only,
+date_start and date_end must ALWAYS be both null or both integer years; never return one null boundary. For a named person, use both null unless the user explicitly restricts the date of the desired photographs. A biographical event year does not constrain the portrait date. Use null dates when no historical period is requested. For people who lived before photography existed, allow both object_photo (photographs of catalogued busts/statues) and historical_artwork (painted/drawn portraits) with explicit catalogue attribution; never pretend it is a photograph of the living person. Otherwise default named people to person_photo only,
 unless an existing historical artwork was explicitly requested. For a specific historical event, include photographs of that event (person_photo, site_photo or object_photo as appropriate), with explicit catalogue evidence tying them to the exact event. A generic participant portrait does not establish an event. Historical topics may allow genuine
 period objects/artworks/maps and photographs of surviving ancient sites. Ancient Rome is NOT modern
 Rome tourism, Renaissance art, a modern costume, movie still, game or hypothetical reconstruction.
@@ -118,6 +118,9 @@ memes, costumes, signatures, documents and drawings when photographs were reques
 is acceptable only when the catalogue explicitly identifies the requested person in that photo.
 For historical topics, distinguish artifact origin date from modern photograph date. Accept genuine
 objects from the requested civilization/period and views of identified surviving historical sites.
+For people predating photography, a catalogued bust/statue is object_photo; an old drawing/painting
+is historical_artwork. Honor these allowed_types when planning and assessing ancient-person depictions;
+do not reject a catalogued portrait merely because it is a photograph of a sculpture, not a living person.
 Reject unrelated ancient cultures, modern city scenes, Renaissance pictures of ancient subjects,
 film/game stills, reconstructions, generative AI, or unknown provenance. Historical interpretation
 must be supported by supplied culture/period/date/description, not inferred from a search query.

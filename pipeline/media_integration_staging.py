@@ -10,6 +10,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from pipeline.media_pool import write_json
@@ -60,6 +61,7 @@ def main():
     moved_episode=relocated/'scripts'/args.date
     write_resolve_plan(repo_root=relocated,episode_dir=moved_episode)
     _,_,relocated_readiness=write_asset_readiness(repo_root=relocated,episode_dir=moved_episode,policy_path=Path('config/asset_readiness.yaml'),enforce=False)
+    write_json(media/'review_media_origin.json', {'schema_version':1, 'kind':'staging', 'episode_date':args.date})
     build_site(episode_dir=episode,media_dir=media,media_zip=bundle,
                regression_path=Path('editorial-regression.json'),cases_path=Path('evals/editorial/cases.json'),
                output_dir=root/'review-site',run_id=args.run_id)
@@ -77,6 +79,20 @@ def main():
             'semantic_live_status':'not_exercised' if args.catalogue_replay else 'tested',
             'success':success,'promoted':False,'resolve_local_acceptance':'pending','transcript':'off'}
     write_json(root/'integration-result.json',result)
+    if success:
+        from pipeline.review_media_reuse import reuse_media
+        from pipeline.review_media_pool import pool_panel
+        try:
+            with tempfile.TemporaryDirectory(prefix='pages-reuse-') as temp:
+                reused = Path(temp)/args.date
+                result['pages_reuse_verified'] = reuse_media(episode, reused, Path(temp)/'reused.zip')
+                result['pages_staging_label_verified'] = 'no fue promovido' in pool_panel(reused) if result['pages_reuse_verified'] else False
+            success = result['pages_reuse_verified'] and result['pages_staging_label_verified']
+        except Exception as error:
+            success = False
+            result['pages_reuse_error'] = str(error)
+        result['success'] = success
+        write_json(root/'integration-result.json',result)
     print(json.dumps(result,ensure_ascii=False,indent=2))
     if not success:
         raise SystemExit('Integration acceptance failed; inspect preserved artifacts')

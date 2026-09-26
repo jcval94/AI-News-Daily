@@ -12,6 +12,9 @@ def pool_panel(media_dir: Path) -> str:
     if not path.is_file():
         return '<aside id="media-pool-status"><h3>Biblioteca multimedia</h3><p>Este episodio usa la adquisición anterior. La búsqueda documental integrada es optativa; su biblioteca se valida antes de asignar archivos.</p></aside>'
     summary = json.loads(path.read_text(encoding='utf-8'))
+    origin_path = media_dir / 'review_media_origin.json'
+    origin = json.loads(origin_path.read_text(encoding='utf-8')) if origin_path.is_file() else {}
+    origin_label = '<p>Prueba de integración; este paquete no fue promovido a producción.</p>' if origin.get('kind') in {'staging', 'reused_staging'} else ''
     labels = [('downloaded', 'Descargados'), ('eligible', 'Elegibles'), ('assigned', 'Asignados'),
               ('exact', 'Exactos por catálogo'), ('context', 'Contextuales'), ('low_resolution', 'Baja resolución')]
     metrics = ' · '.join(f'{label}: <strong>{esc(summary.get(key, 0))}</strong>' for key, label in labels)
@@ -36,7 +39,7 @@ def pool_panel(media_dir: Path) -> str:
         cost = ('<p>Costo estimado de adquisición documental: <strong>USD ' +
                 esc(f"{audit['estimated_known_usd']:.6f}") + '</strong>. Intentos sin costo calculable: ' +
                 esc(audit['unpriced_attempts']) + '. No es una factura; excluye planificación editorial y otras ejecuciones.</p>')
-    return ('<aside id="media-pool-status"><h3>Biblioteca multimedia</h3><p>Modo: ' + esc(summary['mode']) +
+    return ('<aside id="media-pool-status"><h3>Biblioteca multimedia</h3>' + origin_label + '<p>Modo: ' + esc(summary['mode']) +
             '. Transcripción desactivada. Las coincidencias se respaldan en catálogo; no constituyen una verificación humana universal.</p><p>' + metrics +
             '</p>' + cost + '<p>Fuentes: ' + esc(', '.join(summary.get('providers', [])) or 'Sin resultados') +
             '. Espacios sin resolver: ' + esc(', '.join(map(str, unresolved)) or 'Ninguno') +
