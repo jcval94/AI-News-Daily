@@ -338,6 +338,7 @@ def build_site(
         run_id=run_id,
         pricing_path=pricing_path,
     )
+    from pipeline.review_media_pool import inject_pool_panel
     original_text = (episode_dir / "script.txt").read_text(encoding="utf-8").strip()
     document = index_path.read_text(encoding="utf-8")
     document = apply_script_productivity(
@@ -346,6 +347,7 @@ def build_site(
         original_text=original_text,
         words_per_second=CONFIG.words_per_second,
     )
+    document = inject_pool_panel(document, media_dir)
     index_path.write_text(document, encoding="utf-8")
     return index_path
 

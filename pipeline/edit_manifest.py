@@ -312,6 +312,9 @@ def _asset_payload(asset: dict[str, Any] | None, cue: dict[str, Any]) -> dict[st
             "on_screen_text": str(cue.get("on_screen_text", "") or ""),
         }
 
+    extension = asset.get("media_provenance")
+    if extension is not None:
+        validate_payload(extension, "media_provenance.schema.json")
     file_path = str(asset.get("file", "") or "").strip()
     file_exists = asset.get("_file_exists")
     license_valid = bool(asset.get("license_valid", False))
@@ -322,10 +325,13 @@ def _asset_payload(asset: dict[str, Any] | None, cue: dict[str, Any]) -> dict[st
         blockers.append("missing_file")
     if not license_valid:
         blockers.append("license_not_validated")
+    if extension and (cue.get("retrieval_subject") or cue.get("visual_role") in {"evidence", "historical_mirror"}) and extension["relation"] != "exact":
+        blockers.append("exact_identity_required")
 
     return {
         "available": bool(file_path),
-        "usable_for_edit": bool(file_path) and file_exists is not False and license_valid,
+        "usable_for_edit": bool(file_path) and file_exists is not False and license_valid and not blockers,
+        **({"media_provenance": extension} if extension is not None else {}),
         "file_exists": file_exists,
         "blockers": blockers,
         "file": file_path,

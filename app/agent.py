@@ -258,6 +258,9 @@ class MultimediaSegment(BaseModel):
     end_seconds: float = Field(gt=0)
     mode: Literal["media"] = "media"
     visual_query: str = Field(min_length=1)
+    retrieval_subject: str = Field(default="", max_length=160, description="Exact literal person/event/place mention from approved narration; empty for conceptual stock")
+    retrieval_period: str = Field(default="", max_length=80)
+    retrieval_geography: str = Field(default="", max_length=80)
     on_screen_text: str = ""
     reason: str = ""
     visual_role: Literal[
@@ -292,6 +295,21 @@ class MultimediaSegment(BaseModel):
 
 class MultimediaPlan(BaseModel):
     segments: List[MultimediaSegment] = Field(default_factory=list)
+
+
+class DocumentaryMultimediaSegment(MultimediaSegment):
+    visual_role: Literal["evidence", "historical_mirror"]
+    retrieval_subject: str = Field(min_length=1, max_length=160,
+        description="REQUIRED exact literal named subject from approved narration; anonymous parchment is not documentary evidence")
+
+
+class ContextualMultimediaSegment(MultimediaSegment):
+    visual_role: Literal["explanation", "context", "analogy", "contrast", "emotional_grounding", "rhythm"]
+
+
+class EditorialMultimediaPlan(BaseModel):
+    # Constrain new model output while still reading legacy MultimediaPlan artifacts.
+    segments: List[DocumentaryMultimediaSegment | ContextualMultimediaSegment] = Field(default_factory=list)
 
 
 selector_agent = Agent(
@@ -861,6 +879,9 @@ Rules:
 - Prefer explanatory or contextual visuals over generic stock footage.
 - For historical parallels, prefer period-appropriate public-domain or Wikimedia-searchable concepts rather than generic modern stock.
 - visual_query must be a short ENGLISH query suitable for Pexels/Wikimedia Commons.
+- For a specific person, event or place already in the approved narration, set retrieval_subject to its EXACT literal mention (original language). Preserve explicit period/geography in retrieval_period/retrieval_geography; do not invent restrictions. Leave these empty for conceptual B-roll. Never introduce a new historical parallel through media retrieval.
+- evidence and historical_mirror are exact documentary requirements: use them only with a nonempty retrieval_subject quoting the approved narration. A generic teacher, parchment, dashboard or laboratory is context/analogy/explanation, never documentary evidence of a named person or event.
+- When illustrating a named historical parallel, select at least one cataloguable depiction of that actual subject (for example a catalogued bust of Platón when the narration names Platón), rather than substituting anonymous old objects. Keep other conceptual illustrations explicitly contextual.
 - on_screen_text must be Spanish and at most 8 words.
 - For every media segment, separate narrative intent from editing technique:
   - reason = why the cutaway exists in the argument;
@@ -873,6 +894,6 @@ Rules:
 - Avoid copyrighted movie/TV footage and fabricated screenshots.
 - The first 15 seconds already contain deterministic 3-second slots; honor them.
 """,
-    output_schema=MultimediaPlan,
+    output_schema=EditorialMultimediaPlan,
     output_key="multimedia_plan",
 )

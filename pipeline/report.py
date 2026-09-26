@@ -276,6 +276,7 @@ def build_report(
         "asset_readiness_html": artifact_record(scripts_dir / "asset_readiness.html", f"scripts/{episode}/asset_readiness.html"),
         "multimedia_plan": artifact_record(multimedia_dir / "plan.json", f"multimedia/{episode}/plan.json"),
         "edit_manifest": artifact_record(multimedia_dir / "edit_manifest.json", f"multimedia/{episode}/edit_manifest.json"),
+        "media_pool_summary": artifact_record(multimedia_dir / "media_pool_summary.json", f"multimedia/{episode}/media_pool_summary.json"),
         "multimedia_manifest": artifact_record(multimedia_dir / "manifest.json", f"multimedia/{episode}/manifest.json"),
         "multimedia_credits_json": artifact_record(multimedia_dir / "credits.json", f"multimedia/{episode}/credits.json"),
         "multimedia_credits_md": artifact_record(multimedia_dir / "credits.md", f"multimedia/{episode}/credits.md"),

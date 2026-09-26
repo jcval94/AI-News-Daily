@@ -84,7 +84,7 @@ class AssetReadinessTests(unittest.TestCase):
             "config/asset_readiness.yaml",
         )
         self.assertTrue(resolved.is_file())
-        self.assertTrue(str(resolved).endswith("config/asset_readiness.yaml"))
+        self.assertTrue(resolved.as_posix().endswith("config/asset_readiness.yaml"))
 
     def test_eighty_percent_coverage_with_low_res_warning_can_be_ready(self):
         with tempfile.TemporaryDirectory() as tmp:

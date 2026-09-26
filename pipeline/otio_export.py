@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import opentimelineio as otio
+from pipeline.schema_validation import validate_payload
 
 
 SCHEMA_VERSION = 1
@@ -50,6 +51,9 @@ def _metadata(value: Any) -> Any:
 
 
 def _clip_metadata(clip: dict[str, Any], track_id: str) -> dict[str, Any]:
+    extension = (clip.get("source") or {}).get("media_provenance")
+    if extension is not None:
+        validate_payload(extension, "media_provenance.schema.json")
     return {
         _METADATA_NS: {
             "schema_version": SCHEMA_VERSION,

@@ -1,0 +1,62 @@
+name: Media Integration Staging
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/editorial-media-pool]
+    paths: [.github/media-integration-request.json]
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [catalogue, live]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Validate contracts
+        run: |
+          python -m compileall -q app pipeline
+          python -m unittest discover -s tests -v
+      - name: Replay approved episode with live sources
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          ACCEPTANCE_MODE: ${{ matrix.mode }}
+        run: |
+          if [ "$ACCEPTANCE_MODE" = "catalogue" ]; then
+            python -m pipeline.media_integration_staging --catalogue-replay
+          else
+            python -m pipeline.media_integration_staging
+          fi
+      - name: Preserve lightweight audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-audit-${{ matrix.mode }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/**/*.json
+            !.pipeline-runs/**/*-relocated/**
+          if-no-files-found: warn
+          retention-days: 30
+          include-hidden-files: true
+      - name: Preserve handoff and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-integration-${{ matrix.mode }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/
+            !.pipeline-runs/**/*-relocated/**
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: true

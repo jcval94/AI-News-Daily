@@ -37,6 +37,7 @@ on:
       - "pipeline/pages_history.py"
       - "pipeline/review_hub*.py"
       - "pipeline/review_video_preview.py"
+      - "pipeline/review_media_pool.py"
       - "pipeline/review_media*.py"
       - "pipeline/evidence_reconciliation.py"
       - "pipeline/editorial_regression.py"
@@ -249,7 +250,12 @@ jobs:
               --max-media-downloads "$MAX_MEDIA"
           }
 
-          if [ -n "${OPENAI_API_KEY:-}" ]; then
+          if python -m pipeline.review_media_reuse \
+            --episode-dir "$EPISODE_DIR" \
+            --output-dir "review-media/$TARGET_DATE" \
+            --zip-out "$ZIP"; then
+            echo "Validated episode media reused without model calls"
+          elif [ -n "${OPENAI_API_KEY:-}" ]; then
             set +e
             timeout 12m python -m pipeline.review_media_dense_hardened \
               --episode-dir "$EPISODE_DIR" \

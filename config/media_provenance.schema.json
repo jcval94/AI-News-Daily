@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "source_asset_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "rendition_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "need_id": {
+      "type": "string"
+    },
+    "relation": {
+      "enum": [
+        "exact",
+        "context"
+      ]
+    },
+    "quality": {
+      "enum": [
+        "standard",
+        "lowres"
+      ]
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "original_offset_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "catalogue_evidence": {
+      "type": "object",
+      "required": [
+        "field",
+        "quote",
+        "value"
+      ],
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "limitation": {
+      "type": "string"
+    },
+    "sidecar_paths": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_asset_id",
+    "rendition_id",
+    "need_id",
+    "relation",
+    "quality",
+    "width",
+    "height",
+    "original_offset_seconds",
+    "catalogue_evidence",
+    "limitation",
+    "sidecar_paths"
+  ]
+}

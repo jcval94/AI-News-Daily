@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script
+from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script, writer_marker_contract
 
 
 PLAN = {
@@ -25,6 +25,16 @@ PLAN = {
 
 
 class ScriptSectionTests(unittest.TestCase):
+    def test_writer_contract_names_the_actual_allowed_turn_section(self):
+        import copy
+        plan = copy.deepcopy(PLAN)
+        plan['opening_memory_id'] = None
+        plan['narrative_parallels'][0]['placement'] = 'narrative_turn'
+        contract = writer_marker_contract(plan)
+        self.assertIn('inside ONE of these sections: beat:turn.', contract)
+        self.assertEqual(contract.count('<!--MEMORY:memory-case-->'), 1)
+        self.assertNotIn('inside ONE of these sections: opening', contract)
+
     def test_markers_follow_idea_beats_not_news_items(self) -> None:
         marked = (
             "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio intrigante. "

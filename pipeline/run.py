@@ -61,7 +61,7 @@ from pipeline.narrative_memory import (
     resolve_selected_memory,
 )
 from pipeline.news import NewsItem, parse_news_file
-from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script
+from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script, writer_marker_contract
 
 APP_NAME = "ai_news_daily_video"
 USER_ID = "github_actions"
@@ -589,6 +589,9 @@ def normalize_multimedia_plan(
             **slot,
             "mode": "media",
             "visual_query": query,
+            "retrieval_subject": str(raw.get("retrieval_subject", "") or "").strip(),
+            "retrieval_period": str(raw.get("retrieval_period", "") or "").strip(),
+            "retrieval_geography": str(raw.get("retrieval_geography", "") or "").strip(),
             "on_screen_text": str(raw.get("on_screen_text", "")).strip()[:80],
             "reason": str(raw.get("reason", "")).strip(),
             "visual_role": str(raw.get("visual_role", "") or ""),
@@ -802,7 +805,7 @@ async def build(
                     ""
                     if not contract_error
                     else (
-                        " Your previous plan violated the deterministic evidence-reference contract: "
+                        " Your previous plan violated the deterministic plan contract: "
                         f"{contract_error}. Rebuild the plan and copy only explicit selected_news_index "
                         f"values from selected_news.items (valid range 1..{selected_count})."
                     )
@@ -824,6 +827,8 @@ async def build(
                         f"There are exactly {selected_count} selected_news items; every selected_news_index "
                         f"must be between 1 and {selected_count}. "
                         "Do not repeat a recent essay merely with new headlines."
+                        + " Copy narrative_parallels memory_id and opening_memory_id exactly from these allowed IDs: "
+                        + json.dumps([item['id'] for item in memory_candidates]) + "."
                         + repair_instruction
                     ),
                     step="plan_episode" if novelty_attempt == 1 else "replan_episode_novelty",
@@ -835,6 +840,7 @@ async def build(
                 ).model_dump()
                 try:
                     validate_episode_plan(candidate_plan, selected_count)
+                    resolve_selected_memory(candidate_plan, memory_candidates)
                     break
                 except ValueError as exc:
                     contract_error = str(exc)
@@ -962,6 +968,7 @@ async def build(
                     "the primary narrative_parallel.placement."
                 )
             )
+            writer_prompt += writer_marker_contract(episode_plan)
             writer_state = await run_agent(
                 writer_agent,
                 writer_context,

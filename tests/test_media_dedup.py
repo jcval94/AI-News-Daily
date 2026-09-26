@@ -3,6 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from PIL import Image
 
 from pipeline.media_dedup import (
     asset_identity_keys,
@@ -17,8 +18,8 @@ class MediaDedupTests(unittest.TestCase):
             root = Path(tmp)
             low = root / "low.jpg"
             high = root / "high.jpg"
-            low.write_bytes(b"low-resolution-copy")
-            high.write_bytes(b"high-resolution-copy-with-more-bytes")
+            Image.new("RGB", (1280, 720)).save(low)
+            Image.new("RGB", (3840, 2160)).save(high)
 
             manifest = [
                 {
@@ -54,7 +55,8 @@ class MediaDedupTests(unittest.TestCase):
             )
 
             self.assertEqual([item["shot_number"] for item in kept], [2])
-            self.assertEqual([item["slot_number"] for item in kept_segments], [2])
+            self.assertEqual([item["slot_number"] for item in kept_segments], [1, 2])
+            self.assertEqual(kept_segments[0]["retrieval_status"], "unresolved")
             self.assertEqual(len(removed), 1)
             self.assertEqual(removed[0]["kept_shot_number"], 2)
             self.assertFalse(low.exists())
@@ -95,7 +97,7 @@ class MediaDedupTests(unittest.TestCase):
             )
 
             self.assertEqual(len(kept), 1)
-            self.assertEqual(len(kept_segments), 1)
+            self.assertEqual(len(kept_segments), 2)
             self.assertEqual(len(removed), 1)
             self.assertEqual(kept[0]["shot_number"], 7)
 
@@ -117,8 +119,8 @@ class MediaDedupTests(unittest.TestCase):
             root = Path(tmp)
             huge_file = root / "huge-low.jpg"
             small_file = root / "small-high.jpg"
-            huge_file.write_bytes(b"x" * 1000)
-            small_file.write_bytes(b"x" * 10)
+            Image.new("RGB", (1280, 720)).save(huge_file)
+            Image.new("RGB", (1920, 1080)).save(small_file)
             low = {
                 "file": "huge-low.jpg",
                 "source_width": 1280,

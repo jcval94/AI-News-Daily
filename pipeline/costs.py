@@ -187,6 +187,31 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return result
 
 
+def _acquisition_rows(audit: dict[str, Any]) -> list[dict[str, Any]]:
+    """Keep Responses usage semantics: reasoning is already part of output_tokens."""
+    rows = []
+    for index, call in enumerate(audit.get("calls", []), start=1):
+        usage = call.get("usage") or {}
+        incoming, outgoing = usage.get("input_tokens"), usage.get("output_tokens")
+        observed = isinstance(incoming, int) and isinstance(outgoing, int)
+        rows.append({
+            "scope": "documentary_media_retrieval", "sequence": index,
+            "step": call.get("stage") or "unknown", "agent": "media_acquisition",
+            "iteration": None, "attempt": call.get("attempt", index),
+            "status": call.get("status", "unknown"), "model": call.get("model"),
+            "elapsed_seconds": call.get("elapsed_seconds"),
+            "prompt_tokens": _int(incoming), "output_tokens": _int(outgoing),
+            "reasoning_tokens": _int((usage.get("output_tokens_details") or {}).get("reasoning_tokens")),
+            "billable_output_tokens": _int(outgoing),
+            "total_tokens": _int(usage.get("total_tokens")) or _int(incoming) + _int(outgoing),
+            "cached_input_tokens": _int((usage.get("input_tokens_details") or {}).get("cached_tokens")),
+            "usage_observed": observed, "estimated_cost_usd": call.get("estimated_usd"),
+            "response_id": call.get("response_id"), "need_id": call.get("need_id"),
+            "error_type": call.get("error_type"),
+        })
+    return rows
+
+
 def _provider_counts(manifest: list[dict[str, Any]]) -> dict[str, int]:
     counts: dict[str, int] = defaultdict(int)
     for item in manifest:
@@ -239,7 +264,12 @@ def build_cost_snapshot(
         rate=review_rate,
     )
     warnings.extend(review_warnings)
-    rows = production_rows + review_rows
+    acquisition_audit = read_json(media_dir / "media_cost_audit.json", {})
+    acquisition_rows = _acquisition_rows(acquisition_audit)
+    acquisition_unknown = _int(acquisition_audit.get("unpriced_attempts"))
+    if acquisition_unknown:
+        warnings.append(f"{acquisition_unknown} documentary acquisition attempt(s) have unknown cost; they are not free.")
+    rows = production_rows + review_rows + acquisition_rows
 
     known_openai_cost = round(
         sum(
@@ -388,6 +418,7 @@ def build_cost_snapshot(
             "attempts_with_observed_usage": observed_calls,
             "unmeasured_failed_attempts": unmeasured_failed_attempts,
             "unpriced_observed_attempts": unpriced_observed_attempts,
+            "documentary_acquisition_unpriced_attempts": acquisition_unknown,
         },
         "breakdown_by_step": _aggregate_rows(rows),
         "attempts": rows,
@@ -414,6 +445,7 @@ def build_cost_snapshot(
         "coverage": {
             "known_direct_total_is_complete": (
                 unmeasured_failed_attempts == 0 and unpriced_observed_attempts == 0
+                and acquisition_unknown == 0
             ),
             "cached_input_discount_measured": False,
             "pexels_request_count_measured": False,

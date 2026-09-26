@@ -15,6 +15,7 @@ from pipeline.credits import write_credits
 from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset, download_video_shot_asset
 from pipeline.media_dedup import deduplicate_materialized_media
+from pipeline.media_pool import prepare_pool, finish_assignment, retrieval_mode, is_specific
 from pipeline.run import normalize_multimedia_plan, run_agent, write_json
 
 CONFIG = PipelineConfig.from_env()
@@ -463,28 +464,51 @@ async def build_review_media(
         raise ValueError("Could not build review-media candidate slots from script sections")
 
     trace: list[dict[str, Any]] = []
-    editor_state = await run_agent(
-        multimedia_editor_agent,
-        {
-            "final_script": script,
-            "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
-            "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
-            "max_media_downloads": max(0, max_media_downloads),
-            "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
-            "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
-        },
-        (
-            "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
-            "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
-            "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
-            "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors."
-        ),
-        step="review_plan_multimedia",
-        trace=trace,
-    )
-    raw_plan = MultimediaPlan.model_validate(
-        editor_state.get("multimedia_plan", {})
-    ).model_dump(exclude_unset=True)
+    from pipeline.media_pool import retrieval_plan_errors
+    planning_feedback = ''
+    for planning_attempt in range(1, 3):
+        try:
+            editor_state = await run_agent(
+                multimedia_editor_agent,
+                {
+                    "final_script": script,
+                    "episode_plan": json.dumps(episode_plan, ensure_ascii=False),
+                    "timeline_slots": json.dumps(timeline_slots, ensure_ascii=False),
+                    "max_media_downloads": max(0, max_media_downloads),
+                    "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
+                    "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,
+                },
+                (
+                    "Plan review multimedia across the FULL essay. The first 20 seconds are a high-energy cold open: "
+                    "use multimedia in at least five opening slots, prefer motion/video footage, and change visuals every ~3–4 seconds. "
+                    "After 20 seconds, become selective: use at most two assets in a beat and only when the visual materially explains, "
+                    "grounds or intensifies the idea. Prefer documentary/explanatory visuals over generic stock metaphors. "
+                    "When narration names a historical person or event, include a cataloguable depiction of that actual subject "
+                    "with retrieval_subject copied literally from narration. Use context for anonymous objects; "
+                    "historical_mirror and evidence require a named subject, never anonymous parchment."
+                ) + planning_feedback,
+                step="review_plan_multimedia",
+                trace=trace,
+                iteration=planning_attempt,
+            )
+        finally:
+            write_json(output_dir / 'planning_trace.json', {'agent_trace': trace})
+        raw_plan = MultimediaPlan.model_validate(
+            editor_state.get("multimedia_plan", {})
+        ).model_dump(exclude_unset=True)
+        write_json(output_dir / f'planning_attempt_{planning_attempt}.json', raw_plan)
+        errors = retrieval_plan_errors(raw_plan, script) if retrieval_mode() != 'off' else []
+        if not errors:
+            break
+        if planning_attempt == 2:
+            raise ValueError('Invalid documentary plan after bounded repair: ' + '; '.join(errors))
+        planning_feedback = (
+            '\nRepair this previous plan before any acquisition. Preserve valid segments. '
+            'For each invalid exact role, either quote the named subject literally from final_script '
+            'in retrieval_subject, or correct a conceptual visual to context/explanation/analogy. '
+            'Return the entire corrected plan. Errors: ' + '; '.join(errors)
+            + '\nPrevious plan (data): ' + json.dumps(raw_plan, ensure_ascii=False)
+        )
     # Normalize every agent-selected slot first; review-specific budget selection happens below so
     # chronological slot numbers cannot silently bias the package toward the beginning.
     normalized, warnings = normalize_multimedia_plan(raw_plan, timeline_slots, len(timeline_slots))
@@ -500,6 +524,8 @@ async def build_review_media(
     slot_meta = {int(slot["slot_number"]): slot for slot in timeline_slots}
 
     selected_segments: list[dict[str, Any]] = []
+    pool = prepare_pool(episode_dir, output_dir, normalized, offline=False)
+    planned_segments = [dict(s) for s in normalized if s.get("mode") == "media"]
     manifest: list[dict[str, Any]] = []
     for segment in normalized:
         if segment.get("mode") != "media":
@@ -521,13 +547,20 @@ async def build_review_media(
         preferred_video = segment.get("preferred_asset_type") == "video"
         record: dict[str, Any] | None = None
         relative_file = ""
-        if preferred_video:
+        if pool is not None and retrieval_mode() == "integrated" and is_specific(segment):
+            record = pool.assign(segment, output_dir, folder)
+            if record is None:
+                selected_segments.append({**segment, "association": folder, "file": "", "retrieval_status": "unresolved"})
+                continue
+            relative_file = record["file"]
+        if record is None and preferred_video:
             video_name = media_filename(segment, extension=".mp4")
             video_destination = output_dir / folder / video_name
             video_relative = str(video_destination.relative_to(output_dir)).replace("\\", "/")
             record = download_video_shot_asset(
                 {
                     "shot_number": slot_number,
+                    "exclude_asset_ids": [f"{a.get('provider')}:{a.get('provider_asset_id')}" for a in manifest if a.get("provider_asset_id") is not None],
                     "visual_query": segment["visual_query"],
                     "on_screen_text": segment.get("on_screen_text", ""),
                 },
@@ -544,6 +577,7 @@ async def build_review_media(
             record = download_shot_asset(
                 {
                     "shot_number": slot_number,
+                    "exclude_asset_ids": [f"{a.get('provider')}:{a.get('provider_asset_id')}" for a in manifest if a.get("provider_asset_id") is not None],
                     "visual_query": segment["visual_query"],
                     "on_screen_text": segment.get("on_screen_text", ""),
                 },
@@ -581,6 +615,8 @@ async def build_review_media(
         warnings.append(
             f"Removed {len(duplicate_assets)} duplicate multimedia asset(s); highest source resolution was kept"
         )
+
+    selected_segments = finish_assignment(pool, manifest, selected_segments, planned_segments, output_dir)
 
     opening_assets = [
         item for item in manifest
