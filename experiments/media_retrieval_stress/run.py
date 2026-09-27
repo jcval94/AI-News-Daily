@@ -140,7 +140,10 @@ def summarize_match(case: dict[str, Any], plan_text: str, selected: list[dict[st
         passed = True
     elif plan_resolved:
         status = "SEMANTIC_ONLY"
-        passed = bool(case.get("may_be_rights_blocked"))
+        # Semantic resolution is useful evidence, but the user's retrieval goal was
+        # not met. Rights/provider constraints explain the degradation; they do not
+        # turn a missing exact asset into a successful retrieval.
+        passed = False
     else:
         status = "FAIL_NO_RESOLUTION"
         passed = False
