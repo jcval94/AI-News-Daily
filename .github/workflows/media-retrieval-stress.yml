@@ -80,9 +80,11 @@ jobs:
           if [ -z "$PROFILE" ]; then PROFILE="core"; fi
           ENFORCE=""
           if [ "${{ inputs.enforce_live }}" = "true" ]; then ENFORCE="--enforce"; fi
+          LIMIT_ARGS=""
+          if [ "${{ github.event_name }}" = "push" ]; then LIMIT_ARGS="--limit 1"; fi
           python -m experiments.media_retrieval_stress.run \
             --profile "$PROFILE" \
-            --live $ENFORCE \
+            --live $ENFORCE $LIMIT_ARGS \
             --output .pipeline-runs/media-stress/live.json
       - name: Preserve live evidence
         if: always()
