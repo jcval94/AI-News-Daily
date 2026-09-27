@@ -61,6 +61,16 @@ class MultimediaRetrievalStressTests(unittest.TestCase):
         self.assertFalse(matched["pass"])
         self.assertEqual(matched["status"], "FAIL_WRONG_ENTITY")
 
+    def test_semantic_only_is_degraded_not_a_retrieval_pass(self) -> None:
+        case = next(
+            case for case in load_cases(DEFAULT_CASES, "core")
+            if case["id"] == "franchise_yugioh_time_wizard"
+        )
+        matched = summarize_match(case, "Yu-Gi-Oh Time Wizard trading card Joey Wheeler", [])
+        self.assertFalse(matched["pass"])
+        self.assertEqual(matched["status"], "SEMANTIC_ONLY")
+        self.assertTrue(matched["acceptable_degradation"])
+
     def test_stock_ranker_prefers_specific_product_over_generic_collision(self) -> None:
         query = "Apple Vision Pro headset"
         candidates = [
