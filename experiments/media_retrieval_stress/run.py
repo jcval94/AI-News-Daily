@@ -324,7 +324,7 @@ def write_markdown(path: Path, payload: dict[str, Any]) -> None:
         "## Interpretation",
         "",
         "- PASS_SELECTED: at least one semantically matching candidate survived relevance selection.",
-        "- SEMANTIC_ONLY: the planner resolved the intended identity but no matching selected candidate was available; this only counts as pass for cases explicitly marked as rights/provider constrained.",
+        "- SEMANTIC_ONLY: the planner resolved the intended identity but no matching selected candidate was available. This is a degraded retrieval, not a pass; rights/provider constraints may explain it.",
         "- FAIL_WRONG_ENTITY: a forbidden collision survived selection.",
         "- FAIL_NO_RESOLUTION: even the generated search plan did not express the intended identity.",
         "- PASS_AMBIGUITY_REFUSED: the system failed closed instead of guessing.",
