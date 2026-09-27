@@ -76,14 +76,19 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
         run: |
+          PROFILE="${{ inputs.profile }}"
+          if [ -z "$PROFILE" ]; then PROFILE="core"; fi
           ENFORCE=""
           if [ "${{ inputs.enforce_live }}" = "true" ]; then ENFORCE="--enforce"; fi
-          python -m experiments.media_retrieval_stress.run             --profile "${{ inputs.profile }}"             --live $ENFORCE             --output .pipeline-runs/media-stress/live.json
+          python -m experiments.media_retrieval_stress.run \
+            --profile "$PROFILE" \
+            --live $ENFORCE \
+            --output .pipeline-runs/media-stress/live.json
       - name: Preserve live evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: media-retrieval-stress-live-${{ inputs.profile }}-${{ github.run_id }}
+          name: media-retrieval-stress-live-${{ github.run_id }}
           path: .pipeline-runs/media-stress/
           if-no-files-found: error
           retention-days: 30
