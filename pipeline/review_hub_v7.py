@@ -188,6 +188,39 @@ def _step_table(snapshot: dict[str, Any]) -> str:
     )
 
 
+def _step_chart(snapshot: dict[str, Any]) -> str:
+    import math
+
+    rows = [row for row in snapshot.get("breakdown_by_step", []) if isinstance(row, dict)]
+    def amount(row: dict[str, Any]) -> float | None:
+        try:
+            value = float(row.get("estimated_cost_usd"))
+            return value if math.isfinite(value) and value >= 0 else None
+        except (TypeError, ValueError):
+            return None
+    rows.sort(key=lambda row: amount(row) if amount(row) is not None else -1, reverse=True)
+    total = sum(amount(row) or 0 for row in rows)
+    bars = []
+    for row in rows:
+        value = amount(row)
+        share = value / total * 100 if value is not None and total else 0
+        label = html.escape(str(row.get("step") or row.get("agent") or "Sin nombre"))
+        scope = html.escape(str(row.get("scope") or "Sin ámbito"))
+        money = _usd(value, precise=True) if value is not None else "Sin medir"
+        if row.get("unpriced_attempts"):
+            money += " + sin precio"
+        percentage = f"{share:.1f}% del costo conocido" if value is not None and total else "Sin proporción disponible"
+        bars.append(
+            '<li class="step-cost-row" data-search-item>'
+            f'<div class="step-cost-heading"><strong>{label}</strong><b>{money}</b></div>'
+            f'<div class="step-cost-track" aria-hidden="true"><span style="width:{share:.4f}%"></span></div>'
+            f'<small>{scope} · {percentage} · {_integer(row.get("attempts"))} intentos · {_seconds(row.get("elapsed_seconds"))}</small></li>'
+        )
+    return ('<p class="muted">De mayor a menor costo estimado. Las proporciones consideran solo pasos con costo conocido; los datos faltantes no cuentan como cero.</p>'
+            + ('<ol class="step-cost-chart">' + ''.join(bars) + '</ol>' if bars else '<p class="muted">Sin costos por paso registrados.</p>')
+            + '<details class="cost-details"><summary>Ver tabla de tokens y costos por paso</summary>' + _step_table(snapshot) + '</details>')
+
+
 def _attempt_table(snapshot: dict[str, Any]) -> str:
     rows = snapshot.get("attempts", []) if isinstance(snapshot, dict) else []
     body: list[str] = []
@@ -282,7 +315,7 @@ def budget_panel(snapshot: dict[str, Any]) -> str:
         + '<div class="budget-section-heading"><h3>Servicios</h3><p>Qué tiene costo, qué es gratis por política y qué depende de la facturación de la cuenta.</p></div>'
         + _service_cards(snapshot)
         + '<div class="budget-section-heading"><h3>Costo por paso</h3><p>Agregado por agente/step; los montos usan únicamente tokens realmente persistidos.</p></div>'
-        + _step_table(snapshot)
+        + _step_chart(snapshot)
         + _attempt_table(snapshot)
         + '<div class="budget-section-heading"><h3>Cobertura de medición</h3><p>Lo que sabemos con certeza y lo que todavía no puede reconstruirse.</p></div>'
         + _coverage(snapshot)
@@ -293,6 +326,7 @@ def budget_panel(snapshot: dict[str, Any]) -> str:
 
 
 BUDGET_CSS = r"""
+.step-cost-chart{list-style:none;margin:14px 0;padding:0;display:grid;gap:14px}.step-cost-row{border:1px solid var(--line);background:var(--panel);padding:13px;border-radius:12px}.step-cost-heading{display:flex;justify-content:space-between;gap:16px;font-size:13px;overflow-wrap:anywhere}.step-cost-heading b{font-variant-numeric:tabular-nums;white-space:nowrap}.step-cost-track{height:7px;background:#273747;border-radius:6px;margin:9px 0;overflow:hidden}.step-cost-track span{display:block;height:100%;background:var(--accent,#87d5ff);border-radius:6px}.step-cost-row small{color:var(--muted)}
 /* v7: dedicated FinOps / budget workspace. */
 .budget-section{padding:22px 0 10px}.budget-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:18px}.budget-heading h2{margin:4px 0 6px}.budget-heading p{margin:0;color:var(--muted);max-width:720px}.budget-state{display:grid;justify-items:end;gap:3px;min-width:180px}.budget-state>strong{font-size:30px;line-height:1.05}.budget-state>small{color:var(--muted)}
 .budget-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.budget-kpi{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:15px}.budget-kpi>span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}.budget-kpi>strong{display:block;font-size:25px;margin:7px 0 5px}.budget-kpi>small{display:block;color:#aebdcd;line-height:1.35}.pricing-note{margin:11px 0 22px;padding:11px 13px;border-left:3px solid #315b78;background:#101a25;color:#aebdcd;font-size:12px;line-height:1.55}.budget-section-heading{display:flex;justify-content:space-between;gap:18px;align-items:end;margin:25px 0 10px}.budget-section-heading h3{margin:0}.budget-section-heading p{margin:0;color:var(--muted);font-size:12px;text-align:right}

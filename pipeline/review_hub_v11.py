@@ -103,7 +103,13 @@ def _stage_details(journey: dict[str, Any]) -> str:
         status = str(stage.get("status") or "not_reached")
         label, klass = _status_label(status)
         cards.append(
-            '<article class="run-stage-card" data-search-item>'
+            f'<details class="run-stage-card" data-search-item{" open" if status in {"error", "terminal"} else ""}>'
+            '<summary>'
+            f'<span class="run-stage-number">{len(cards) + 1:02d}</span>'
+            f'<strong>{_esc(stage.get("title"))}</strong>'
+            f'<span class="badge {klass}">{_esc(label)}</span>'
+            f'<span class="run-stage-brief">{_seconds(stage.get("elapsed_seconds"))} · {_usd(stage.get("estimated_cost_usd"))}</span>'
+            '</summary><div class="run-stage-body">'
             f'<div class="run-stage-top"><span class="badge {klass}">{_esc(label)}</span><code>{_esc(stage.get("id"))}</code></div>'
             f'<h3>{_esc(stage.get("title"))}</h3>'
             '<div class="run-stage-metrics">'
@@ -112,9 +118,9 @@ def _stage_details(journey: dict[str, Any]) -> str:
             f'<span><strong>{_integer(stage.get("tokens"))}</strong><small>tokens</small></span>'
             f'<span><strong>{_seconds(stage.get("elapsed_seconds"))}</strong><small>tiempo</small></span>'
             f'<span><strong>{_usd(stage.get("estimated_cost_usd"))}</strong><small>costo</small></span>'
-            '</div></article>'
+            '</div></div></details>'
         )
-    return '<div class="run-stage-grid">' + ''.join(cards) + '</div>'
+    return '<p class="muted">Secuencia del episodio. Abre una etapa para ver intentos, errores y consumo; los errores aparecen desplegados.</p><div class="run-stage-list">' + ''.join(cards) + '</div>'
 
 
 def _refiner_outcome(journey: dict[str, Any]) -> str:
@@ -147,6 +153,7 @@ def run_journey_section(journey: dict[str, Any]) -> str:
 
 
 RUN_JOURNEY_CSS = r"""
+.run-stage-list{display:grid;gap:8px}.run-stage-list .run-stage-card{padding:0}.run-stage-card>summary{display:flex;align-items:center;gap:12px;cursor:pointer;padding:14px;list-style:disclosure-closed}.run-stage-card>summary:focus-visible{outline:3px solid var(--accent)}.run-stage-card>summary>strong{flex:1}.run-stage-number{color:var(--muted);font-variant-numeric:tabular-nums}.run-stage-brief{font-size:12px;color:var(--muted);white-space:nowrap}.run-stage-body{padding:0 14px 14px}.run-stage-card[open]>summary{border-bottom:1px solid var(--line);margin-bottom:12px}@media(max-width:620px){.run-stage-card>summary{flex-wrap:wrap}.run-stage-card>summary>strong{flex-basis:70%}}
 /* v11: observed-run overlay on top of living architecture. */
 .run-journey{border-top:1px solid var(--line);margin-top:10px;padding-top:34px}.run-journey-summary{display:grid;grid-template-columns:minmax(260px,.8fr) 1.4fr;gap:14px;border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:17px}.run-journey-summary h3{margin:7px 0}.run-journey-summary p{margin:0;color:var(--muted);line-height:1.45}.run-journey-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.run-journey-kpis span,.run-stage-metrics span{display:grid;gap:3px;border:1px solid #29394d;border-radius:11px;padding:9px;background:#111a25}.run-journey-kpis strong,.run-stage-metrics strong{font-size:15px}.run-journey-kpis small,.run-stage-metrics small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em}.run-path-chain{display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:6px 1px 14px}.run-path-node{display:grid;align-content:start;min-width:170px;max-width:210px;border:1px solid var(--line);border-radius:13px;background:#121b27;padding:11px}.run-path-node>b{font-size:17px}.run-path-node>span{font-weight:800;font-size:12px;margin:5px 0}.run-path-node>small{color:var(--muted);line-height:1.35}.run-path-arrow{display:grid;place-items:center;color:#55718d;font-size:18px}.run-stage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.run-stage-card{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:13px}.run-stage-card h3{font-size:14px;margin:9px 0}.run-stage-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.run-stage-top code{color:var(--muted);font-size:10px}.run-stage-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.run-stage-metrics span{padding:7px}.run-stage-metrics strong{font-size:12px}@media(max-width:900px){.run-journey-summary{grid-template-columns:1fr}.run-journey-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.run-stage-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:620px){.run-journey-kpis,.run-stage-grid{grid-template-columns:1fr}.run-stage-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 """

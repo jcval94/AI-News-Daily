@@ -188,6 +188,19 @@ def _enhance_technical(document: str, provenance_html: str) -> str:
     return document
 
 
+def _media_facets(item: dict[str, Any]) -> dict[str, str]:
+    provenance = item.get("media_provenance") or {}
+    provider = str(item.get("provider") or "Sin fuente registrada").strip()
+    provider = {"commons": "Wikimedia Commons", "wikimedia": "Wikimedia Commons", "wikimedia_commons": "Wikimedia Commons",
+                "generated_fallback": "Recurso local de respaldo",
+                "pexels": "Pexels", "archive": "Internet Archive", "archive.org": "Internet Archive",
+                "youtube": "YouTube", "nasa": "NASA"}.get(provider.lower(), provider)
+    relation = str(provenance.get("relation") or item.get("relation") or "Sin clasificación")
+    relation = {"exact": "Exacta por catálogo", "context": "Contextual"}.get(relation, relation)
+    return {"source": provider, "license": str(item.get("license") or "Sin licencia registrada"),
+            "relation": relation}
+
+
 def _annotate_media_cards(document: str, manifest: list[dict[str, Any]]) -> tuple[str, dict[str, int]]:
     cards = [item for item in manifest if isinstance(item, dict) and str(item.get("file") or "").strip()]
     cards.sort(key=lambda value: float(value.get("start_seconds", 0) or 0))
@@ -211,6 +224,7 @@ def _annotate_media_cards(document: str, manifest: list[dict[str, Any]]) -> tupl
         except (TypeError, ValueError):
             opening = False
         attrs = f" data-media-kind='{kind}' data-media-opening='{'true' if opening else 'false'}'"
+        attrs += "".join(f" data-media-{key}='{html.escape(value, quote=True)}'" for key, value in _media_facets(item).items())
         document = document[:tag_end] + attrs + document[tag_end:]
         cursor = tag_end + len(attrs) + 1
         counts["total"] += 1
@@ -227,6 +241,12 @@ def _enhance_media(document: str, manifest: list[dict[str, Any]]) -> str:
     if h2_end < 0:
         raise RuntimeError("Review Hub v6 could not find multimedia heading")
     h2_end += len("</h2>")
+    facets = [_media_facets(item) for item in manifest if isinstance(item, dict) and str(item.get("file") or "").strip()]
+    controls = []
+    for key, label in (("source", "Fuente de origen"), ("license", "Licencia"), ("relation", "Relación documental")):
+        values = sorted({item[key] for item in facets})
+        options = ''.join(f'<option value="{html.escape(value, quote=True)}">{html.escape(value)} · {sum(item[key] == value for item in facets)}</option>' for value in values)
+        controls.append(f'<label>{label}<select id="media-{key}" data-media-facet="{key}"><option value="">Todas</option>{options}</select></label>')
     toolbar = (
         '<div class="media-toolbar" aria-label="Filtros de multimedia">'
         f'<span class="media-count"><strong>{counts["total"]}</strong> assets</span>'
@@ -235,12 +255,14 @@ def _enhance_media(document: str, manifest: list[dict[str, Any]]) -> str:
         f'<button class="media-filter" type="button" data-media-filter="opening">0–20s · {counts["opening"]}</button>'
         f'<button class="media-filter" type="button" data-media-filter="video">Video · {counts["video"]}</button>'
         f'<button class="media-filter" type="button" data-media-filter="image">Imagen · {counts["image"]}</button>'
-        '</div></div>'
+        '</div><div class="media-facets">' + ''.join(controls) + '<button type="button" id="media-reset">Restablecer filtros</button></div>'
+        '<p id="media-results" role="status" aria-live="polite"></p></div>'
     )
     return document[:h2_end] + toolbar + document[h2_end:]
 
 
 P1_CSS = r"""
+.media-facets{display:flex;flex-wrap:wrap;gap:12px;width:100%;align-items:end}.media-facets label{display:grid;gap:5px;font-size:12px;color:var(--muted)}.media-facets select,.media-facets button{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px;max-width:100%}.media-facets select{min-width:170px}.media-facets select:focus-visible,.media-facets button:focus-visible{outline:3px solid var(--accent)}#media-results{margin:0;color:var(--muted);font-size:12px}
 /* v6 P1: hierarchy, scanability and focused review controls. */
 .hero{padding:18px 22px}.hero h1{font-size:clamp(27px,3.6vw,42px);line-height:1.08;margin:.22em 0 .16em}.hero .lede{font-size:16.5px;line-height:1.55;margin-bottom:12px}.hero-row-compact{font-size:12px}.hero-actions{margin-top:10px}.hero-actions .button{padding:8px 12px;font-size:12px}
 .workspace-nav{margin-top:12px}.search-row{position:relative}.search-clear{appearance:none;border:1px solid #334258;background:#192331;color:#d9e5f2;border-radius:9px;padding:7px 10px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}.search-clear:hover{border-color:#46617f}.search-shortcut{display:inline-grid;place-items:center;min-width:30px;height:30px;border:1px solid #34445b;border-bottom-width:2px;border-radius:7px;background:#111a26;color:#9fb0c2;font:700 12px/1 ui-monospace,monospace}
@@ -350,16 +372,33 @@ P1_JS = r"""
 
   const mediaCards = Array.from(document.querySelectorAll('.media-card[data-media-kind]'));
   const mediaFilters = Array.from(document.querySelectorAll('[data-media-filter]'));
-  function filterMedia(filter) {
-    mediaFilters.forEach(button => button.classList.toggle('active', button.dataset.mediaFilter === filter));
-    mediaCards.forEach(card => {
-      const visible = filter === 'all'
-        || (filter === 'opening' && card.dataset.mediaOpening === 'true')
-        || card.dataset.mediaKind === filter;
-      card.classList.toggle('media-filtered', !visible);
+  const facets = Array.from(document.querySelectorAll('[data-media-facet]'));
+  let mediaFilter = 'all';
+  function filterMedia(filter = mediaFilter) {
+    mediaFilter = filter;
+    mediaFilters.forEach(button => {
+      const active = button.dataset.mediaFilter === filter;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
     });
+    let count = 0;
+    mediaCards.forEach(card => {
+      const kindMatches = filter === 'all' || (filter === 'opening' && card.dataset.mediaOpening === 'true') || card.dataset.mediaKind === filter;
+      const visible = kindMatches && facets.every(select => !select.value || card.getAttribute('data-media-' + select.dataset.mediaFacet) === select.value);
+      card.classList.toggle('media-filtered', !visible);
+      if (visible && !card.hidden) count++;
+    });
+    const result = document.getElementById('media-results');
+    if (result) result.textContent = count ? `${count} de ${mediaCards.length} recursos visibles` : 'Sin coincidencias. Cambia los filtros o limpia la búsqueda.';
   }
   mediaFilters.forEach(button => button.addEventListener('click', () => filterMedia(button.dataset.mediaFilter)));
+  facets.forEach(select => select.addEventListener('change', () => filterMedia()));
+  document.getElementById('media-reset')?.addEventListener('click', () => {
+    facets.forEach(select => { select.value = ''; });
+    filterMedia('all');
+  });
+  document.getElementById('globalSearch')?.addEventListener('input', () => filterMedia());
+  filterMedia();
 })();
 </script>
 """
