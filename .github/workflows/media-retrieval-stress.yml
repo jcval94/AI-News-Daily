@@ -44,9 +44,13 @@ jobs:
       - name: Compile
         run: python -m compileall -q app pipeline experiments/media_retrieval_stress
       - name: Stress corpus contract
-        run: python -m experiments.media_retrieval_stress.run --profile core --enforce --output .pipeline-runs/media-stress/deterministic.json
+        run: |
+          python -m experiments.media_retrieval_stress.run --profile core --enforce --output .pipeline-runs/media-stress/deterministic-core.json
+          python -m experiments.media_retrieval_stress.run --profile full --enforce --output .pipeline-runs/media-stress/deterministic-full.json
       - name: Focused regressions
         run: python -m unittest tests.test_media_retrieval_stress -v
+      - name: Full repository tests
+        run: python -m unittest discover -s tests -v
       - name: Preserve deterministic report
         if: always()
         uses: actions/upload-artifact@v4
@@ -57,7 +61,7 @@ jobs:
           retention-days: 30
 
   live:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_live }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.run_live) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[live-media-stress]')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
