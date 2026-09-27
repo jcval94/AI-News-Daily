@@ -152,6 +152,7 @@ def summarize_match(case: dict[str, Any], plan_text: str, selected: list[dict[st
         "selected_resolved": selected_resolved,
         "forbidden_hit": forbidden_hit,
         "pass": passed,
+        "acceptable_degradation": status == "SEMANTIC_ONLY" and bool(case.get("may_be_rights_blocked")),
         "status": status,
     }
 
