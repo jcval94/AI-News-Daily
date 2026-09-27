@@ -1,0 +1,85 @@
+name: Multimedia Retrieval Stress
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Stress corpus size
+        type: choice
+        options: [core, full]
+        default: core
+      run_live:
+        description: Exercise live semantic planners and providers
+        type: boolean
+        default: true
+      enforce_live:
+        description: Fail the workflow when a live case fails
+        type: boolean
+        default: false
+  push:
+    branches: [feat/media-retrieval-stress-suite]
+    paths:
+      - experiments/media_retrieval_stress/**
+      - tests/test_media_retrieval_stress.py
+      - pipeline/media.py
+      - pipeline/media_acquisition.py
+      - pipeline/media_sources/**
+      - app/agent.py
+      - .github/workflows/media-retrieval-stress.yml
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+      - name: Compile
+        run: python -m compileall -q app pipeline experiments/media_retrieval_stress
+      - name: Stress corpus contract
+        run: python -m experiments.media_retrieval_stress.run --profile core --enforce --output .pipeline-runs/media-stress/deterministic.json
+      - name: Focused regressions
+        run: python -m unittest tests.test_media_retrieval_stress -v
+      - name: Preserve deterministic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-retrieval-stress-deterministic-${{ github.run_id }}
+          path: .pipeline-runs/media-stress/
+          if-no-files-found: error
+          retention-days: 30
+
+  live:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_live }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - name: Run live gauntlet
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+        run: |
+          ENFORCE=""
+          if [ "${{ inputs.enforce_live }}" = "true" ]; then ENFORCE="--enforce"; fi
+          python -m experiments.media_retrieval_stress.run             --profile "${{ inputs.profile }}"             --live $ENFORCE             --output .pipeline-runs/media-stress/live.json
+      - name: Preserve live evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-retrieval-stress-live-${{ inputs.profile }}-${{ github.run_id }}
+          path: .pipeline-runs/media-stress/
+          if-no-files-found: error
+          retention-days: 30
