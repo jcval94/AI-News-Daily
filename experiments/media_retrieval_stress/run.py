@@ -343,30 +343,47 @@ def main() -> None:
     cases = load_cases(args.cases, args.profile)
     if args.limit > 0:
         cases = cases[: args.limit]
-    results = [case_result(case, live=args.live) for case in cases]
-    kind_statuses = Counter(
-        item.get("status", "UNKNOWN")
-        for row in results
-        for item in row.get("kinds", [])
-    )
-    passed = sum(bool(row.get("passed")) for row in results)
-    payload = {
-        "schema_version": 1,
-        "profile": args.profile,
-        "live": args.live,
-        "summary": {
-            "cases": len(results),
-            "passed": passed,
-            "failed": len(results) - passed,
-            "kind_statuses": dict(kind_statuses),
-        },
-        "results": results,
-    }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    write_markdown(args.output.with_suffix(".md"), payload)
+    results: list[dict[str, Any]] = []
+
+    def persist(*, complete: bool) -> dict[str, Any]:
+        kind_statuses = Counter(
+            item.get("status", "UNKNOWN")
+            for row in results
+            for item in row.get("kinds", [])
+        )
+        passed = sum(bool(row.get("passed")) for row in results)
+        payload = {
+            "schema_version": 1,
+            "profile": args.profile,
+            "live": args.live,
+            "complete": complete,
+            "summary": {
+                "cases": len(results),
+                "planned_cases": len(cases),
+                "passed": passed,
+                "failed": len(results) - passed,
+                "remaining": len(cases) - len(results),
+                "kind_statuses": dict(kind_statuses),
+            },
+            "results": results,
+        }
+        args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        write_markdown(args.output.with_suffix(".md"), payload)
+        return payload
+
+    payload = persist(complete=False)
+    for index, case in enumerate(cases, 1):
+        result = case_result(case, live=args.live)
+        results.append(result)
+        payload = persist(complete=index == len(cases))
+        print(
+            f"[{index}/{len(cases)}] {case['id']}: {result['status']}",
+            flush=True,
+        )
+
     print(json.dumps(payload["summary"], ensure_ascii=False, indent=2))
-    if args.enforce and passed != len(results):
+    if args.enforce and payload["summary"]["passed"] != len(results):
         raise SystemExit("Multimedia retrieval stress suite has failing cases; inspect the report.")
 
 
