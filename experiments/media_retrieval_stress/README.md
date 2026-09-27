@@ -53,7 +53,7 @@ Salidas:
 ## Estados principales
 
 - `PASS_SELECTED`: un candidato del sujeto correcto sobrevivió la selección.
-- `SEMANTIC_ONLY`: se entendió la identidad pero no llegó un candidato reutilizable; sólo es pass en casos marcados explícitamente como limitados por derechos/proveedor.
+- `SEMANTIC_ONLY`: se entendió la identidad pero no llegó un candidato reutilizable. Es una degradación diagnosticada, **no un pass**; `may_be_rights_blocked` sólo explica que el hueco puede ser esperable por derechos/proveedor.
 - `FAIL_WRONG_ENTITY`: sobrevivió una colisión prohibida.
 - `FAIL_NO_RESOLUTION`: ni el plan de búsqueda expresó la identidad deseada.
 - `PASS_AMBIGUITY_REFUSED`: el pipeline prefirió no adivinar.
