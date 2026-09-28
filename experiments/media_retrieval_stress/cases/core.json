@@ -1,0 +1,404 @@
+{
+  "schema_version": 1,
+  "description": "Core semantic stress cases. Provider availability and licensing are intentionally out of scope.",
+  "cases": [
+    {
+      "schema_version": 1,
+      "id": "franchise_yugioh_time_wizard",
+      "title": "Localized franchise object: El Mago del Tiempo",
+      "category": "localized_alias_franchise",
+      "severity": "critical",
+      "narration": "En Yu-Gi-Oh!, una de las cartas más reconocibles de Joey Wheeler era El Mago del Tiempo.",
+      "target": {
+        "surface_mention": "El Mago del Tiempo",
+        "entity_type": "franchise_object",
+        "ambiguity_policy": "exact",
+        "domain_context": [
+          "Yu-Gi-Oh!",
+          "Joey Wheeler"
+        ],
+        "expected_canonical_terms": [
+          "Time Wizard"
+        ],
+        "forbidden_identity_terms": [
+          "weather wizard",
+          "generic magician",
+          "clock wizard"
+        ]
+      },
+      "retrieval": {
+        "exactness": "exact",
+        "media_types": [
+          "image"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "Time Wizard",
+            "Mago del Tiempo"
+          ],
+          [
+            "Yu-Gi-Oh",
+            "Yugioh"
+          ]
+        ],
+        "forbidden_terms": [
+          "weather wizard",
+          "generic magician",
+          "clock wizard",
+          "fantasy wizard"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "product_gemini_google_not_zodiac",
+      "title": "Brand/common noun collision: Google Gemini",
+      "category": "polysemy",
+      "severity": "critical",
+      "narration": "Gemini de Google cambió la conversación sobre asistentes multimodales.",
+      "target": {
+        "surface_mention": "Gemini de Google",
+        "entity_type": "product",
+        "ambiguity_policy": "exact",
+        "domain_context": [
+          "Google",
+          "AI"
+        ],
+        "expected_canonical_terms": [
+          "Gemini"
+        ],
+        "forbidden_identity_terms": [
+          "zodiac",
+          "constellation",
+          "horoscope"
+        ]
+      },
+      "retrieval": {
+        "exactness": "exact",
+        "media_types": [
+          "image",
+          "video"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "Gemini"
+          ],
+          [
+            "Google",
+            "AI"
+          ]
+        ],
+        "forbidden_terms": [
+          "zodiac",
+          "constellation",
+          "horoscope",
+          "astrology"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "product_claude_anthropic_not_namesakes",
+      "title": "Namesake collision: Claude from Anthropic",
+      "category": "namesake_context",
+      "severity": "critical",
+      "narration": "Claude de Anthropic se volvió una referencia recurrente cuando los equipos prueban agentes.",
+      "target": {
+        "surface_mention": "Claude de Anthropic",
+        "entity_type": "product",
+        "ambiguity_policy": "exact",
+        "domain_context": [
+          "Anthropic"
+        ],
+        "expected_canonical_terms": [
+          "Claude"
+        ],
+        "forbidden_identity_terms": [
+          "Claude Monet",
+          "Claude Debussy"
+        ]
+      },
+      "retrieval": {
+        "exactness": "exact",
+        "media_types": [
+          "image",
+          "video"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "Claude"
+          ],
+          [
+            "Anthropic"
+          ]
+        ],
+        "forbidden_terms": [
+          "Monet",
+          "Debussy",
+          "impressionist"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "ambiguity_mercury_fail_closed",
+      "title": "Genuine ambiguity must fail closed",
+      "category": "genuine_ambiguity",
+      "severity": "critical",
+      "narration": "Mercury cambió la conversación por completo.",
+      "target": {
+        "surface_mention": "Mercury",
+        "entity_type": "other",
+        "ambiguity_policy": "refuse_if_ambiguous",
+        "domain_context": [],
+        "expected_canonical_terms": [],
+        "forbidden_identity_terms": []
+      },
+      "retrieval": {
+        "exactness": "exact",
+        "media_types": [
+          "image",
+          "video"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [],
+        "forbidden_terms": []
+      },
+      "expected": {
+        "planner_action": "refuse",
+        "min_queries": 0,
+        "max_queries": 0
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "metaphor_compute_bottleneck_not_bottle",
+      "title": "Metaphor must map to mechanism",
+      "category": "metaphor",
+      "severity": "high",
+      "narration": "El cuello de botella ya no está en entrenar el modelo, sino en mover datos entre GPUs.",
+      "target": {
+        "surface_mention": "cuello de botella",
+        "entity_type": "concept",
+        "ambiguity_policy": "contextual",
+        "domain_context": [
+          "GPU"
+        ],
+        "expected_canonical_terms": [
+          "interconnect"
+        ],
+        "forbidden_identity_terms": [
+          "bottle",
+          "wine"
+        ]
+      },
+      "retrieval": {
+        "exactness": "contextual",
+        "media_types": [
+          "image",
+          "video"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "GPU",
+            "accelerator"
+          ],
+          [
+            "interconnect",
+            "bandwidth",
+            "data transfer"
+          ]
+        ],
+        "forbidden_terms": [
+          "glass bottle",
+          "wine bottle",
+          "bottleneck bottle"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "negation_no_humanoid_robots",
+      "title": "Negated visual noun must not hijack retrieval",
+      "category": "negation",
+      "severity": "critical",
+      "narration": "No estamos hablando de robots humanoides; estamos hablando de software que decide qué tarea hacer después.",
+      "target": {
+        "surface_mention": "software que decide qué tarea hacer después",
+        "entity_type": "concept",
+        "ambiguity_policy": "contextual",
+        "domain_context": [
+          "software"
+        ],
+        "expected_canonical_terms": [
+          "software"
+        ],
+        "forbidden_identity_terms": [
+          "humanoid robot",
+          "android robot"
+        ]
+      },
+      "retrieval": {
+        "exactness": "contextual",
+        "media_types": [
+          "image",
+          "video"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "software",
+            "agent"
+          ],
+          [
+            "task planning",
+            "workflow",
+            "task"
+          ]
+        ],
+        "forbidden_terms": [
+          "humanoid robot",
+          "android robot",
+          "robot walking"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "history_lake_nyos_event_not_tourism",
+      "title": "Event must not collapse into place tourism",
+      "category": "event_vs_place",
+      "severity": "critical",
+      "narration": "En 1986, el desastre del lago Nyos liberó una nube de CO2 con consecuencias devastadoras.",
+      "target": {
+        "surface_mention": "desastre del lago Nyos",
+        "entity_type": "event",
+        "ambiguity_policy": "exact",
+        "domain_context": [
+          "1986"
+        ],
+        "expected_canonical_terms": [
+          "Lake Nyos"
+        ],
+        "forbidden_identity_terms": [
+          "tourism",
+          "vacation"
+        ]
+      },
+      "retrieval": {
+        "exactness": "exact",
+        "media_types": [
+          "image",
+          "video"
+        ],
+        "period": "1986",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "Lake Nyos",
+            "lago Nyos"
+          ],
+          [
+            "1986",
+            "disaster"
+          ]
+        ],
+        "forbidden_terms": [
+          "travel vlog",
+          "tourism",
+          "vacation"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "history_plato_no_fake_photo",
+      "title": "Pre-photography person must use authentic depiction types",
+      "category": "pre_photography_person",
+      "severity": "high",
+      "narration": "Platón ya sospechaba que una herramienta para recordar podía cambiar la forma de pensar.",
+      "target": {
+        "surface_mention": "Platón",
+        "entity_type": "person",
+        "ambiguity_policy": "exact",
+        "domain_context": [],
+        "expected_canonical_terms": [
+          "Plato"
+        ],
+        "forbidden_identity_terms": [
+          "actor playing Plato",
+          "cosplay Plato"
+        ]
+      },
+      "retrieval": {
+        "exactness": "exact",
+        "media_types": [
+          "image"
+        ],
+        "period": "",
+        "geography": "",
+        "query_term_groups": [
+          [
+            "Plato",
+            "Platón"
+          ],
+          [
+            "bust",
+            "sculpture",
+            "historical portrait"
+          ]
+        ],
+        "forbidden_terms": [
+          "photograph of Plato alive",
+          "AI generated Plato",
+          "cosplay Plato"
+        ]
+      },
+      "expected": {
+        "planner_action": "search",
+        "min_queries": 1,
+        "max_queries": 3
+      }
+    }
+  ]
+}
