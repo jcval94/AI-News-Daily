@@ -94,3 +94,51 @@ python -m experiments.media_retrieval_stress.harness.run \
 ```
 
 Los resultados se escriben exclusivamente en `experiments/media_retrieval_stress/results/`.
+
+
+## Two-stage stress architecture
+
+The lab now separates two failure surfaces:
+
+### Stage A — semantic planning
+
+Question: **what exactly should we search for?**
+
+Runner:
+
+```bash
+python -m experiments.media_retrieval_stress.harness.run \
+  --profile experiments/media_retrieval_stress/profiles/core_strict.json \
+  --model <MODEL_ID> \
+  --enforce
+```
+
+This stage catches aliases, namesakes, ambiguity, negation, metaphor literalization,
+period/geography loss and generic substitution in search intent.
+
+### Stage B — adversarial candidate selection
+
+Question: **given plausible search results, which assets are actually acceptable?**
+
+Runner:
+
+```bash
+python -m experiments.media_retrieval_stress.harness.candidate_run \
+  --profile experiments/media_retrieval_stress/profiles/candidate_strict.json \
+  --model <MODEL_ID> \
+  --enforce
+```
+
+The synthetic candidate suite includes:
+
+- exact low-resolution asset vs wrong 4K asset;
+- highest-quality duplicate of the same identity;
+- historical event vs modern scenic footage;
+- Plato bust vs photorealistic anachronism;
+- correct long video whose useful scene is after the first 30 seconds;
+- relevant metadata with visually useless frames;
+- rights-blocked exact asset vs rights-eligible generic substitute;
+- prompt injection hidden inside candidate metadata.
+
+Both stages persist raw attempts and a separate scorecard. A scorecard is a verdict over
+raw evidence; it never replaces or rewrites that evidence.
