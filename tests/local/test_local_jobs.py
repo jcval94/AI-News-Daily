@@ -3,6 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import opentimelineio as otio
+
 from pipeline.local.jobs import build_command, run_job
 
 
@@ -40,6 +42,20 @@ def config_for(root: Path):
             "network_policy": "models_only",
             "allowed_roots": ["repo", "recordings", "work", "cache", "previews"],
         },
+    }
+
+
+def staged_provenance(job_id="job-test-0001"):
+    return {
+        "schema_version": 2,
+        "job_id": job_id,
+        "source_repo_path": "local_handoff/requests/test-job.json",
+        "source_git_commit": "a" * 40,
+        "request_sha256": "b" * 64,
+        "staged_job_path": f".local/jobs/staged/{job_id}.json",
+        "staged_at": "2026-09-25T12:01:00Z",
+        "execution_requires_local_consent": True,
+        "source_git_verified": True,
     }
 
 
@@ -105,6 +121,57 @@ class LocalJobTests(unittest.TestCase):
             self.assertFalse((root / ".local/jobs/receipts/job-test-0001.json").exists())
             self.assertNotIn(str(root), " ".join(result["command"]))
 
+
+
+    def test_execute_requires_staged_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            with self.assertRaisesRegex(RuntimeError, "staged provenance"):
+                run_job(
+                    job("timeline.build", mode="execute"),
+                    config_for(root),
+                    repo_root=root,
+                    execute=True,
+                )
+
+    def test_receipt_persists_request_and_commit_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            work = root / "work"
+            work.mkdir(parents=True)
+            timeline_path = work / "timeline.otio"
+            timeline = otio.schema.Timeline(name="local receipt provenance")
+            timeline.tracks.append(
+                otio.schema.Track(name="V1", kind=otio.schema.TrackKind.Video)
+            )
+            otio.adapters.write_to_file(timeline, str(timeline_path))
+            payload = job(
+                "timeline.validate",
+                params={
+                    "timeline": {
+                        "root_id": "work",
+                        "relative_path": "timeline.otio",
+                    }
+                },
+                mode="execute",
+            )
+            receipt = run_job(
+                payload,
+                config_for(root),
+                repo_root=root,
+                execute=True,
+                provenance=staged_provenance(),
+            )
+            self.assertEqual(receipt["schema_version"], 2)
+            self.assertEqual(receipt["status"], "success")
+            self.assertEqual(receipt["provenance"]["source_git_commit"], "a" * 40)
+            self.assertEqual(receipt["provenance"]["request_sha256"], "b" * 64)
+            saved = __import__("json").loads(
+                (root / ".local/jobs/receipts/job-test-0001.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(saved["provenance"], receipt["provenance"])
 
     def test_transcript_output_cannot_target_repo_root(self):
         with tempfile.TemporaryDirectory() as tmp:
