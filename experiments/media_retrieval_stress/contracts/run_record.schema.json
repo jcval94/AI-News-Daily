@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/run-record.schema.json",
+  "title": "Stress Run Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "started_at",
+    "completed_at",
+    "config",
+    "source_cases",
+    "summary",
+    "case_results"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "config": {
+      "$ref": "run_config.schema.json"
+    },
+    "source_cases": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "repetitions",
+        "planner_passes",
+        "critic_passes",
+        "overall_passes"
+      ],
+      "properties": {
+        "cases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "planner_passes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critic_passes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "overall_passes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "case_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "runs",
+          "pass_rate",
+          "stable"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string"
+          },
+          "runs": {
+            "type": "array"
+          },
+          "pass_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "stable": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
