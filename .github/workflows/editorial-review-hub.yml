@@ -27,6 +27,7 @@ on:
     workflows:
       - Build AI News Video Kit
       - Backfill AI News Video Kit
+      - Production Preflight
     types: [completed]
   push:
     branches: [main]

@@ -1,0 +1,127 @@
+name: Production Preflight
+
+on:
+  schedule:
+    - cron: "0 23 * * 1,4" # Monday/Thursday 17:00 America/Mexico_City
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/production-preflight.yml"
+      - "pipeline/production_preflight.py"
+      - "tests/test_production_preflight.py"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: production-preflight
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+      - name: Run source + model readiness gate
+        id: preflight
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          NEWS_SOURCE_MODE: scheduled_window
+          NEWS_LOOKBACK_DAYS: '4'
+          MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
+        run: python -m pipeline.production_preflight --output production-preflight.json
+      - name: Publish preflight summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path('production-preflight.json')
+          if not path.is_file():
+              raise SystemExit(0)
+          data = json.loads(path.read_text(encoding='utf-8'))
+          coverage = data.get('source_coverage', {})
+          quality = data.get('source_quality', {})
+          model = data.get('model_probe', {})
+          lines = [
+              '# Production Preflight',
+              f"- Target: **{data.get('target_date')}**",
+              f"- Ready: **{data.get('ready')}**",
+              f"- Coverage: **{coverage.get('available_day_count', 0)}/{coverage.get('expected_day_count', 0)} ({float(coverage.get('coverage_ratio', 0) or 0):.0%})**",
+              f"- Source quality: **{'OK' if quality.get('sufficient') else 'FAIL'}**",
+              f"- Model probe: **{model.get('status', 'unknown')}**",
+              f"- Blockers: **{', '.join(data.get('blockers', [])) or 'none'}**",
+          ]
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as handle:
+              handle.write('\n'.join(lines) + '\n')
+          PY
+      - name: Open or update preflight incident
+        if: steps.preflight.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_DATE: ${{ steps.preflight.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          TITLE="PRODUCTION_PREFLIGHT_FAILED — ${TARGET_DATE:-unknown}"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('production-preflight.json').read_text(encoding='utf-8'))
+          coverage = data.get('source_coverage', {})
+          model = data.get('model_probe', {})
+          text = [
+              'El preflight previo a producción detectó un bloqueo real.',
+              '',
+              f"- Target: `{data.get('target_date')}`",
+              f"- Blockers: `{', '.join(data.get('blockers', []))}`",
+              f"- Cobertura: `{coverage.get('available_day_count', 0)}/{coverage.get('expected_day_count', 0)}`",
+              f"- Faltantes: `{', '.join(coverage.get('missing_dates', [])) or 'ninguno'}`",
+              f"- Model probe: `{model.get('status', 'unknown')}`",
+              f"- Error: `{str(model.get('error', ''))[:700]}`",
+              '',
+              'Este issue lo gestiona automáticamente `Production Preflight` y puede cerrarse cuando el mismo target vuelva a pasar.'
+          ]
+          Path('/tmp/preflight-body.md').write_text('\n'.join(text) + '\n', encoding='utf-8')
+          PY
+          NUMBER="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)"
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/preflight-body.md
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file /tmp/preflight-body.md
+          fi
+      - name: Close recovered preflight incident
+        if: steps.preflight.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_DATE: ${{ steps.preflight.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          TITLE="PRODUCTION_PREFLIGHT_FAILED — ${TARGET_DATE}"
+          NUMBER="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)"
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Preflight recuperado: fuentes, calidad y acceso al modelo ya pasan para este target."
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+          fi
+      - name: Upload preflight evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-preflight-${{ steps.preflight.outputs.target_date || 'unknown' }}
+          path: production-preflight.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Propagate readiness failure
+        if: steps.preflight.outcome == 'failure'
+        run: echo "::error::Production preflight failed; inspect production-preflight.json and the incident issue." && exit 1

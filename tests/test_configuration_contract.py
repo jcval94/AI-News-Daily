@@ -29,6 +29,17 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertIn("pipeline.source_naming", workflow)
         self.assertNotIn("-name '????-??-??.txt'", workflow)
 
+    def test_production_preflight_is_wired_before_scheduled_runs(self) -> None:
+        preflight = Path(".github/workflows/production-preflight.yml").read_text(encoding="utf-8")
+        review = Path(".github/workflows/editorial-review-hub.yml").read_text(encoding="utf-8")
+        build = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn('cron: "0 23 * * 1,4"', preflight)
+        self.assertIn("pipeline.production_preflight", preflight)
+        self.assertIn("OPENAI_API_KEY", preflight)
+        self.assertIn("- Production Preflight", review)
+        self.assertIn("Probe source quality and model availability", build)
+        self.assertIn("steps.model_preflight.outcome == 'success'", build)
+
     def test_python_floor_matches_ci_runtime(self) -> None:
         pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
         self.assertIn('requires-python = ">=3.12"', pyproject)

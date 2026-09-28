@@ -171,9 +171,26 @@ jobs:
             exit 1
           fi
 
+      - name: Probe source quality and model availability
+        id: model_preflight
+        if: steps.source_coverage.outputs.sufficient == 'true' && steps.secret_check.outcome == 'success'
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.script_date.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
+          NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}
+          MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
+        run: |
+          python -m pipeline.production_preflight \
+            --target-date "$TARGET_DATE" \
+            --output "$RUN_ROOT/production_preflight.json"
+
       - name: Build isolated episode
         id: build
-        if: steps.source_coverage.outputs.sufficient == 'true' && steps.secret_check.outcome == 'success'
+        if: steps.source_coverage.outputs.sufficient == 'true' && steps.secret_check.outcome == 'success' && steps.model_preflight.outcome == 'success'
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -215,6 +232,7 @@ jobs:
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
           COVERAGE_SUFFICIENT: ${{ steps.source_coverage.outputs.sufficient }}
           SECRET_OUTCOME: ${{ steps.secret_check.outcome }}
+          MODEL_PREFLIGHT_OUTCOME: ${{ steps.model_preflight.outcome }}
           BUILD_STEP_OUTCOME: ${{ steps.build.outcome }}
         run: |
           STATE_FILE="$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
@@ -222,6 +240,8 @@ jobs:
             STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE_FILE")"
           elif [ "$COVERAGE_SUFFICIENT" = "true" ] && [ "$SECRET_OUTCOME" != "success" ]; then
             STATUS="missing_openai_secret"
+          elif [ "$COVERAGE_SUFFICIENT" = "true" ] && [ "$SECRET_OUTCOME" = "success" ] && [ "$MODEL_PREFLIGHT_OUTCOME" != "success" ]; then
+            STATUS="failure"
           elif [ -f "$STATE_FILE" ]; then
             STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE_FILE")"
           elif [ "$BUILD_STEP_OUTCOME" = "failure" ]; then

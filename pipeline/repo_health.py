@@ -23,6 +23,7 @@ PYTHON_VERSION_RE = re.compile(r'python-version:\s*["\']?([^"\'\s]+)')
 SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 IMPORTANT_WORKFLOWS = (
     "CI",
+    "Production Preflight",
     "Build AI News Video Kit",
     "Editorial Regression",
     "Editorial Review Hub",
@@ -34,6 +35,7 @@ REQUIRED_PATHS = (
     "requirements.lock",
     ".github/workflows/ci.yml",
     ".github/workflows/build-video-kit.yml",
+    ".github/workflows/production-preflight.yml",
     ".github/workflows/editorial-regression.yml",
     ".github/workflows/editorial-review-hub.yml",
 )
@@ -651,6 +653,7 @@ def _workflow_checks(github: dict[str, Any]) -> list[HealthCheck]:
         elif conclusion in {"failure", "timed_out", "action_required"}:
             status = "critical" if workflow in {
                 "CI",
+                "Production Preflight",
                 "Build AI News Video Kit",
                 "Editorial Review Hub",
             } else "warn"

@@ -239,6 +239,10 @@ Scheduled production keeps the twice-weekly cadence:
 - **Tuesday:** Friday–Monday window.
 - **Friday:** Tuesday–Thursday window.
 
+A cheap **Production Preflight** runs Monday and Thursday at 17:00 America/Mexico_City. It validates the next scheduled source window, rejects thin/low-quality daily inputs, and performs one minimal real model call so missing credentials, exhausted API credits, unavailable models, and source gaps are detected before the production morning. A failed preflight opens or updates a diagnostic GitHub issue and refreshes Repo Health through the Review Hub.
+
+Production repeats the same source-quality/model probe immediately before the expensive agent chain, so a stale preflight can never create a false green.
+
 Missing daily files can be tolerated only while the configured coverage threshold still passes.
 
 Daily inputs remain:
