@@ -6,9 +6,10 @@ from copy import deepcopy
 from pathlib import Path
 
 from .candidate_selftest import run_candidate_selftest
-from .contracts import contract_names, validate as validate_contract
+from .contracts import contract_names, schema as contract_schema, validate as validate_contract
 from .evaluate import canonical_signature, evaluate_planner
 from .gates import evaluate_scorecard
+from .llm import api_schema_subset
 from .models import CriticOutput, PlannerOutput, RunConfig, StressCase
 from .mutations import mutate_fixture
 from .profiles import load_profile
@@ -122,6 +123,18 @@ def main() -> None:
     if set(names) != expected_contracts:
         raise AssertionError(f"unexpected contract set: {names}")
 
+    planner_local_schema = contract_schema("planner_output.schema.json")
+    planner_api_schema = api_schema_subset(planner_local_schema)
+    if "case_id" not in planner_api_schema.get("properties", {}):
+        raise AssertionError("Structured Outputs sanitizer dropped planner property names")
+    if "$id" in planner_api_schema or "$schema" in planner_api_schema:
+        raise AssertionError("Structured Outputs sanitizer leaked local schema metadata")
+    if "minLength" in planner_api_schema["properties"]["case_id"]:
+        raise AssertionError("Structured Outputs sanitizer leaked local-only validation keywords")
+    candidate_api_schema = api_schema_subset(contract_schema("candidate_selection.schema.json"))
+    if "assessments" not in candidate_api_schema.get("properties", {}):
+        raise AssertionError("Structured Outputs sanitizer dropped candidate selection properties")
+
     case_payload = json.loads(CASES.read_text(encoding="utf-8"))
     cases: list[StressCase] = []
     for raw in case_payload["cases"]:
@@ -228,6 +241,7 @@ def main() -> None:
                 "known_good_scorecard": passing_scorecard["verdict"],
                 "known_bad_scorecard": failing_scorecard["verdict"],
                 "critic_contract": "pass",
+                "api_schema_sanitizer": "pass",
                 "run_record_contract": "pass",
                 **candidate_summary,
             },
