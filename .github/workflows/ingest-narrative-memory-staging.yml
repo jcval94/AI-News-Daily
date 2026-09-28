@@ -136,9 +136,9 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$STATUS" = "already_exists" ]; then
-            MSG="No se agregó nada: todos los IDs del staging ya existían con contenido idéntico. IDs: `$IDS`."
+            MSG="No se agregó nada: todos los IDs del staging ya existían con contenido idéntico. IDs: $IDS."
           else
-            MSG="Narrative Memory validada y publicada: $ADDED_COUNT registro(s) append-only. IDs: `$IDS`."
+            MSG="Narrative Memory validada y publicada: $ADDED_COUNT registro(s) append-only. IDs: $IDS."
           fi
           gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$MSG"
           gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
@@ -149,4 +149,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "Narrative Memory staging no se publicó: falló una validación, un test o el commit. El issue queda abierto para diagnóstico y reintento sin regenerar el contenido."
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "Narrative Memory staging no completó todas sus etapas. El issue queda abierto para diagnóstico; antes de reintentar, verifica si el append ya fue publicado."
