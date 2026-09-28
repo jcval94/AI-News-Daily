@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/candidate-case.schema.json",
+  "title": "Adversarial Candidate Selection Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "severity",
+    "narration",
+    "policy",
+    "candidates",
+    "expected"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,79}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 180
+    },
+    "severity": {
+      "enum": [
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "narration": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 2000
+    },
+    "semantic_case_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exactness",
+        "required_identity_terms",
+        "forbidden_terms",
+        "allow_lowres_exact",
+        "allow_contextual_fallback",
+        "prefer_highest_quality_same_identity"
+      ],
+      "properties": {
+        "exactness": {
+          "enum": [
+            "exact",
+            "contextual"
+          ]
+        },
+        "required_identity_terms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "forbidden_terms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "period": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "geography": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "allow_lowres_exact": {
+          "type": "boolean"
+        },
+        "allow_contextual_fallback": {
+          "type": "boolean"
+        },
+        "prefer_highest_quality_same_identity": {
+          "type": "boolean"
+        }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 20,
+      "items": {
+        "$ref": "https://ai-news-daily.local/media-retrieval-stress/candidate.schema.json"
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selected_provider_asset_ids",
+        "must_reject_provider_asset_ids",
+        "unresolved"
+      ],
+      "properties": {
+        "selected_provider_asset_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "must_reject_provider_asset_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "unresolved": {
+          "type": "boolean"
+        },
+        "required_warnings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "low_resolution",
+              "clip_offset_required",
+              "rights_blocked",
+              "frame_level_review",
+              "metadata_visual_mismatch",
+              "duplicate_collapsed"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
