@@ -89,6 +89,16 @@ def _parse_iso_date(value: str) -> date | None:
         return None
 
 
+def _parse_iso_datetime(value: str) -> datetime | None:
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
 def _severity(checks: Iterable[HealthCheck]) -> str:
     statuses = {check.status for check in checks}
     if "critical" in statuses:
@@ -653,14 +663,39 @@ def _workflow_checks(github: dict[str, Any]) -> list[HealthCheck]:
             status = "ok"
             summary = "La última ejecución completada terminó correctamente."
         elif conclusion in {"failure", "timed_out", "action_required"}:
-            status = "critical" if workflow in {
-                "CI",
-                "News Ingestion Watchdog",
-                "Production Preflight",
-                "Build AI News Video Kit",
-                "Editorial Review Hub",
-            } else "warn"
-            summary = f"La última ejecución terminó en {conclusion}."
+            recovered_by_backfill = False
+            if workflow == "Build AI News Video Kit":
+                recovery = latest.get("Backfill AI News Video Kit")
+                recovery_conclusion = str((recovery or {}).get("conclusion") or "")
+                failed_at = _parse_iso_datetime(when)
+                recovery_when = str(
+                    (recovery or {}).get("updated_at")
+                    or (recovery or {}).get("created_at")
+                    or ""
+                )
+                recovered_at = _parse_iso_datetime(recovery_when)
+                recovered_by_backfill = (
+                    recovery_conclusion == "success"
+                    and failed_at is not None
+                    and recovered_at is not None
+                    and recovered_at > failed_at
+                )
+            if recovered_by_backfill:
+                status = "warn"
+                summary = (
+                    "La última corrida programada falló, pero un backfill posterior "
+                    "terminó correctamente y recuperó la producción. "
+                    "El siguiente scheduled run debe validar de nuevo el camino principal."
+                )
+            else:
+                status = "critical" if workflow in {
+                    "CI",
+                    "News Ingestion Watchdog",
+                    "Production Preflight",
+                    "Build AI News Video Kit",
+                    "Editorial Review Hub",
+                } else "warn"
+                summary = f"La última ejecución terminó en {conclusion}."
         else:
             status = "warn"
             summary = f"La última ejecución terminó en {conclusion}."
