@@ -152,8 +152,13 @@ def process_event(event_path: Path, news_dir: Path) -> tuple[str, Path | None]:
     issue_day = date.fromisoformat(title_match.group("date"))
     issue_time = title_match.group("time")
     now = datetime.now(TZ)
-    if issue_day != now.date():
-        raise ValueError(f"el staging corresponde a {issue_day}, no a la fecha local actual {now.date()}")
+    local_today = now.date()
+    oldest_allowed = local_today - timedelta(days=1)
+    if issue_day < oldest_allowed or issue_day > local_today:
+        raise ValueError(
+            f"el staging corresponde a {issue_day}; sólo se admite la fecha local actual "
+            f"{local_today} o el día anterior {oldest_allowed} para recuperación acotada"
+        )
 
     expected_header = f"# AI News Daily — {issue_day.isoformat()} {issue_time} America/Mexico_City"
     first_line = body.splitlines()[0].strip()
