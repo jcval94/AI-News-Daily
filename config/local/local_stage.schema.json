@@ -7,14 +7,16 @@
     "schema_version",
     "job_id",
     "source_repo_path",
+    "source_git_commit",
     "request_sha256",
     "staged_job_path",
     "staged_at",
-    "execution_requires_local_consent"
+    "execution_requires_local_consent",
+    "source_git_verified"
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "job_id": {
       "type": "string",
@@ -40,7 +42,11 @@
       "const": true
     },
     "source_git_verified": {
-      "type": "boolean"
+      "const": true
+    },
+    "source_git_commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
     }
   }
 }
