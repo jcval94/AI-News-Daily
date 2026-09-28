@@ -32,6 +32,12 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             self.assertIn("pipeline.media_density_gate", workflow)
             self.assertNotIn("expected >=45 assets", workflow)
 
+    def test_failed_backfill_preserves_final_recovery_workspace(self) -> None:
+        workflow = Path(".github/workflows/backfill-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn("Preserve failed backfill recovery workspace", workflow)
+        self.assertIn("ai-news-backfill-recovery-", workflow)
+        self.assertIn("if: failure()", workflow)
+
     def test_otio_is_built_before_resolve_bridge_in_main_and_backfill(self) -> None:
         for path in (
             ".github/workflows/build-video-kit.yml",
