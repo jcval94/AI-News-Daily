@@ -39,11 +39,27 @@ def call_structured(
     if not key:
         raise LLMCallError("OPENAI_API_KEY is required for live stress runs")
 
-    # Keep the stored contract rich, but send only Structured Outputs-compatible
-    # top-level metadata to the API.
+    # Keep the stored contract rich for local validation. The API receives a
+    # deliberately smaller schema subset; local validation remains authoritative
+    # for constraints such as lengths, array bounds and patterns.
     schema = json.loads(json.dumps(contract_schema(schema_file)))
-    schema.pop("$schema", None)
-    schema.pop("$id", None)
+
+    def api_schema(node: Any) -> Any:
+        if isinstance(node, list):
+            return [api_schema(item) for item in node]
+        if not isinstance(node, dict):
+            return node
+        allowed = {
+            "type", "properties", "required", "additionalProperties",
+            "items", "enum", "const", "anyOf",
+        }
+        cleaned: dict[str, Any] = {}
+        for key, value in node.items():
+            if key in allowed:
+                cleaned[key] = api_schema(value)
+        return cleaned
+
+    schema = api_schema(schema)
     body: dict[str, Any] = {
         "model": config.model,
         "store": False,
