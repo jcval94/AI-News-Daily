@@ -273,6 +273,38 @@ def rank_candidates(
     return selected
 
 
+
+def is_narrative_memory_contract_error(error: str) -> bool:
+    lowered = str(error or "").casefold()
+    return any(
+        token in lowered
+        for token in (
+            "memory_id",
+            "narrative memory",
+            "narrative parallel",
+            "primary_memory_id",
+            "opening_memory_id",
+        )
+    )
+
+
+def narrative_memory_repair_instruction(
+    error: str,
+    candidates: list[dict[str, Any]],
+) -> str:
+    """Return a narrow deterministic repair prompt for Narrative Memory ID errors."""
+    allowed = [str(item.get("id", "") or "").strip() for item in candidates]
+    allowed = [value for value in allowed if value]
+    return (
+        " The previous episode plan violated the Narrative Memory ID contract: "
+        f"{error}. Repair ONLY the contract while preserving the editorial idea when possible. "
+        "Select exactly 1–2 narrative_parallels; copy every memory_id character-for-character "
+        "from the allowed list; do not invent, translate, shorten, slugify, or paraphrase IDs; "
+        "and make primary_memory_id/opening_memory_id equal one of the selected memory_id values. "
+        f"Allowed Narrative Memory IDs: {json.dumps(allowed, ensure_ascii=False)}."
+    )
+
+
 def resolve_selected_memory(
     plan: dict[str, Any],
     candidates: list[dict[str, Any]],
