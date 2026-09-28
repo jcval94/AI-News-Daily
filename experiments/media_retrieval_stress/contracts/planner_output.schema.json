@@ -50,7 +50,7 @@
       "maxLength": 900
     },
     "resolved_entity": {
-      "oneOf": [
+      "anyOf": [
         {
           "type": "null"
         },
