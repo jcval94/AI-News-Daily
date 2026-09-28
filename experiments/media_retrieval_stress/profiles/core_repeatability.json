@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "core_repeatability",
+  "description": "Repeatability stress: five runs per core case with identity stability required; useful after prompt/model changes.",
+  "case_ids": [],
+  "repetitions": 5,
+  "critic_enabled": true,
+  "reasoning_effort": "low",
+  "thresholds": {
+    "min_overall_pass_rate": 0.95,
+    "min_case_pass_rate": 0.8,
+    "require_identity_stability": true,
+    "max_errors": 0,
+    "hard_fail_checks": [
+      "decision",
+      "ambiguity_refusal",
+      "identity_type",
+      "forbidden_terms"
+    ]
+  }
+}
