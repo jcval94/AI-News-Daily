@@ -96,7 +96,51 @@ jobs:
           rm -rf .backfill-reuse
           mkdir -p .backfill-reuse
 
-          while IFS=          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          while IFS='|' read -r SOURCE_RUN_ID ARTIFACT_NAME; do
+            [ -n "$SOURCE_RUN_ID" ] || continue
+            CANDIDATE=".backfill-reuse/$SOURCE_RUN_ID"
+            rm -rf "$CANDIDATE"
+            mkdir -p "$CANDIDATE"
+            if ! gh run download "$SOURCE_RUN_ID" --name "$ARTIFACT_NAME" --dir "$CANDIDATE" >/dev/null 2>&1; then
+              continue
+            fi
+
+            STATE="$CANDIDATE/scripts/$TARGET_DATE/run_state.json"
+            SCRIPT="$CANDIDATE/scripts/$TARGET_DATE/script.txt"
+            [ -s "$STATE" ] && [ -s "$SCRIPT" ] || continue
+            STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("status",""))' "$STATE")"
+            EPISODE_DATE="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("episode_date",""))' "$STATE")"
+            if [ "$STATUS" != "approved" ] || [ "$EPISODE_DATE" != "$TARGET_DATE" ]; then
+              continue
+            fi
+
+            rm -rf "$RUN_ROOT/scripts/$TARGET_DATE"
+            mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE"
+            cp -a "$CANDIDATE/scripts/$TARGET_DATE/." "$RUN_ROOT/scripts/$TARGET_DATE/"
+            echo "restored=true" >> "$GITHUB_OUTPUT"
+            echo "source_run_id=$SOURCE_RUN_ID" >> "$GITHUB_OUTPUT"
+            echo "Reused approved editorial artifact from run $SOURCE_RUN_ID for $TARGET_DATE."
+            exit 0
+          done < <(
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+              --jq ".artifacts
+                | map(select(
+                    .expired == false
+                    and (.name | startswith(\"$PREFIX\"))
+                    and (.workflow_run.id != $GITHUB_RUN_ID)
+                  ))
+                | sort_by(.created_at)
+                | reverse
+                | .[]
+                | \"\\(.workflow_run.id)|\\(.name)\"" 2>/dev/null || true
+          )
+
+          echo "No reusable approved diagnostic found; editorial backfill will run normally."
+
+      - name: Build retroactive episode
+        if: steps.reuse.outputs.restored != 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.BACKFILL_OPENAI_MODEL || 'gpt-5.6-terra' }}
           SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
           JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
