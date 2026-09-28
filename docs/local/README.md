@@ -162,7 +162,7 @@ Ejecución real:
 .\scripts\local\run_staged.ps1 -JobId request-ingest-20260925 -Execute
 ~~~
 
-El staging guarda SHA-256. Si alguien modifica la copia privada después de aceptarla, run-staged falla cerrado.
+El staging guarda SHA-256 **y el commit Git exacto** del request. Si alguien modifica la copia privada después de aceptarla, run-staged falla cerrado. El receipt v2 conserva ambos identificadores para que la cadena request → staged copy → ejecución sea auditable.
 
 ## Toolchain snapshot
 
@@ -186,3 +186,10 @@ Muestra preflight, requests disponibles, jobs staged y receipts sin abrir Resolv
 ## CI Windows
 
 CI mantiene un job separado `windows-local-harness` que instala el paquete con Python 3.12 en `windows-latest`, ejecuta `tests/local`, prueba el CLI y parsea todos los scripts PowerShell. No intenta abrir Resolve: scripting/OTIO real sigue siendo acceptance local porque GitHub Actions no tiene tu instalación de DaVinci Resolve.
+
+
+## Cierre y siguiente sesión
+
+Checklist de aceptación real: [acceptance.md](acceptance.md).
+
+Prompt listo para continuar desde la Zenbook/Resolve real: [NEXT_CONVERSATION.md](NEXT_CONVERSATION.md).
