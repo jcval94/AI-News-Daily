@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "killer_time_wizard",
+      "narration": "En Yu-Gi-Oh!, una de las cartas más reconocibles de Joey era El Mago del Tiempo.",
+      "target": "El Mago del Tiempo",
+      "expected_identity": "Time Wizard",
+      "desired_media": [
+        "image"
+      ],
+      "exactness": "exact"
+    },
+    {
+      "id": "killer_lake_nyos_1986",
+      "narration": "En 1986, el desastre del lago Nyos liberó una nube de CO2 con consecuencias devastadoras.",
+      "target": "desastre del lago Nyos de 1986",
+      "expected_identity": "1986 Lake Nyos disaster",
+      "desired_media": [
+        "image",
+        "video"
+      ],
+      "exactness": "exact"
+    },
+    {
+      "id": "killer_plato_bust",
+      "narration": "Platón ya sospechaba que una herramienta para recordar podía cambiar la forma de pensar.",
+      "target": "Platón",
+      "expected_identity": "Plato historical bust or sculpture",
+      "desired_media": [
+        "image"
+      ],
+      "exactness": "exact"
+    },
+    {
+      "id": "killer_alphafold_interface",
+      "narration": "La interfaz de AlphaFold permite inspeccionar estructuras proteicas predichas.",
+      "target": "AlphaFold Database interface",
+      "expected_identity": "AlphaFold Protein Structure Database 3D viewer/interface",
+      "desired_media": [
+        "image",
+        "video"
+      ],
+      "exactness": "exact"
+    },
+    {
+      "id": "killer_iphone_2007_keynote",
+      "narration": "En la presentación del iPhone de 2007, Steve Jobs mostró gestos que terminarían pareciendo obvios.",
+      "target": "Steve Jobs demonstrating iPhone gestures at Macworld 2007",
+      "expected_identity": "Macworld 2007 iPhone keynote gesture demonstrations",
+      "desired_media": [
+        "video"
+      ],
+      "exactness": "exact"
+    }
+  ]
+}
