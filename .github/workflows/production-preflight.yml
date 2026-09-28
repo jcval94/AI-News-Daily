@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/production-preflight.yml"
+      - "news/**"
       - "pipeline/production_preflight.py"
       - "tests/test_production_preflight.py"
 
