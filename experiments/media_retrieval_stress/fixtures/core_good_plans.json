@@ -1,0 +1,329 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "case_id": "franchise_yugioh_time_wizard",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "franchise_yugioh_time_wizard",
+        "decision": "search",
+        "surface_mention": "El Mago del Tiempo",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "La mención se refiere a Time Wizard, la carta de Yu-Gi-Oh! asociada a Joey Wheeler.",
+        "resolved_entity": {
+          "canonical_name": "Time Wizard",
+          "entity_type": "franchise_object",
+          "identity_anchors": [
+            "Time Wizard",
+            "Yu-Gi-Oh!"
+          ],
+          "qualifiers": [
+            "Joey Wheeler"
+          ]
+        },
+        "queries": [
+          {
+            "query": "Yu-Gi-Oh Time Wizard trading card Joey Wheeler",
+            "language": "en",
+            "media_type": "image",
+            "purpose": "canonical_identity",
+            "anchors": [
+              "Time Wizard",
+              "Yu-Gi-Oh",
+              "Joey Wheeler"
+            ]
+          }
+        ],
+        "exclusions": [
+          "generic magician",
+          "weather wizard",
+          "clock wizard"
+        ],
+        "risk_flags": [
+          "commercial copyrighted object"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "product_gemini_google_not_zodiac",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "product_gemini_google_not_zodiac",
+        "decision": "search",
+        "surface_mention": "Gemini de Google",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "Gemini es el producto de IA de Google citado en el contexto de asistentes multimodales.",
+        "resolved_entity": {
+          "canonical_name": "Google Gemini",
+          "entity_type": "product",
+          "identity_anchors": [
+            "Gemini",
+            "Google",
+            "AI"
+          ],
+          "qualifiers": [
+            "multimodal assistant"
+          ]
+        },
+        "queries": [
+          {
+            "query": "Google Gemini AI multimodal assistant",
+            "language": "en",
+            "media_type": "image",
+            "purpose": "canonical_identity",
+            "anchors": [
+              "Gemini",
+              "Google",
+              "AI"
+            ]
+          }
+        ],
+        "exclusions": [
+          "zodiac",
+          "constellation",
+          "horoscope"
+        ],
+        "risk_flags": [
+          "brand/common-noun collision"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "product_claude_anthropic_not_namesakes",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "product_claude_anthropic_not_namesakes",
+        "decision": "search",
+        "surface_mention": "Claude de Anthropic",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "Claude es el producto de IA de Anthropic citado en un contexto de agentes.",
+        "resolved_entity": {
+          "canonical_name": "Anthropic Claude",
+          "entity_type": "product",
+          "identity_anchors": [
+            "Claude",
+            "Anthropic"
+          ],
+          "qualifiers": [
+            "AI assistant"
+          ]
+        },
+        "queries": [
+          {
+            "query": "Anthropic Claude AI assistant",
+            "language": "en",
+            "media_type": "image",
+            "purpose": "canonical_identity",
+            "anchors": [
+              "Claude",
+              "Anthropic"
+            ]
+          }
+        ],
+        "exclusions": [
+          "Claude Monet",
+          "Claude Debussy"
+        ],
+        "risk_flags": [
+          "namesake collision"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "ambiguity_mercury_fail_closed",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "ambiguity_mercury_fail_closed",
+        "decision": "refuse",
+        "surface_mention": "Mercury",
+        "ambiguity_status": "ambiguous",
+        "interpretation": "El contexto no permite distinguir entre las múltiples entidades llamadas Mercury.",
+        "resolved_entity": null,
+        "queries": [],
+        "exclusions": [],
+        "risk_flags": [
+          "unresolved polysemy"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "metaphor_compute_bottleneck_not_bottle",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "metaphor_compute_bottleneck_not_bottle",
+        "decision": "search",
+        "surface_mention": "cuello de botella",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "La metáfora describe un límite de ancho de banda/interconexión al mover datos entre GPUs.",
+        "resolved_entity": {
+          "canonical_name": "GPU interconnect bandwidth bottleneck",
+          "entity_type": "concept",
+          "identity_anchors": [
+            "GPU",
+            "interconnect"
+          ],
+          "qualifiers": [
+            "bandwidth",
+            "data transfer"
+          ]
+        },
+        "queries": [
+          {
+            "query": "GPU interconnect bandwidth data transfer",
+            "language": "en",
+            "media_type": "video",
+            "purpose": "contextual_support",
+            "anchors": [
+              "GPU",
+              "interconnect",
+              "bandwidth"
+            ]
+          }
+        ],
+        "exclusions": [
+          "glass bottle",
+          "wine bottle"
+        ],
+        "risk_flags": [
+          "literal metaphor collision"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "negation_no_humanoid_robots",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "negation_no_humanoid_robots",
+        "decision": "search",
+        "surface_mention": "software que decide qué tarea hacer después",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "El objetivo visual es software agente que planifica tareas; los robots humanoides están explícitamente negados.",
+        "resolved_entity": {
+          "canonical_name": "software task-planning agent",
+          "entity_type": "concept",
+          "identity_anchors": [
+            "software",
+            "agent"
+          ],
+          "qualifiers": [
+            "task planning",
+            "workflow"
+          ]
+        },
+        "queries": [
+          {
+            "query": "software agent task planning workflow",
+            "language": "en",
+            "media_type": "video",
+            "purpose": "contextual_support",
+            "anchors": [
+              "software",
+              "agent",
+              "task planning"
+            ]
+          }
+        ],
+        "exclusions": [
+          "humanoid robot",
+          "android robot"
+        ],
+        "risk_flags": [
+          "negated visual distractor"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "history_lake_nyos_event_not_tourism",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "history_lake_nyos_event_not_tourism",
+        "decision": "search",
+        "surface_mention": "desastre del lago Nyos",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "La necesidad es el desastre del Lake Nyos de 1986, no el lugar como destino turístico.",
+        "resolved_entity": {
+          "canonical_name": "Lake Nyos disaster",
+          "entity_type": "event",
+          "identity_anchors": [
+            "Lake Nyos",
+            "1986"
+          ],
+          "qualifiers": [
+            "disaster"
+          ]
+        },
+        "queries": [
+          {
+            "query": "Lake Nyos 1986 disaster aftermath",
+            "language": "en",
+            "media_type": "image",
+            "purpose": "period_specific",
+            "anchors": [
+              "Lake Nyos",
+              "1986",
+              "disaster"
+            ]
+          }
+        ],
+        "exclusions": [
+          "tourism",
+          "travel vlog",
+          "vacation"
+        ],
+        "risk_flags": [
+          "event/place collision"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    },
+    {
+      "case_id": "history_plato_no_fake_photo",
+      "planner": {
+        "schema_version": 1,
+        "case_id": "history_plato_no_fake_photo",
+        "decision": "search",
+        "surface_mention": "Platón",
+        "ambiguity_status": "unambiguous",
+        "interpretation": "Platón debe representarse mediante una escultura, busto u otra representación histórica auténtica, no una fotografía anacrónica.",
+        "resolved_entity": {
+          "canonical_name": "Plato",
+          "entity_type": "person",
+          "identity_anchors": [
+            "Plato"
+          ],
+          "qualifiers": [
+            "ancient Greek philosopher"
+          ]
+        },
+        "queries": [
+          {
+            "query": "Plato ancient bust sculpture",
+            "language": "en",
+            "media_type": "image",
+            "purpose": "canonical_identity",
+            "anchors": [
+              "Plato",
+              "bust",
+              "sculpture"
+            ]
+          }
+        ],
+        "exclusions": [
+          "photograph of Plato alive",
+          "AI generated Plato",
+          "cosplay Plato"
+        ],
+        "risk_flags": [
+          "pre-photography subject"
+        ],
+        "rights_boundary_acknowledged": true
+      }
+    }
+  ]
+}
