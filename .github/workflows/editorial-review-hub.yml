@@ -407,13 +407,18 @@ jobs:
             --news-root news \
             --output-dir pages-site/memory
           test -s pages-site/memory/index.html
+          test -s pages-site/memory/memory.js
           test -s pages-site/memory/narrative-memory.json
+          node --check pages-site/memory/memory.js
           grep -q 'data-memory-page="narrative-memory"' pages-site/memory/index.html
           grep -q 'data-memory-tab="stories"' pages-site/memory/index.html
           grep -q 'data-memory-tab="news"' pages-site/memory/index.html
           grep -q 'data-story-sort="date"' pages-site/memory/index.html
           grep -q 'id="storyResultCount"' pages-site/memory/index.html
+          grep -q 'id="memoryRuntimeWarning"' pages-site/memory/index.html
+          grep -q 'src="memory.js"' pages-site/memory/index.html
           grep -q 'data-story-availability="available"' pages-site/memory/index.html
+          grep -q 'bootMemoryRuntime' pages-site/memory/memory.js
           grep -q 'Depósito en news/' pages-site/memory/index.html
           grep -q '"approved_items"' pages-site/memory/narrative-memory.json
           grep -q '"daily_updates"' pages-site/memory/narrative-memory.json
@@ -471,6 +476,7 @@ jobs:
           EPISODE_URL="${ROOT_URL}episodes/${TARGET_DATE}/"
           HEALTH_URL="${ROOT_URL}health/"
           MEMORY_URL="${ROOT_URL}memory/"
+          MEMORY_RUNTIME_URL="${ROOT_URL}memory/memory.js"
           METRICS_URL="${ROOT_URL}metrics/"
           for attempt in 1 2 3 4 5 6; do
             if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/catalog.html \
@@ -493,6 +499,10 @@ jobs:
               && grep -q 'data-story-sort="date"' /tmp/memory.html \
               && grep -q 'id="storyResultCount"' /tmp/memory.html \
               && grep -q 'data-story-availability="available"' /tmp/memory.html \
+              && grep -q 'src="memory.js"' /tmp/memory.html \
+              && curl -fsSL --max-time 20 "$MEMORY_RUNTIME_URL" -o /tmp/memory.js \
+              && grep -q 'bootMemoryRuntime' /tmp/memory.js \
+              && node --check /tmp/memory.js \
               && curl -fsSL --max-time 20 "$METRICS_URL" -o /tmp/metrics.html \
               && grep -q 'data-metrics-page="video-metrics-history"' /tmp/metrics.html; then
               echo "Pages smoke test passed: $ROOT_URL"
