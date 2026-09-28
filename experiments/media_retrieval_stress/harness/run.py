@@ -11,8 +11,9 @@ import json
 import os
 import re
 import uuid
-from collections import Counter
 from datetime import datetime, timezone
+
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from pathlib import Path
 from typing import Any
 
