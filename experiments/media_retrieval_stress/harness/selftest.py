@@ -131,10 +131,10 @@ def main() -> None:
         "completed_at": "2026-09-27T00:00:01+00:00",
         "config": config.model_dump(),
         "source_cases": "cases/core.json",
-        "source_cases_sha256": "0".repeat(64),
+        "source_cases_sha256": "0" * 64,
         "prompt_fingerprints": {
-            "planner_sha256": "1".repeat(64),
-            "critic_sha256": "2".repeat(64),
+            "planner_sha256": "1" * 64,
+            "critic_sha256": "2" * 64,
         },
         "summary": {
             "cases": 1,
