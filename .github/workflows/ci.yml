@@ -71,6 +71,7 @@ jobs:
       - run: python -m compileall pipeline/local
       - run: python -m unittest discover -s tests/local -v
       - run: python -m pipeline.local operations
+      - run: python -m pipeline.local audit --json-out harness-audit.json
       - name: Parse local PowerShell launchers
         shell: pwsh
         run: |
