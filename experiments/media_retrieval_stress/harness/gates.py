@@ -21,6 +21,21 @@ def evaluate_scorecard(profile: ExperimentProfile, run: dict[str, Any]) -> dict[
     hard_failures: list[dict[str, Any]] = []
     failed_cases: set[str] = set()
 
+    config = run.get("config") or {}
+    profile_config_matches = (
+        int(config.get("repetitions") or 0) == profile.repetitions
+        and bool(config.get("critic_enabled")) == profile.critic_enabled
+        and str(config.get("reasoning_effort") or "") == profile.reasoning_effort
+    )
+    if not profile_config_matches:
+        hard_failures.append({
+            "case_id": "__run__",
+            "repetition": 0,
+            "source": "runtime",
+            "code": "profile_config_mismatch",
+            "detail": "Run configuration does not match the selected experiment profile.",
+        })
+
     for item in case_results:
         case_id = str(item.get("case_id") or "")
         if float(item.get("pass_rate") or 0.0) < profile.thresholds.min_case_pass_rate:
