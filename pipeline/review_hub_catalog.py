@@ -262,7 +262,7 @@ const metricsLink=document.getElementById('metricsLink');
 
 function cacheBustedPath(path){{
   const url=new URL(path,window.location.href);
-  url.searchParams.set('v',`${SITE_VERSION}-${Date.now().toString(36)}`);
+  url.searchParams.set('v',`${{SITE_VERSION}}-${{Date.now().toString(36)}}`);
   return url.href;
 }}
 
