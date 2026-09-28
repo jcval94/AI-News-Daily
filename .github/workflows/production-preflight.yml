@@ -1,0 +1,95 @@
+name: Production Preflight
+
+on:
+  schedule:
+    - cron: "0 0 * * 2,5" # Mon/Thu 18:00 America/Mexico_City, the afternoon before Tue/Fri production
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Production date (YYYY-MM-DD). Empty = next calendar day from Mexico City."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+
+      - name: Resolve target production date
+        id: target
+        env:
+          MANUAL_TARGET_DATE: ${{ inputs.target_date }}
+        run: |
+          set -euo pipefail
+          if [ -n "${MANUAL_TARGET_DATE:-}" ]; then
+            TARGET_DATE="$MANUAL_TARGET_DATE"
+          else
+            TARGET_DATE="$(TZ=America/Mexico_City date -d '+1 day' +%F)"
+          fi
+          python -c "from datetime import date; date.fromisoformat('$TARGET_DATE')"
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+
+      - name: Build read-only production preflight
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
+          NEWS_SOURCE_MODE: scheduled_window
+          NEWS_LOOKBACK_DAYS: "4"
+        run: |
+          set -euo pipefail
+          mkdir -p .preflight
+          python -m pipeline.production_preflight             --repo-root .             --target-date "$TARGET_DATE"             --output .preflight/production-readiness.json             --min-ratio "$MIN_SOURCE_COVERAGE_RATIO"
+
+      - name: Summarize readiness
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path(".preflight/production-readiness.json").read_text(encoding="utf-8"))
+          coverage = report["source_coverage"]
+          quality = report["source_quality"]
+          print(f"# Production Preflight · {report['target_date']}")
+          print()
+          print(f"- **Status:** {report['status']}")
+          print(f"- **Readiness:** {report['readiness_score']}/100")
+          print(f"- **Parseable coverage:** {coverage['available_day_count']}/{coverage['expected_day_count']} ({coverage['coverage_ratio']:.0%})")
+          print(f"- **Source quality:** {quality['score']}/100 ({quality['band']}) — observational only")
+          print(f"- **Missing dates:** {', '.join(coverage['missing_dates']) or 'none'}")
+          print(f"- **Unparseable dates:** {', '.join(coverage['unparseable_dates']) or 'none'}")
+          print(f"- **Narrative Memory:** {report['narrative_memory']['valid_item_count']} valid item(s)")
+          print()
+          print("This check is read-only: 0 model calls, 0 production-state writes, 0 Narrative Memory usage writes.")
+          if report["status"] != "ready":
+              print()
+              print("> ⚠️ Production is currently at risk; inspect the failed hard requirements above.")
+          PY
+
+      - name: Upload preflight snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-readiness-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
+          path: .preflight/production-readiness.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 9
