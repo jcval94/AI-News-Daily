@@ -3,25 +3,16 @@ from __future__ import annotations
 
 import json
 import os
-from pathlib import Path
 from typing import Any
 
 import requests
 
+from .contracts import schema as contract_schema
 from .models import RunConfig
-
-
-HERE = Path(__file__).resolve().parent
-CONTRACTS = HERE.parent / "contracts"
 
 
 class LLMCallError(RuntimeError):
     pass
-
-
-def load_schema(name: str) -> dict[str, Any]:
-    path = CONTRACTS / name
-    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _output_text(response: dict[str, Any]) -> str:
