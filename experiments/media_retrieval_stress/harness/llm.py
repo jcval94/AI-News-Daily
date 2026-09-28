@@ -39,7 +39,7 @@ def call_structured(
     if not key:
         raise LLMCallError("OPENAI_API_KEY is required for live stress runs")
 
-    schema = load_schema(schema_file)
+    schema = contract_schema(schema_file)
     body: dict[str, Any] = {
         "model": config.model,
         "store": False,
