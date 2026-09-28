@@ -148,16 +148,46 @@ jobs:
           set -euo pipefail
           OUTPUT_DIR="$RUN_ROOT/multimedia/$TARGET_DATE"
           ZIP="$RUN_ROOT/multimedia/multimedia-${TARGET_DATE}-run-${GITHUB_RUN_ID}.zip"
-          rm -rf "$OUTPUT_DIR" "$ZIP"
-          python -m pipeline.review_media_offline_dense \
-            --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
-            --output-dir "$OUTPUT_DIR" \
-            --zip-out "$ZIP" \
-            --max-media-downloads "$MAX_MEDIA"
+
+          build_offline() {
+            local acquisition_budget="$1"
+            rm -rf "$OUTPUT_DIR" "$ZIP"
+            python -m pipeline.review_media_offline_dense \
+              --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
+              --output-dir "$OUTPUT_DIR" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$acquisition_budget"
+          }
+
+          build_offline "$MAX_MEDIA"
+
+          set +e
           python -m pipeline.media_density_gate \
             --media-dir "$OUTPUT_DIR" \
             --budget "$MAX_MEDIA" \
             --output "$RUN_ROOT/media_density_gate.json"
+          GATE_STATUS=$?
+          set -e
+
+          if [ "$GATE_STATUS" -eq 2 ]; then
+            RECOVERY_BUDGET="$(python -m pipeline.media_density_recovery \
+              --media-dir "$OUTPUT_DIR" \
+              --delivery-budget "$MAX_MEDIA" \
+              --max-extra-attempts 12 \
+              --value-only)"
+            if [ -n "$RECOVERY_BUDGET" ]; then
+              echo "::warning::Dense media lost too many assets to deduplication; retrying once with acquisition budget $RECOVERY_BUDGET while preserving delivery budget $MAX_MEDIA."
+              build_offline "$RECOVERY_BUDGET"
+              python -m pipeline.media_density_gate \
+                --media-dir "$OUTPUT_DIR" \
+                --budget "$MAX_MEDIA" \
+                --output "$RUN_ROOT/media_density_gate.json"
+            else
+              exit "$GATE_STATUS"
+            fi
+          elif [ "$GATE_STATUS" -ne 0 ]; then
+            exit "$GATE_STATUS"
+          fi
 
       - name: Create production handoff contracts
         env:
