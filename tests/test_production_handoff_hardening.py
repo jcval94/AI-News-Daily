@@ -23,6 +23,15 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn('git add "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"', workflow)
 
 
+    def test_backfill_exposes_configured_media_provider_to_dense_builder(self) -> None:
+        workflow = Path(".github/workflows/backfill-video-kit.yml").read_text(encoding="utf-8")
+        handoff = workflow.split("- name: Build deterministic dense multimedia handoff", 1)[1].split(
+            "- name: Create production handoff contracts", 1
+        )[0]
+        self.assertIn("PEXELS_API_KEY:", handoff)
+        self.assertIn("MEDIA_HTTP_MAX_ATTEMPTS:", handoff)
+        self.assertIn("MEDIA_HTTP_RETRY_BASE_SECONDS:", handoff)
+
     def test_dense_media_gate_is_shared_and_dedup_aware(self) -> None:
         for path in (
             ".github/workflows/build-video-kit.yml",
