@@ -27,7 +27,7 @@ A topic may be revisited only when new evidence materially changes the question,
 
 ## Deterministic guardrail
 
-After planning, Python compares the new `topic_signature + central_question + thesis` against recent approved essays.
+After planning, Python compares the new `topic_signature + central_question + thesis + narrative_lens` against the same editorial-identity fields from recent approved essays. Full script prose is deliberately excluded from the hard duplicate gate because recurring channel vocabulary can inflate similarity between materially different arguments.
 
 - Low similarity: continue normally.
 - High similarity: re-plan with explicit feedback about the nearest prior essay.
