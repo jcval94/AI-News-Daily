@@ -41,7 +41,7 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertIn("WORKFLOW_RUN_NAME", review)
         self.assertIn("EVENT_NAME", review)
         self.assertIn("Repository push: canonical production history is authoritative", review)
-        self.assertIn("Production Preflight carries readiness evidence, not an episode", review)
+        self.assertIn("carries operational evidence, not an episode", review)
         self.assertIn("inspecting only triggering run", review)
         self.assertIn("Probe source quality and model availability", build)
         self.assertIn("steps.model_preflight.outcome == 'success'", build)

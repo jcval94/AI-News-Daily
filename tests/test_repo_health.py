@@ -38,6 +38,7 @@ jobs:
 """,
             "build-video-kit.yml": "name: Build AI News Video Kit\n",
             "production-preflight.yml": "name: Production Preflight\n",
+            "news-ingestion-watchdog.yml": "name: News Ingestion Watchdog\n",
             "editorial-regression.yml": """name: Editorial Regression
 run-name: regression
 """,
@@ -80,7 +81,7 @@ run-name: regression
     def _github(self) -> dict:
         successful = []
         for index, name in enumerate(
-            ("CI", "Production Preflight", "Build AI News Video Kit", "Editorial Regression", "Editorial Review Hub"),
+            ("CI", "News Ingestion Watchdog", "Production Preflight", "Build AI News Video Kit", "Editorial Regression", "Editorial Review Hub"),
             start=1,
         ):
             successful.append(
