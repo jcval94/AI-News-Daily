@@ -393,12 +393,22 @@ GitHub Pages
 
 Editorial Regression is a separate QA lane; it is not the canonical content source for Pages.
 
-The Review Hub includes script, evidence, multimedia, costs, technical diagnostics, Living Architecture, and the observed run journey. The Pages catalog also exposes two global observability views:
+The Review Hub includes script, evidence, multimedia, costs, technical diagnostics, Living Architecture, and the observed run journey. The Pages catalog also exposes global observability views:
 
-- **Repo Health** — structural and operational checks for source freshness, canonical production freshness, duplicate daily inputs, CI/workflow status, dependency hygiene, open maintenance work, and Pages history.
+- **Repo Health** — structural and operational checks for parseable-source freshness, canonical production freshness, duplicate/unparseable daily inputs, CI/workflow status, dependency hygiene, open maintenance work, and Pages history.
+- **Production Readiness** — historical afternoon preflights for the next scheduled run: parseable coverage, an observational source-quality score, Narrative Memory availability, and required credential presence.
 - **Narrative Memory** — verified-library inventory, mechanism coverage, quality scores, usage by approved episode, available/cooldown state, and the factual/analogy contract for each parallel.
+- **Historical metrics** — Editorial, Attention, Voice and SEO history from review artifacts.
 
 Narrative Memory data-only commits intentionally do not trigger expensive CI/model regression or a standalone Pages deployment. The dashboard is refreshed on the next normal Editorial Review Hub deployment and exposes its snapshot date explicitly.
+
+### Production preflight
+
+`.github/workflows/production-preflight.yml` runs Monday and Thursday at 18:00 America/Mexico_City, ahead of Tuesday/Friday production. It calls `pipeline.production_preflight` and uploads a small `production-readiness.json` artifact.
+
+The preflight is deliberately read-only: it makes no model calls, does not write `run_state.json`, does not consume Narrative Memory IDs, and does not promote production artifacts. Source quality is telemetry only; production gating remains deterministic and is based on parseable source coverage plus the existing hard requirements.
+
+A dated source file is not considered fresh merely because its filename contains a recent date. Repo Health and source-window readiness distinguish detected files from sources that successfully resolve and parse under the news contract.
 
 ## Configuration
 
