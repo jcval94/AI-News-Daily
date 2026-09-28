@@ -61,6 +61,8 @@ def evaluate_planner(case: StressCase, output: PlannerOutput) -> dict[str, Any]:
         checks["canonical_terms"] = True
         checks["domain_context"] = True
         checks["query_term_groups"] = True
+        checks["media_types"] = True
+        checks["exactness"] = True
         checks["forbidden_terms"] = True
         checks["period"] = True
         checks["geography"] = True
