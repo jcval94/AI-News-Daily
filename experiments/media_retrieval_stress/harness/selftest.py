@@ -40,7 +40,8 @@ def passing_critic(case_id: str) -> dict:
     }
 
 
-def build_synthetic_run(cases: list[StressCase], fixtures: dict[str, dict], repetitions: int) -> dict:
+def build_synthetic_run(cases: list[StressCase], fixtures: dict[str, dict], profile) -> dict:
+    repetitions = profile.repetitions
     case_results = []
     attempts = 0
     for case in cases:
@@ -76,10 +77,10 @@ def build_synthetic_run(cases: list[StressCase], fixtures: dict[str, dict], repe
             "schema_version": 1,
             "model": "test-model",
             "repetitions": repetitions,
-            "reasoning_effort": "none",
+            "reasoning_effort": profile.reasoning_effort,
             "timeout_seconds": 30,
             "max_output_tokens": 500,
-            "critic_enabled": True,
+            "critic_enabled": profile.critic_enabled,
         },
         "source_cases": "cases/core.json",
         "source_cases_sha256": "0" * 64,
@@ -174,7 +175,7 @@ def main() -> None:
     if strict_profile.id != "core_strict" or repeat_profile.id != "core_repeatability":
         raise AssertionError("profile ids do not match expected values")
 
-    run_record = build_synthetic_run(cases, fixtures, strict_profile.repetitions)
+    run_record = build_synthetic_run(cases, fixtures, strict_profile)
     validate_contract("run_record.schema.json", run_record)
 
     passing_scorecard = evaluate_scorecard(strict_profile, run_record)
