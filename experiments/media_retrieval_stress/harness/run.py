@@ -267,15 +267,13 @@ def main() -> None:
 
     profile_path = args.profile.resolve()
     profile = load_profile(profile_path)
-    repetitions = args.repetitions if args.repetitions is not None else profile.repetitions
-    reasoning_effort = args.reasoning_effort or profile.reasoning_effort
     config = RunConfig(
         model=args.model.strip(),
-        repetitions=repetitions,
-        reasoning_effort=reasoning_effort,
+        repetitions=profile.repetitions,
+        reasoning_effort=profile.reasoning_effort,
         timeout_seconds=args.timeout_seconds,
         max_output_tokens=args.max_output_tokens,
-        critic_enabled=profile.critic_enabled and not args.no_critic,
+        critic_enabled=profile.critic_enabled,
     )
     validate_contract("run_config.schema.json", config.model_dump())
 
