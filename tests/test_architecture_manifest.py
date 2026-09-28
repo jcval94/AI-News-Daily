@@ -30,7 +30,7 @@ class ArchitectureManifestTests(unittest.TestCase):
     def test_manifest_tracks_hardened_production_contract(self) -> None:
         data = manifest()
         stages = {stage["id"]: stage for stage in data["stages"]}
-        self.assertEqual(data["version"], 19)
+        self.assertEqual(data["version"], 20)
         self.assertIn("source_coverage", stages)
         self.assertIn("narrative_memory", stages)
         self.assertIn("narrative_memory_observability", stages)
@@ -70,6 +70,8 @@ class ArchitectureManifestTests(unittest.TestCase):
         self.assertIn("limita los root_id", stages["local_harness"]["authority"])
         self.assertIn("Windows", stages["local_harness"]["authority"])
         self.assertIn("SHA-256", stages["local_harness"]["summary"])
+        self.assertIn("provenance durable", stages["local_harness"]["summary"])
+        self.assertIn("checkout Git real", stages["local_harness"]["authority"])
         self.assertIn("resolve_alignment", stages)
         self.assertIn("Resolve Alignment", stages["resolve_alignment"]["title"])
         self.assertIn("AutoSyncAudio", stages["resolve_alignment"]["authority"])
