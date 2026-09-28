@@ -228,6 +228,7 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
             )
 
             document = index.read_text(encoding="utf-8")
+            runtime = (output / "memory.js").read_text(encoding="utf-8")
             payload = json.loads((output / "narrative-memory.json").read_text(encoding="utf-8"))
 
             self.assertIn('data-memory-page="narrative-memory"', document)
@@ -238,6 +239,13 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
             self.assertIn('data-story-availability="available"', document)
             self.assertIn('data-story-availability="cooldown"', document)
             self.assertIn('id="storyResultCount"', document)
+            self.assertIn('id="memoryRuntimeWarning"', document)
+            self.assertIn('data-memory-runtime="booting"', document)
+            self.assertIn('src="memory.js"', document)
+            self.assertIn('bootMemoryRuntime', runtime)
+            self.assertIn('data-story-sort', runtime)
+            self.assertIn('data-story-availability', runtime)
+            self.assertIn('data-memory-runtime', runtime)
             self.assertNotIn('data-story-filter="source"', document)
             self.assertNotIn('data-story-filter="domain"', document)
             self.assertNotIn('data-story-filter="mechanism"', document)
