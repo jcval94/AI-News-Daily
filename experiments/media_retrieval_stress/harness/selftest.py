@@ -20,6 +20,7 @@ CASES = LAB_ROOT / "cases" / "core.json"
 FIXTURES = LAB_ROOT / "fixtures" / "core_good_plans.json"
 STRICT_PROFILE = LAB_ROOT / "profiles" / "core_strict.json"
 REPEAT_PROFILE = LAB_ROOT / "profiles" / "core_repeatability.json"
+CANDIDATE_PROFILE = LAB_ROOT / "profiles" / "candidate_strict.json"
 
 
 def passing_critic(case_id: str) -> dict:
@@ -108,6 +109,7 @@ def main() -> None:
     expected_contracts = {
         "candidate.schema.json",
         "candidate_case.schema.json",
+        "candidate_run_record.schema.json",
         "candidate_selection.schema.json",
         "case.schema.json",
         "critic_output.schema.json",
@@ -175,7 +177,12 @@ def main() -> None:
 
     strict_profile = load_profile(STRICT_PROFILE)
     repeat_profile = load_profile(REPEAT_PROFILE)
-    if strict_profile.id != "core_strict" or repeat_profile.id != "core_repeatability":
+    candidate_profile = load_profile(CANDIDATE_PROFILE)
+    if (
+        strict_profile.id != "core_strict"
+        or repeat_profile.id != "core_repeatability"
+        or candidate_profile.id != "candidate_strict"
+    ):
         raise AssertionError("profile ids do not match expected values")
 
     run_record = build_synthetic_run(cases, fixtures, strict_profile)
@@ -217,7 +224,7 @@ def main() -> None:
                 "good_fixtures": len(good_results),
                 "adversarial_mutations_rejected": len(mutation_results),
                 "mutation_failures": mutation_results,
-                "profiles": [strict_profile.id, repeat_profile.id],
+                "profiles": [strict_profile.id, repeat_profile.id, candidate_profile.id],
                 "known_good_scorecard": passing_scorecard["verdict"],
                 "known_bad_scorecard": failing_scorecard["verdict"],
                 "critic_contract": "pass",
