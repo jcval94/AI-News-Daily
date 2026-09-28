@@ -14,6 +14,27 @@ from .models import RunConfig
 class LLMCallError(RuntimeError):
     pass
 
+def api_schema_subset(node: Any) -> Any:
+    """Return the conservative JSON Schema subset sent to Structured Outputs."""
+    if isinstance(node, list):
+        return [api_schema_subset(item) for item in node]
+    if not isinstance(node, dict):
+        return node
+    allowed = {
+        "type", "properties", "required", "additionalProperties",
+        "items", "enum", "const", "anyOf",
+    }
+    cleaned: dict[str, Any] = {}
+    for key, value in node.items():
+        if key == "properties" and isinstance(value, dict):
+            cleaned[key] = {
+                field_name: api_schema_subset(field_schema)
+                for field_name, field_schema in value.items()
+            }
+        elif key in allowed:
+            cleaned[key] = api_schema_subset(value)
+    return cleaned
+
 
 def _output_text(response: dict[str, Any]) -> str:
     parts: list[str] = []
@@ -42,29 +63,7 @@ def call_structured(
     # Keep the stored contract rich for local validation. The API receives a
     # deliberately smaller schema subset; local validation remains authoritative
     # for constraints such as lengths, array bounds and patterns.
-    schema = json.loads(json.dumps(contract_schema(schema_file)))
-
-    def api_schema(node: Any) -> Any:
-        if isinstance(node, list):
-            return [api_schema(item) for item in node]
-        if not isinstance(node, dict):
-            return node
-        allowed = {
-            "type", "properties", "required", "additionalProperties",
-            "items", "enum", "const", "anyOf",
-        }
-        cleaned: dict[str, Any] = {}
-        for key, value in node.items():
-            if key == "properties" and isinstance(value, dict):
-                cleaned[key] = {
-                    field_name: api_schema(field_schema)
-                    for field_name, field_schema in value.items()
-                }
-            elif key in allowed:
-                cleaned[key] = api_schema(value)
-        return cleaned
-
-    schema = api_schema(schema)
+    schema = api_schema_subset(json.loads(json.dumps(contract_schema(schema_file))))
     body: dict[str, Any] = {
         "model": config.model,
         "store": False,
