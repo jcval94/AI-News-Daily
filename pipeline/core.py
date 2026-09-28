@@ -308,7 +308,6 @@ def nearest_essay_similarity(
                 "central_question",
                 "thesis",
                 "narrative_lens",
-                "script_excerpt",
             )
         ).strip()
         score = topic_similarity(candidate, comparison)
