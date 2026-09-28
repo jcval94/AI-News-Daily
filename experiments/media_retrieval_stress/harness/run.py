@@ -212,6 +212,7 @@ def main() -> None:
         max_output_tokens=args.max_output_tokens,
         critic_enabled=not args.no_critic,
     )
+    validate_contract("run_config.schema.json", config.model_dump())
     cases = read_cases(args.cases)
     started = utc_now()
     run_id = args.run_id.strip() or (
