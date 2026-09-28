@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Iterable
 from zoneinfo import ZoneInfo
 
+from pipeline.news_resolution import load_news_for_date
 from pipeline.source_coverage import evaluate_source_coverage
 from pipeline.source_naming import is_supported_source, source_date
 
@@ -318,7 +319,18 @@ def _news_health(root: Path, as_of: date) -> tuple[list[HealthCheck], dict[str, 
             value = source_date(path)
             if value is not None:
                 by_day.setdefault(value, []).append(path.name)
-    latest = max(by_day) if by_day else None
+
+    detected_latest = max(by_day) if by_day else None
+    parseable_days: list[date] = []
+    unparseable_days: list[date] = []
+    for value in sorted(by_day):
+        path, parsed = load_news_for_date(news_dir, value)
+        if path is not None and parsed:
+            parseable_days.append(value)
+        else:
+            unparseable_days.append(value)
+
+    latest = max(parseable_days) if parseable_days else None
     age = _days_between(as_of, latest)
     duplicates = {day: sorted(names) for day, names in by_day.items() if len(names) > 1}
 
@@ -330,19 +342,30 @@ def _news_health(root: Path, as_of: date) -> tuple[list[HealthCheck], dict[str, 
                 "Operación",
                 "critical",
                 "Frescura de fuentes",
-                "No hay fuentes de noticias fechadas utilizables.",
+                "No hay fuentes de noticias parseables.",
+                (
+                    f"Última fecha detectada: {_date_text(detected_latest)}."
+                    if detected_latest
+                    else ""
+                ),
             )
         )
     else:
         if age is not None and age > 3:
             status = "critical"
-            summary = "La ingesta diaria está claramente atrasada."
+            summary = "La ingesta parseable está claramente atrasada."
         elif age is not None and age > 1:
             status = "warn"
-            summary = "La última fuente tiene más de un día de antigüedad."
+            summary = "La última fuente parseable tiene más de un día de antigüedad."
         else:
             status = "ok"
-            summary = "La ingesta de noticias está fresca."
+            summary = "La ingesta parseable de noticias está fresca."
+        detail = f"Última fecha parseable: {_date_text(latest)}."
+        if detected_latest and detected_latest > latest:
+            detail += (
+                f" Hay archivos fechados hasta {detected_latest.isoformat()}, "
+                "pero los más recientes no cumplen el contrato parseable."
+            )
         checks.append(
             HealthCheck(
                 "news-freshness",
@@ -350,8 +373,32 @@ def _news_health(root: Path, as_of: date) -> tuple[list[HealthCheck], dict[str, 
                 status,
                 "Frescura de fuentes",
                 summary,
-                f"Última fecha detectada: {_date_text(latest)}.",
+                detail,
                 _age_text(age),
+            )
+        )
+
+    if unparseable_days:
+        checks.append(
+            HealthCheck(
+                "unparseable-news-days",
+                "Operación",
+                "warn",
+                "Fuentes fechadas no parseables",
+                f"{len(unparseable_days)} fecha(s) tienen archivos detectables pero ningún digest utilizable.",
+                ", ".join(day.isoformat() for day in sorted(unparseable_days, reverse=True)[:5]),
+                str(len(unparseable_days)),
+            )
+        )
+    else:
+        checks.append(
+            HealthCheck(
+                "unparseable-news-days",
+                "Operación",
+                "ok",
+                "Fuentes fechadas no parseables",
+                "Todas las fechas detectadas tienen al menos una fuente parseable.",
+                value="0",
             )
         )
 
@@ -385,11 +432,15 @@ def _news_health(root: Path, as_of: date) -> tuple[list[HealthCheck], dict[str, 
 
     return checks, {
         "latest_news_date": latest.isoformat() if latest else None,
+        "latest_detected_news_date": detected_latest.isoformat() if detected_latest else None,
+        "news_freshness_basis": "latest_parseable_source",
         "news_staleness_days": age,
+        "unparseable_news_dates": [day.isoformat() for day in unparseable_days],
         "duplicate_news_days": {
             day.isoformat(): names for day, names in sorted(duplicates.items())
         },
         "news_days": len(by_day),
+        "parseable_news_days": len(parseable_days),
     }
 
 
@@ -427,7 +478,10 @@ def _next_run_readiness(root: Path, as_of: date) -> tuple[HealthCheck, dict[str,
         f"Target {target.isoformat()} · "
         f"{payload.get('available_day_count', 0)}/{payload.get('expected_day_count', 0)} días "
         f"({ratio:.1%}) · mínimo 75% · "
-        f"faltantes: {', '.join(missing) or 'ninguno'}."
+        f"faltantes: {', '.join(missing) or 'ninguno'} · "
+        f"no parseables: {', '.join(str(value) for value in payload.get('unparseable_dates', [])) or 'ninguno'} · "
+        f"source quality: {float(payload.get('source_quality', {}).get('score', 0.0) or 0.0):.0f}/100 "
+        "(observacional)."
     )
     return (
         HealthCheck(
@@ -446,6 +500,15 @@ def _next_run_readiness(root: Path, as_of: date) -> tuple[HealthCheck, dict[str,
             "next_source_missing_dates": missing,
             "next_source_available_days": int(payload.get("available_day_count", 0) or 0),
             "next_source_expected_days": int(payload.get("expected_day_count", 0) or 0),
+            "next_source_unparseable_dates": [
+                str(value) for value in payload.get("unparseable_dates", [])
+            ],
+            "next_source_quality_score": float(
+                payload.get("source_quality", {}).get("score", 0.0) or 0.0
+            ),
+            "next_source_quality_band": str(
+                payload.get("source_quality", {}).get("band", "low") or "low"
+            ),
         },
     )
 
