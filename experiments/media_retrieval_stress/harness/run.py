@@ -8,12 +8,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import uuid
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .contracts import validate as validate_contract
 from .evaluate import canonical_signature, evaluate_planner
 from .llm import LLMCallError, call_structured
 from .models import CriticOutput, PlannerOutput, RunConfig, StressCase
@@ -31,10 +33,17 @@ def utc_now() -> str:
 
 
 def read_cases(path: Path) -> list[StressCase]:
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    resolved = path.resolve()
+    cases_root = (LAB_ROOT / "cases").resolve()
+    if not resolved.is_relative_to(cases_root):
+        raise ValueError("stress cases must live inside experiments/media_retrieval_stress/cases")
+    payload = json.loads(resolved.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1 or not isinstance(payload.get("cases"), list):
         raise ValueError("case file must contain schema_version=1 and a cases array")
-    cases = [StressCase.model_validate(item) for item in payload["cases"]]
+    cases = []
+    for item in payload["cases"]:
+        validate_contract("case.schema.json", item)
+        cases.append(StressCase.model_validate(item))
     ids = [case.id for case in cases]
     if len(ids) != len(set(ids)):
         raise ValueError("case ids must be unique")
@@ -67,6 +76,7 @@ def run_one(case: StressCase, config: RunConfig, repetition: int) -> dict[str, A
             schema_name="media_stress_planner_output",
             config=config,
         )
+        validate_contract("planner_output.schema.json", planner_raw)
         planner = PlannerOutput.model_validate(planner_raw)
         deterministic = evaluate_planner(case, planner)
         record["planner"] = planner.model_dump()
@@ -82,6 +92,7 @@ def run_one(case: StressCase, config: RunConfig, repetition: int) -> dict[str, A
                 schema_name="media_stress_critic_output",
                 config=config,
             )
+            validate_contract("critic_output.schema.json", critic_raw)
             critic = CriticOutput.model_validate(critic_raw)
             if critic.case_id != case.id:
                 raise ValueError("critic case_id does not match input case")
@@ -165,7 +176,7 @@ def build_payload(
         "started_at": started_at,
         "completed_at": completed_at,
         "config": config.model_dump(),
-        "source_cases": str(source_cases),
+        "source_cases": str(source_cases.resolve().relative_to(LAB_ROOT.resolve())),
         "summary": {
             "cases": len(cases),
             "repetitions": config.repetitions,
@@ -206,7 +217,11 @@ def main() -> None:
     run_id = args.run_id.strip() or (
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8]
     )
-    run_dir = RESULTS_ROOT / run_id
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}", run_id):
+        raise SystemExit("run-id may contain only letters, numbers, underscore and hyphen")
+    run_dir = (RESULTS_ROOT / run_id).resolve()
+    if not run_dir.is_relative_to(RESULTS_ROOT.resolve()):
+        raise SystemExit("run output escaped the isolated results directory")
     all_runs: dict[str, list[dict[str, Any]]] = {case.id: [] for case in cases}
 
     # Persist after every attempt. An interrupted run still leaves inspectable evidence.
@@ -224,6 +239,7 @@ def main() -> None:
                 cases=cases,
                 all_runs=all_runs,
             )
+            validate_contract("run_record.schema.json", partial)
             write_json(run_dir / "run.json", partial)
             (run_dir / "SUMMARY.md").write_text(markdown_summary(partial), encoding="utf-8")
             print(
@@ -242,6 +258,7 @@ def main() -> None:
         cases=cases,
         all_runs=all_runs,
     )
+    validate_contract("run_record.schema.json", final)
     write_json(run_dir / "run.json", final)
     (run_dir / "SUMMARY.md").write_text(markdown_summary(final), encoding="utf-8")
     print(json.dumps(final["summary"], ensure_ascii=False, indent=2))
