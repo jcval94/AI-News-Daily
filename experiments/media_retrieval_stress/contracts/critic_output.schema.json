@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/critic-output.schema.json",
+  "title": "Adversarial Retrieval Critic Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "verdict",
+    "checks",
+    "failure_codes",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "verdict": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_preserved",
+        "qualifiers_preserved",
+        "ambiguity_handled",
+        "no_forbidden_drift",
+        "negation_respected",
+        "exactness_preserved",
+        "queries_searchable"
+      ],
+      "properties": {
+        "identity_preserved": {
+          "type": "boolean"
+        },
+        "qualifiers_preserved": {
+          "type": "boolean"
+        },
+        "ambiguity_handled": {
+          "type": "boolean"
+        },
+        "no_forbidden_drift": {
+          "type": "boolean"
+        },
+        "negation_respected": {
+          "type": "boolean"
+        },
+        "exactness_preserved": {
+          "type": "boolean"
+        },
+        "queries_searchable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "failure_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 12,
+      "items": {
+        "enum": [
+          "wrong_entity",
+          "missing_qualifier",
+          "query_drift",
+          "forbidden_term",
+          "ambiguity_guess",
+          "unsupported_alias",
+          "literalized_metaphor",
+          "negation_violation",
+          "period_loss",
+          "geography_loss",
+          "generic_substitution",
+          "unsearchable_query",
+          "other"
+        ]
+      }
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 900
+    }
+  }
+}
