@@ -178,54 +178,5 @@
     "rights_boundary_acknowledged": {
       "const": true
     }
-  },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "decision": {
-            "const": "refuse"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "queries": {
-            "maxItems": 0
-          },
-          "resolved_entity": {
-            "type": "null"
-          },
-          "ambiguity_status": {
-            "enum": [
-              "ambiguous",
-              "unsupported"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "decision": {
-            "const": "search"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "queries": {
-            "minItems": 1
-          },
-          "resolved_entity": {
-            "type": "object"
-          },
-          "ambiguity_status": {
-            "const": "unambiguous"
-          }
-        }
-      }
-    }
-  ]
+  }
 }
