@@ -20,7 +20,7 @@ Todos los contratos locales son JSON Schema versionados.
 
 ## local_receipt
 
-`config/local/local_receipt.schema.json` registra estado, timestamps, exit code, comando redactado y logs relativos. Un receipt existente impide repetir el mismo `job_id`.
+`config/local/local_receipt.schema.json` (v2) registra estado, timestamps, exit code, comando redactado, logs relativos y provenance durable del staging: `source_repo_path`, `source_git_commit`, `request_sha256` y `staged_at`. Un receipt existente impide repetir el mismo `job_id`.
 
 ## local_run_manifest
 
@@ -44,7 +44,7 @@ Resolve ejecuta contratos; no los sustituye.
 
 ## local_stage
 
-`config/local/local_stage.schema.json` prueba que un request versionado fue aceptado localmente. Guarda source_repo_path + SHA-256 + staged_job_path. Un request del repo no debe ejecutarse directamente.
+`config/local/local_stage.schema.json` (v2) prueba que un request versionado fue aceptado localmente. Exige checkout Git real, request tracked + committed + clean, y guarda `source_repo_path` + commit SHA + request SHA-256 + staged path. Un request del repo no debe ejecutarse directamente.
 
 ## local_toolchain
 
