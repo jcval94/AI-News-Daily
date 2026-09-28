@@ -204,3 +204,38 @@ def deduplicate_materialized_media(
         for item in selected_segments
     ]
     return deduped_manifest, deduped_segments, removed
+
+
+def fallback_unresolved_duplicate_cues_to_presenter(
+    segments: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Return duplicate-pruned visual gaps to the presenter.
+
+    Deduplication deliberately removes repeated visual assets. When no distinct asset
+    refills that slot, keeping the cue as unresolved media creates a false missing-asset
+    blocker downstream. The presenter is the visual continuity contract, so unresolved
+    duplicate-only gaps should become presenter segments instead of placeholders.
+    """
+    result: list[dict[str, Any]] = []
+    for item in segments:
+        if (
+            isinstance(item, dict)
+            and item.get("mode") == "media"
+            and item.get("missing_reason") == "duplicate_asset"
+            and not str(item.get("file", "") or "").strip()
+        ):
+            result.append(
+                {
+                    **item,
+                    "mode": "presenter",
+                    "retrieval_status": "presenter_fallback",
+                    "missing_reason": "duplicate_asset_removed",
+                    "reason": (
+                        str(item.get("reason", "") or "").strip()
+                        + " Duplicate visual removed; return to presenter."
+                    ).strip(),
+                }
+            )
+        else:
+            result.append(item)
+    return result
