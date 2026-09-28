@@ -121,7 +121,8 @@ def evaluate_planner(case: StressCase, output: PlannerOutput) -> dict[str, Any]:
 
 
 def canonical_signature(output: PlannerOutput) -> str:
+    """Identity stability ignores harmless query wording variation."""
     entity = output.resolved_entity
     canonical = normalize(entity.canonical_name) if entity else ""
-    queries = sorted(normalize(item.query) for item in output.queries)
-    return "|".join([output.decision, output.ambiguity_status, canonical, *queries])
+    entity_type = entity.entity_type if entity else ""
+    return "|".join([output.decision, output.ambiguity_status, entity_type, canonical])
