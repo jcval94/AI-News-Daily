@@ -7,11 +7,13 @@ from pathlib import Path
 from .contracts import contract_names, validate as validate_contract
 from .evaluate import evaluate_planner
 from .models import CriticOutput, PlannerOutput, RunConfig, StressCase
+from .mutations import mutate_fixture
 
 
 HERE = Path(__file__).resolve().parent
 LAB_ROOT = HERE.parent
 CASES = LAB_ROOT / "cases" / "core.json"
+FIXTURES = LAB_ROOT / "fixtures" / "core_good_plans.json"
 
 
 def main() -> None:
@@ -28,76 +30,48 @@ def main() -> None:
         raise AssertionError(f"unexpected contract set: {names}")
 
     case_payload = json.loads(CASES.read_text(encoding="utf-8"))
-    cases = []
+    cases: list[StressCase] = []
     for raw in case_payload["cases"]:
         validate_contract("case.schema.json", raw)
         cases.append(StressCase.model_validate(raw))
 
     by_id = {case.id: case for case in cases}
-    if "franchise_yugioh_time_wizard" not in by_id:
-        raise AssertionError("canonical Yu-Gi-Oh stress case is missing")
+    fixture_payload = json.loads(FIXTURES.read_text(encoding="utf-8"))
+    fixtures = {item["case_id"]: item["planner"] for item in fixture_payload["fixtures"]}
 
-    good_raw = {
-        "schema_version": 1,
-        "case_id": "franchise_yugioh_time_wizard",
-        "decision": "search",
-        "surface_mention": "El Mago del Tiempo",
-        "ambiguity_status": "unambiguous",
-        "interpretation": "La mención se refiere a Time Wizard, carta de Yu-Gi-Oh! asociada a Joey Wheeler.",
-        "resolved_entity": {
-            "canonical_name": "Time Wizard",
-            "entity_type": "franchise_object",
-            "identity_anchors": ["Yu-Gi-Oh!", "Time Wizard"],
-            "qualifiers": ["Joey Wheeler"],
-        },
-        "queries": [{
-            "query": "Yu-Gi-Oh Time Wizard trading card Joey Wheeler",
-            "language": "en",
-            "media_type": "image",
-            "purpose": "canonical_identity",
-            "anchors": ["Yu-Gi-Oh", "Time Wizard", "Joey Wheeler"],
-        }],
-        "exclusions": ["generic magician", "weather wizard"],
-        "risk_flags": ["commercial copyrighted trading card"],
-        "rights_boundary_acknowledged": True,
-    }
-    validate_contract("planner_output.schema.json", good_raw)
-    good = PlannerOutput.model_validate(good_raw)
-    good_eval = evaluate_planner(by_id["franchise_yugioh_time_wizard"], good)
-    if not good_eval["passed"]:
-        raise AssertionError(f"known-good Time Wizard fixture failed: {good_eval}")
+    if set(fixtures) != set(by_id):
+        raise AssertionError(
+            f"fixture/case mismatch: fixtures={sorted(fixtures)} cases={sorted(by_id)}"
+        )
 
-    bad = good.model_copy(deep=True)
-    bad.queries[0].query = "generic magician holding a clock"
-    bad_eval = evaluate_planner(by_id["franchise_yugioh_time_wizard"], bad)
-    if bad_eval["passed"]:
-        raise AssertionError(f"known-bad generic magician fixture was not rejected: {bad_eval}")
-    if not {"query_term_groups", "forbidden_terms"}.intersection(bad_eval["failures"]):
-        raise AssertionError(f"wrong failure taxonomy for generic magician fixture: {bad_eval}")
+    good_results = {}
+    mutation_results = {}
+    for case_id, case in by_id.items():
+        good_raw = fixtures[case_id]
+        validate_contract("planner_output.schema.json", good_raw)
+        good = PlannerOutput.model_validate(good_raw)
+        good_eval = evaluate_planner(case, good)
+        if not good_eval["passed"]:
+            raise AssertionError(f"known-good fixture failed for {case_id}: {good_eval}")
+        good_results[case_id] = good_eval
 
-    mercury = by_id["ambiguity_mercury_fail_closed"]
-    refusal_raw = {
-        "schema_version": 1,
-        "case_id": mercury.id,
-        "decision": "refuse",
-        "surface_mention": "Mercury",
-        "ambiguity_status": "ambiguous",
-        "interpretation": "El contexto no distingue planeta, elemento, marca, persona u otra entidad.",
-        "resolved_entity": None,
-        "queries": [],
-        "exclusions": [],
-        "risk_flags": ["genuine unresolved polysemy"],
-        "rights_boundary_acknowledged": True,
-    }
-    validate_contract("planner_output.schema.json", refusal_raw)
-    refusal = PlannerOutput.model_validate(refusal_raw)
-    refusal_eval = evaluate_planner(mercury, refusal)
-    if not refusal_eval["passed"]:
-        raise AssertionError(f"known-good ambiguity refusal failed: {refusal_eval}")
+        bad_raw, expected_failures = mutate_fixture(case_id, good_raw)
+        validate_contract("planner_output.schema.json", bad_raw)
+        bad = PlannerOutput.model_validate(bad_raw)
+        bad_eval = evaluate_planner(case, bad)
+        if bad_eval["passed"]:
+            raise AssertionError(f"known-bad mutation passed for {case_id}: {bad_eval}")
+        observed = set(bad_eval["failures"])
+        if not expected_failures.intersection(observed):
+            raise AssertionError(
+                f"mutation for {case_id} failed for the wrong reason: "
+                f"expected one of {sorted(expected_failures)}, got {sorted(observed)}"
+            )
+        mutation_results[case_id] = sorted(observed)
 
     critic_raw = {
         "schema_version": 1,
-        "case_id": good.case_id,
+        "case_id": "franchise_yugioh_time_wizard",
         "verdict": "pass",
         "checks": {
             "identity_preserved": True,
@@ -137,20 +111,23 @@ def main() -> None:
             "critic_sha256": "2" * 64,
         },
         "summary": {
-            "cases": 1,
+            "cases": len(cases),
             "repetitions": 1,
-            "attempts": 1,
-            "planner_passes": 1,
-            "critic_passes": 1,
-            "overall_passes": 1,
+            "attempts": len(cases),
+            "planner_passes": len(cases),
+            "critic_passes": len(cases),
+            "overall_passes": len(cases),
         },
-        "case_results": [{
-            "case_id": good.case_id,
-            "runs": [],
-            "pass_rate": 1.0,
-            "stable": True,
-            "errors": 0,
-        }],
+        "case_results": [
+            {
+                "case_id": case.id,
+                "runs": [],
+                "pass_rate": 1.0,
+                "stable": True,
+                "errors": 0,
+            }
+            for case in cases
+        ],
     }
     validate_contract("run_record.schema.json", run_record)
 
@@ -159,9 +136,9 @@ def main() -> None:
             {
                 "contracts": len(names),
                 "cases": len(cases),
-                "time_wizard_fixture": "pass",
-                "wrong_generic_fixture": "rejected",
-                "ambiguity_fixture": "pass",
+                "good_fixtures": len(good_results),
+                "adversarial_mutations_rejected": len(mutation_results),
+                "mutation_failures": mutation_results,
                 "critic_contract": "pass",
                 "run_record_contract": "pass",
             },
