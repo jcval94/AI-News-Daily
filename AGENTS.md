@@ -184,6 +184,10 @@ Scheduled windows:
 - Missing days are tolerated only while the configured coverage threshold still passes.
 - Sources but zero selected stories => `no_relevant_news`.
 
+Freshness and readiness must be based on sources that successfully resolve and parse, not merely on dated filenames. A present-but-malformed source is `unparseable`, not available coverage.
+
+`pipeline.production_preflight` is read-only operational forecasting. It may inspect coverage, source-quality telemetry, Narrative Memory availability, and credential presence, but it must not call models/providers, write production state, consume Narrative Memory usage, or promote artifacts. Its source-quality score is observational only and must never silently become a production hard gate.
+
 ## Multimedia contract
 
 Multimedia is post-approval. A rejected script never reaches canonical media production.
