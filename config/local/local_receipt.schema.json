@@ -13,13 +13,14 @@
     "finished_at",
     "exit_code",
     "command",
+    "provenance",
     "logs",
     "privacy",
     "result"
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "job_id": {
       "type": "string"
@@ -80,6 +81,34 @@
         "stdout_tail",
         "stderr_tail"
       ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_repo_path",
+        "source_git_commit",
+        "request_sha256",
+        "staged_at"
+      ],
+      "properties": {
+        "source_repo_path": {
+          "type": "string",
+          "pattern": "^local_handoff/requests/"
+        },
+        "source_git_commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "staged_at": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
     }
   }
 }
