@@ -273,16 +273,6 @@ def memory_document(report: dict[str, Any]) -> str:
     news_categories = news.get("categories", []) if isinstance(news.get("categories"), list) else []
     averages = metrics.get("averages", {}) if isinstance(metrics.get("averages"), dict) else {}
 
-    domain_filter_buttons = "".join(
-        f'<button type="button" class="filter-chip" data-story-filter="domain" data-value="{_esc(entry.get("name"))}">{_esc(entry.get("name"))}</button>'
-        for entry in domains[:8]
-        if isinstance(entry, dict)
-    )
-    mechanism_filter_buttons = "".join(
-        f'<button type="button" class="filter-chip" data-story-filter="mechanism" data-value="{_esc(entry.get("name"))}">{_esc(entry.get("name"))}</button>'
-        for entry in mechanisms[:8]
-        if isinstance(entry, dict)
-    )
     news_category_buttons = "".join(
         f'<button type="button" class="filter-chip news-chip" data-news-category="{_esc(entry.get("name"))}">{_esc(entry.get("name"))} <span>{_esc(entry.get("count"))}</span></button>'
         for entry in news_categories
@@ -460,7 +450,7 @@ button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margi
 .tabs{{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 8px;padding:5px;background:#0b131c;border:1px solid var(--line);border-radius:14px;width:max-content;max-width:100%}}.tab-button{{appearance:none;border:0;background:transparent;color:#8fa3b5;border-radius:10px;padding:10px 13px;font-size:11px;font-weight:850}}.tab-button.active{{background:#152433;color:var(--text);box-shadow:inset 0 0 0 1px #294057}}.tab-panel[hidden]{{display:none}}
 .section-intro{{margin:12px 0 14px;border-radius:15px;padding:15px 17px;border:1px solid var(--line)}}.section-intro.story{{background:linear-gradient(135deg,#181327,#0e1720);border-color:#493967}}.section-intro.news{{background:linear-gradient(135deg,#0d1c27,#0e1720);border-color:#28546b}}.section-intro h2{{margin:3px 0 4px;font-size:20px}}.section-intro p{{margin:0;color:#9eb0bf;font-size:12px;line-height:1.5}}
 .controls{{position:sticky;top:0;z-index:5;padding:10px 0 12px;background:linear-gradient(180deg,#080d13 78%,transparent)}}.search-row{{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:8px;margin-bottom:8px}}input[type="search"]{{width:100%;background:#0c151f;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none}}input[type="search"]:focus{{border-color:#4c9ec0;box-shadow:0 0 0 3px #17405a55}}.reset-button{{border:1px solid var(--line);background:#101923;color:#9fb0bf;border-radius:11px;padding:0 13px;font-size:10px;font-weight:800}}
-.control-line{{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}}.control-label{{color:#708699;font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:850;margin-right:2px}}.filter-chip,.sort-chip{{border:1px solid #2b3d4e;background:#0d1720;color:#99adbd;border-radius:999px;padding:6px 9px;font-size:10px;line-height:1}}.filter-chip span{{opacity:.65}}.filter-chip:hover,.sort-chip:hover{{border-color:#4b6d86;color:#dceaf4}}.filter-chip.active{{background:#173146;border-color:#4380a4;color:#d9f4ff}}.story-filters .filter-chip.active{{background:#2b2140;border-color:#725b9d;color:#e6d9ff}}.sort-chip.active{{background:#132b38;border-color:#3b7898;color:#cdefff}}.sort-chip .arrow{{display:inline-block;min-width:10px;margin-left:3px}}
+.control-line{{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}}.control-label{{color:#708699;font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:850;margin-right:2px}}.results-count{{margin-left:auto;color:#8297a8;font-size:10px;font-variant-numeric:tabular-nums}}.filter-chip,.sort-chip{{border:1px solid #2b3d4e;background:#0d1720;color:#99adbd;border-radius:999px;padding:6px 9px;font-size:10px;line-height:1}}.filter-chip span{{opacity:.65}}.filter-chip:hover,.sort-chip:hover{{border-color:#4b6d86;color:#dceaf4}}.filter-chip.active{{background:#173146;border-color:#4380a4;color:#d9f4ff}}.story-filters .filter-chip.active{{background:#2b2140;border-color:#725b9d;color:#e6d9ff}}.sort-chip.active{{background:#132b38;border-color:#3b7898;color:#cdefff}}.sort-chip .arrow{{display:inline-block;min-width:10px;margin-left:3px}}
 .grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}}.memory-card{{background:linear-gradient(180deg,#151522,#0d151e);border:1px solid #382f4d;border-radius:17px;padding:18px;min-width:0}}.memory-card[hidden]{{display:none}}.card-top{{display:flex;justify-content:space-between;align-items:center;gap:12px}}.card-freshness{{display:flex;align-items:center;gap:8px;color:#7f93a5;font-size:10px}}.availability{{font-size:9px;font-weight:900;letter-spacing:.1em;border-radius:999px;padding:5px 8px;border:1px solid}}.availability.available{{color:var(--ok);border-color:#28644f;background:#10271f}}.availability.cooldown{{color:var(--cool);border-color:#574985;background:#1c1830}}.quality{{font-size:11px;color:#d8c6ff;font-variant-numeric:tabular-nums}}.memory-card h3{{font-size:19px;margin:11px 0 6px}}.one-liner{{margin:0;color:#a9bac9;line-height:1.5;font-size:13px}}.chips{{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}}.chip{{font-size:9px;border:1px solid #304153;background:#111b25;color:#aabaca;border-radius:999px;padding:4px 7px}}.chip.mechanism{{border-color:#5a477b;color:#d0baff;background:#1b1728}}.score-grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:13px 0}}.score-grid span{{display:grid;gap:1px;background:#09121a;border:1px solid #1d2c3d;border-radius:10px;padding:9px;color:var(--muted);font-size:9px}}.score-grid b{{font-size:17px;color:var(--text)}}.card-meta{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;color:#8497a9;font-size:10px;margin-bottom:8px}}details{{border-top:1px solid #1d2c3b;padding-top:10px}}summary{{cursor:pointer;color:#9adcf4;font-size:11px;font-weight:750}}details p{{color:#9dafbd;line-height:1.55;font-size:11px}}.sources{{display:flex;gap:7px;flex-wrap:wrap}}.sources a{{color:var(--accent);font-size:10px}}
 .news-batch{{margin:18px 0 30px}}.news-batch[hidden]{{display:none}}.news-batch-head{{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:11px;padding-bottom:10px;border-bottom:1px solid #1d3342}}.news-batch-head h2{{font-size:23px;margin:3px 0 2px}}.news-batch-head code{{font-size:9px;color:#6f8ea2}}.news-batch-stats{{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#7892a5;font-size:9px}}.news-batch-stats span{{border:1px solid #233b4b;background:#0d1a23;border-radius:999px;padding:6px 9px}}.news-batch-stats b{{color:#bdeeff}}.news-grid{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}.news-card{{background:linear-gradient(180deg,#101d27,#0c151d);border:1px solid #244052;border-radius:15px;padding:15px;min-width:0}}.news-card[hidden]{{display:none}}.news-card-top{{display:flex;justify-content:space-between;gap:10px;align-items:center}}.news-category{{font-size:9px;color:#bdeeff;text-transform:uppercase;letter-spacing:.08em}}.news-source{{font-size:9px;color:#718b9c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}}.news-card h3{{font-size:15px;line-height:1.3;margin:9px 0 6px}}.news-card>p{{font-size:11px;line-height:1.5;color:#9dafbd;margin:0 0 10px}}.news-card details{{margin-top:7px}}.news-link{{display:inline-block;margin-top:10px;color:var(--news);font-size:10px;text-decoration:none}}.muted-link{{color:#617584}}
 .section-grid{{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(0,1.2fr);gap:14px;margin:28px 0}}.panel{{background:#0d151e;border:1px solid var(--line);border-radius:17px;padding:18px}}.panel h2{{font-size:19px;margin:4px 0 15px}}.mechanism-row{{display:grid;grid-template-columns:minmax(190px,1fr) minmax(100px,.65fr);gap:12px;align-items:center;margin:8px 0}}.mechanism-row>div:first-child{{display:flex;justify-content:space-between;gap:9px;font-size:10px}}.mechanism-row span{{color:var(--muted)}}.bar{{height:7px;background:#091018;border-radius:99px;overflow:hidden}}.bar i{{display:block;height:100%;background:linear-gradient(90deg,#805fb3,#c7a6ff);border-radius:99px}}table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:left;padding:9px 7px;border-bottom:1px solid #1c2a39;vertical-align:top}}th{{color:#8ca0b3;font-size:9px;text-transform:uppercase;letter-spacing:.08em}}.empty{{color:var(--muted);font-size:12px}}.warning,.ok-note{{margin-top:18px;border-radius:13px;padding:13px;font-size:11px;line-height:1.5}}.warning{{border:1px solid #6c5325;background:#261d0d;color:#e9c87e}}.ok-note{{border:1px solid #255744;background:#10251d;color:#84d9b8}}.footer-note{{margin-top:24px;color:#718597;font-size:10px}}
@@ -495,14 +485,16 @@ button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margi
 <div class="controls story-filters">
 <div class="search-row"><input id="memorySearch" type="search" placeholder="Buscar historia, dominio o mecanismo…" aria-label="Buscar historias interesantes"><button id="storyReset" type="button" class="reset-button">Limpiar</button></div>
 <div class="control-line"><span class="control-label">Ordenar</span>
-<button type="button" class="sort-chip active" data-story-sort="date" data-direction="desc">Fecha <span class="arrow">↓</span></button>
+<button type="button" class="sort-chip active" data-story-sort="date" data-direction="desc">Recientes <span class="arrow">↓</span></button>
 <button type="button" class="sort-chip" data-story-sort="surprise" data-direction="desc">Sorpresa <span class="arrow">↓</span></button>
 <button type="button" class="sort-chip" data-story-sort="quality" data-direction="desc">Calidad <span class="arrow">↓</span></button>
-<button type="button" class="sort-chip" data-story-sort="usage" data-direction="desc">Uso <span class="arrow">↓</span></button>
+<span id="storyResultCount" class="results-count" aria-live="polite"></span>
 </div>
-<div class="control-line"><span class="control-label">Estado</span><button type="button" class="filter-chip" data-story-filter="availability" data-value="available">Disponibles</button><button type="button" class="filter-chip" data-story-filter="availability" data-value="cooldown">Cooldown</button><span class="control-label">Origen</span><button type="button" class="filter-chip" data-story-filter="source" data-value="scheduled_research">Investigadas</button><button type="button" class="filter-chip" data-story-filter="source" data-value="editorial_seed">Seeds editoriales</button></div>
-<div class="control-line"><span class="control-label">Dominio</span>{domain_filter_buttons}</div>
-<div class="control-line"><span class="control-label">Mecanismo</span>{mechanism_filter_buttons}</div>
+<div class="control-line"><span class="control-label">Mostrar</span>
+<button type="button" class="filter-chip active" data-story-availability="" aria-pressed="true">Todas</button>
+<button type="button" class="filter-chip" data-story-availability="available" aria-pressed="false">Disponibles</button>
+<button type="button" class="filter-chip" data-story-availability="cooldown" aria-pressed="false">Cooldown</button>
+</div>
 </div>
 <section id="memoryGrid" class="grid">{"".join(cards)}</section>
 <div id="emptyMemory" class="empty" hidden>No hay historias que coincidan con esos filtros.</div>
@@ -531,11 +523,15 @@ const storyCards=[...document.querySelectorAll('[data-memory-card]')];
 const storyGrid=document.getElementById('memoryGrid');
 const storySearch=document.getElementById('memorySearch');
 const storyEmpty=document.getElementById('emptyMemory');
-const storyState={{availability:'',source:'',domain:'',mechanism:'',sort:'date',direction:'desc'}};
-function setSingleStoryFilter(type,value,button){{
-  const next=storyState[type]===value?'':value;
-  storyState[type]=next;
-  document.querySelectorAll('[data-story-filter="'+type+'"]').forEach(item=>item.classList.toggle('active',item===button&&Boolean(next)));
+const storyResultCount=document.getElementById('storyResultCount');
+const storyState={{availability:'',sort:'date',direction:'desc'}};
+function setStoryAvailability(value,button){{
+  storyState.availability=value||'';
+  document.querySelectorAll('[data-story-availability]').forEach(item=>{{
+    const active=item===button;
+    item.classList.toggle('active',active);
+    item.setAttribute('aria-pressed',active?'true':'false');
+  }});
   applyStoryView();
 }}
 function compareStory(a,b){{
@@ -543,7 +539,6 @@ function compareStory(a,b){{
   let left,right;
   if(storyState.sort==='surprise'){{left=Number(a.dataset.surprise)||0;right=Number(b.dataset.surprise)||0;}}
   else if(storyState.sort==='quality'){{left=Number(a.dataset.quality)||0;right=Number(b.dataset.quality)||0;}}
-  else if(storyState.sort==='usage'){{left=Number(a.dataset.timesUsed)||0;right=Number(b.dataset.timesUsed)||0;}}
   else{{left=a.dataset.createdAt||'';right=b.dataset.createdAt||'';}}
   if(left<right)return -1*dir;if(left>right)return 1*dir;
   return (Number(b.dataset.surprise)||0)-(Number(a.dataset.surprise)||0);
@@ -552,16 +547,14 @@ function applyStoryView(){{
   const q=norm(storySearch?.value).trim();let visible=0;
   storyCards.forEach(card=>{{
     const hit=(!q||norm(card.dataset.search).includes(q))
-      &&(!storyState.availability||card.dataset.availability===storyState.availability)
-      &&(!storyState.source||norm(card.dataset.sourceKind)===norm(storyState.source))
-      &&(!storyState.domain||norm(card.dataset.domains).includes(norm(storyState.domain)))
-      &&(!storyState.mechanism||norm(card.dataset.mechanisms).includes(norm(storyState.mechanism)));
+      &&(!storyState.availability||card.dataset.availability===storyState.availability);
     card.hidden=!hit;if(hit)visible+=1;
   }});
   [...storyCards].sort(compareStory).forEach(card=>storyGrid.appendChild(card));
   storyEmpty.hidden=visible!==0;
+  if(storyResultCount)storyResultCount.textContent='Mostrando '+visible+' de '+storyCards.length+' historias';
 }}
-document.querySelectorAll('[data-story-filter]').forEach(button=>button.addEventListener('click',()=>setSingleStoryFilter(button.dataset.storyFilter,button.dataset.value,button)));
+document.querySelectorAll('[data-story-availability]').forEach(button=>button.addEventListener('click',()=>setStoryAvailability(button.dataset.storyAvailability||'',button)));
 document.querySelectorAll('[data-story-sort]').forEach(button=>button.addEventListener('click',()=>{{
   const key=button.dataset.storySort;
   if(storyState.sort===key)storyState.direction=storyState.direction==='desc'?'asc':'desc';
@@ -574,9 +567,13 @@ document.querySelectorAll('[data-story-sort]').forEach(button=>button.addEventLi
 }}));
 storySearch?.addEventListener('input',applyStoryView);
 document.getElementById('storyReset')?.addEventListener('click',()=>{{
-  storyState.availability='';storyState.source='';storyState.domain='';storyState.mechanism='';storyState.sort='date';storyState.direction='desc';
+  storyState.availability='';storyState.sort='date';storyState.direction='desc';
   if(storySearch)storySearch.value='';
-  document.querySelectorAll('[data-story-filter]').forEach(item=>item.classList.remove('active'));
+  document.querySelectorAll('[data-story-availability]').forEach(item=>{{
+    const active=(item.dataset.storyAvailability||'')==='';
+    item.classList.toggle('active',active);
+    item.setAttribute('aria-pressed',active?'true':'false');
+  }});
   document.querySelectorAll('[data-story-sort]').forEach(item=>{{const active=item.dataset.storySort==='date';item.classList.toggle('active',active);item.querySelector('.arrow').textContent='↓';}});
   applyStoryView();
 }}));
