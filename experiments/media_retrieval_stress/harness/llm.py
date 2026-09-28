@@ -55,7 +55,12 @@ def call_structured(
         }
         cleaned: dict[str, Any] = {}
         for key, value in node.items():
-            if key in allowed:
+            if key == "properties" and isinstance(value, dict):
+                cleaned[key] = {
+                    field_name: api_schema(field_schema)
+                    for field_name, field_schema in value.items()
+                }
+            elif key in allowed:
                 cleaned[key] = api_schema(value)
         return cleaned
 
