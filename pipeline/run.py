@@ -55,8 +55,10 @@ from pipeline.credits import write_credits
 from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset
 from pipeline.narrative_memory import (
+    is_narrative_memory_contract_error,
     load_memory,
     load_usage_history,
+    narrative_memory_repair_instruction,
     rank_candidates,
     resolve_selected_memory,
 )
@@ -801,15 +803,18 @@ async def build(
             candidate_plan: dict[str, Any] | None = None
             contract_error = ""
             for contract_attempt in range(1, 3):
-                repair_instruction = (
-                    ""
-                    if not contract_error
-                    else (
+                repair_instruction = ""
+                if contract_error:
+                    repair_instruction = (
                         " Your previous plan violated the deterministic plan contract: "
                         f"{contract_error}. Rebuild the plan and copy only explicit selected_news_index "
                         f"values from selected_news.items (valid range 1..{selected_count})."
                     )
-                )
+                    if is_narrative_memory_contract_error(contract_error):
+                        repair_instruction += narrative_memory_repair_instruction(
+                            contract_error,
+                            memory_candidates,
+                        )
                 director_state = await run_agent(
                     editorial_director_agent,
                     {
@@ -844,6 +849,10 @@ async def build(
                     break
                 except ValueError as exc:
                     contract_error = str(exc)
+                    if contract_attempt == 1 and is_narrative_memory_contract_error(contract_error):
+                        validation_warnings.append(
+                            "Narrative Memory ID contract retry triggered: " + contract_error
+                        )
                     if contract_attempt >= 2:
                         raise
             if candidate_plan is None:
