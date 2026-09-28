@@ -153,3 +153,30 @@ provisional thesis
     ↓
 current news as evidence
 ```
+
+## Scheduled-task staging bridge
+
+The scheduled research task **must not write repository contents directly**. Its only permitted repository side effect is creating one owner-authored GitHub issue whose title is:
+
+`NARRATIVE_MEMORY_STAGING — YYYY-MM-DD HH:MM:SS America/Mexico_City`
+
+The issue body starts with:
+
+`# Narrative Memory Staging — YYYY-MM-DD HH:MM:SS America/Mexico_City`
+
+and then contains 1–4 approved Narrative Memory objects as raw JSONL, one object per line, with no Markdown fences.
+
+`.github/workflows/ingest-narrative-memory-staging.yml` is the only component allowed to materialize those records into `editorial/narrative_memory.jsonl`. It revalidates schema and deterministic gates, checks same-day metadata, rejects conflicting IDs and likely duplicates, re-reads the latest `main` before every append attempt, stages exactly one canonical file, retries push races, and closes the issue only after a successful publication or an idempotent already-present result.
+
+```text
+ChatGPT scheduled research
+    ↓ research / verification / semantic deduplication
+GitHub staging issue
+    ↓ deterministic schema + gate + race validation
+GitHub Actions
+    ↓ append-only mutation
+editorial/narrative_memory.jsonl
+```
+
+The production loader remains authoritative and revalidates every stored record.
+
