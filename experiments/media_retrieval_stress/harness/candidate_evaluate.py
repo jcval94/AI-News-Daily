@@ -99,3 +99,12 @@ def evaluate_candidate_selection(
         "checks": checks,
         "failures": failures,
     }
+
+
+def candidate_selection_signature(output: CandidateSelectionOutput) -> str:
+    selected = ",".join(sorted(output.selected_provider_asset_ids))
+    verdicts = ",".join(
+        f"{item.provider_asset_id}:{item.verdict}"
+        for item in sorted(output.assessments, key=lambda value: value.provider_asset_id)
+    )
+    return f"unresolved={int(output.unresolved)}|selected={selected}|{verdicts}"
