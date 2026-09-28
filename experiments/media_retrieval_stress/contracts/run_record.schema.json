@@ -10,6 +10,8 @@
     "started_at",
     "completed_at",
     "config",
+    "source_cases_sha256",
+    "prompt_fingerprints",
     "source_cases",
     "summary",
     "case_results"
@@ -107,6 +109,28 @@
             "type": "integer",
             "minimum": 0
           }
+        }
+      }
+    },
+    "source_cases_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "prompt_fingerprints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planner_sha256",
+        "critic_sha256"
+      ],
+      "properties": {
+        "planner_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "critic_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
       }
     }
