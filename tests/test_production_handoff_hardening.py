@@ -23,6 +23,15 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn('git add "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"', workflow)
 
 
+    def test_dense_media_gate_is_shared_and_dedup_aware(self) -> None:
+        for path in (
+            ".github/workflows/build-video-kit.yml",
+            ".github/workflows/backfill-video-kit.yml",
+        ):
+            workflow = Path(path).read_text(encoding="utf-8")
+            self.assertIn("pipeline.media_density_gate", workflow)
+            self.assertNotIn("expected >=45 assets", workflow)
+
     def test_otio_is_built_before_resolve_bridge_in_main_and_backfill(self) -> None:
         for path in (
             ".github/workflows/build-video-kit.yml",
