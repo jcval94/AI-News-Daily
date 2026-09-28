@@ -101,6 +101,16 @@ def _parse_iso_datetime(value: str) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+def _current_workflow_context() -> dict[str, str]:
+    return {
+        "workflow": os.getenv("GITHUB_WORKFLOW", "").strip(),
+        "run_id": os.getenv("GITHUB_RUN_ID", "").strip(),
+        "run_number": os.getenv("GITHUB_RUN_NUMBER", "").strip(),
+        "sha": os.getenv("GITHUB_SHA", "").strip(),
+        "event_name": os.getenv("GITHUB_EVENT_NAME", "").strip(),
+    }
+
+
 def _severity(checks: Iterable[HealthCheck]) -> str:
     statuses = {check.status for check in checks}
     if "critical" in statuses:
@@ -626,7 +636,11 @@ def collect_github_snapshot(repository: str) -> dict[str, Any]:
     }
 
 
-def _workflow_checks(github: dict[str, Any]) -> list[HealthCheck]:
+def _workflow_checks(
+    github: dict[str, Any],
+    *,
+    current_context: dict[str, str] | None = None,
+) -> list[HealthCheck]:
     runs = github.get("workflow_runs", [])
     if not isinstance(runs, list) or not runs:
         return [
@@ -646,7 +660,35 @@ def _workflow_checks(github: dict[str, Any]) -> list[HealthCheck]:
         if name and name not in latest:
             latest[name] = raw
     checks: list[HealthCheck] = []
+    current = current_context or {}
+    current_name = str(current.get("workflow") or "")
+    current_run_id = str(current.get("run_id") or "")
+    current_run_number = str(current.get("run_number") or "")
+    current_sha = str(current.get("sha") or "")
+
     for workflow in IMPORTANT_WORKFLOWS:
+        if workflow == current_name and current_run_id:
+            identity = [f"run ID {current_run_id}"]
+            if current_run_number:
+                identity.append(f"run #{current_run_number}")
+            if current_sha:
+                identity.append(f"commit {current_sha[:12]}")
+            checks.append(
+                HealthCheck(
+                    f"workflow-{workflow.casefold().replace(' ', '-')}",
+                    "Actions",
+                    "info",
+                    workflow,
+                    (
+                        "Este snapshot se está generando dentro de esta ejecución; "
+                        "el resultado del run anterior no se reutiliza como estado actual."
+                    ),
+                    " · ".join(identity),
+                    f"run {current_run_number or current_run_id}",
+                )
+            )
+            continue
+
         run = latest.get(workflow)
         if run is None:
             checks.append(
@@ -780,9 +822,15 @@ def audit_repository(
     pages_root: Path | None = None,
     as_of: date | None = None,
     github_snapshot: dict[str, Any] | None = None,
+    current_workflow_context: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     as_of = as_of or datetime.now(ZoneInfo("America/Mexico_City")).date()
     github = github_snapshot or {}
+    current_context = (
+        _current_workflow_context()
+        if current_workflow_context is None
+        else dict(current_workflow_context)
+    )
     checks: list[HealthCheck] = [
         _required_files(repo_root),
         _repository_size(repo_root, github),
@@ -800,7 +848,7 @@ def audit_repository(
     checks.append(production_check)
     pages_check, pages_metrics = _pages_health(pages_root)
     checks.append(pages_check)
-    checks.extend(_workflow_checks(github))
+    checks.extend(_workflow_checks(github, current_context=current_context))
     pr_check, pr_metrics = _pull_request_health(github, as_of)
     checks.append(pr_check)
     issue_check, issue_metrics = _issue_health(github)
@@ -830,6 +878,7 @@ def audit_repository(
         "status": _severity(checks),
         "status_counts": status_counts,
         "metrics": metrics,
+        "snapshot_context": current_context,
         "checks": [asdict(check) for check in checks],
     }
 
@@ -850,6 +899,23 @@ def health_document(report: dict[str, Any]) -> str:
     label, status_class = _status_copy(str(report.get("status") or "unknown"))
     metrics = report.get("metrics", {}) if isinstance(report.get("metrics"), dict) else {}
     checks = report.get("checks", []) if isinstance(report.get("checks"), list) else []
+    snapshot = (
+        report.get("snapshot_context", {})
+        if isinstance(report.get("snapshot_context"), dict)
+        else {}
+    )
+    snapshot_workflow = str(snapshot.get("workflow") or "")
+    snapshot_run_id = str(snapshot.get("run_id") or "")
+    snapshot_run_number = str(snapshot.get("run_number") or "")
+    snapshot_sha = str(snapshot.get("sha") or "")
+    snapshot_parts = []
+    if snapshot_workflow:
+        snapshot_parts.append(snapshot_workflow)
+    if snapshot_run_number or snapshot_run_id:
+        snapshot_parts.append(f"run {snapshot_run_number or snapshot_run_id}")
+    if snapshot_sha:
+        snapshot_parts.append(f"commit {snapshot_sha[:12]}")
+    snapshot_text = " · ".join(snapshot_parts)
     cards = []
     for check in checks:
         if not isinstance(check, dict):
@@ -905,7 +971,7 @@ body{{min-height:100vh}}.shell{{width:min(1180px,calc(100% - 32px));margin:0 aut
 @media(max-width:980px){{.kpis{{grid-template-columns:repeat(3,minmax(0,1fr))}}.checks{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}@media(max-width:650px){{.shell{{width:min(100% - 20px,1180px)}}.topbar{{align-items:flex-start;flex-direction:column}}.kpis,.checks{{grid-template-columns:1fr}}}}
 </style>
 </head>
-<body data-health-page="repo-health">
+<body data-health-page="repo-health" data-snapshot-run-id="{_esc(snapshot_run_id)}" data-snapshot-sha="{_esc(snapshot_sha[:12])}">
 <main class="shell">
 <div class="topbar"><div><span class="eyebrow">AI News Daily · Observabilidad</span></div><a class="back" href="../" target="_top">← Episodios</a></div>
 <section class="hero">
@@ -924,7 +990,7 @@ body{{min-height:100vh}}.shell{{width:min(1180px,calc(100% - 32px));margin:0 aut
 </section>
 <div class="controls"><input id="healthSearch" type="search" placeholder="Filtrar checks…" aria-label="Filtrar checks"></div>
 <section class="checks">{''.join(cards)}</section>
-<p class="foot">Snapshot al {_esc(report.get("as_of_date"))} · generado {_esc(report.get("generated_at_utc"))} · JSON: <a href="repo-health.json">repo-health.json</a></p>
+<p class="foot">Snapshot al {_esc(report.get("as_of_date"))} · generado {_esc(report.get("generated_at_utc"))}{f" · {_esc(snapshot_text)}" if snapshot_text else ""} · JSON: <a href="repo-health.json">repo-health.json</a></p>
 </main>
 <script>
 const input=document.getElementById('healthSearch');

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,17 @@ STATUS_LABELS = {
     "SCRIPT_NOT_APPROVED": "No aprobado",
     "NOT_APPROVED": "No aprobado",
 }
+
+
+def _site_version() -> str:
+    sha = os.getenv("GITHUB_SHA", "").strip()
+    run_id = os.getenv("GITHUB_RUN_ID", "").strip()
+    parts: list[str] = []
+    if sha:
+        parts.append(sha[:12])
+    if run_id:
+        parts.append(f"run-{run_id}")
+    return "-".join(parts) or "local"
 
 
 def _read_json(path: Path, default: Any) -> Any:
@@ -177,13 +189,19 @@ def _select_options(episodes: list[dict[str, Any]], current_id: str) -> str:
     return "".join(options)
 
 
-def catalog_document(episodes: list[dict[str, Any]], *, current_id: str) -> str:
+def catalog_document(
+    episodes: list[dict[str, Any]],
+    *,
+    current_id: str,
+    site_version: str = "",
+) -> str:
     if not episodes:
         raise ValueError("At least one episode is required to build the catalog")
     valid_ids = {str(item["id"]) for item in episodes}
     if current_id not in valid_ids:
         current_id = str(episodes[0]["id"])
     current = next(item for item in episodes if str(item["id"]) == current_id)
+    site_version = (site_version or _site_version()).strip() or "local"
     payload = json.dumps(episodes, ensure_ascii=False, separators=(",", ":"))
     items = _episode_items(episodes, current_id)
     options = _select_options(episodes, current_id)
@@ -231,6 +249,7 @@ body{{overflow:hidden}}.catalog-shell{{display:grid;grid-template-columns:var(--
 <script>
 const EPISODES={payload};
 const DEFAULT_EPISODE={json.dumps(current_id)};
+const SITE_VERSION={json.dumps(site_version)};
 const byId=new Map(EPISODES.map(item=>[item.id,item]));
 const frame=document.getElementById('episodeFrame');
 const select=document.getElementById('episodeSelect');
@@ -240,6 +259,12 @@ const emptyFilter=document.getElementById('emptyFilter');
 const healthLink=document.getElementById('repoHealthLink');
 const memoryLink=document.getElementById('memoryLink');
 const metricsLink=document.getElementById('metricsLink');
+
+function cacheBustedPath(path){{
+  const url=new URL(path,window.location.href);
+  url.searchParams.set('v',`${SITE_VERSION}-${Date.now().toString(36)}`);
+  return url.href;
+}}
 
 function selectedFromUrl(){{
   const params=new URLSearchParams(window.location.search);
@@ -273,8 +298,8 @@ function setEpisode(id,{{push=true}}={{}}){{
   }}
 }}
 function setHealth({{push=true}}={{}}){{
-  const expected=new URL('health/index.html',window.location.href).href;
-  if(frame.src!==expected) frame.src='health/index.html';
+  const expected=cacheBustedPath('health/index.html');
+  if(frame.src!==expected) frame.src=expected;
   frame.title='Salud del repositorio';
   if(select) select.value='__health__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
@@ -290,8 +315,8 @@ function setHealth({{push=true}}={{}}){{
   }}
 }}
 function setMemory({{push=true}}={{}}){{
-  const expected=new URL('memory/index.html',window.location.href).href;
-  if(frame.src!==expected) frame.src='memory/index.html';
+  const expected=cacheBustedPath('memory/index.html');
+  if(frame.src!==expected) frame.src=expected;
   frame.title='Narrative Memory';
   if(select) select.value='__memory__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
@@ -307,8 +332,8 @@ function setMemory({{push=true}}={{}}){{
   }}
 }}
 function setMetrics({{push=true}}={{}}){{
-  const expected=new URL('metrics/index.html',window.location.href).href;
-  if(frame.src!==expected) frame.src='metrics/index.html';
+  const expected=cacheBustedPath('metrics/index.html');
+  if(frame.src!==expected) frame.src=expected;
   frame.title='Histórico de métricas';
   if(select) select.value='__metrics__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
@@ -352,18 +377,37 @@ setSelection(selectedFromUrl(),{{push:false}});
 """
 
 
-def build_catalog(*, episodes_root: Path, output_dir: Path, current_id: str | None = None) -> Path:
+def build_catalog(
+    *,
+    episodes_root: Path,
+    output_dir: Path,
+    current_id: str | None = None,
+    site_version: str | None = None,
+) -> Path:
     episodes = discover_episodes(episodes_root)
     if not episodes:
         raise RuntimeError(f"No episode sites found under {episodes_root}")
     selected = current_id if current_id and any(item["id"] == current_id for item in episodes) else str(episodes[0]["id"])
+    version = (site_version or _site_version()).strip() or "local"
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "episodes.json").write_text(
-        json.dumps({"episodes": episodes, "default_episode": selected}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                "episodes": episodes,
+                "default_episode": selected,
+                "site_version": version,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     index_path = output_dir / "index.html"
-    index_path.write_text(catalog_document(episodes, current_id=selected), encoding="utf-8")
+    index_path.write_text(
+        catalog_document(episodes, current_id=selected, site_version=version),
+        encoding="utf-8",
+    )
     return index_path
 
 

@@ -259,6 +259,48 @@ jobs:
             self.assertIn("backfill posterior", build["summary"])
             self.assertEqual(report["status_counts"]["critical"], 0)
 
+    def test_current_review_hub_does_not_inherit_previous_completed_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._bootstrap(root)
+            for value in ("2026-09-22", "2026-09-23", "2026-09-24"):
+                self._news(root, f"{value}-08-00-00.txt", value)
+            self._approved_episode(root, "2026-09-22")
+            pages = self._pages(root, "2026-09-22")
+
+            github = self._github()
+            for run in github["workflow_runs"]:
+                if run["name"] == "Editorial Review Hub":
+                    run["conclusion"] = "failure"
+                    run["updated_at"] = "2026-09-24T11:00:00Z"
+
+            report = audit_repository(
+                repo_root=root,
+                pages_root=pages,
+                as_of=date(2026, 9, 24),
+                github_snapshot=github,
+                current_workflow_context={
+                    "workflow": "Editorial Review Hub",
+                    "run_id": "220",
+                    "run_number": "220",
+                    "sha": "abcdef1234567890abcdef1234567890abcdef12",
+                    "event_name": "push",
+                },
+            )
+            checks = {item["id"]: item for item in report["checks"]}
+            hub = checks["workflow-editorial-review-hub"]
+
+            self.assertEqual(hub["status"], "info")
+            self.assertIn("run anterior", hub["summary"])
+            self.assertEqual(hub["value"], "run 220")
+            self.assertEqual(report["status_counts"]["critical"], 0)
+            self.assertEqual(report["snapshot_context"]["run_id"], "220")
+
+            document = health_document(report)
+            self.assertIn('data-snapshot-run-id="220"', document)
+            self.assertIn('data-snapshot-sha="abcdef123456"', document)
+            self.assertIn("commit abcdef123456", document)
+
     def test_health_page_and_json_are_written(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

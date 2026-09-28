@@ -62,7 +62,12 @@ class ReviewHubCatalogTests(unittest.TestCase):
             self._episode(root, "2026-08-18", title="Primer episodio", run_id="111", cost=0.08)
             self._episode(root, "2026-08-21", title="Segundo episodio", run_id="222", cost=0.12)
 
-            index = build_catalog(episodes_root=root, output_dir=output, current_id="2026-08-18")
+            index = build_catalog(
+                episodes_root=root,
+                output_dir=output,
+                current_id="2026-08-18",
+                site_version="abc123-run-42",
+            )
             document = index.read_text(encoding="utf-8")
             manifest = json.loads((output / "episodes.json").read_text(encoding="utf-8"))
 
@@ -86,11 +91,17 @@ class ReviewHubCatalogTests(unittest.TestCase):
             self.assertIn("health/index.html", document)
             self.assertIn("memory/index.html", document)
             self.assertIn("metrics/index.html", document)
+            self.assertIn('const SITE_VERSION="abc123-run-42";', document)
+            self.assertIn("cacheBustedPath('health/index.html')", document)
+            self.assertIn("cacheBustedPath('memory/index.html')", document)
+            self.assertIn("cacheBustedPath('metrics/index.html')", document)
+            self.assertIn("Date.now().toString(36)", document)
             self.assertIn("history.pushState", document)
             self.assertIn('src="episodes/2026-08-18/index.html"', document)
             self.assertIn('data-episode-id="2026-08-21"', document)
             self.assertIn('data-episode-id="2026-08-18"', document)
             self.assertEqual(manifest["default_episode"], "2026-08-18")
+            self.assertEqual(manifest["site_version"], "abc123-run-42")
             self.assertEqual(len(manifest["episodes"]), 2)
 
     def test_unknown_current_episode_falls_back_to_newest(self) -> None:
