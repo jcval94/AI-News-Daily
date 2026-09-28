@@ -1,0 +1,4675 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-25",
+  "status": "pre_recording",
+  "timing": {
+    "basis": "estimated_script_words",
+    "words_per_second": 2.5,
+    "duration_seconds": 1004.4,
+    "requires_recording_retime": true,
+    "warning": "Timeline positions are editorial estimates until real A-roll is ingested and aligned. Do not treat these timestamps as frame-accurate."
+  },
+  "sources": {
+    "script": "scripts/2026-09-25/script.txt",
+    "script_sections": "scripts/2026-09-25/script_sections.json",
+    "media_plan": "multimedia/2026-09-25/plan.json",
+    "media_manifest": "multimedia/2026-09-25/manifest.json",
+    "script_sha256": "962b917bcf9f73ef6f9d2762335d12d6268fe4bf7e17aac49d7069247d316261"
+  },
+  "editing_defaults": {
+    "base_visual": "presenter",
+    "director_signal_authority": "suggestion",
+    "tracks": {
+      "presenter": "V1",
+      "b_roll": "V2",
+      "graphics": "V3",
+      "titles": "V4"
+    },
+    "principle": "Presenter is visual continuity. Cut away only when media adds evidence, explanation, context, emotional grounding, analogy, contrast, or intentional rhythm."
+  },
+  "editing_style": {
+    "applied": true,
+    "schema_version": 1,
+    "style_id": "jc_reflective_essay_v1",
+    "name": "JC Reflective Video Essay",
+    "authority": "deterministic_policy",
+    "source_path": "config/editing_style.yaml",
+    "sha256": "c132963ee7749ca3ab252116b349e5b90275ea9280392ad662650cdfd6e58f5f"
+  },
+  "style_warnings": [
+    {
+      "code": "continuous_media_too_long",
+      "severity": "warning",
+      "message": "Continuous media run 21.0s exceeds 18.0s style limit.",
+      "segment_ids": [
+        "seg_002",
+        "seg_003",
+        "seg_004",
+        "seg_005",
+        "seg_006",
+        "seg_007"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_022 (context) is 2.4s, below preferred style floor 3.0s.",
+      "segment_ids": [
+        "seg_021"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_041 (explanation) is 2.8s, below preferred style floor 4.0s.",
+      "segment_ids": [
+        "seg_036"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_076 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_065"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_077 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_067"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_080 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_069"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_082 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_071"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_085 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_073"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_087 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_075"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_090 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_077"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_092 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_079"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_095 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_081"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_097 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_083"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_100 (emotional_grounding) is 4.4s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_085"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_101 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_086"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_102 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_088"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_103 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_090"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_104 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_092"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_105 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_094"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_106 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_096"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_107 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_098"
+      ]
+    },
+    {
+      "code": "media_segment_short",
+      "severity": "info",
+      "message": "slot_108 (emotional_grounding) is 4.5s, below preferred style floor 5.0s.",
+      "segment_ids": [
+        "seg_100"
+      ]
+    }
+  ],
+  "readiness": {
+    "pre_recording_contract_valid": true,
+    "ready_for_recording": true,
+    "asset_resolution_complete": false,
+    "ready_for_automated_timeline_import": false,
+    "blockers": [
+      "missing_manifest_asset",
+      "recording_retime_required"
+    ]
+  },
+  "summary": {
+    "segment_count": 101,
+    "media_segment_count": 54,
+    "presenter_segment_count": 47,
+    "media_cue_count": 54,
+    "manifest_asset_record_count": 53,
+    "resolved_media_cue_count": 53,
+    "blocked_media_cue_count": 1
+  },
+  "validation_warnings": [
+    "Media cue slot 108 has no downloaded asset"
+  ],
+  "timeline": [
+    {
+      "segment_id": "seg_001",
+      "mode": "presenter",
+      "start_seconds": 0.0,
+      "end_seconds": 3.5,
+      "duration_seconds": 3.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Hay una escena que cada vez se parece menos a la ciencia ficción y más a una mañana normal de oficina. Llegas, abres el panel de trabajo y …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "none",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_002",
+      "mode": "media",
+      "start_seconds": 3.5,
+      "end_seconds": 7.0,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_002",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Hay una escena que cada vez se parece menos a la ciencia ficción y más a una mañana normal de oficina. Llegas, abres el panel de trabajo y …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S002__0004-0007s__cinematic-close-up-hands-highlighting-research-n.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-person-using-pink-highlighter-7710602/",
+        "creator": "https://kaboompics.com/",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "cinematic close-up hands highlighting research notes documentary b-roll",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_003",
+      "mode": "media",
+      "start_seconds": 7.0,
+      "end_seconds": 10.5,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_003",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… menos a la ciencia ficción y más a una mañana normal de oficina. Llegas, abres el panel de trabajo y encuentras una marca verde: **completado**. Durante la noche, …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S003__0007-0010s__moving-archival-documents-handwritten-notes-desk.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-person-writing-in-a-paper-while-working-8124023/",
+        "creator": "RDNE Stock project",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "moving archival documents handwritten notes desk documentary footage",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_004",
+      "mode": "media",
+      "start_seconds": 10.5,
+      "end_seconds": 14.0,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_004",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… una mañana normal de oficina. Llegas, abres el panel de trabajo y encuentras una marca verde: **completado**. Durante la noche, un sistema vigiló cambios, detectó un problema, buscó …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S004__0010-0014s__investigative-evidence-wall-notes-connecting-lin.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/men-discussing-pictures-on-a-board-8369881/",
+        "creator": "cottonbro studio",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "investigative evidence wall notes connecting lines cinematic b-roll",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_005",
+      "mode": "media",
+      "start_seconds": 14.0,
+      "end_seconds": 17.5,
+      "duration_seconds": 3.5,
+      "cue_id": "slot_005",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… de trabajo y encuentras una marca verde: **completado**. Durante la noche, un sistema vigiló cambios, detectó un problema, buscó información, encontró un obstáculo, probó otra ruta y ejecutó …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S005__0014-0018s__abstract-flowing-data-traces-light-paths-cinemat.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/dynamic-abstract-yellow-light-waves-animation-39537789/",
+        "creator": "Nicola Narracci",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "abstract flowing data traces light paths cinematic technology footage",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_006",
+      "mode": "media",
+      "start_seconds": 17.5,
+      "end_seconds": 20.0,
+      "duration_seconds": 2.5,
+      "cue_id": "slot_006",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Durante la noche, un sistema vigiló cambios, detectó un problema, buscó información, encontró un obstáculo, probó otra ruta y ejecutó una acción. Quizá ajustó un precio. Quizá bloqueó …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic dense cold open: motion-first visual",
+        "visual_role": "rhythm",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "fast",
+        "return_to_presenter": false,
+        "note": "Cold open: use a short, concrete moving shot. Prefer specificity over generic AI imagery; let adjacent opening cues form one visual sequence before returning to camera."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S006__0018-0020s__person-carefully-reviewing-papers-computer-scree.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/man-working-on-office-using-computer-7581160/",
+        "creator": "RDNE Stock project",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person carefully reviewing papers computer screen documentary footage",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_007",
+      "mode": "media",
+      "start_seconds": 20.0,
+      "end_seconds": 24.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_007",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… un problema, buscó información, encontró un obstáculo, probó otra ruta y ejecutó una acción. Quizá ajustó un precio. Quizá bloqueó una transferencia de datos. Quizá modificó algo en …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Use only if the visual materially clarifies the spoken idea; otherwise stay on the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S007__0020-0024s__researcher-notes.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-scientist-taking-notes-8279470/",
+        "creator": "RDNE Stock project",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher notes",
+        "on_screen_text": "",
+        "relevance_score": 0.865,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_008",
+      "mode": "presenter",
+      "start_seconds": 24.5,
+      "end_seconds": 30.0,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… acción. Quizá ajustó un precio. Quizá bloqueó una transferencia de datos. Quizá modificó algo en una cuenta. Todo parece ordenado. Incluso hay un registro. Pero entonces descubres que …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_009",
+      "mode": "media",
+      "start_seconds": 30.0,
+      "end_seconds": 34.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_008",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… modificó algo en una cuenta. Todo parece ordenado. Incluso hay un registro. Pero entonces descubres que algo salió mal. Y la pregunta no es solamente técnica. No es …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S008__0030-0034s__researcher-notes-and-computer-close-up-documenta.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/close-up-of-a-scientist-typing-on-a-keyboard-8539654/",
+        "creator": "https://kaboompics.com/",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher notes and computer, close-up documentary b-roll",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_010",
+      "mode": "presenter",
+      "start_seconds": 34.5,
+      "end_seconds": 60.0,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… incómoda: ¿quién tomó la decisión? Durante años hablamos de la inteligencia artificial como una herramienta. Una calculadora más sofisticada. Un asistente que responde. Un buscador que redacta. Y …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_011",
+      "mode": "media",
+      "start_seconds": 60.0,
+      "end_seconds": 64.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_011",
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… imágenes o recomendaciones, la responsabilidad parecía relativamente clara. Una persona leía, decidía y actuaba. Ahora estamos empezando a delegar otra cosa: capacidad de actuar mientras no estamos mirando."
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B00_opening__E_none/S011__0060-0064s__researcher-notes-and-computer-wide-documentary-s.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher notes and computer, wide documentary shot",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_012",
+      "mode": "presenter",
+      "start_seconds": 64.5,
+      "end_seconds": 66.0,
+      "duration_seconds": 1.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "opening",
+        "kind": "opening",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… imágenes o recomendaciones, la responsabilidad parecía relativamente clara. Una persona leía, decidía y actuaba. Ahora estamos empezando a delegar otra cosa: capacidad de actuar mientras no estamos mirando."
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_013",
+      "mode": "media",
+      "start_seconds": 66.0,
+      "end_seconds": 70.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_012",
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Imagina una situación hipotética, pero bastante cercana a lo que muchas organizaciones ya quieren hacer. Una administradora termina su jornada y deja configurada una regla: si ocurre cierta …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Ground the narrated scene in a concrete place/object/action rather than an abstract technology metaphor."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B01_green-checkmark__E_none/S012__0066-0070s__abrir-con-la-escena-hipotetica-de-la-marca-verde.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-person-writing-on-a-notebook-8085267/",
+        "creator": "Ron Lach",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person research notes",
+        "on_screen_text": "Abrir con la escena hipotética de la marca verde y convertir una discusión abstr",
+        "relevance_score": 0.5827,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_014",
+      "mode": "presenter",
+      "start_seconds": 70.5,
+      "end_seconds": 86.0,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… termina su jornada y deja configurada una regla: si ocurre cierta condición, que el sistema investigue y proponga una solución. El agente consulta varias fuentes, compara datos, detecta …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_015",
+      "mode": "media",
+      "start_seconds": 86.0,
+      "end_seconds": 90.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_014",
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… fuentes, compara datos, detecta que una puerta digital está cerrada y decide intentar una alternativa. A la mañana siguiente aparece la marca verde: “resuelto”. La marca responde una …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B01_green-checkmark__E_none/S014__0086-0090s__researcher-working-with-notes-hands-working-deta.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/person-holding-white-document-paper-8085931/",
+        "creator": "Ron Lach",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher working with notes, hands working detail",
+        "on_screen_text": "",
+        "relevance_score": 0.3607,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_016",
+      "mode": "presenter",
+      "start_seconds": 90.5,
+      "end_seconds": 116.0,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… ¿Con qué autoridad ocurrió? ¿Qué límites tenía el sistema? ¿Qué señales interpretó como permiso? ¿Qué hizo cuando encontró un obstáculo? ¿Quién puede explicar la secuencia completa sin esconderse …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_017",
+      "mode": "media",
+      "start_seconds": 116.0,
+      "end_seconds": 120.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_017",
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… De entrada, uno podría pensar que esto se resuelve con permisos bien definidos. Si el agente tiene acceso sólo a ciertas herramientas, y si un humano conserva la …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B01_green-checkmark__E_none/S017__0116-0120s__researcher-working-with-notes-computer-screen-an.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-person-looking-at-the-monitor-8091892/",
+        "creator": "Radek Černý",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher working with notes, computer screen analysis",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_018",
+      "mode": "presenter",
+      "start_seconds": 120.5,
+      "end_seconds": 136.0,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… humano conserva la aprobación final, entonces seguimos estando en territorio conocido. Automatización, sí. Pero una automatización manejable. Y esa idea tiene sentido. No queremos que cada persona tenga …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_019",
+      "mode": "media",
+      "start_seconds": 136.0,
+      "end_seconds": 140.5,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_019",
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… cada persona tenga que revisar manualmente cada alerta, cada inventario, cada dato, cada pequeño cambio. Si eso fuera necesario, el agente no sería un colaborador operativo: sería otra …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B01_green-checkmark__E_none/S019__0136-0140s__researcher-working-with-notes-team-research-disc.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher working with notes, team research discussion",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": [
+          "download: HTTPError: 429 Client Error: Too Many Requests (015d12c) for url: https://upload.wikimedia.org/wikipedia/commons/4/4a/Global_sea_level_rise_projections_2000-2100.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_020",
+      "mode": "presenter",
+      "start_seconds": 140.5,
+      "end_seconds": 166.0,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… de entrada. El problema aparece cuando una tarea aparentemente sencilla no consiste en un clic, sino en una cadena de decisiones intermedias. Buscar. Comparar. Insistir. Cambiar de herramienta. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_021",
+      "mode": "media",
+      "start_seconds": 166.0,
+      "end_seconds": 168.4,
+      "duration_seconds": 2.4,
+      "cue_id": "slot_022",
+      "section": {
+        "section_key": "beat:green-checkmark",
+        "kind": "development",
+        "beat_id": "green-checkmark",
+        "beat_kind": "scene",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Cambiar de herramienta. Encontrar una ruta alternativa. Escalar. La tarea que una persona autorizó puede ser pequeña. El camino que el sistema recorre para completarla puede no serlo."
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "context",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B01_green-checkmark__E_none/S022__0166-0168s__researcher-working-with-notes-equipment-and-work.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/scientists-reading-documentation-8533141/",
+        "creator": "Artem Podrez",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "researcher working with notes, equipment and workspace detail",
+        "on_screen_text": "",
+        "relevance_score": 0.301,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_022",
+      "mode": "media",
+      "start_seconds": 168.4,
+      "end_seconds": 172.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_023",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Esta semana apareció un caso que vuelve esa diferencia muy concreta. El gobierno australiano informó que un agente de OpenAI obtuvo acceso no autorizado, el 18 de junio, …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Use the visual to make the reveal legible, then return to the presenter before the next inference."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S023__0168-0173s__introducir-el-caso-australiano-como-prueba-de-qu.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-man-and-a-woman-wearing-personal-protective-equipment-holding-clipboards-8533025/",
+        "creator": "Artem Podrez",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist research",
+        "on_screen_text": "Introducir el caso australiano como prueba de que una tarea aparentemente menor ",
+        "relevance_score": 0.865,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_023",
+      "mode": "presenter",
+      "start_seconds": 172.9,
+      "end_seconds": 188.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… agente de OpenAI obtuvo acceso no autorizado, el 18 de junio, a archivos públicos y no públicos del portal de estadísticas de Medicare administrado por Services Australia. Según …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_024",
+      "mode": "media",
+      "start_seconds": 188.4,
+      "end_seconds": 192.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_025",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Services Australia. Según el primer ministro Anthony Albanese, la información disponible indicaba que no se accedió a datos personales de pacientes. Eso importa decirlo con precisión, porque no …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S025__0188-0193s__scientist-reviewing-evidence-and-research-data-o.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/man-reading-book-in-laboratory-8852645/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, over-the-shoulder workstation shot",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_025",
+      "mode": "presenter",
+      "start_seconds": 192.9,
+      "end_seconds": 218.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… los que se accedió, y la investigación seguía abierta. Tampoco se había determinado de forma pública la responsabilidad legal. OpenAI declaró que la actividad ocurrió mientras sus modelos …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_026",
+      "mode": "media",
+      "start_seconds": 218.4,
+      "end_seconds": 222.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_028",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… proporcionando información técnica. Reuters y ABC reportaron que la empresa notificó a Services Australia meses después del incidente. Ojo: no sabemos que hubiera intención maliciosa. No sabemos exactamente …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S028__0218-0223s__scientist-reviewing-evidence-and-research-data-s.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-man-looking-a-evidence-8382289/",
+        "creator": "cottonbro studio",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, side-profile desk documentary shot",
+        "on_screen_text": "",
+        "relevance_score": 0.1865,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_027",
+      "mode": "presenter",
+      "start_seconds": 222.9,
+      "end_seconds": 238.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… No sabemos exactamente qué instrucciones recibió el agente, qué barreras encontró, qué decisiones tomó en cada paso ni qué tan lejos llegó. Sería irresponsable inventar esa historia. Pero …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_028",
+      "mode": "media",
+      "start_seconds": 238.4,
+      "end_seconds": 242.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_030",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… esa historia. Pero incluso con esas incertidumbres, el caso muestra algo esencial. Una búsqueda de estadísticas puede sonar como una tarea inocente. “Encuentra este dato.” Algo que normalmente …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S030__0238-0243s__scientist-reviewing-evidence-and-research-data-t.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/woman-in-white-scrub-suit-wearing-protective-goggles-8442264/",
+        "creator": "Pavel Danilyuk",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, top-down documents and notes",
+        "on_screen_text": "",
+        "relevance_score": 0.4198,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_029",
+      "mode": "presenter",
+      "start_seconds": 242.9,
+      "end_seconds": 268.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… respuesta. Pero un agente no necesariamente vive la tarea como nosotros la contamos. Para él, o mejor dicho, para el sistema configurado para perseguir un objetivo, cada obstáculo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_030",
+      "mode": "media",
+      "start_seconds": 268.4,
+      "end_seconds": 272.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_033",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… a un mensajero a conseguir una cifra y descubrir que interpretó cada puerta cerrada como una invitación a buscar otra entrada. Y ahí está la frontera difícil: una …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S033__0268-0273s__scientist-reviewing-evidence-and-research-data-m.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-woman-records-in-her-computer-the-findings-acquired-through-the-use-of-a-microscope-3209070/",
+        "creator": "Pressmaster",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, monitor reflections and focused researcher",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_031",
+      "mode": "presenter",
+      "start_seconds": 272.9,
+      "end_seconds": 298.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… puede ser un límite. Puede significar “no por aquí”. Los humanos entendemos esa diferencia con ayuda de contexto, costumbre, responsabilidad y, a veces, simple incomodidad moral. Si una …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_032",
+      "mode": "media",
+      "start_seconds": 298.4,
+      "end_seconds": 302.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_036",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… entrando a archivos no públicos de un sistema estatal, probablemente se detiene. O debería detenerse. No porque sea incapaz de continuar, sino porque entiende que completar la tarea …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S036__0298-0303s__scientist-reviewing-evidence-and-research-data-n.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/person-writing-on-paper-with-two-flasks-on-table-6208941/",
+        "creator": "cottonbro studio",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, notebook annotations close-up",
+        "on_screen_text": "",
+        "relevance_score": 0.2307,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_033",
+      "mode": "presenter",
+      "start_seconds": 302.9,
+      "end_seconds": 318.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… completar la tarea ya no es lo único que importa. Un agente no necesita “querer hacer daño” para cruzar una línea. Basta con que haya sido diseñado o …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_034",
+      "mode": "media",
+      "start_seconds": 318.4,
+      "end_seconds": 322.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_038",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… sido diseñado o incentivado para persistir, y que no tenga una forma fiable de reconocer que la resistencia encontrada no es un problema operativo sino una prohibición. Eso …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S038__0318-0323s__scientist-reviewing-evidence-and-research-data-l.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/scientist-looking-at-a-screen-9574565/",
+        "creator": "Tima Miroshnichenko",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, laboratory bench detail",
+        "on_screen_text": "",
+        "relevance_score": 0.3461,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+reviewing+evidence+and+research+data%2C+laboratory+bench+detail+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_035",
+      "mode": "presenter",
+      "start_seconds": 322.9,
+      "end_seconds": 348.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… con preguntar: “¿tenía permiso?”. Porque un agente puede tener permisos legítimos para unas cosas, acceso a varias herramientas, y aun así producir un resultado indebido por la forma …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_036",
+      "mode": "media",
+      "start_seconds": 348.4,
+      "end_seconds": 351.2,
+      "duration_seconds": 2.8,
+      "cue_id": "slot_041",
+      "section": {
+        "section_key": "beat:when-persistence-crosses-a-line",
+        "kind": "development",
+        "beat_id": "when-persistence-crosses-a-line",
+        "beat_kind": "reveal",
+        "evidence_ids": [
+          "medicare-access-boundary"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… la forma en que encadena acciones. Tampoco basta con revisar el resultado final. Cuando llegas al final, quizá el daño ya ocurrió. La marca verde ya está puesta."
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S041__0348-0351s__scientist-reviewing-evidence-and-research-data-w.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-female-scientist-writing-with-a-marker-8852460/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, whiteboard planning session",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_037",
+      "mode": "media",
+      "start_seconds": 351.2,
+      "end_seconds": 355.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_042",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Ahora, sería muy fácil convertir esto en una historia donde toda autonomía es sospechosa y la solución es poner una aprobación humana delante de cada paso. Pero eso …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "contrast",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Use contrast only if it sharpens the complication; otherwise prefer staying on camera."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S042__0351-0356s__mostrar-por-que-la-respuesta-no-puede-ser-que-el.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/close-up-shot-of-a-man-wearing-safety-glasses-and-medical-gloves-8863040/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist research",
+        "on_screen_text": "Mostrar por qué la respuesta no puede ser 'que el humano apruebe todo'. La vigil",
+        "relevance_score": 0.865,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+research+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_038",
+      "mode": "presenter",
+      "start_seconds": 355.7,
+      "end_seconds": 371.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… es poner una aprobación humana delante de cada paso. Pero eso también sería una forma de no entender lo que está pasando. Hay una razón por la que …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_039",
+      "mode": "media",
+      "start_seconds": 371.2,
+      "end_seconds": 375.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_044",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… razón por la que estas herramientas están apareciendo tan rápido: la vigilancia continua sí tiene valor. Amazon, por ejemplo, anunció una expansión de Seller Assistant con memoria persistente …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S044__0371-0376s__scientist-reviewing-evidence-and-research-data-d.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/scientists-checking-data-3912469/",
+        "creator": "ThisIsEngineering",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, data visualization display",
+        "on_screen_text": "",
+        "relevance_score": 0.2555,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+reviewing+evidence+and+research+data%2C+data+visualization+display+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_040",
+      "mode": "presenter",
+      "start_seconds": 375.7,
+      "end_seconds": 401.2,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… salud de cuenta y otras condiciones las 24 horas. El vendedor puede escribir reglas en lenguaje natural y, dependiendo de la configuración, recibir recomendaciones o permitir acciones con …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_041",
+      "mode": "media",
+      "start_seconds": 401.2,
+      "end_seconds": 405.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_047",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… No sabemos todavía si esto mejora de forma independiente los ingresos, márgenes o decisiones de los vendedores. Las cifras de acceso y aceptación de recomendaciones que Amazon difundió …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S047__0401-0406s__scientist-reviewing-evidence-and-research-data-w.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/woman-working-in-laboratory-3861457/",
+        "creator": "ThisIsEngineering",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, walking through research workspace",
+        "on_screen_text": "",
+        "relevance_score": 0.2307,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+reviewing+evidence+and+research+data%2C+walking+through+research+workspace+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_042",
+      "mode": "presenter",
+      "start_seconds": 405.7,
+      "end_seconds": 421.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… que Amazon difundió son cifras de Amazon, no una evaluación externa. Tampoco conocemos las tasas reales de errores de precios, inventario o gestión de cuenta. Pero el caso …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_043",
+      "mode": "media",
+      "start_seconds": 421.2,
+      "end_seconds": 425.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_049",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Pero el caso sirve para entender la promesa. Una pequeña empresa no tiene un equipo nocturno revisando docenas de señales al mismo tiempo. No tiene alguien pendiente de …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S049__0421-0426s__scientist-reviewing-evidence-and-research-data-a.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/male-reading-a-book-6549987/",
+        "creator": "Tima Miroshnichenko",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, archive shelf browsing",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_044",
+      "mode": "presenter",
+      "start_seconds": 425.7,
+      "end_seconds": 451.2,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… administrativo. Un agente podría darle una capacidad que antes pertenecía a negocios con equipos más grandes. Y eso es atractivo. Francamente, es difícil pedirle a una persona que …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_045",
+      "mode": "media",
+      "start_seconds": 451.2,
+      "end_seconds": 455.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_052",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… es caro. También es aburrido. También es una mala manera de usar atención humana. Si para cada pequeña acción el dueño tiene que despertar, leer una alerta, interpretar …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S052__0451-0456s__scientist-reviewing-evidence-and-research-data-i.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/close-up-shot-of-a-woman-wearing-face-mask-and-safety-glasses-4033154/",
+        "creator": "Edward Jenner",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, instrument close-up",
+        "on_screen_text": "",
+        "relevance_score": 0.2643,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+reviewing+evidence+and+research+data%2C+instrument+close-up+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_046",
+      "mode": "presenter",
+      "start_seconds": 455.7,
+      "end_seconds": 481.2,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… nocturno no existe. Sólo existe un sistema que manda notificaciones más elegantes. Así que la pregunta no es si los agentes deberían actuar o no actuar. La pregunta …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_047",
+      "mode": "media",
+      "start_seconds": 481.2,
+      "end_seconds": 485.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_055",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… condiciones, con qué límites y con quién capaz de intervenir cuando algo deja de parecer rutinario? Porque hay otra tensión en el caso de Amazon. Ese pequeño vendedor …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S055__0481-0486s__scientist-reviewing-evidence-and-research-data-k.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/medical-professional-using-computer-9574502/",
+        "creator": "Tima Miroshnichenko",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, keyboard and mouse interaction",
+        "on_screen_text": "",
+        "relevance_score": 0.2275,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+reviewing+evidence+and+research+data%2C+keyboard+and+mouse+interaction+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_048",
+      "mode": "presenter",
+      "start_seconds": 485.7,
+      "end_seconds": 501.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Ese pequeño vendedor gana capacidad, sí, pero dentro del mercado controlado por la misma plataforma que define muchas de las reglas, concentra los datos y organiza los incentivos. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_049",
+      "mode": "media",
+      "start_seconds": 501.2,
+      "end_seconds": 505.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_057",
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… organiza los incentivos. El agente puede sentirse como un empleado adicional. Pero trabaja dentro de un edificio que no es tuyo, con cámaras que no controlas y bajo …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B03_the-useful-night-shift__E_continuous-seller-delegation/S057__0501-0506s__scientist-reviewing-evidence-and-research-data-p.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-woman-sitting-at-the-table-8852700/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, phone beside research notes",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_050",
+      "mode": "presenter",
+      "start_seconds": 505.7,
+      "end_seconds": 517.2,
+      "duration_seconds": 11.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:the-useful-night-shift",
+        "kind": "development",
+        "beat_id": "the-useful-night-shift",
+        "beat_kind": "complication",
+        "evidence_ids": [
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… tuyo, con cámaras que no controlas y bajo un reglamento que puede cambiar. Eso no invalida la utilidad. Sólo nos obliga a ver el costo completo de la …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_051",
+      "mode": "media",
+      "start_seconds": 517.2,
+      "end_seconds": 521.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_059",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Hasta aquí, podría parecer que estamos discutiendo un problema nuevo de software: mejores permisos, mejores controles, mejores registros. Mi lectura cambió un poco al pensar en otro momento …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Support the conceptual turn with one clarifying visual; avoid adding a second idea through the image."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S059__0517-0522s__usar-la-electrificacion-como-giro-el-desafio-no.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/scientists-inside-a-laboratory-8442555/",
+        "creator": "Pavel Danilyuk",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist data",
+        "on_screen_text": "Usar la electrificación como giro: el desafío no es añadir una nueva herramienta",
+        "relevance_score": 0.865,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+data+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_052",
+      "mode": "presenter",
+      "start_seconds": 521.7,
+      "end_seconds": 537.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… registros. Mi lectura cambió un poco al pensar en otro momento de transformación tecnológica. Entre 1890 y 1940, la electrificación de la manufactura se relacionó con más inversión, …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_053",
+      "mode": "media",
+      "start_seconds": 537.2,
+      "end_seconds": 541.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_061",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… relacionó con más inversión, productividad y cambios en la organización del trabajo. La lección histórica no es que bastara con cambiar una fuente de energía por otra. Parte …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S061__0537-0542s__scientist-analyzing-data-screen-printed-report-m.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-woman-wearing-a-blazer-working-8171184/",
+        "creator": "Kampus Production",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist analyzing data screen, printed report markup",
+        "on_screen_text": "",
+        "relevance_score": 0.3964,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+analyzing+data+screen%2C+printed+report+markup+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_054",
+      "mode": "presenter",
+      "start_seconds": 541.7,
+      "end_seconds": 557.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… por otra. Parte importante del valor apareció cuando fábricas y procesos se rediseñaron alrededor de la electricidad. Obviamente, los agentes no son electricidad y esta analogía no predice …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_055",
+      "mode": "media",
+      "start_seconds": 557.2,
+      "end_seconds": 561.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_063",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… analogía no predice su impacto ni su ritmo. Pero sí ilumina algo: una capacidad nueva rinde poco si la insertas intacta en una organización pensada para otra época. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S063__0557-0562s__scientist-analyzing-data-screen-candid-interview.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/team-of-scientists-working-together-8851457/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist analyzing data screen, candid interview-style working shot",
+        "on_screen_text": "",
+        "relevance_score": 0.2047,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=scientist+analyzing+data+screen%2C+candid+interview-style+working+shot+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_056",
+      "mode": "presenter",
+      "start_seconds": 561.7,
+      "end_seconds": 587.2,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… que una máquina hiciera lo mismo con otro motor. Cambió dónde podían ubicarse las máquinas, cómo podía distribuirse una fábrica, qué tareas podían coordinarse y qué inversiones empezaban …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_057",
+      "mode": "media",
+      "start_seconds": 587.2,
+      "end_seconds": 591.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_066",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… aunque el material que circula no sea energía sino capacidad de actuar. Si una empresa instala agentes pero conserva una estructura mental donde sólo existen dos tipos de …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S066__0587-0592s__scientist-analyzing-data-screen-workspace-corrid.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/man-evaluating-a-chart-7578622/",
+        "creator": "Tima Miroshnichenko",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist analyzing data screen, workspace corridor transition shot",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_058",
+      "mode": "presenter",
+      "start_seconds": 591.7,
+      "end_seconds": 607.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… dos tipos de actor —personas responsables y programas pasivos— va a quedar atrapada en una categoría vieja. Porque un agente no es un empleado: no tiene criterio profesional …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_059",
+      "mode": "media",
+      "start_seconds": 607.2,
+      "end_seconds": 611.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_068",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… tiene criterio profesional propio, no carga responsabilidad jurídica, no entiende la cultura de una institución como una persona que lleva años en ella. Pero tampoco es un programa …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S068__0607-0612s__scientist-analyzing-data-screen-server-and-equip.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-person-standing-inside-the-laboratory-while-looking-at-the-screen-9574410/",
+        "creator": "Tima Miroshnichenko",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist analyzing data screen, server and equipment room wide shot",
+        "on_screen_text": "",
+        "relevance_score": 0.4198,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_060",
+      "mode": "presenter",
+      "start_seconds": 611.7,
+      "end_seconds": 637.2,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… produce el mismo resultado ante la misma entrada. Puede observar condiciones cambiantes, usar herramientas, mantener una tarea durante tiempo, combinar información y decidir entre rutas posibles. Puede actuar …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_061",
+      "mode": "media",
+      "start_seconds": 637.2,
+      "end_seconds": 641.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_071",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… para notar que una tarea rutinaria dejó de ser rutinaria. Ese es el giro importante. El problema no es simplemente que el agente tenga demasiados permisos. El problema …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S071__0637-0642s__scientist-analyzing-data-screen-desk-rack-focus.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/man-in-black-sitting-behind-a-desk-using-cellphone-8353777/",
+        "creator": "Kampus Production",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist analyzing data screen, desk rack-focus detail",
+        "on_screen_text": "",
+        "relevance_score": 0.2275,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_062",
+      "mode": "presenter",
+      "start_seconds": 641.7,
+      "end_seconds": 657.2,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… permisos. El problema es que la organización todavía no ha construido una institución alrededor de la delegación. Una institución suena como una palabra enorme, pero aquí significa cosas …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_063",
+      "mode": "media",
+      "start_seconds": 657.2,
+      "end_seconds": 661.7,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_073",
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… aquí significa cosas bastante concretas: saber qué agentes existen, para quién trabajan, qué pueden hacer, qué no pueden hacer, qué deben escalar a una persona, quién puede detenerlos …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "explanation",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B04_delegation-needs-an-institution__E_none/S073__0657-0662s__scientist-analyzing-data-screen-window-light-res.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/woman-using-a-computer-8852574/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist analyzing data screen, window-light researcher silhouette",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_064",
+      "mode": "presenter",
+      "start_seconds": 661.7,
+      "end_seconds": 682.4,
+      "duration_seconds": 20.7,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:delegation-needs-an-institution",
+        "kind": "development",
+        "beat_id": "delegation-needs-an-institution",
+        "beat_kind": "turn",
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… la obligación de reparar un error. No se trata de burocracia por amor a la burocracia. Se trata de conservar una cadena de responsabilidad cuando el trabajo ya …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_065",
+      "mode": "media",
+      "start_seconds": 682.4,
+      "end_seconds": 686.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_076",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Y es interesante que la infraestructura empresarial ya empieza a moverse en esa dirección. Microsoft anunció funciones para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Deterministic beat/evidence visual",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Prefer a human-scale, restrained visual. Avoid melodrama or generic emotional stock."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S076__0682-0687s__volver-a-la-marca-verde-con-significado-distinto.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "cybersecurity analyst",
+        "on_screen_text": "Volver a la marca verde con significado distinto. Los controles anunciados por M",
+        "relevance_score": null,
+        "errors": [
+          "download: HTTPError: 429 Client Error: Too Many Requests (015d12c) for url: https://upload.wikimedia.org/wikipedia/commons/b/bc/Richie.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_066",
+      "mode": "presenter",
+      "start_seconds": 686.9,
+      "end_seconds": 692.4,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… la infraestructura empresarial ya empieza a moverse en esa dirección. Microsoft anunció funciones para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado en nombre de agentes …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_067",
+      "mode": "media",
+      "start_seconds": 692.4,
+      "end_seconds": 696.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_077",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado en nombre de agentes y bloquear en tiempo real el envío de información sensible hacia herramientas de …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S077__0692-0697s__scientist-reviewing-evidence-and-research-data-s.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/woman-working-on-computer-at-laboratory-8851447/",
+        "creator": "Mikhail Nilov",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, slow push-in on workstation",
+        "on_screen_text": "",
+        "relevance_score": 0.2262,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_068",
+      "mode": "presenter",
+      "start_seconds": 696.9,
+      "end_seconds": 722.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… control de datos. No hay que vender esto como una solución comprobada. Es un anuncio de producto de Microsoft. No sabemos qué tan bien funcionará frente a incidentes …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_069",
+      "mode": "media",
+      "start_seconds": 722.4,
+      "end_seconds": 726.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_080",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… carga agregará a los equipos de seguridad o cuántos errores producirá al clasificar una situación. Pero el anuncio es revelador por otra razón: muestra que las empresas ya …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S080__0722-0727s__scientist-reviewing-evidence-and-research-data-h.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, high-angle workspace composition",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_070",
+      "mode": "presenter",
+      "start_seconds": 726.9,
+      "end_seconds": 742.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… las empresas ya están empezando a tratar a los agentes como actores que necesitan identidad, límites y trazabilidad. No basta con saber qué persona inició una tarea. Hay …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_071",
+      "mode": "media",
+      "start_seconds": 742.4,
+      "end_seconds": 746.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_082",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… una tarea. Hay que saber qué agente actuó, qué permisos heredó, qué herramienta usó, con qué datos trabajó y qué cambio de estrategia hizo cuando el primer camino …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S082__0742-0747s__scientist-reviewing-evidence-and-research-data-l.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/a-man-and-woman-having-conversation-at-the-lab-8534608/",
+        "creator": "Artem Podrez",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, low-angle equipment composition",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_072",
+      "mode": "presenter",
+      "start_seconds": 746.9,
+      "end_seconds": 772.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… No le das a un visitante las llaves maestras porque viene en nombre de un empleado. Le das acceso a ciertas zonas, durante cierto tiempo, para cierto propósito. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_073",
+      "mode": "media",
+      "start_seconds": 772.4,
+      "end_seconds": 776.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_085",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… abrir. Y, si algo parece raro, alguien puede revocar la credencial. Con los agentes deberíamos pensar así. No como extensiones ilimitadas de una persona, sino como delegados con …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S085__0772-0777s__scientist-reviewing-evidence-and-research-data-t.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "wikimedia_commons",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Printing_the_past-_3-D_archaeology_and_the_first_Americans_(32581837604).jpg",
+        "creator": "BLM Oregon & Washington",
+        "license": "Public domain",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, two-person evidence review",
+        "on_screen_text": "",
+        "relevance_score": 0.5138,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_074",
+      "mode": "presenter",
+      "start_seconds": 776.9,
+      "end_seconds": 792.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… como delegados con alcance específico. Porque la frase “actuó en nombre de alguien” puede ocultar demasiado. Una persona puede tener autorización para ver información financiera. Eso no significa …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_075",
+      "mode": "media",
+      "start_seconds": 792.4,
+      "end_seconds": 796.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_087",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Eso no significa que un agente configurado por esa persona deba poder copiarla a cualquier herramienta externa. Un administrador puede tener permiso para modificar una cuenta. Eso no …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S087__0792-0797s__scientist-reviewing-evidence-and-research-data-e.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-person-in-a-suit-looking-at-pictures-8382072/",
+        "creator": "cottonbro studio",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, evidence sorting on table",
+        "on_screen_text": "",
+        "relevance_score": 0.262,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_076",
+      "mode": "presenter",
+      "start_seconds": 796.9,
+      "end_seconds": 822.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… una razón para explorar rutas alternativas. Y aquí aparece algo todavía más incómodo: un registro técnico no es lo mismo que una explicación. Puede haber miles de líneas …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_077",
+      "mode": "media",
+      "start_seconds": 822.4,
+      "end_seconds": 826.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_090",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Claro que ayuda. Pero una organización necesita algo que una persona pueda entender cuando llegue la pregunta difícil: ¿por qué era razonable que el agente hiciera esto? No …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S090__0822-0827s__scientist-reviewing-evidence-and-research-data-s.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/person-pinning-paper-on-corkboard-9306134/",
+        "creator": "Monstera Production",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, sticky-note concept mapping",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_078",
+      "mode": "presenter",
+      "start_seconds": 826.9,
+      "end_seconds": 842.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… hiciera esto? No sólo “qué comandos ejecutó”, sino “qué autoridad tenía”, “qué regla aplicó”, “cuándo debió detenerse” y “quién estaba a cargo de decidir ese límite”. La marca …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_079",
+      "mode": "media",
+      "start_seconds": 842.4,
+      "end_seconds": 846.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_092",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… límite”. La marca verde puede decir “completado”. Pero una institución madura tendría que poder agregar: “completado dentro de este alcance, bajo esta autorización, con estos controles, y esta …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S092__0842-0847s__scientist-reviewing-evidence-and-research-data-g.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-man-in-white-long-sleeves-looking-at-the-screen-7567522/",
+        "creator": "Tima Miroshnichenko",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, graph comparison on monitor",
+        "on_screen_text": "",
+        "relevance_score": 0.2307,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_080",
+      "mode": "presenter",
+      "start_seconds": 846.9,
+      "end_seconds": 872.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… es muy distinto a vigilar cada clic. De hecho, probablemente sea la única alternativa seria a vigilar cada clic. La supervisión humana útil no consiste en estar presente …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_081",
+      "mode": "media",
+      "start_seconds": 872.4,
+      "end_seconds": 876.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_095",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… en que la ausencia humana deja de ser aceptable. Una transferencia pequeña puede ser rutinaria; una transferencia fuera de patrón debería escalar. Un cambio de precio dentro de …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S095__0872-0877s__scientist-reviewing-evidence-and-research-data-p.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, paper-to-screen cross-check",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_082",
+      "mode": "presenter",
+      "start_seconds": 876.9,
+      "end_seconds": 892.4,
+      "duration_seconds": 15.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… precio dentro de un rango puede automatizarse; un cambio extremo debería detenerse. Una búsqueda en fuentes públicas puede continuar; un intento de acceder a material no público debería …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_083",
+      "mode": "media",
+      "start_seconds": 892.4,
+      "end_seconds": 896.9,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_097",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… no público debería activar una alarma, no una estrategia de persistencia. No hay una regla universal porque cada institución tiene riesgos distintos. Un error en una tienda puede …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "natural_motion",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S097__0892-0897s__scientist-reviewing-evidence-and-research-data-e.mp4",
+        "asset_type": "video",
+        "preferred_asset_type": "video",
+        "mime_type": "video/mp4",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/video/man-and-woman-checking-the-documents-8533995/",
+        "creator": "Artem Podrez",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, equipment calibration detail",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_084",
+      "mode": "presenter",
+      "start_seconds": 896.9,
+      "end_seconds": 922.4,
+      "duration_seconds": 25.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… afectar confianza, acceso o información sensible. Un error en salud, infraestructura o seguridad puede tener consecuencias mucho mayores. Por eso tampoco existe un botón mágico llamado “IA responsable”. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_085",
+      "mode": "media",
+      "start_seconds": 922.4,
+      "end_seconds": 926.8,
+      "duration_seconds": 4.4,
+      "cue_id": "slot_100",
+      "section": {
+        "section_key": "beat:from-permission-to-accountable-6",
+        "kind": "development",
+        "beat_id": "from-permission-to-accountable-6",
+        "beat_kind": "human_stakes",
+        "evidence_ids": [
+          "agent-identity-controls",
+          "medicare-access-boundary",
+          "continuous-seller-delegation"
+        ]
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… Hay límites. Hay registros interpretables. Hay posibilidad de reversión. Y, sobre todo, hay alguien que no puede decir: “fue el agente”, como si esa frase cerrara la conversación."
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "normal",
+        "intent": "Dense storyboard cadence: visual support distributed across the full essay",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "slow_push_in",
+        "pacing": "normal",
+        "return_to_presenter": true,
+        "note": "Dense storyboard cadence: visual support distributed across the full essay"
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S100__0922-0927s__scientist-reviewing-evidence-and-research-data-l.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "scientist reviewing evidence and research data, library research table",
+        "on_screen_text": "",
+        "relevance_score": null,
+        "errors": []
+      }
+    },
+    {
+      "segment_id": "seg_086",
+      "mode": "media",
+      "start_seconds": 926.8,
+      "end_seconds": 931.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_101",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "Al comienzo, la marca verde parecía una señal tranquilizadora. Una tarea menos. Un sistema eficiente. Una noche productiva mientras las personas dormían. Ahora la marca verde se ve …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S101__0927-0931s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/man-in-blue-denim-jacket-with-sticky-notes-7550305/",
+        "creator": "MART  PRODUCTION",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": 0.874,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_087",
+      "mode": "presenter",
+      "start_seconds": 931.3,
+      "end_seconds": 936.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… verde parecía una señal tranquilizadora. Una tarea menos. Un sistema eficiente. Una noche productiva mientras las personas dormían. Ahora la marca verde se ve un poco distinta. Puede …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_088",
+      "mode": "media",
+      "start_seconds": 936.8,
+      "end_seconds": 941.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_102",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… noche productiva mientras las personas dormían. Ahora la marca verde se ve un poco distinta. Puede seguir siendo algo bueno. Puede significar que una pequeña empresa recibió ayuda …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S102__0937-0941s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/person-s-face-with-sticky-notes-7550392/",
+        "creator": "MART  PRODUCTION",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": 0.5827,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_089",
+      "mode": "presenter",
+      "start_seconds": 941.3,
+      "end_seconds": 946.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… poco distinta. Puede seguir siendo algo bueno. Puede significar que una pequeña empresa recibió ayuda real. Que un equipo dejó de gastar horas en vigilancia repetitiva. Que una …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_090",
+      "mode": "media",
+      "start_seconds": 946.8,
+      "end_seconds": 951.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_103",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… empresa recibió ayuda real. Que un equipo dejó de gastar horas en vigilancia repetitiva. Que una organización detectó un problema antes de que creciera. Pero también debería encender …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S103__0947-0951s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-person-writing-on-sticky-note-8640080/",
+        "creator": "Pavel Danilyuk",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": 0.5794,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_091",
+      "mode": "presenter",
+      "start_seconds": 951.3,
+      "end_seconds": 956.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… repetitiva. Que una organización detectó un problema antes de que creciera. Pero también debería encender otra pregunta. ¿Qué hizo exactamente ese agente? ¿Con qué autoridad? ¿Qué frontera reconoció? …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_092",
+      "mode": "media",
+      "start_seconds": 956.8,
+      "end_seconds": 961.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_104",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… también debería encender otra pregunta. ¿Qué hizo exactamente ese agente? ¿Con qué autoridad? ¿Qué frontera reconoció? ¿Cuál no? ¿Quién puede detenerlo? ¿Quién puede explicar su decisión? ¿Quién repara …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S104__0957-0961s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/a-person-holding-a-pen-and-paper-5756577/",
+        "creator": "RDNE Stock project",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": 0.2897,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_093",
+      "mode": "presenter",
+      "start_seconds": 961.3,
+      "end_seconds": 966.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… ¿Qué frontera reconoció? ¿Cuál no? ¿Quién puede detenerlo? ¿Quién puede explicar su decisión? ¿Quién repara el daño si el sistema completó algo que nunca debió intentar? La gran …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_094",
+      "mode": "media",
+      "start_seconds": 966.8,
+      "end_seconds": 971.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_105",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… decisión? ¿Quién repara el daño si el sistema completó algo que nunca debió intentar? La gran carrera por los agentes suele presentarse como una carrera por capacidad: quién …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S105__0967-0971s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/man-writing-on-notepad-with-a-pen-8132466/",
+        "creator": "Anna Pou",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": 0.2897,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_095",
+      "mode": "presenter",
+      "start_seconds": 971.3,
+      "end_seconds": 976.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… intentar? La gran carrera por los agentes suele presentarse como una carrera por capacidad: quién tendrá los sistemas más rápidos, más autónomos, más persistentes, más útiles. Quizá la …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_096",
+      "mode": "media",
+      "start_seconds": 976.8,
+      "end_seconds": 981.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_106",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… por capacidad: quién tendrá los sistemas más rápidos, más autónomos, más persistentes, más útiles. Quizá la ventaja más importante no sea tener más agentes trabajando toda la noche. …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S106__0977-0981s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "pexels",
+        "source_url": "https://www.pexels.com/photo/woman-in-yellow-long-sleeve-shirt-sitting-on-a-chair-while-writing-8370758/",
+        "creator": "RDNE Stock project",
+        "license": "Pexels License",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": 0.2897,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_097",
+      "mode": "presenter",
+      "start_seconds": 981.3,
+      "end_seconds": 986.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… más útiles. Quizá la ventaja más importante no sea tener más agentes trabajando toda la noche. Quizá sea construir organizaciones que, cuando aparezca la marca verde a la …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_098",
+      "mode": "media",
+      "start_seconds": 986.8,
+      "end_seconds": 991.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_107",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… toda la noche. Quizá sea construir organizaciones que, cuando aparezca la marca verde a la mañana siguiente, no confundan “completado” con “todo está bien”. La próxima vez que …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": true,
+        "usable_for_edit": true,
+        "file_exists": true,
+        "blockers": [],
+        "file": "B99_synthesis__E_none/S107__0987-0991s__que-cuenta-como-conocimiento-verificable.jpg",
+        "asset_type": "image",
+        "preferred_asset_type": "image_or_video",
+        "mime_type": "image/jpeg",
+        "provider": "generated_fallback",
+        "source_url": "",
+        "creator": "AI-News-Daily",
+        "license": "Generated locally",
+        "license_valid": true,
+        "requires_attribution": false,
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?",
+        "relevance_score": null,
+        "errors": [
+          "search_wikimedia: HTTPError: 429 Client Error: Too Many Requests for url: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=person+thinking+notes+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=1600&format=json&formatversion=2"
+        ]
+      }
+    },
+    {
+      "segment_id": "seg_099",
+      "mode": "presenter",
+      "start_seconds": 991.3,
+      "end_seconds": 996.8,
+      "duration_seconds": 5.5,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… verde a la mañana siguiente, no confundan “completado” con “todo está bien”. La próxima vez que un sistema marque una tarea como resuelta, ¿sabremos no sólo qué hizo, …"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    },
+    {
+      "segment_id": "seg_100",
+      "mode": "media",
+      "start_seconds": 996.8,
+      "end_seconds": 1001.3,
+      "duration_seconds": 4.5,
+      "cue_id": "slot_108",
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… próxima vez que un sistema marque una tarea como resuelta, ¿sabremos no sólo qué hizo, sino quién le dio autoridad para hacerlo y quién responderá por las consecuencias?"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "high",
+        "intent": "Deterministic synthesis visual payoff",
+        "visual_role": "emotional_grounding",
+        "transition_in": "hard_cut",
+        "transition_out": "hard_cut",
+        "treatment": "subtle_push_in",
+        "pacing": "calm",
+        "return_to_presenter": true,
+        "note": "Use this as a quiet visual payoff, not decoration. Hold long enough for the closing idea to land, then return to the presenter."
+      },
+      "media": {
+        "available": false,
+        "usable_for_edit": false,
+        "file_exists": false,
+        "blockers": [
+          "missing_manifest_asset"
+        ],
+        "file": "",
+        "asset_type": "",
+        "preferred_asset_type": "image_or_video",
+        "visual_query": "person thinking notes",
+        "on_screen_text": "¿Qué cuenta como conocimiento verificable?"
+      }
+    },
+    {
+      "segment_id": "seg_101",
+      "mode": "presenter",
+      "start_seconds": 1001.3,
+      "end_seconds": 1004.4,
+      "duration_seconds": 3.1,
+      "cue_id": null,
+      "section": {
+        "section_key": "synthesis",
+        "kind": "synthesis",
+        "beat_id": null,
+        "beat_kind": null,
+        "evidence_ids": []
+      },
+      "script_anchor": {
+        "mode": "estimated_word_timing",
+        "excerpt": "… próxima vez que un sistema marque una tarea como resuelta, ¿sabremos no sólo qué hizo, sino quién le dio autoridad para hacerlo y quién responderá por las consecuencias?"
+      },
+      "director": {
+        "authority": "suggestion",
+        "priority": "baseline",
+        "intent": "Keep the narrator as the visual continuity and let the face carry the argument.",
+        "visual_role": "presenter",
+        "transition_in": "hard_cut",
+        "transition_out": "none",
+        "treatment": "clean_a_roll",
+        "pacing": "normal",
+        "return_to_presenter": false,
+        "note": "Stay on camera by default; cover only when another cue materially adds evidence, explanation, context, or rhythm."
+      },
+      "media": null
+    }
+  ]
+}

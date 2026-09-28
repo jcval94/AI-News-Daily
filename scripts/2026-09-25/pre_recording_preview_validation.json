@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-25",
+  "valid": true,
+  "publishable": false,
+  "frame_accurate": false,
+  "expected_duration_seconds": 1018.4,
+  "actual_duration_seconds": 1018.4,
+  "duration_tolerance_seconds": 5.092,
+  "width": 960,
+  "height": 540,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "size_bytes": 13045333,
+  "decode_fallback_count": 0,
+  "warnings": [],
+  "errors": [],
+  "artifact_scope": "isolated_run_artifact",
+  "preview_path": "previews/2026-09-25/pre_recording_preview.mp4"
+}

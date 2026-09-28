@@ -1,0 +1,360 @@
+{
+  "schema_version": 1,
+  "candidate_count": 6,
+  "issues": [],
+  "items": [
+    {
+      "id": "human-computers",
+      "title": "Antes de las computadoras, había personas llamadas computers",
+      "one_liner": "Durante décadas, computer fue también un puesto de trabajo humano dedicado a ejecutar cálculos complejos.",
+      "summary": "Equipos humanos realizaron cálculos científicos, astronómicos y militares antes de la computación electrónica; muchas de esas posiciones fueron ocupadas por mujeres y combinaban tareas repetitivas con habilidad matemática.",
+      "verified_claims": [
+        "El término computer se utilizó para personas que realizaban cálculos antes de las computadoras electrónicas.",
+        "Equipos de human computers participaron en trabajo científico, astronómico y militar.",
+        "Muchas de esas posiciones fueron ocupadas por mujeres."
+      ],
+      "uncertainties": [
+        "Las funciones, reconocimiento y condiciones laborales variaban entre instituciones y épocas."
+      ],
+      "sources": [
+        "https://www.smithsonianmag.com/science-nature/history-human-computers-180972202/"
+      ],
+      "period": "finales del siglo XIX y primera mitad del XX",
+      "location": "Estados Unidos y otros centros científicos",
+      "domains": [
+        "trabajo",
+        "computación",
+        "historia de la ciencia"
+      ],
+      "mechanisms": [
+        "automation_changes_tasks",
+        "job_name_outlives_task"
+      ],
+      "useful_for": [
+        "automatización cognitiva",
+        "cambio de profesiones",
+        "IA y trabajo",
+        "valor de habilidades"
+      ],
+      "analogy_mapping": "Hace visible que automatizar una tarea puede transformar qué significa una ocupación en lugar de borrar instantáneamente todo el campo laboral.",
+      "analogy_limits": "No permite concluir por sí solo cómo cambiará el empleo con IA contemporánea.",
+      "surprise_score": 8.7,
+      "explanatory_score": 9.1,
+      "analogy_potential": 9.2,
+      "visual_score": 8.5,
+      "sourceability_score": 8.8,
+      "source_quality_score": 8.7,
+      "confidence": 9.0,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "editorial_seed",
+      "created_at": "2026-09-24",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2598,
+        "lexical_relevance": 0.0809,
+        "quality": 0.894,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    },
+    {
+      "id": "electrification-organizational-redesign",
+      "title": "La electrificación rindió más cuando cambió la organización",
+      "one_liner": "Sustituir la fuente de energía no bastaba: gran parte del valor apareció cuando fábricas y procesos se rediseñaron alrededor de ella.",
+      "summary": "Investigación histórica sobre manufactura vincula la electrificación con inversión, productividad y cambios organizacionales. Es un paralelo útil para tecnologías generales cuyo valor exige rediseñar procesos, no solamente reemplazar una herramienta.",
+      "verified_claims": [
+        "Investigaciones históricas relacionan electrificación de manufactura con aumentos de productividad, inversión y cambios organizacionales.",
+        "El efecto de electrificación no se redujo a sustituir una fuente de energía manteniendo intacta la organización del trabajo."
+      ],
+      "uncertainties": [
+        "Las magnitudes y mecanismos concretos dependen del periodo, industria y especificación empírica."
+      ],
+      "sources": [
+        "https://www.nber.org/papers/w28076"
+      ],
+      "period": "1890–1940",
+      "location": "Estados Unidos",
+      "domains": [
+        "economía",
+        "manufactura",
+        "organización"
+      ],
+      "mechanisms": [
+        "technology_requires_redesign",
+        "complementary_investment"
+      ],
+      "useful_for": [
+        "transformación empresarial con IA",
+        "automatización",
+        "productividad",
+        "rediseño de procesos"
+      ],
+      "analogy_mapping": "Ayuda a explicar por qué añadir IA a un proceso viejo puede producir menos valor que rediseñar responsabilidades y flujo de trabajo alrededor de la nueva capacidad.",
+      "analogy_limits": "No implica que la productividad de IA seguirá la misma curva temporal o magnitud que la electrificación.",
+      "surprise_score": 8.0,
+      "explanatory_score": 9.5,
+      "analogy_potential": 9.5,
+      "visual_score": 7.8,
+      "sourceability_score": 8.4,
+      "source_quality_score": 9.5,
+      "confidence": 9.2,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "editorial_seed",
+      "created_at": "2026-09-24",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2533,
+        "lexical_relevance": 0.067,
+        "quality": 0.914,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    },
+    {
+      "id": "plato-writing-memory",
+      "title": "Platón, la escritura y la memoria externa",
+      "one_liner": "Una tecnología creada para conservar conocimiento también fue criticada por poder debilitar la práctica activa de recordar.",
+      "summary": "En el Fedro, el mito de Theuth y Thamus presenta una crítica a la escritura: puede ofrecer apariencia de sabiduría y desplazar el ejercicio vivo de la memoria. El caso funciona como espejo histórico de herramientas cognitivas externas.",
+      "verified_claims": [
+        "En el Fedro, el mito de Theuth y Thamus cuestiona la escritura porque puede debilitar la práctica activa de recordar.",
+        "La crítica distingue entre disponer de signos externos y poseer comprensión viva."
+      ],
+      "uncertainties": [
+        "El pasaje es un argumento filosófico, no evidencia empírica moderna sobre efectos cognitivos de la escritura."
+      ],
+      "sources": [
+        "https://plato.stanford.edu/entries/plato-rhetoric/"
+      ],
+      "period": "siglo IV a. C.",
+      "location": "Grecia antigua",
+      "domains": [
+        "filosofía",
+        "cognición",
+        "educación"
+      ],
+      "mechanisms": [
+        "cognitive_offloading",
+        "tool_changes_skill"
+      ],
+      "useful_for": [
+        "asistentes de IA",
+        "memoria externa",
+        "educación",
+        "dependencia cognitiva"
+      ],
+      "analogy_mapping": "Sirve para preguntar qué capacidades practicamos menos cuando una herramienta recuerda, redacta o responde por nosotros.",
+      "analogy_limits": "No demuestra que la IA debilite la memoria ni que escritura e IA produzcan los mismos efectos.",
+      "surprise_score": 8.3,
+      "explanatory_score": 9.0,
+      "analogy_potential": 9.3,
+      "visual_score": 7.2,
+      "sourceability_score": 8.5,
+      "source_quality_score": 9.3,
+      "confidence": 9.2,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "editorial_seed",
+      "created_at": "2026-09-24",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2511,
+        "lexical_relevance": 0.0675,
+        "quality": 0.902,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    },
+    {
+      "id": "st-matthew-reindeer-overshoot",
+      "title": "De 29 a 6,000 renos: el auge y colapso de St. Matthew Island",
+      "one_liner": "Una población aislada creció durante años sobre recursos abundantes y luego perdió casi todo su tamaño en un solo invierno extremo.",
+      "summary": "En 1944 se introdujeron 29 renos jóvenes en St. Matthew Island, Alaska. La población creció a aproximadamente 1,350 animales en 1957 y 6,000 en 1963. El estudio clásico de David Klein documentó fuerte presión sobre los líquenes y vinculó el colapso posterior con el agotamiento del forraje y un invierno excepcionalmente severo. Una reevaluación publicada en 2005 confirmó la magnitud extraordinaria del colapso, pero cuestionó parte de la evidencia usada para afirmar que el deterioro reproductivo previo ya mostraba una población inevitablemente condenada. El caso es útil precisamente porque muestra cómo crecimiento rápido, buffers degradados y un shock externo pueden interactuar sin reducirse a una sola causa.",
+      "verified_claims": [
+        "En 1944 se liberaron 29 renos jóvenes en St. Matthew Island: 24 hembras y 5 machos.",
+        "La población reportada pasó a unos 1,350 renos en 1957 y a 6,000 en el verano de 1963.",
+        "Para 1966 quedaban 42 animales, una reducción de aproximadamente 99% respecto de 1963.",
+        "El estudio de 1968 documentó una fuerte reducción de los líquenes y señaló la interacción entre disponibilidad de alimento y el invierno severo de 1963-1964.",
+        "La reevaluación de 2005 concluyó que el die-off ocurrió esencialmente en el invierno de 1963-1964 y cuestionó una parte del argumento original sobre señales reproductivas previas."
+      ],
+      "uncertainties": [
+        "La ponderación causal exacta entre sobrepastoreo, pérdida de líquenes y severidad climática sigue siendo discutida; el caso no debe resumirse como un simple colapso por superar una capacidad de carga fija.",
+        "Las cifras históricas de población son estimaciones de campo y no observaciones continuas."
+      ],
+      "sources": [
+        "https://www.usgs.gov/media/images/rise-and-fall-st-matthew-reindeer",
+        "https://doi.org/10.7557/2.25.4.1783",
+        "https://adfg.alaska.gov/static/home/library/pdfs/habitat/86_02.pdf"
+      ],
+      "period": "1944-1966",
+      "location": "St. Matthew Island, Alaska, United States",
+      "domains": [
+        "ecology",
+        "population dynamics",
+        "systems",
+        "resource constraints"
+      ],
+      "mechanisms": [
+        "growth_overshoots_constraints",
+        "abundance_hides_fragility",
+        "shock_exposes_depleted_buffer"
+      ],
+      "useful_for": [
+        "scaling faster than infrastructure",
+        "resource bottlenecks",
+        "robustness versus efficiency",
+        "systems that look healthy until a shock"
+      ],
+      "analogy_mapping": "La analogía útil es estructural: un sistema puede crecer rápidamente mientras consume o degrada el buffer que lo protege; cuando aparece un shock externo, la fragilidad acumulada se vuelve visible de forma abrupta.",
+      "analogy_limits": "No trasladar literalmente dinámica ecológica a mercados, empresas o sistemas de IA. El episodio no demuestra que todo crecimiento rápido produzca colapso ni que exista una única capacidad de carga estable; tampoco permite separar con precisión una causa única del crash.",
+      "surprise_score": 9.5,
+      "explanatory_score": 9.0,
+      "analogy_potential": 9.0,
+      "visual_score": 9.0,
+      "sourceability_score": 9.0,
+      "source_quality_score": 9.0,
+      "confidence": 8.5,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-09-28",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2507,
+        "lexical_relevance": 0.0675,
+        "quality": 0.9,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    },
+    {
+      "id": "toyota-war-chad-1987",
+      "title": "La Guerra de los Toyota: movilidad ligera contra fuerzas blindadas",
+      "one_liner": "En 1987, fuerzas chadianas altamente móviles usaron pickups armadas y misiles antitanque para golpear posiciones libias apoyadas por blindados pesados en el Sahara.",
+      "summary": "Durante la fase final del conflicto Chad-Libia en 1987, fuerzas chadianas explotaron movilidad, sorpresa y armamento montado o transportado en vehículos ligeros para atacar posiciones libias mucho más pesadas. En Fada se emplearon misiles antitanque MILAN contra T-55; en marzo, una fuerza chadiana en vehículos técnicos tomó la base aérea libia de Wadi Doum. La campaña terminó siendo conocida como la Guerra de los Toyota y es un caso especialmente útil para pensar en cómo terreno, logística y velocidad pueden alterar qué sistema es realmente superior.",
+      "verified_claims": [
+        "En enero de 1987, fuerzas chadianas atacaron la guarnición libia de Fada mediante maniobras móviles y emplearon misiles antitanque MILAN desde vehículos ligeros contra blindados T-55.",
+        "El 22 de marzo de 1987, fuerzas chadianas transportadas en vehículos técnicos atacaron y tomaron la base aérea libia de Wadi Doum en Chad.",
+        "Análisis contemporáneos de inteligencia estadounidense describieron Fada y Ouadi Doum como derrotas importantes de las fuerzas libias durante 1987."
+      ],
+      "uncertainties": [
+        "Las cifras exactas de vehículos, bajas y material destruido varían entre relatos y no son necesarias para el valor narrativo del caso.",
+        "El resultado no puede atribuirse únicamente a los vehículos: terreno, sorpresa, entrenamiento, inteligencia, apoyo externo, armamento antitanque y decisiones operativas también influyeron."
+      ],
+      "sources": [
+        "https://warontherocks.com/the-pickup-truck-era-of-warfare/",
+        "https://foreignpolicy.com/2014/01/24/our-man-in-africa/",
+        "https://www.cia.gov/readingroom/docs/CIA-RDP88T00096R000600750001-4.pdf"
+      ],
+      "period": "1987",
+      "location": "Chad, Sahara",
+      "domains": [
+        "historia militar",
+        "estrategia",
+        "logística",
+        "tecnología"
+      ],
+      "mechanisms": [
+        "agility_vs_scale",
+        "terrain_changes_advantage",
+        "asymmetric_adaptation",
+        "mobility_changes_optimum"
+      ],
+      "useful_for": [
+        "modelos pequeños frente a modelos grandes",
+        "edge AI frente a infraestructura centralizada",
+        "startups frente a incumbentes",
+        "sistemas ligeros y especializados",
+        "coste total de operación"
+      ],
+      "analogy_mapping": "Sirve para mostrar que una ventaja nominal en tamaño, potencia o sofisticación puede perder valor cuando el entorno recompensa velocidad, adaptación, logística ligera y capacidad de operar donde el sistema pesado tiene fricción.",
+      "analogy_limits": "No demuestra que lo pequeño o barato sea generalmente superior. La victoria chadiana dependió de una combinación histórica específica de terreno, tácticas, armamento, inteligencia, apoyo externo y errores del adversario; la analogía solo debe trasladar la estructura del trade-off.",
+      "surprise_score": 9.6,
+      "explanatory_score": 9.0,
+      "analogy_potential": 9.5,
+      "visual_score": 9.8,
+      "sourceability_score": 9.2,
+      "source_quality_score": 8.8,
+      "confidence": 9.0,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-09-24",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2479,
+        "lexical_relevance": 0.0589,
+        "quality": 0.918,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    },
+    {
+      "id": "electricity-had-to-find-uses",
+      "title": "La electricidad tuvo que aprender a venderse como algo útil",
+      "one_liner": "Una infraestructura que hoy parece inevitable no fue percibida automáticamente como una necesidad cotidiana.",
+      "summary": "Durante la difusión temprana de la electricidad, compañías y promotores tuvieron que mostrar usos prácticos y convencer a hogares y empresas de su valor. La adopción no siguió automáticamente a la disponibilidad técnica.",
+      "verified_claims": [
+        "La difusión temprana de la electricidad requirió promoción de usos prácticos para estimular adopción.",
+        "La disponibilidad de una tecnología general no garantizó por sí sola que usuarios entendieran inmediatamente para qué servía."
+      ],
+      "uncertainties": [
+        "La velocidad y razones de adopción variaron por ciudad, precio, infraestructura y periodo."
+      ],
+      "sources": [
+        "https://www.smithsonianmag.com/smart-news/people-had-to-be-convinced-of-the-usefulness-of-electricity-21221094/"
+      ],
+      "period": "finales del siglo XIX y primeras décadas del XX",
+      "location": "Estados Unidos",
+      "domains": [
+        "tecnología",
+        "infraestructura",
+        "adopción"
+      ],
+      "mechanisms": [
+        "technology_before_use_case",
+        "adoption_friction"
+      ],
+      "useful_for": [
+        "hype tecnológico",
+        "adopción de IA",
+        "infraestructura general",
+        "product-market fit"
+      ],
+      "analogy_mapping": "Permite separar capacidad tecnológica de descubrimiento de usos que realmente cambian hábitos o procesos.",
+      "analogy_limits": "La electricidad es infraestructura física y su economía de despliegue no equivale directamente al software de IA.",
+      "surprise_score": 8.1,
+      "explanatory_score": 8.8,
+      "analogy_potential": 8.9,
+      "visual_score": 8.0,
+      "sourceability_score": 8.4,
+      "source_quality_score": 8.5,
+      "confidence": 8.7,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "editorial_seed",
+      "created_at": "2026-09-24",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2412,
+        "lexical_relevance": 0.0667,
+        "quality": 0.86,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    }
+  ]
+}

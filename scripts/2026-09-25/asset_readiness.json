@@ -1,0 +1,1186 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-25",
+  "status": "ready_to_record",
+  "policy": {
+    "schema_version": 1,
+    "policy_id": "pre_recording_asset_readiness_v1",
+    "mode": "enforce",
+    "thresholds": {
+      "min_planned_cue_count": 1,
+      "min_resolved_cue_ratio": 0.8,
+      "min_resolved_visual_seconds_ratio": 0.8,
+      "max_missing_noncritical_cues": 3,
+      "max_unresolved_critical_cues": 0,
+      "max_technical_failure_cues": 0
+    },
+    "quality": {
+      "min_short_edge_px": 720,
+      "min_video_duration_ratio": 0.75,
+      "low_resolution_blocks": false,
+      "short_video_blocks": false,
+      "missing_license_label_blocks": false
+    },
+    "critical_visual_roles": [
+      "evidence",
+      "historical_mirror"
+    ],
+    "principles": [
+      "A technically broken file is not ready just because it exists.",
+      "Low-resolution fallback remains usable but must be visible as degraded.",
+      "Critical evidence cues must resolve before recording.",
+      "Coverage is measured both by cue count and planned visual seconds."
+    ]
+  },
+  "summary": {
+    "planned_cue_count": 54,
+    "resolved_cue_count": 53,
+    "missing_cue_count": 1,
+    "degraded_cue_count": 0,
+    "technical_failure_cue_count": 0,
+    "unresolved_critical_cue_count": 0,
+    "planned_visual_seconds": 233.1,
+    "resolved_visual_seconds": 228.6,
+    "resolved_cue_ratio": 0.9815,
+    "resolved_visual_seconds_ratio": 0.9807
+  },
+  "actions": [
+    {
+      "priority": "P1",
+      "cue_id": "slot_108",
+      "action": "resolve_visual_or_accept_presenter",
+      "reason": "noncritical_visual_unresolved"
+    }
+  ],
+  "gate": {
+    "ready_to_record": true,
+    "promotion_blocking": true,
+    "blockers": [],
+    "warnings": []
+  },
+  "items": [
+    {
+      "cue_id": "slot_002",
+      "clip_id": "broll_001_slot_002",
+      "visual_role": "rhythm",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 3.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S002__0004-0007s__cinematic-close-up-hands-highlighting-research-n.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1366,
+        "height": 720,
+        "duration_seconds": 15.52,
+        "codec": "h264",
+        "r_frame_rate": "25/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 4.4343
+      }
+    },
+    {
+      "cue_id": "slot_003",
+      "clip_id": "broll_002_slot_003",
+      "visual_role": "rhythm",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 3.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S003__0007-0010s__moving-archival-documents-handwritten-notes-desk.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 8.266667,
+        "codec": "h264",
+        "r_frame_rate": "30/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 2.3619
+      }
+    },
+    {
+      "cue_id": "slot_004",
+      "clip_id": "broll_003_slot_004",
+      "visual_role": "rhythm",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 3.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S004__0010-0014s__investigative-evidence-wall-notes-connecting-lin.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1366,
+        "height": 720,
+        "duration_seconds": 58.24,
+        "codec": "h264",
+        "r_frame_rate": "25/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 16.64
+      }
+    },
+    {
+      "cue_id": "slot_005",
+      "clip_id": "broll_004_slot_005",
+      "visual_role": "rhythm",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 3.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S005__0014-0018s__abstract-flowing-data-traces-light-paths-cinemat.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 10.0,
+        "codec": "h264",
+        "r_frame_rate": "30/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 2.8571
+      }
+    },
+    {
+      "cue_id": "slot_006",
+      "clip_id": "broll_005_slot_006",
+      "visual_role": "rhythm",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 2.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S006__0018-0020s__person-carefully-reviewing-papers-computer-scree.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 9.166667,
+        "codec": "h264",
+        "r_frame_rate": "30/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 3.6667
+      }
+    },
+    {
+      "cue_id": "slot_007",
+      "clip_id": "broll_006_slot_007",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S007__0020-0024s__researcher-notes.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_008",
+      "clip_id": "broll_007_slot_008",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S008__0030-0034s__researcher-notes-and-computer-close-up-documenta.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1366,
+        "height": 720,
+        "duration_seconds": 16.92,
+        "codec": "h264",
+        "r_frame_rate": "25/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 3.76
+      }
+    },
+    {
+      "cue_id": "slot_011",
+      "clip_id": "broll_008_slot_011",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B00_opening__E_none/S011__0060-0064s__researcher-notes-and-computer-wide-documentary-s.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_012",
+      "clip_id": "broll_009_slot_012",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B01_green-checkmark__E_none/S012__0066-0070s__abrir-con-la-escena-hipotetica-de-la-marca-verde.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_014",
+      "clip_id": "broll_010_slot_014",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B01_green-checkmark__E_none/S014__0086-0090s__researcher-working-with-notes-hands-working-deta.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_017",
+      "clip_id": "broll_011_slot_017",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B01_green-checkmark__E_none/S017__0116-0120s__researcher-working-with-notes-computer-screen-an.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 13.14,
+        "codec": "h264",
+        "r_frame_rate": "24000/1001",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 2.92
+      }
+    },
+    {
+      "cue_id": "slot_019",
+      "clip_id": "broll_012_slot_019",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B01_green-checkmark__E_none/S019__0136-0140s__researcher-working-with-notes-team-research-disc.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_022",
+      "clip_id": "broll_013_slot_022",
+      "visual_role": "context",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 2.4,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B01_green-checkmark__E_none/S022__0166-0168s__researcher-working-with-notes-equipment-and-work.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_023",
+      "clip_id": "broll_014_slot_023",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S023__0168-0173s__introducir-el-caso-australiano-como-prueba-de-qu.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_025",
+      "clip_id": "broll_015_slot_025",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S025__0188-0193s__scientist-reviewing-evidence-and-research-data-o.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 19.775,
+        "codec": "h264",
+        "r_frame_rate": "60/1",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 4.3944
+      }
+    },
+    {
+      "cue_id": "slot_028",
+      "clip_id": "broll_016_slot_028",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S028__0218-0223s__scientist-reviewing-evidence-and-research-data-s.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_030",
+      "clip_id": "broll_017_slot_030",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S030__0238-0243s__scientist-reviewing-evidence-and-research-data-t.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_033",
+      "clip_id": "broll_018_slot_033",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S033__0268-0273s__scientist-reviewing-evidence-and-research-data-m.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 27.92,
+        "codec": "h264",
+        "r_frame_rate": "25/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 6.2044
+      }
+    },
+    {
+      "cue_id": "slot_036",
+      "clip_id": "broll_019_slot_036",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S036__0298-0303s__scientist-reviewing-evidence-and-research-data-n.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_038",
+      "clip_id": "broll_020_slot_038",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S038__0318-0323s__scientist-reviewing-evidence-and-research-data-l.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_041",
+      "clip_id": "broll_021_slot_041",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 2.8,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B02_when-persistence-crosses-a-line__E_medicare-access-boundary/S041__0348-0351s__scientist-reviewing-evidence-and-research-data-w.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 8.255,
+        "codec": "h264",
+        "r_frame_rate": "60/1",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 2.9482
+      }
+    },
+    {
+      "cue_id": "slot_042",
+      "clip_id": "broll_022_slot_042",
+      "visual_role": "contrast",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S042__0351-0356s__mostrar-por-que-la-respuesta-no-puede-ser-que-el.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_044",
+      "clip_id": "broll_023_slot_044",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S044__0371-0376s__scientist-reviewing-evidence-and-research-data-d.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_047",
+      "clip_id": "broll_024_slot_047",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S047__0401-0406s__scientist-reviewing-evidence-and-research-data-w.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_049",
+      "clip_id": "broll_025_slot_049",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S049__0421-0426s__scientist-reviewing-evidence-and-research-data-a.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 23.445,
+        "codec": "h264",
+        "r_frame_rate": "25/1",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 5.21
+      }
+    },
+    {
+      "cue_id": "slot_052",
+      "clip_id": "broll_026_slot_052",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S052__0451-0456s__scientist-reviewing-evidence-and-research-data-i.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_055",
+      "clip_id": "broll_027_slot_055",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S055__0481-0486s__scientist-reviewing-evidence-and-research-data-k.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_057",
+      "clip_id": "broll_028_slot_057",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B03_the-useful-night-shift__E_continuous-seller-delegation/S057__0501-0506s__scientist-reviewing-evidence-and-research-data-p.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 25.663333,
+        "codec": "h264",
+        "r_frame_rate": "60/1",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 5.703
+      }
+    },
+    {
+      "cue_id": "slot_059",
+      "clip_id": "broll_029_slot_059",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S059__0517-0522s__usar-la-electrificacion-como-giro-el-desafio-no.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_061",
+      "clip_id": "broll_030_slot_061",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S061__0537-0542s__scientist-analyzing-data-screen-printed-report-m.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_063",
+      "clip_id": "broll_031_slot_063",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S063__0557-0562s__scientist-analyzing-data-screen-candid-interview.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_066",
+      "clip_id": "broll_032_slot_066",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S066__0587-0592s__scientist-analyzing-data-screen-workspace-corrid.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1366,
+        "height": 720,
+        "duration_seconds": 25.36,
+        "codec": "h264",
+        "r_frame_rate": "25/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 5.6356
+      }
+    },
+    {
+      "cue_id": "slot_068",
+      "clip_id": "broll_033_slot_068",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S068__0607-0612s__scientist-analyzing-data-screen-server-and-equip.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_071",
+      "clip_id": "broll_034_slot_071",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S071__0637-0642s__scientist-analyzing-data-screen-desk-rack-focus.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_073",
+      "clip_id": "broll_035_slot_073",
+      "visual_role": "explanation",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B04_delegation-needs-an-institution__E_none/S073__0657-0662s__scientist-analyzing-data-screen-window-light-res.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 11.583333,
+        "codec": "h264",
+        "r_frame_rate": "60/1",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 2.5741
+      }
+    },
+    {
+      "cue_id": "slot_076",
+      "clip_id": "broll_036_slot_076",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S076__0682-0687s__volver-a-la-marca-verde-con-significado-distinto.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_077",
+      "clip_id": "broll_037_slot_077",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S077__0692-0697s__scientist-reviewing-evidence-and-research-data-s.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_080",
+      "clip_id": "broll_038_slot_080",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S080__0722-0727s__scientist-reviewing-evidence-and-research-data-h.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_082",
+      "clip_id": "broll_039_slot_082",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S082__0742-0747s__scientist-reviewing-evidence-and-research-data-l.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 8.733333,
+        "codec": "h264",
+        "r_frame_rate": "30/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 1.9407
+      }
+    },
+    {
+      "cue_id": "slot_085",
+      "clip_id": "broll_040_slot_085",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S085__0772-0777s__scientist-reviewing-evidence-and-research-data-t.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_087",
+      "clip_id": "broll_041_slot_087",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S087__0792-0797s__scientist-reviewing-evidence-and-research-data-e.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_090",
+      "clip_id": "broll_042_slot_090",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S090__0822-0827s__scientist-reviewing-evidence-and-research-data-s.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1366,
+        "height": 720,
+        "duration_seconds": 18.836667,
+        "codec": "h264",
+        "r_frame_rate": "30/1",
+        "has_audio_stream": true,
+        "audio_codec": "aac",
+        "audio_sample_rate_hz": 48000,
+        "audio_channels": 2,
+        "duration_ratio_vs_planned": 4.1859
+      }
+    },
+    {
+      "cue_id": "slot_092",
+      "clip_id": "broll_043_slot_092",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S092__0842-0847s__scientist-reviewing-evidence-and-research-data-g.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_095",
+      "clip_id": "broll_044_slot_095",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S095__0872-0877s__scientist-reviewing-evidence-and-research-data-p.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_097",
+      "clip_id": "broll_045_slot_097",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S097__0892-0897s__scientist-reviewing-evidence-and-research-data-e.mp4",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "video",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 10.033333,
+        "codec": "h264",
+        "r_frame_rate": "30/1",
+        "has_audio_stream": false,
+        "audio_codec": "",
+        "audio_sample_rate_hz": 0,
+        "audio_channels": 0,
+        "duration_ratio_vs_planned": 2.2296
+      }
+    },
+    {
+      "cue_id": "slot_100",
+      "clip_id": "broll_046_slot_100",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.4,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B05_from-permission-to-accountable-6__E_agent-identity-controls+medicare-access-boundary+continuous-seller-delegation/S100__0922-0927s__scientist-reviewing-evidence-and-research-data-l.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_101",
+      "clip_id": "broll_047_slot_101",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S101__0927-0931s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_102",
+      "clip_id": "broll_048_slot_102",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S102__0937-0941s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_103",
+      "clip_id": "broll_049_slot_103",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S103__0947-0951s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_104",
+      "clip_id": "broll_050_slot_104",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S104__0957-0961s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_105",
+      "clip_id": "broll_051_slot_105",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S105__0967-0971s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_106",
+      "clip_id": "broll_052_slot_106",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S106__0977-0981s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_107",
+      "clip_id": "broll_053_slot_107",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "resolved_clean",
+      "planned_seconds": 4.5,
+      "placeholder": false,
+      "logical_repo_path": "multimedia/2026-09-25/B99_synthesis__E_none/S107__0987-0991s__que-cuenta-como-conocimiento-verificable.jpg",
+      "issues": [],
+      "inspection": {
+        "ok": true,
+        "kind": "image",
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": null,
+        "codec": null
+      }
+    },
+    {
+      "cue_id": "slot_108",
+      "clip_id": "broll_054_slot_108",
+      "visual_role": "emotional_grounding",
+      "critical": false,
+      "state": "missing",
+      "planned_seconds": 4.5,
+      "placeholder": true,
+      "logical_repo_path": "scripts/2026-09-25/placeholder_media/v2/slot_108.png",
+      "issues": [
+        "unresolved_placeholder"
+      ],
+      "inspection": {}
+    }
+  ]
+}

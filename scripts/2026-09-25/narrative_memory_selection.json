@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "selected_count": 1,
+  "items": [
+    {
+      "id": "electrification-organizational-redesign",
+      "title": "La electrificación rindió más cuando cambió la organización",
+      "one_liner": "Sustituir la fuente de energía no bastaba: gran parte del valor apareció cuando fábricas y procesos se rediseñaron alrededor de ella.",
+      "summary": "Investigación histórica sobre manufactura vincula la electrificación con inversión, productividad y cambios organizacionales. Es un paralelo útil para tecnologías generales cuyo valor exige rediseñar procesos, no solamente reemplazar una herramienta.",
+      "verified_claims": [
+        "Investigaciones históricas relacionan electrificación de manufactura con aumentos de productividad, inversión y cambios organizacionales.",
+        "El efecto de electrificación no se redujo a sustituir una fuente de energía manteniendo intacta la organización del trabajo."
+      ],
+      "uncertainties": [
+        "Las magnitudes y mecanismos concretos dependen del periodo, industria y especificación empírica."
+      ],
+      "sources": [
+        "https://www.nber.org/papers/w28076"
+      ],
+      "period": "1890–1940",
+      "location": "Estados Unidos",
+      "domains": [
+        "economía",
+        "manufactura",
+        "organización"
+      ],
+      "mechanisms": [
+        "technology_requires_redesign",
+        "complementary_investment"
+      ],
+      "useful_for": [
+        "transformación empresarial con IA",
+        "automatización",
+        "productividad",
+        "rediseño de procesos"
+      ],
+      "analogy_mapping": "Ayuda a explicar por qué añadir IA a un proceso viejo puede producir menos valor que rediseñar responsabilidades y flujo de trabajo alrededor de la nueva capacidad.",
+      "analogy_limits": "No implica que la productividad de IA seguirá la misma curva temporal o magnitud que la electrificación.",
+      "surprise_score": 8.0,
+      "explanatory_score": 9.5,
+      "analogy_potential": 9.5,
+      "visual_score": 7.8,
+      "sourceability_score": 8.4,
+      "source_quality_score": 9.5,
+      "confidence": 9.2,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "editorial_seed",
+      "created_at": "2026-09-24",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2533,
+        "lexical_relevance": 0.067,
+        "quality": 0.914,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      }
+    }
+  ]
+}

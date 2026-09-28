@@ -1,0 +1,78 @@
+{
+  "history_days": 120,
+  "previous_essay_count": 2,
+  "threshold": 0.42,
+  "max_novelty_replans": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "topic_signature": "La delegación a agentes de IA convierte los permisos de acceso en cadenas vivas de decisiones que requieren supervisión y responsabilidad nuevas",
+      "narrative_lens": "instituciones, responsabilidad y delegación",
+      "novelty_angle": "A diferencia de los episodios recientes sobre comprensión humana y dependencia cognitiva, este ensayo no pregunta qué capacidades debemos conservar frente a una IA que responde por nosotros. Pregunta qué ocurre dentro de una institución cuando una IA actúa por nosotros: hereda permisos, toma decisiones intermedias y puede cruzar un límite sin que ningún humano haya decidido explícitamente cada uno",
+      "nearest_previous_essay": {
+        "similarity": 0.4465,
+        "episode_date": "2026-09-04",
+        "topic_signature": "La diferencia entre usar una IA para rendir mejor y conservar la capacidad humana de saber cuándo confiar, intervenir o actuar sin ella",
+        "central_question": "Cuando una herramienta puede hacer cada vez más trabajo mental por nosotros, ¿qué debemos seguir siendo capaces de hacer sin ella para que nuestra confianza no se convierta en dependencia ciega?",
+        "thesis": "La habilidad humana más importante junto a la IA quizá no sea ejecutar cada tarea manualmente, sino conservar suficiente comprensión para reconocer los límites de la herramienta, verificar sus resultados y recuperar criterio cuando la asistencia desaparece.",
+        "narrative_lens": "cognición, aprendizaje y responsabilidad",
+        "matched_concepts": [
+          "agency",
+          "governance",
+          "tools",
+          "verification",
+          "work"
+        ]
+      },
+      "similarity": 0.4465,
+      "threshold": 0.42,
+      "duplicate": true
+    },
+    {
+      "attempt": 2,
+      "topic_signature": "La IA empieza a ser valiosa no sólo cuando imagina más posibilidades, sino cuando aprende a negociar con los límites materiales que deciden cuáles pueden llegar",
+      "narrative_lens": "ciencia aplicada, mundo físico y restricciones materiales",
+      "novelty_angle": "Este episodio no pregunta si las personas conservan comprensión o criterio frente a una IA, como los ensayos recientes. Pregunta qué ocurre cuando la abundancia de ideas generadas por IA choca con un mundo donde fabricar moléculas y mover robots sigue costando energía, tiempo y materia. El centro no es la verificación humana de una respuesta, sino el cambio de valor desde generar opciones hacia vi",
+      "nearest_previous_essay": {
+        "similarity": 0.5066,
+        "episode_date": "2026-09-01",
+        "topic_signature": "El valor de comprender cuando una IA puede producir resultados competentes antes que las personas puedan explicar o reproducir el razonamiento",
+        "central_question": "Cuando una máquina puede producir una respuesta convincente —o incluso un artefacto científico que funciona— antes de que una persona pueda explicar plenamente el proceso, ¿qué debería contar como comprensión y qué deberíamos seguir exigiendo a los humanos?",
+        "thesis": "La IA no vuelve inútil la comprensión, pero vuelve insuficiente usar el resultado final como prueba de que alguien comprende. En educación, ciencia y trabajo, tendremos que distinguir con más cuidado entre usar una capacidad, verificarla y haber desarrollado el criterio para sostenerla sin la herramienta.",
+        "narrative_lens": "cognición, ciencia y confianza",
+        "matched_concepts": [
+          "learning",
+          "science",
+          "tools"
+        ]
+      },
+      "similarity": 0.5066,
+      "threshold": 0.42,
+      "duplicate": true
+    },
+    {
+      "attempt": 3,
+      "topic_signature": "La responsabilidad organizacional cuando agentes de IA ejecutan trabajo continuo y toman acciones delegadas",
+      "narrative_lens": "instituciones, responsabilidad y trabajo",
+      "novelty_angle": "Este episodio no pregunta si las personas comprenden o verifican mejor las respuestas de una IA, como los ensayos recientes. Pregunta qué le ocurre a una organización cuando delega acción sostenida a actores de software que pueden operar, escalar y equivocarse, pero no pueden cargar con responsabilidad profesional, legal o institucional. El foco no es dependencia cognitiva, sino rediseño de la jer",
+      "nearest_previous_essay": {
+        "similarity": 0.4032,
+        "episode_date": "2026-09-04",
+        "topic_signature": "La diferencia entre usar una IA para rendir mejor y conservar la capacidad humana de saber cuándo confiar, intervenir o actuar sin ella",
+        "central_question": "Cuando una herramienta puede hacer cada vez más trabajo mental por nosotros, ¿qué debemos seguir siendo capaces de hacer sin ella para que nuestra confianza no se convierta en dependencia ciega?",
+        "thesis": "La habilidad humana más importante junto a la IA quizá no sea ejecutar cada tarea manualmente, sino conservar suficiente comprensión para reconocer los límites de la herramienta, verificar sus resultados y recuperar criterio cuando la asistencia desaparece.",
+        "narrative_lens": "cognición, aprendizaje y responsabilidad",
+        "matched_concepts": [
+          "agency",
+          "cognition",
+          "governance",
+          "tools",
+          "work"
+        ]
+      },
+      "similarity": 0.4032,
+      "threshold": 0.42,
+      "duplicate": false
+    }
+  ]
+}

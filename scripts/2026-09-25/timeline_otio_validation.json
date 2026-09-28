@@ -1,0 +1,19 @@
+{
+  "valid": true,
+  "duration_seconds": 1018.4,
+  "track_ids": [
+    "V4",
+    "V3",
+    "V2",
+    "V1",
+    "A1"
+  ],
+  "clip_count": 108,
+  "marker_count": 35,
+  "source": ".pipeline-runs/2026-09-25/36467553743/scripts/2026-09-25/virtual_timeline.json",
+  "output": ".pipeline-runs/2026-09-25/36467553743/scripts/2026-09-25/timeline.otio",
+  "adapter": "otio_json",
+  "opentimelineio_version": "0.18.1",
+  "frame_accurate": false,
+  "requires_recording_retime": true
+}

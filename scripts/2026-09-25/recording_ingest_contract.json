@@ -1,0 +1,478 @@
+{
+  "schema_version": 1,
+  "episode_date": "2026-09-25",
+  "status": "awaiting_recorded_media",
+  "sources": {
+    "recording_pack": "scripts/2026-09-25/recording_pack.json"
+  },
+  "storage": {
+    "recommended_local_root": "recordings/2026-09-25",
+    "recommended_inbox": "recordings/2026-09-25/inbox",
+    "media_is_local_only": true,
+    "never_commit_raw_recordings": true,
+    "manifest_stores_relative_paths_only": true,
+    "scanner_never_deletes_or_moves_source_files": true
+  },
+  "naming": {
+    "grammar": "<take_id>__r<NN>__<label>.<ext>",
+    "retake_number_format": "two_digits_starting_at_01",
+    "video_labels": [
+      "camA",
+      "camB",
+      "cam1",
+      "cam2",
+      "main"
+    ],
+    "audio_labels": [
+      "audio",
+      "lav",
+      "mic",
+      "micA",
+      "micB"
+    ],
+    "video_extensions": [
+      ".avi",
+      ".mkv",
+      ".mov",
+      ".mp4",
+      ".mxf"
+    ],
+    "audio_extensions": [
+      ".aac",
+      ".flac",
+      ".m4a",
+      ".mp3",
+      ".wav"
+    ],
+    "case_sensitive_take_id": true,
+    "examples": [
+      "opening_t01__r01__camA.mov",
+      "opening_t01__r02__camA.mov",
+      "opening_t01__r01__audio.wav"
+    ]
+  },
+  "technical_policy": {
+    "preferred_resolution": "3840x2160",
+    "preferred_frame_rate_fps": 30,
+    "preferred_audio_sample_rate_hz": 48000,
+    "minimum_short_edge_px": 720,
+    "minimum_usable_duration_ratio": 0.55,
+    "long_capture_warning_ratio": 2.5,
+    "preferred_camera_labels": [
+      "camA",
+      "cam1",
+      "main",
+      "camB",
+      "cam2"
+    ],
+    "external_audio_bonus": true,
+    "embedded_audio_is_acceptable": true,
+    "camera_scratch_audio_recommended_for_automated_alignment": true,
+    "reason": "Keep camera scratch audio enabled even when using an external lavalier. WhisperX can then produce video-relative word timestamps and Resolve can waveform-sync the external audio."
+  },
+  "selection_policy": {
+    "authority": "technical_only_not_performance_or_script_accuracy",
+    "retain_all_retakes": true,
+    "never_delete_nonselected_retakes": true,
+    "technical_preferred_is_provisional": true,
+    "later_alignment_may_select_another_retake": true,
+    "tie_breaker": "later_retake_after_equal_technical_score"
+  },
+  "future_alignment": {
+    "stable_join_key": "take_id",
+    "requires_transcription": true,
+    "must_compare_transcript_to_recording_pack_spoken_text": true,
+    "expected_output": "scripts/2026-09-25/recording_alignment.json"
+  },
+  "readiness": {
+    "contract_valid": true,
+    "ready_for_scan": true,
+    "ready_for_alignment": false,
+    "blockers": [
+      "recorded_media_required"
+    ]
+  },
+  "summary": {
+    "expected_take_count": 27
+  },
+  "expected_takes": [
+    {
+      "take_id": "opening_t01",
+      "section_label": "Apertura",
+      "spoken_slate": "TAKE opening_t01",
+      "expected_spoken_seconds": 36.8,
+      "expected_capture_seconds": 40.8,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "opening_t01__r01__camA.mov",
+        "video_retake": "opening_t01__r02__camA.mov",
+        "external_audio": "opening_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "opening_t02",
+      "section_label": "Apertura",
+      "spoken_slate": "TAKE opening_t02",
+      "expected_spoken_seconds": 29.2,
+      "expected_capture_seconds": 33.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "opening_t02__r01__camA.mov",
+        "video_retake": "opening_t02__r02__camA.mov",
+        "external_audio": "opening_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b01_green_checkmark_t01",
+      "section_label": "Bloque 2 · green-checkmark",
+      "spoken_slate": "TAKE b01_green_checkmark_t01",
+      "expected_spoken_seconds": 35.2,
+      "expected_capture_seconds": 39.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b01_green_checkmark_t01__r01__camA.mov",
+        "video_retake": "b01_green_checkmark_t01__r02__camA.mov",
+        "external_audio": "b01_green_checkmark_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b01_green_checkmark_t02",
+      "section_label": "Bloque 2 · green-checkmark",
+      "spoken_slate": "TAKE b01_green_checkmark_t02",
+      "expected_spoken_seconds": 37.2,
+      "expected_capture_seconds": 41.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b01_green_checkmark_t02__r01__camA.mov",
+        "video_retake": "b01_green_checkmark_t02__r02__camA.mov",
+        "external_audio": "b01_green_checkmark_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b01_green_checkmark_t03",
+      "section_label": "Bloque 2 · green-checkmark",
+      "spoken_slate": "TAKE b01_green_checkmark_t03",
+      "expected_spoken_seconds": 30.0,
+      "expected_capture_seconds": 34.0,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b01_green_checkmark_t03__r01__camA.mov",
+        "video_retake": "b01_green_checkmark_t03__r02__camA.mov",
+        "external_audio": "b01_green_checkmark_t03__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b02_when_persistence_crosses_a_line_t01",
+      "section_label": "Bloque 3 · when-persistence-crosses-a-line",
+      "spoken_slate": "TAKE b02_when_persistence_crosses_a_line_t01",
+      "expected_spoken_seconds": 35.2,
+      "expected_capture_seconds": 39.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b02_when_persistence_crosses_a_line_t01__r01__camA.mov",
+        "video_retake": "b02_when_persistence_crosses_a_line_t01__r02__camA.mov",
+        "external_audio": "b02_when_persistence_crosses_a_line_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b02_when_persistence_crosses_a_line_t02",
+      "section_label": "Bloque 3 · when-persistence-crosses-a-line",
+      "spoken_slate": "TAKE b02_when_persistence_crosses_a_line_t02",
+      "expected_spoken_seconds": 36.0,
+      "expected_capture_seconds": 40.0,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b02_when_persistence_crosses_a_line_t02__r01__camA.mov",
+        "video_retake": "b02_when_persistence_crosses_a_line_t02__r02__camA.mov",
+        "external_audio": "b02_when_persistence_crosses_a_line_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b02_when_persistence_crosses_a_line_t03",
+      "section_label": "Bloque 3 · when-persistence-crosses-a-line",
+      "spoken_slate": "TAKE b02_when_persistence_crosses_a_line_t03",
+      "expected_spoken_seconds": 39.2,
+      "expected_capture_seconds": 43.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b02_when_persistence_crosses_a_line_t03__r01__camA.mov",
+        "video_retake": "b02_when_persistence_crosses_a_line_t03__r02__camA.mov",
+        "external_audio": "b02_when_persistence_crosses_a_line_t03__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b02_when_persistence_crosses_a_line_t04",
+      "section_label": "Bloque 3 · when-persistence-crosses-a-line",
+      "spoken_slate": "TAKE b02_when_persistence_crosses_a_line_t04",
+      "expected_spoken_seconds": 46.8,
+      "expected_capture_seconds": 50.8,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b02_when_persistence_crosses_a_line_t04__r01__camA.mov",
+        "video_retake": "b02_when_persistence_crosses_a_line_t04__r02__camA.mov",
+        "external_audio": "b02_when_persistence_crosses_a_line_t04__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b02_when_persistence_crosses_a_line_t05",
+      "section_label": "Bloque 3 · when-persistence-crosses-a-line",
+      "spoken_slate": "TAKE b02_when_persistence_crosses_a_line_t05",
+      "expected_spoken_seconds": 25.6,
+      "expected_capture_seconds": 29.6,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b02_when_persistence_crosses_a_line_t05__r01__camA.mov",
+        "video_retake": "b02_when_persistence_crosses_a_line_t05__r02__camA.mov",
+        "external_audio": "b02_when_persistence_crosses_a_line_t05__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b03_the_useful_night_shift_t01",
+      "section_label": "Bloque 4 · the-useful-night-shift",
+      "spoken_slate": "TAKE b03_the_useful_night_shift_t01",
+      "expected_spoken_seconds": 35.2,
+      "expected_capture_seconds": 39.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b03_the_useful_night_shift_t01__r01__camA.mov",
+        "video_retake": "b03_the_useful_night_shift_t01__r02__camA.mov",
+        "external_audio": "b03_the_useful_night_shift_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b03_the_useful_night_shift_t02",
+      "section_label": "Bloque 4 · the-useful-night-shift",
+      "spoken_slate": "TAKE b03_the_useful_night_shift_t02",
+      "expected_spoken_seconds": 40.4,
+      "expected_capture_seconds": 44.4,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b03_the_useful_night_shift_t02__r01__camA.mov",
+        "video_retake": "b03_the_useful_night_shift_t02__r02__camA.mov",
+        "external_audio": "b03_the_useful_night_shift_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b03_the_useful_night_shift_t03",
+      "section_label": "Bloque 4 · the-useful-night-shift",
+      "spoken_slate": "TAKE b03_the_useful_night_shift_t03",
+      "expected_spoken_seconds": 36.8,
+      "expected_capture_seconds": 40.8,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b03_the_useful_night_shift_t03__r01__camA.mov",
+        "video_retake": "b03_the_useful_night_shift_t03__r02__camA.mov",
+        "external_audio": "b03_the_useful_night_shift_t03__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b03_the_useful_night_shift_t04",
+      "section_label": "Bloque 4 · the-useful-night-shift",
+      "spoken_slate": "TAKE b03_the_useful_night_shift_t04",
+      "expected_spoken_seconds": 53.6,
+      "expected_capture_seconds": 57.6,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b03_the_useful_night_shift_t04__r01__camA.mov",
+        "video_retake": "b03_the_useful_night_shift_t04__r02__camA.mov",
+        "external_audio": "b03_the_useful_night_shift_t04__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b04_delegation_needs_an_institution_t01",
+      "section_label": "Bloque 5 · delegation-needs-an-institution",
+      "spoken_slate": "TAKE b04_delegation_needs_an_institution_t01",
+      "expected_spoken_seconds": 39.6,
+      "expected_capture_seconds": 43.6,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b04_delegation_needs_an_institution_t01__r01__camA.mov",
+        "video_retake": "b04_delegation_needs_an_institution_t01__r02__camA.mov",
+        "external_audio": "b04_delegation_needs_an_institution_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b04_delegation_needs_an_institution_t02",
+      "section_label": "Bloque 5 · delegation-needs-an-institution",
+      "spoken_slate": "TAKE b04_delegation_needs_an_institution_t02",
+      "expected_spoken_seconds": 43.6,
+      "expected_capture_seconds": 47.6,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b04_delegation_needs_an_institution_t02__r01__camA.mov",
+        "video_retake": "b04_delegation_needs_an_institution_t02__r02__camA.mov",
+        "external_audio": "b04_delegation_needs_an_institution_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b04_delegation_needs_an_institution_t03",
+      "section_label": "Bloque 5 · delegation-needs-an-institution",
+      "spoken_slate": "TAKE b04_delegation_needs_an_institution_t03",
+      "expected_spoken_seconds": 37.2,
+      "expected_capture_seconds": 41.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b04_delegation_needs_an_institution_t03__r01__camA.mov",
+        "video_retake": "b04_delegation_needs_an_institution_t03__r02__camA.mov",
+        "external_audio": "b04_delegation_needs_an_institution_t03__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b04_delegation_needs_an_institution_t04",
+      "section_label": "Bloque 5 · delegation-needs-an-institution",
+      "spoken_slate": "TAKE b04_delegation_needs_an_institution_t04",
+      "expected_spoken_seconds": 44.8,
+      "expected_capture_seconds": 48.8,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b04_delegation_needs_an_institution_t04__r01__camA.mov",
+        "video_retake": "b04_delegation_needs_an_institution_t04__r02__camA.mov",
+        "external_audio": "b04_delegation_needs_an_institution_t04__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b05_from_permission_to_accountable_6_t01",
+      "section_label": "Bloque 6 · from-permission-to-accountable-6",
+      "spoken_slate": "TAKE b05_from_permission_to_accountable_6_t01",
+      "expected_spoken_seconds": 42.4,
+      "expected_capture_seconds": 46.4,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b05_from_permission_to_accountable_6_t01__r01__camA.mov",
+        "video_retake": "b05_from_permission_to_accountable_6_t01__r02__camA.mov",
+        "external_audio": "b05_from_permission_to_accountable_6_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b05_from_permission_to_accountable_6_t02",
+      "section_label": "Bloque 6 · from-permission-to-accountable-6",
+      "spoken_slate": "TAKE b05_from_permission_to_accountable_6_t02",
+      "expected_spoken_seconds": 35.6,
+      "expected_capture_seconds": 39.6,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b05_from_permission_to_accountable_6_t02__r01__camA.mov",
+        "video_retake": "b05_from_permission_to_accountable_6_t02__r02__camA.mov",
+        "external_audio": "b05_from_permission_to_accountable_6_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b05_from_permission_to_accountable_6_t03",
+      "section_label": "Bloque 6 · from-permission-to-accountable-6",
+      "spoken_slate": "TAKE b05_from_permission_to_accountable_6_t03",
+      "expected_spoken_seconds": 35.2,
+      "expected_capture_seconds": 39.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b05_from_permission_to_accountable_6_t03__r01__camA.mov",
+        "video_retake": "b05_from_permission_to_accountable_6_t03__r02__camA.mov",
+        "external_audio": "b05_from_permission_to_accountable_6_t03__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b05_from_permission_to_accountable_6_t04",
+      "section_label": "Bloque 6 · from-permission-to-accountable-6",
+      "spoken_slate": "TAKE b05_from_permission_to_accountable_6_t04",
+      "expected_spoken_seconds": 43.6,
+      "expected_capture_seconds": 47.6,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b05_from_permission_to_accountable_6_t04__r01__camA.mov",
+        "video_retake": "b05_from_permission_to_accountable_6_t04__r02__camA.mov",
+        "external_audio": "b05_from_permission_to_accountable_6_t04__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b05_from_permission_to_accountable_6_t05",
+      "section_label": "Bloque 6 · from-permission-to-accountable-6",
+      "spoken_slate": "TAKE b05_from_permission_to_accountable_6_t05",
+      "expected_spoken_seconds": 38.4,
+      "expected_capture_seconds": 42.4,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b05_from_permission_to_accountable_6_t05__r01__camA.mov",
+        "video_retake": "b05_from_permission_to_accountable_6_t05__r02__camA.mov",
+        "external_audio": "b05_from_permission_to_accountable_6_t05__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "b05_from_permission_to_accountable_6_t06",
+      "section_label": "Bloque 6 · from-permission-to-accountable-6",
+      "spoken_slate": "TAKE b05_from_permission_to_accountable_6_t06",
+      "expected_spoken_seconds": 49.2,
+      "expected_capture_seconds": 53.2,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "b05_from_permission_to_accountable_6_t06__r01__camA.mov",
+        "video_retake": "b05_from_permission_to_accountable_6_t06__r02__camA.mov",
+        "external_audio": "b05_from_permission_to_accountable_6_t06__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "synthesis_t01",
+      "section_label": "Síntesis",
+      "spoken_slate": "TAKE synthesis_t01",
+      "expected_spoken_seconds": 36.8,
+      "expected_capture_seconds": 40.8,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "synthesis_t01__r01__camA.mov",
+        "video_retake": "synthesis_t01__r02__camA.mov",
+        "external_audio": "synthesis_t01__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "synthesis_t02",
+      "section_label": "Síntesis",
+      "spoken_slate": "TAKE synthesis_t02",
+      "expected_spoken_seconds": 40.8,
+      "expected_capture_seconds": 44.8,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "synthesis_t02__r01__camA.mov",
+        "video_retake": "synthesis_t02__r02__camA.mov",
+        "external_audio": "synthesis_t02__r01__audio.wav"
+      }
+    },
+    {
+      "take_id": "cta_t01",
+      "section_label": "CTA",
+      "spoken_slate": "TAKE cta_t01",
+      "expected_spoken_seconds": 14.0,
+      "expected_capture_seconds": 18.0,
+      "video_required": true,
+      "audio_requirement": "embedded_or_paired_external",
+      "examples": {
+        "video_first_take": "cta_t01__r01__camA.mov",
+        "video_retake": "cta_t01__r02__camA.mov",
+        "external_audio": "cta_t01__r01__audio.wav"
+      }
+    }
+  ]
+}

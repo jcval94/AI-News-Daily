@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "valid": true,
+  "strategy": "import_otio",
+  "source_otio": "/home/runner/work/AI-News-Daily/AI-News-Daily/.pipeline-runs/2026-09-25/36467553743/scripts/2026-09-25/timeline.otio",
+  "resolve_otio": "/home/runner/work/AI-News-Daily/AI-News-Daily/.pipeline-runs/2026-09-25/36467553743/scripts/2026-09-25/resolve_timeline.otio",
+  "materialized_clip_count": 81,
+  "planned_clip_count": 81,
+  "kept_unresolved_audio_placeholders": 27
+}

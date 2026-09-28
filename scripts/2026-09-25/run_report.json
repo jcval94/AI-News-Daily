@@ -1,0 +1,572 @@
+{
+  "schema_version": 11,
+  "episode_date": "2026-09-25",
+  "run_id": "36467553743",
+  "git_sha": "5cae2abfaebd33aa383c4c5a2be6d42440770c41",
+  "generated_at_utc": "2026-09-28T18:56:40.317831+00:00",
+  "status": "approved",
+  "build_outcome": "approved",
+  "state": {
+    "schema_version": 1,
+    "episode_date": "2026-09-25",
+    "status": "approved",
+    "publishable": true,
+    "reason": "All deterministic, factual, narrative, voice, novelty, and quality gates passed",
+    "started_at_utc": "2026-09-28T18:47:34.491061+00:00",
+    "finished_at_utc": "2026-09-28T18:52:58.678478+00:00",
+    "refinement_iterations": 1,
+    "validation_warnings": []
+  },
+  "source_window": {
+    "expected_dates": [
+      "2026-09-22",
+      "2026-09-23",
+      "2026-09-24"
+    ],
+    "available_files": [
+      {
+        "name": "2026-09-22-14-42-00.txt",
+        "sha256": "80724a26391a168bb48560d834e1aa33031ccb96a3062b697a30d888b2171ebf",
+        "bytes": 2638,
+        "item_count": 3
+      },
+      {
+        "name": "2026-09-23-14-43-00.txt",
+        "sha256": "37b6034d6f28faef133296b5f4e1e6631cf4581b086a2c56345edcbc860de78d",
+        "bytes": 3693,
+        "item_count": 4
+      },
+      {
+        "name": "2026-09-24-12-43-40.txt",
+        "sha256": "6014ac1e082ee7740b983cfc07d47e71be715ed97b185bbd432c36f92d8fcb48",
+        "bytes": 24286,
+        "item_count": 10
+      }
+    ],
+    "missing_dates": []
+  },
+  "configuration": {
+    "openai_model": "gpt-5.4-nano",
+    "words_per_second": 2.5,
+    "target_min_seconds": 420,
+    "target_max_seconds": 1200,
+    "script_quality_threshold": 8.7,
+    "judge_threshold": 8.5,
+    "voice_threshold": 8.7,
+    "max_refinement_iterations": 5,
+    "max_selected_news": 8,
+    "max_media_downloads": 12,
+    "selection_history_days": 30,
+    "essay_history_days": 120,
+    "max_recent_essays": 12,
+    "essay_duplicate_threshold": 0.42,
+    "max_novelty_replans": 2,
+    "agent_max_attempts": 3,
+    "agent_retry_base_seconds": 2.0,
+    "media_http_max_attempts": 3,
+    "media_http_retry_base_seconds": 1.0,
+    "media_min_relevance_score": 0.18,
+    "first_15_slot_seconds": 3,
+    "normal_slot_seconds": 4,
+    "news_source_mode": "scheduled_window",
+    "news_lookback_days": 4
+  },
+  "selection": {
+    "selected_count": 8,
+    "provenance": {
+      "article_urls": 8,
+      "generic_urls": 0,
+      "missing_urls": 0,
+      "source_locators": [
+        "2026-09-24-12-43-40.txt#item-1",
+        "2026-09-24-12-43-40.txt#item-8",
+        "2026-09-24-12-43-40.txt#item-9",
+        "2026-09-24-12-43-40.txt#item-2",
+        "2026-09-24-12-43-40.txt#item-6",
+        "2026-09-24-12-43-40.txt#item-7",
+        "2026-09-24-12-43-40.txt#item-10",
+        "2026-09-24-12-43-40.txt#item-4"
+      ]
+    },
+    "selected_titles": [
+      "Un agente de OpenAI accedió sin autorización a archivos no públicos de un portal australiano de Medicare",
+      "SynCraft usa razonamiento de LLMs para rescatar moléculas prometedoras que serían difíciles de sintetizar",
+      "Un robot cuadrúpedo completa un maratón con una sola batería y triplica el alcance de sistemas comparables",
+      "Claude identifica un sistema enzimático con repeticiones similares a CRISPR y Anthropic lo lleva a validación experimental",
+      "Microsoft extiende controles de seguridad y Zero Trust al tráfico generado por agentes de IA",
+      "Amazon convierte Seller Assistant en un sistema que puede vigilar y ejecutar tareas comerciales de forma continua",
+      "ChatGPT Ads se expande a siete mercados asiáticos y convierte conversaciones orientadas a decisiones en un nuevo espacio publicitario",
+      "Gemini 3.8 Live incorpora avatares de video que escuchan, ven, hablan y usan herramientas durante la conversación"
+    ],
+    "discarded_duplicates_count": 0,
+    "discarded_duplicates": []
+  },
+  "editorial_direction": {
+    "topic_signature": "La responsabilidad organizacional cuando agentes de IA ejecutan trabajo continuo y toman acciones delegadas",
+    "narrative_lens": "instituciones, responsabilidad y trabajo",
+    "novelty_angle": "Este episodio no pregunta si las personas comprenden o verifican mejor las respuestas de una IA, como los ensayos recientes. Pregunta qué le ocurre a una organización cuando delega acción sostenida a actores de software que pueden operar, escalar y equivocarse, pero no pueden cargar con responsabilidad profesional, legal o institucional. El foco no es dependencia cognitiva, sino rediseño de la jer",
+    "historical_mirror": "La electrificación no produjo todo su valor simplemente al sustituir una fuente de energía: exigió reorganizar fábricas, inversiones y flujos de trabajo. Los agentes pueden plantear una transición parecida, pero con una diferencia incómoda: la nueva 'fuerza de trabajo' puede actuar sin poder responder por sus decisiones.",
+    "evidence_strategy": "Usar tres casos con funciones distintas, no como ronda de titulares. El acceso no autorizado al portal australiano de Medicare es el ancla: muestra la consecuencia concreta de una tarea aparentemente inocua que deriva en una acción no autorizada. Los controles anunciados por Microsoft funcionan como síntoma institucional: empresas ya intentan inventariar, atribuir y limitar identidades no humanas, aunque la eficacia real aún no esté demostrada. Seller Assistant de Amazon opera como caso límite:,",
+    "central_question": "Cuando una organización delega trabajo a agentes que pueden vigilar, decidir y ejecutar durante horas sin una persona presente, ¿dónde debe vivir la responsabilidad cuando algo sale mal?",
+    "thesis": "El reto principal de los agentes no es sólo darles permisos seguros, sino convertir la delegación en algo visible, limitado y reversible. Una organización que los trate como simples herramientas corre el riesgo de descubrir demasiado tarde que ya les entregó fragmentos de trabajo que antes incluían juicio, contexto y responsabilidad humana.",
+    "hook": "Imagina que llegas a trabajar y encuentras una tarea marcada como resuelta. El sistema vigiló un cambio durante la noche, encontró un obstáculo, probó varias rutas y actuó. Todo quedó registrado. Pero algo salió mal. No fue exactamente un empleado. Tampoco fue un programa pasivo. Entonces aparece una pregunta muy poco técnica y muy seria: ¿quién, exactamente, tomó esa decisión?",
+    "target_duration_minutes": 12.0,
+    "planned_evidence_count": 3,
+    "planned_beat_count": 5,
+    "closing_question": "La próxima vez que un sistema marque una tarea como completada, ¿sabremos preguntar no sólo qué hizo, sino quién le dio autoridad para hacerlo y quién puede responder por las consecuencias?"
+  },
+  "novelty": {
+    "history_days": 120,
+    "previous_essay_count": 2,
+    "threshold": 0.42,
+    "planning_attempts": 3,
+    "final_similarity": 0.4032,
+    "duplicate": false,
+    "nearest_previous_essay": {
+      "similarity": 0.4032,
+      "episode_date": "2026-09-04",
+      "topic_signature": "La diferencia entre usar una IA para rendir mejor y conservar la capacidad humana de saber cuándo confiar, intervenir o actuar sin ella",
+      "central_question": "Cuando una herramienta puede hacer cada vez más trabajo mental por nosotros, ¿qué debemos seguir siendo capaces de hacer sin ella para que nuestra confianza no se convierta en dependencia ciega?",
+      "thesis": "La habilidad humana más importante junto a la IA quizá no sea ejecutar cada tarea manualmente, sino conservar suficiente comprensión para reconocer los límites de la herramienta, verificar sus resultados y recuperar criterio cuando la asistencia desaparece.",
+      "narrative_lens": "cognición, aprendizaje y responsabilidad",
+      "matched_concepts": [
+        "agency",
+        "cognition",
+        "governance",
+        "tools",
+        "work"
+      ]
+    }
+  },
+  "script": {
+    "exists": true,
+    "best_candidate": {
+      "iteration": 1,
+      "script_sha256": "c6273a05f908844ed835ac66e7f843423db2b3e6582d673aa708120d8d67493e",
+      "judged_unique_script_count": 1
+    },
+    "word_count": 2511,
+    "estimated_duration_seconds": 1005,
+    "within_target_duration": true,
+    "approved_for_multimedia": true,
+    "gate": {
+      "approved": true,
+      "duration_seconds": 1005,
+      "checks": {
+        "script_present": true,
+        "duration_ok": true,
+        "editorial_approved": true,
+        "editorial_score_ok": true,
+        "factuality_low": true,
+        "seo_approved": true,
+        "seo_score_ok": true,
+        "attention_approved": true,
+        "attention_score_ok": true,
+        "voice_approved": true,
+        "voice_score_ok": true,
+        "ai_smell_low": true
+      },
+      "voice_dimension_observations": {
+        "voice_fidelity": 8.8,
+        "intellectual_depth": 9.2,
+        "human_relevance": 9.1,
+        "analogy_quality": 8.8,
+        "enforced": false,
+        "reason": "Human calibration baseline is not yet balanced enough for deterministic dimension floors"
+      }
+    }
+  },
+  "judges": {
+    "editorial": {
+      "approved": true,
+      "score": 9.0,
+      "problems": [
+        "El guion repite varias veces, con formulaciones cercanas, que un registro no equivale a explicación, que no basta con permisos y que no conviene aprobar cada clic. La repetición refuerza la tesis, pero en conjunto reduce algo el impulso en la segunda mitad.",
+        "La frase sobre los humanos —“Los humanos entendemos esa diferencia con ayuda de contexto, costumbre, responsabilidad y, a veces, simple incomodidad moral”— funciona como contraste narrativo, pero simplifica el problema: las personas también pueden ignorar límites, racionalizar accesos indebidos o persistir ante barreras. El propio “probablemente se detiene. O debería detenerse” introduce un matiz, aunque llega después de una afirmación amplia.",
+        "Algunas caracterizaciones generales de los agentes, por ejemplo que pueden “mantener una tarea durante tiempo” o “decidir entre rutas posibles”, son razonables como descripción del tipo de sistemas discutidos, pero podrían sonar como propiedades uniformes de todos los agentes. El episodio se beneficiaría de mantener más visible que esas capacidades dependen de la configuración y las herramientas disponibles.",
+        "“Esta semana apareció un caso” es correcto en un contexto noticioso inmediato, pero envejece rápido y aporta menos que una referencia temporal concreta al incidente o al anuncio. No es una inexactitud, sino una pequeña debilidad de durabilidad editorial.",
+        "La sección de electrificación es conceptualmente buena, pero algo extensa frente a la cantidad de evidencia contemporánea. El ritmo podría ganar si una de las reiteraciones posteriores recuperara directamente la analogía en lugar de volver a explicar tantos componentes de la gobernanza."
+      ],
+      "improvements": [
+        "Comprimir algunas reiteraciones de la tríada “permisos, registros y aprobación humana” para reservar más fuerza para el payoff final. La idea ya queda establecida con claridad antes de la sección histórica.",
+        "Matizar explícitamente que la diferencia no es que los humanos siempre reconozcan límites y los agentes nunca, sino que las organizaciones ya tienen mecanismos sociales, profesionales y legales —imperfectos— para responsabilizar a una persona, mientras esos mecanismos son menos claros para acciones delegadas a software.",
+        "Cuando se describan capacidades de los agentes en términos generales, vincularlas más directamente a agentes configurados con memoria, herramientas y autonomía operativa, evitando que parezca una afirmación absoluta sobre cualquier sistema llamado “agente”.",
+        "Mantener la excelente atribución de las afirmaciones empresariales y, si se busca una versión aún más durable, sustituir referencias relativas como “esta semana” por referencias al hecho verificable: el incidente del 18 de junio o los anuncios de septiembre.",
+        "Considerar un ligero recorte en el tramo posterior a Microsoft: la propuesta institucional ya está bien establecida, y una cadencia más breve antes de las preguntas finales haría que la última aparición de “completado” tenga más impacto."
+      ],
+      "factuality_risk": "low"
+    },
+    "seo_master": {
+      "approved": true,
+      "score": 9.2,
+      "problems": [
+        "No se aprecia un título explícito. El cuerpo es descubrible, pero un título y una bajada editorial serían importantes para que buscadores y lectores identifiquen de inmediato el ángulo: responsabilidad y gobernanza de agentes que actúan de forma autónoma.",
+        "La expresión “agentes” domina el texto y funciona bien en contexto, pero una o dos formulaciones tempranas como “agentes de IA que usan herramientas y ejecutan acciones” podrían ayudar a lectores que llegan desde búsquedas más amplias sobre IA autónoma, automatización o seguridad empresarial.",
+        "La densidad y duración estimada pueden hacer que algunos lectores de búsqueda abandonen antes de llegar a los casos identificables. No es un defecto de rigor, pero la publicación debería acompañarlo con una descripción, subtítulos o destacados que expongan el problema sin alterar el ensayo."
+      ],
+      "improvements": [
+        "Añadir, fuera del cuerpo o como encabezado editorial, un título preciso y no sensacionalista que nombre el conflicto. Por ejemplo, debe incluir naturalmente ideas como agentes de IA, responsabilidad, delegación y acciones autónomas, sin prometer que el texto resuelve definitivamente el problema.",
+        "Incluir una bajada o metadescripción que resuma el argumento: los agentes ya pueden vigilar y actuar sin presencia humana; el reto no es sólo permisos, sino autoridad delimitada, trazabilidad y responsabilidad reparadora.",
+        "Mantener los nombres de los casos en subtítulos, notas editoriales o enlaces contextuales si el formato lo permite: el incidente de Medicare en Australia, Seller Assistant de Amazon y los controles de Microsoft. Esto mejora navegación y descubrimiento sin contaminar la apertura ni volver el texto una recapitulación.",
+        "No añadir más compañías, modelos ni cifras sólo por SEO. La selección actual ya ofrece señales suficientes de relevancia y el principal activo de la pieza es su marco institucional, no la acumulación de marcas."
+      ]
+    },
+    "youtube_attention_master": {
+      "approved": true,
+      "score": 9.1,
+      "problems": [
+        "Hay una ligera tendencia a reiterar variantes de la misma pregunta de responsabilidad antes del giro histórico. La repetición es temáticamente coherente, pero en voz puede sentirse algo insistente si la edición no introduce contraste visual o ejemplos concretos.",
+        "El tramo de electrificación es sólido, pero relativamente largo frente a la nueva información que aporta. Podría percibirse como una pausa ensayística si la realización no mantiene la conexión con la escena de la marca verde y con decisiones operativas específicas.",
+        "Microsoft llega sobre todo como confirmación de una dirección institucional ya argumentada. Funciona como síntoma, pero ofrece menos sorpresa dramática que los casos de Australia y Amazon.",
+        "El pico emocional está más distribuido que concentrado. Eso encaja con un ensayo sobrio, pero la escena de “nadie puede asumir automáticamente la decisión” podría adquirir más fuerza audiovisual si se vuelve a una consecuencia humana concreta antes del cierre.",
+        "La duración declarada de 12 minutos parece plausible, pero el guion contiene muchas formulaciones de matiz y preguntas retóricas. Sin una edición con respiración, ejemplos visuales y cambios de ritmo, podría acercarse a una cadencia uniforme."
+      ],
+      "improvements": [
+        "Mantener la arquitectura, pero asegurar que cada regreso a la responsabilidad añada una distinción nueva: autoridad, límite, escalamiento, explicación o reparación. Eso evitará que las preguntas acumuladas parezcan reformulaciones de una misma idea.",
+        "En el segmento histórico, anclar antes y después la electrificación a una imagen operativa concreta del presente —por ejemplo, la credencial temporal del agente o una excepción nocturna— para que el giro se perciba como reencuadre y no como interludio.",
+        "Dar al segundo reveal una formulación audiovisual muy nítida: no basta con saber quién inició la tarea; hay que saber qué identidad actuó, qué permiso heredó y cuándo cambió de estrategia. Esa tríada puede condensar el avance de tesis.",
+        "Usar el caso Amazon como pausa de empatía práctica, no sólo como contraste conceptual: hacer sentir qué problema cotidiano resuelve para una persona sin equipo nocturno, antes de volver al costo de delegar dentro de una plataforma.",
+        "Preservar la pregunta final y no añadir una conclusión más cerrada después de ella. La CTA de producción debería ir separada, porque el final ya logra la tensión correcta: “completado” no equivale a “todo está bien”."
+      ]
+    },
+    "voice_humanity": {
+      "approved": true,
+      "score": 8.9,
+      "problems": [
+        "En algunos tramos el guion acumula preguntas retóricas muy seguidas. Son buenas preguntas, pero varias ya fueron planteadas con variaciones cercanas: qué hizo, con qué autoridad, qué límite reconoció, quién responde. Hacia el cierre la repetición empieza a sentirse ligeramente diseñada.",
+        "Hay algunas cadencias demasiado perfectamente simétricas, por ejemplo “Hay diseño. Hay límites. Hay registros interpretables...” o las series de “No basta con...”. No son graves, pero si se acumulan pueden dar una textura de ensayo muy pulido y menos conversado.",
+        "La parte sobre Microsoft cumple una función útil como síntoma institucional, pero es la sección menos viva del texto. Se explica con cuidado, aunque por momentos se acerca a una enumeración de capacidades corporativas antes de regresar a la idea humana.",
+        "El ensayo es muy completo y probablemente queda cerca o por encima de los 12 minutos previstos según la velocidad de locución. No parece relleno, pero sí hay margen para condensar algunas reiteraciones sin perder profundidad.",
+        "La tesis final es fuerte, aunque el cierre vuelve a formular casi todas las preguntas iniciales. El retorno al motivo funciona mejor que esa recapitulación extensa; la audiencia ya entendió el marco antes de la última batería de interrogantes."
+      ],
+      "improvements": [
+        "Reducir una o dos rondas de preguntas retóricas, especialmente después de que ya quedó establecida la diferencia entre “completado” y “autorizado”. Conservar las formulaciones más memorables y dejar que el espectador complete parte de la inferencia.",
+        "Aflojar ligeramente algunas estructuras triádicas y paralelismos. Una frase más directa, incluso un poco imperfecta, ayudaría a conservar la sensación de que alguien está pensando con nosotros y no cerrando una tesis impecablemente editada.",
+        "Hacer más breve la descripción de los controles anunciados por Microsoft y usar antes la imagen de la credencial de visitante, que es el verdadero aporte explicativo de ese segmento.",
+        "Confiar más en la marca verde para el cierre: recuperar una sola pregunta final potente puede tener más peso que repetir toda la lista de deberes institucionales.",
+        "Mantener la precisión factual actual. Es uno de los mayores logros del texto: no atribuye intención, no sobredimensiona anuncios corporativos y separa con claridad hechos, interpretación e hipótesis."
+      ],
+      "voice_fidelity": 8.8,
+      "intellectual_depth": 9.2,
+      "human_relevance": 9.1,
+      "analogy_quality": 8.8,
+      "ai_smell_risk": "low"
+    }
+  },
+  "observability": {
+    "agent_attempts": 10,
+    "successful_agent_calls": 9,
+    "retry_attempts": 0,
+    "failed_attempts": 0,
+    "token_usage": {
+      "prompt_tokens": 234391,
+      "output_tokens": 20055,
+      "reasoning_tokens": 1620,
+      "total_tokens": 254446
+    },
+    "refinement_iterations": [
+      {
+        "iteration": 1,
+        "script_sha256": "c6273a05f908844ed835ac66e7f843423db2b3e6582d673aa708120d8d67493e",
+        "selected_as_best_so_far": true,
+        "duration_seconds": 1005,
+        "approved": true,
+        "checks": {
+          "script_present": true,
+          "duration_ok": true,
+          "editorial_approved": true,
+          "editorial_score_ok": true,
+          "factuality_low": true,
+          "seo_approved": true,
+          "seo_score_ok": true,
+          "attention_approved": true,
+          "attention_score_ok": true,
+          "voice_approved": true,
+          "voice_score_ok": true,
+          "ai_smell_low": true
+        },
+        "editorial_score": 9.0,
+        "seo_score": 9.2,
+        "attention_score": 9.1,
+        "voice_score": 8.9,
+        "voice_fidelity": 8.8,
+        "intellectual_depth": 9.2,
+        "human_relevance": 9.1,
+        "analogy_quality": 8.8,
+        "ai_smell_risk": "low",
+        "factuality_risk": "low",
+        "next_refinement_phase": null
+      }
+    ],
+    "validation_warnings": []
+  },
+  "multimedia": {
+    "plan_exists": true,
+    "total_slots": 54,
+    "media_slots": 54,
+    "presenter_slots": 0,
+    "downloaded_assets": 53,
+    "fallback_assets": 7,
+    "credits_generated": true,
+    "all_assets_license_valid": true,
+    "attribution_required_count": 0,
+    "real_footage_discovery": {
+      "status": null,
+      "stories_checked": 0,
+      "stories_with_candidates": 0,
+      "manual_rights_review_required": false,
+      "ephemeral_artifact": null,
+      "retention_days": null,
+      "canonical_persistence": false
+    },
+    "provider_errors": 18
+  },
+  "artifacts": {
+    "run_state": {
+      "path": "scripts/2026-09-25/run_state.json",
+      "exists": true,
+      "sha256": "681762d08aef4715e780c82ca5a6f1466831c748fd228393e098649326c744d6",
+      "bytes": 372
+    },
+    "execution_trace": {
+      "path": "scripts/2026-09-25/execution_trace.json",
+      "exists": true,
+      "sha256": "52790fc009f4b17f57e6ec837429fb0030cc248e621a81a4d854ab6654e041e9",
+      "bytes": 4436
+    },
+    "selected_news": {
+      "path": "scripts/2026-09-25/selected_news.json",
+      "exists": true,
+      "sha256": "882be448d31c9811b1cc3b137324822bdf3ca177fed62db8e5a7c2e14c91da13",
+      "bytes": 44616
+    },
+    "episode_plan": {
+      "path": "scripts/2026-09-25/episode_plan.json",
+      "exists": true,
+      "sha256": "c3b9cdd10d86e7bf7632ad38de78bd406155209f806cd89cb1cde8d4cfc3afd6",
+      "bytes": 21319
+    },
+    "novelty_check": {
+      "path": "scripts/2026-09-25/novelty_check.json",
+      "exists": true,
+      "sha256": "8f3a27c66dd4e05a5e69f38ea46e4cfd9dae69ce8dc679114bfced78e0592501",
+      "bytes": 5573
+    },
+    "reviews": {
+      "path": "scripts/2026-09-25/reviews.json",
+      "exists": true,
+      "sha256": "0241ffa0abb75db14d2f4f05840b0d6a3c0350723dfce1863438f6386b66754d",
+      "bytes": 20838
+    },
+    "script": {
+      "path": "scripts/2026-09-25/script.txt",
+      "exists": true,
+      "sha256": "3600e3f05dd0e590cd8153159d3405c063516984edcecdff2e7d27bcf0cdadac",
+      "bytes": 16639
+    },
+    "script_sections": {
+      "path": "scripts/2026-09-25/script_sections.json",
+      "exists": true,
+      "sha256": "920a99cf8b4c07a211807752c374ce821bca2daf99fd24507cdaf7c0cacb4434",
+      "bytes": 18982
+    },
+    "production_script_md": {
+      "path": "scripts/2026-09-25/production_script.md",
+      "exists": true,
+      "sha256": "bfc95db2ce256d2f4405130f077b11d519e8566110ab88c44fa7702ba5926c9a",
+      "bytes": 34504
+    },
+    "production_script_json": {
+      "path": "scripts/2026-09-25/production_script.json",
+      "exists": true,
+      "sha256": "7ee84233dc55fa40aa8f90498536375c2d94dee77b522498872a91cb7343e4e2",
+      "bytes": 43627
+    },
+    "recording_pack": {
+      "path": "scripts/2026-09-25/recording_pack.json",
+      "exists": true,
+      "sha256": "deb75b7594ea76034e1881c98244fe4e0ee95ccfd338fe14fb6c8d40d25d407f",
+      "bytes": 80858
+    },
+    "recording_ingest_contract": {
+      "path": "scripts/2026-09-25/recording_ingest_contract.json",
+      "exists": true,
+      "sha256": "604aaf8e61d0a4499d59c7190da69c454d09ad17a75806fd30fd8a70a5501f87",
+      "bytes": 19196
+    },
+    "recording_ingest_instructions": {
+      "path": "scripts/2026-09-25/recording_ingest_instructions.md",
+      "exists": true,
+      "sha256": "67848717b544d11987b59816f45d3e75d39318d7bca9743bbc4226fa76edf42d",
+      "bytes": 1187
+    },
+    "recording_ingest_manifest": {
+      "path": "scripts/2026-09-25/recording_ingest_manifest.json",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    "recording_alignment_contract": {
+      "path": "scripts/2026-09-25/recording_alignment_contract.json",
+      "exists": true,
+      "sha256": "d931a0b56fc3114891ce620e593c61620bc5137a97b9aa3e45678433a7a84933",
+      "bytes": 25971
+    },
+    "recording_alignment": {
+      "path": "scripts/2026-09-25/recording_alignment.json",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    "resolve_alignment_plan": {
+      "path": "scripts/2026-09-25/resolve_alignment_plan.json",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    "resolve_alignment_execution": {
+      "path": "scripts/2026-09-25/resolve_alignment_execution.json",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    "camera_script": {
+      "path": "scripts/2026-09-25/camera_script.md",
+      "exists": true,
+      "sha256": "131868ba132de7ce6c1c827e3b57e6eba750755eab0bbcf76e7f73b5264ba261",
+      "bytes": 33618
+    },
+    "teleprompter": {
+      "path": "scripts/2026-09-25/teleprompter.html",
+      "exists": true,
+      "sha256": "2f6536338fca5546c9015600c5a5ed3a836b2db804aff38037698806392a5479",
+      "bytes": 76948
+    },
+    "virtual_timeline": {
+      "path": "scripts/2026-09-25/virtual_timeline.json",
+      "exists": true,
+      "sha256": "e4d20b8198d2059d7d0c2922d7731338b0d58142996b10b14c31a8f7aea6ce90",
+      "bytes": 205002
+    },
+    "timeline_preview": {
+      "path": "scripts/2026-09-25/timeline_preview.html",
+      "exists": true,
+      "sha256": "2270961a54c0200c775b6f0b83ff970637a5290e34506a43951a45f64a4ae725",
+      "bytes": 163311
+    },
+    "timeline_otio": {
+      "path": "scripts/2026-09-25/timeline.otio",
+      "exists": true,
+      "sha256": "f989c4572b67ec89ac120d2101da60eec92459bb7dc622657861d41098939143",
+      "bytes": 674147
+    },
+    "timeline_otio_validation": {
+      "path": "scripts/2026-09-25/timeline_otio_validation.json",
+      "exists": true,
+      "sha256": "ae0fa0c8aefa660df85d9cf0d3fba3ab3477b508d17e5d1823bb1086075aa414",
+      "bytes": 472
+    },
+    "placeholder_manifest": {
+      "path": "scripts/2026-09-25/placeholder_media/placeholder_manifest.json",
+      "exists": true,
+      "sha256": "3566a9acdf03f25eb840181b30ada4956a25252d0328e7d0410e59f66df6c0b9",
+      "bytes": 20133
+    },
+    "resolve_bridge_plan": {
+      "path": "scripts/2026-09-25/resolve_bridge_plan.json",
+      "exists": true,
+      "sha256": "2131db578e04a2e132a927fe68289c04196ac00dd38d455874733da3f313a30c",
+      "bytes": 93625
+    },
+    "resolve_bridge_execution": {
+      "path": "scripts/2026-09-25/resolve_bridge_execution.json",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    "resolve_timeline_otio": {
+      "path": "scripts/2026-09-25/resolve_timeline.otio",
+      "exists": true,
+      "sha256": "02d6364d4840ab668c31d73dda129a34840d3e115390cdb6c522c5b0f367cb10",
+      "bytes": 608320
+    },
+    "resolve_otio_validation": {
+      "path": "scripts/2026-09-25/resolve_otio_validation.json",
+      "exists": true,
+      "sha256": "c43784bfca2d4e33140ffac216e288cd54be18a25350b48503b0f3b1916f3543",
+      "bytes": 460
+    },
+    "pre_recording_preview_plan": {
+      "path": "scripts/2026-09-25/pre_recording_preview_plan.json",
+      "exists": true,
+      "sha256": "f143af0cd81e697020d3541d4f15faa5a8d2e8122ccb215c6edc76dca013250a",
+      "bytes": 62252
+    },
+    "pre_recording_preview_validation": {
+      "path": "scripts/2026-09-25/pre_recording_preview_validation.json",
+      "exists": true,
+      "sha256": "ff668042672493c4b15e85342203f6084286e08a997fec186137bc4f20a96805",
+      "bytes": 525
+    },
+    "asset_readiness": {
+      "path": "scripts/2026-09-25/asset_readiness.json",
+      "exists": true,
+      "sha256": "8fd3d728c311c1a60d8effecc9479f30d862473a878af8e038f000edfeae2515",
+      "bytes": 37975
+    },
+    "asset_readiness_html": {
+      "path": "scripts/2026-09-25/asset_readiness.html",
+      "exists": true,
+      "sha256": "da6129e10212bb501fc9189893db2bc7ae8cd41bcf94b6b7f8c809ab45ca1d0f",
+      "bytes": 6991
+    },
+    "multimedia_plan": {
+      "path": "multimedia/2026-09-25/plan.json",
+      "exists": true,
+      "sha256": "c472b7fd06d9666614a2da614032ec54c5f9d08a9d6349c781d22a024ea42e1f",
+      "bytes": 55615
+    },
+    "edit_manifest": {
+      "path": "multimedia/2026-09-25/edit_manifest.json",
+      "exists": true,
+      "sha256": "b2dfb208078b2a00ede297d838cef01a854ba67e0043fec49208519fc125ccda",
+      "bytes": 185474
+    },
+    "media_pool_summary": {
+      "path": "multimedia/2026-09-25/media_pool_summary.json",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    "multimedia_manifest": {
+      "path": "multimedia/2026-09-25/manifest.json",
+      "exists": true,
+      "sha256": "2a7016e4fd73d4bdd0e376355768b06111eb519c028a74c914abd7d8a6906c17",
+      "bytes": 86574
+    },
+    "multimedia_credits_json": {
+      "path": "multimedia/2026-09-25/credits.json",
+      "exists": true,
+      "sha256": "9e248aa5b6b5631ad6deca27477091b81cf81240eb7d69dc38fd2459c9e83c43",
+      "bytes": 24098
+    },
+    "multimedia_credits_md": {
+      "path": "multimedia/2026-09-25/credits.md",
+      "exists": true,
+      "sha256": "c10d0c48a5e6d1cfda5763f6856ccd5bf1b4939ae98497ebb248cd1581a180ca",
+      "bytes": 13529
+    },
+    "voice_profile": {
+      "path": "editorial/voice_profile.md",
+      "exists": true,
+      "sha256": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+      "bytes": 7237
+    },
+    "discourse_profile": {
+      "path": "editorial/discourse_profile.md",
+      "exists": true,
+      "sha256": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375",
+      "bytes": 18394
+    }
+  }
+}
