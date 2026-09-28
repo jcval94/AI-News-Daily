@@ -140,6 +140,8 @@ run-name: regression
                 report["metrics"]["next_source_missing_dates"],
                 ["2026-09-22", "2026-09-23"],
             )
+            self.assertIn("next_source_quality_score", report["metrics"])
+            self.assertIn("next_source_quality_band", report["metrics"])
 
     def test_duplicate_sources_and_stale_production_are_visible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -167,7 +169,32 @@ run-name: regression
             ])
             self.assertEqual(report["metrics"]["production_staleness_days"], 20)
 
-    def test_detects_canonical_only_editorial_regression_resolution(self) -> None:
+
+    def test_news_freshness_uses_latest_parseable_source_not_latest_filename(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._bootstrap(root)
+            self._news(root, "2026-09-24-12-42-52.txt", "2026-09-24")
+            (root / "news" / "2026-09-25-18-00-00.txt").write_text(
+                "Fecha: 2026-09-25\nmalformed digest\n",
+                encoding="utf-8",
+            )
+            self._approved_episode(root, "2026-09-22")
+
+            report = audit_repository(
+                repo_root=root,
+                as_of=date(2026, 9, 25),
+                github_snapshot=self._github(),
+            )
+            checks = {item["id"]: item for item in report["checks"]}
+
+            self.assertEqual(report["metrics"]["latest_news_date"], "2026-09-24")
+            self.assertEqual(report["metrics"]["latest_detected_news_date"], "2026-09-25")
+            self.assertEqual(report["metrics"]["news_freshness_basis"], "latest_parseable_source")
+            self.assertEqual(report["metrics"]["unparseable_news_dates"], ["2026-09-25"])
+            self.assertEqual(checks["unparseable-news-days"]["status"], "warn")
+
+def test_detects_canonical_only_editorial_regression_resolution(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._bootstrap(root)
