@@ -9,8 +9,10 @@ from pathlib import Path
 from pipeline.narrative_memory import (
     NarrativeMemoryItem,
     gate_reasons,
+    is_narrative_memory_contract_error,
     load_memory,
     load_usage_history,
+    narrative_memory_repair_instruction,
     rank_candidates,
     resolve_selected_memory,
 )
@@ -144,6 +146,23 @@ class NarrativeMemoryTests(unittest.TestCase):
         }
         with self.assertRaises(ValueError):
             resolve_selected_memory(plan, candidates)
+
+    def test_narrative_id_error_gets_targeted_repair_instruction(self) -> None:
+        candidates = [_item("allowed-a"), _item("allowed-b", "technology_requires_redesign")]
+        error = "episode_plan referenced narrative memory outside retrieval set: invented-id"
+        self.assertTrue(is_narrative_memory_contract_error(error))
+        instruction = narrative_memory_repair_instruction(error, candidates)
+        self.assertIn("allowed-a", instruction)
+        self.assertIn("allowed-b", instruction)
+        self.assertIn("character-for-character", instruction)
+        self.assertIn("exactly 1–2", instruction)
+
+    def test_non_memory_error_is_not_misclassified(self) -> None:
+        self.assertFalse(
+            is_narrative_memory_contract_error(
+                "episode_plan evidence selected_news_index is outside the selected range"
+            )
+        )
 
 
 if __name__ == "__main__":
