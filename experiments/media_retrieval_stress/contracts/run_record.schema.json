@@ -45,6 +45,7 @@
       "required": [
         "cases",
         "repetitions",
+        "attempts",
         "planner_passes",
         "critic_passes",
         "overall_passes"
@@ -67,6 +68,10 @@
           "minimum": 0
         },
         "overall_passes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attempts": {
           "type": "integer",
           "minimum": 0
         }
@@ -97,6 +102,10 @@
           },
           "stable": {
             "type": "boolean"
+          },
+          "errors": {
+            "type": "integer",
+            "minimum": 0
           }
         }
       }
