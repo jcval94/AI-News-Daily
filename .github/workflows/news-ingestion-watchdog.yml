@@ -2,12 +2,14 @@ name: News Ingestion Watchdog
 
 on:
   schedule:
-    - cron: "0 20 * * *" # 14:00 America/Mexico_City
+    - cron: "30 16 * * *" # 10:30 America/Mexico_City: early missing-ingestion detection
+    - cron: "0 20 * * *"  # 14:00 America/Mexico_City: same-day recovery verification
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - ".github/workflows/news-ingestion-watchdog.yml"
+      - "news/**"
       - "pipeline/news_ingestion_health.py"
       - "tests/test_news_ingestion_health.py"
 
