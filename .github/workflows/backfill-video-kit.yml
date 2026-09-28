@@ -144,6 +144,9 @@ jobs:
           TARGET_DATE: ${{ steps.target.outputs.target_date }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
           MAX_MEDIA: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
         run: |
           set -euo pipefail
           OUTPUT_DIR="$RUN_ROOT/multimedia/$TARGET_DATE"
