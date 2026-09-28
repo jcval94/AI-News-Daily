@@ -34,7 +34,7 @@
       "format": "date-time"
     },
     "config": {
-      "$ref": "run_config.schema.json"
+      "$ref": "https://ai-news-daily.local/media-retrieval-stress/run-config.schema.json"
     },
     "source_cases": {
       "type": "string",
