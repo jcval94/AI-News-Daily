@@ -160,3 +160,23 @@ class RunConfig(StrictModel):
     timeout_seconds: int = Field(ge=5, le=300, default=90)
     max_output_tokens: int = Field(ge=200, le=8000, default=2500)
     critic_enabled: bool = True
+
+
+class ProfileThresholds(StrictModel):
+    min_overall_pass_rate: float = Field(ge=0, le=1)
+    min_case_pass_rate: float = Field(ge=0, le=1)
+    require_identity_stability: bool
+    max_errors: int = Field(ge=0, le=100)
+    hard_fail_checks: list[str]
+    hard_fail_critic_codes: list[FailureCode]
+
+
+class ExperimentProfile(StrictModel):
+    schema_version: Literal[1] = 1
+    id: str = Field(min_length=3, max_length=80)
+    description: str = Field(min_length=5, max_length=500)
+    case_ids: list[str] = Field(default_factory=list)
+    repetitions: int = Field(ge=1, le=10)
+    critic_enabled: bool
+    reasoning_effort: Literal["none", "low", "medium", "high"]
+    thresholds: ProfileThresholds
