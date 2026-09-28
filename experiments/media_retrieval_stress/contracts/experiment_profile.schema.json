@@ -60,7 +60,8 @@
         "min_case_pass_rate",
         "require_identity_stability",
         "max_errors",
-        "hard_fail_checks"
+        "hard_fail_checks",
+        "hard_fail_critic_codes"
       ],
       "properties": {
         "min_overall_pass_rate": {
@@ -100,6 +101,27 @@
               "forbidden_terms",
               "period",
               "geography"
+            ]
+          }
+        },
+        "hard_fail_critic_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "wrong_entity",
+              "missing_qualifier",
+              "query_drift",
+              "forbidden_term",
+              "ambiguity_guess",
+              "unsupported_alias",
+              "literalized_metaphor",
+              "negation_violation",
+              "period_loss",
+              "geography_loss",
+              "generic_substitution",
+              "unsearchable_query",
+              "other"
             ]
           }
         }
