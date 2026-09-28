@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/planner-output.schema.json",
+  "title": "Semantic Retrieval Planner Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "decision",
+    "surface_mention",
+    "ambiguity_status",
+    "interpretation",
+    "resolved_entity",
+    "queries",
+    "exclusions",
+    "risk_flags",
+    "rights_boundary_acknowledged"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "decision": {
+      "enum": [
+        "search",
+        "refuse"
+      ]
+    },
+    "surface_mention": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "ambiguity_status": {
+      "enum": [
+        "unambiguous",
+        "ambiguous",
+        "unsupported"
+      ]
+    },
+    "interpretation": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 900
+    },
+    "resolved_entity": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonical_name",
+            "entity_type",
+            "identity_anchors",
+            "qualifiers"
+          ],
+          "properties": {
+            "canonical_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            "entity_type": {
+              "enum": [
+                "person",
+                "event",
+                "place",
+                "organization",
+                "product",
+                "franchise_object",
+                "artifact",
+                "concept",
+                "other"
+              ]
+            },
+            "identity_anchors": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 10,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "qualifiers": {
+              "type": "array",
+              "maxItems": 10,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            }
+          }
+        }
+      ]
+    },
+    "queries": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query",
+          "language",
+          "media_type",
+          "purpose",
+          "anchors"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 240
+          },
+          "language": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 12
+          },
+          "media_type": {
+            "enum": [
+              "image",
+              "video"
+            ]
+          },
+          "purpose": {
+            "enum": [
+              "canonical_identity",
+              "localized_alias",
+              "period_specific",
+              "geography_specific",
+              "contextual_support"
+            ]
+          },
+          "anchors": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    },
+    "risk_flags": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    },
+    "rights_boundary_acknowledged": {
+      "const": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "refuse"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "queries": {
+            "maxItems": 0
+          },
+          "resolved_entity": {
+            "type": "null"
+          },
+          "ambiguity_status": {
+            "enum": [
+              "ambiguous",
+              "unsupported"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "search"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "queries": {
+            "minItems": 1
+          },
+          "resolved_entity": {
+            "type": "object"
+          },
+          "ambiguity_status": {
+            "const": "unambiguous"
+          }
+        }
+      }
+    }
+  ]
+}
