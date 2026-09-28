@@ -11,6 +11,8 @@
     "completed_at",
     "config",
     "source_cases_sha256",
+    "profile_id",
+    "profile_sha256",
     "prompt_fingerprints",
     "source_cases",
     "summary",
