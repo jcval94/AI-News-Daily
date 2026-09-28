@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 if ($Tier -eq "P1") {
-    Write-Host "P1 requiere media real: usa local_job.json + run_job.ps1."
+    Write-Host "P1 requiere media real: crea/commitea request, usa stage_request.ps1 y luego run_staged.ps1 -Execute."
 }
 Write-Host "Acceptance $Tier completado."
 exit 0

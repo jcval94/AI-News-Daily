@@ -38,6 +38,9 @@
     },
     "execution_requires_local_consent": {
       "const": true
+    },
+    "source_git_verified": {
+      "type": "boolean"
     }
   }
 }

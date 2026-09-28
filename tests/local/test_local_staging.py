@@ -1,4 +1,5 @@
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -69,6 +70,36 @@ class LocalStagingTests(unittest.TestCase):
             outside.write_text(json.dumps(sample_job()), encoding="utf-8")
             with self.assertRaises(PermissionError):
                 stage_request(outside, repo_root=root)
+
+
+    def test_git_tracked_but_modified_request_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            subprocess.run(["git", "-C", str(root), "init"], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(root), "config", "user.email", "test@example.com"], check=True)
+            subprocess.run(["git", "-C", str(root), "config", "user.name", "Test User"], check=True)
+            request_dir = root / "local_handoff" / "requests"
+            request_dir.mkdir(parents=True)
+            request = request_dir / "job.json"
+            request.write_text(json.dumps(sample_job()), encoding="utf-8")
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "commit", "-m", "add request"], check=True, capture_output=True)
+            payload = sample_job()
+            payload["timeout_seconds"] = 61
+            request.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "uncommitted changes"):
+                stage_request(request, repo_root=root)
+
+    def test_git_untracked_request_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            subprocess.run(["git", "-C", str(root), "init"], check=True, capture_output=True)
+            request_dir = root / "local_handoff" / "requests"
+            request_dir.mkdir(parents=True)
+            request = request_dir / "job.json"
+            request.write_text(json.dumps(sample_job()), encoding="utf-8")
+            with self.assertRaises(PermissionError):
+                stage_request(request, repo_root=root)
 
 
 if __name__ == "__main__":

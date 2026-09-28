@@ -135,7 +135,7 @@ P1: acceptance con un episodio real. P2: aligned timeline, proxies, captions y a
 
 ## Repo → local: staging obligatorio
 
-Los requests que un agente o un commit coloque en local_handoff/requests/ son propuestas, no ejecución.
+Los requests que un agente coloque en local_handoff/requests/ son propuestas, no ejecución. Antes de staging deben estar tracked, committed y sin cambios locales; el harness lo verifica con Git.
 
 Primero:
 
@@ -182,3 +182,7 @@ Salida: .local/toolchain.latest.json.
 ~~~
 
 Muestra preflight, requests disponibles, jobs staged y receipts sin abrir Resolve.
+
+## CI Windows
+
+CI mantiene un job separado `windows-local-harness` que instala el paquete con Python 3.12 en `windows-latest`, ejecuta `tests/local`, prueba el CLI y parsea todos los scripts PowerShell. No intenta abrir Resolve: scripting/OTIO real sigue siendo acceptance local porque GitHub Actions no tiene tu instalación de DaVinci Resolve.

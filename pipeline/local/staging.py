@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,42 @@ def _inside(path: Path, root: Path) -> bool:
     except ValueError:
         return False
 
+
+
+def _assert_git_committed_clean(request_path: Path, repo_root: Path) -> bool:
+    git_marker = repo_root / ".git"
+    if not git_marker.exists():
+        return False
+    relative = request_path.resolve().relative_to(repo_root.resolve()).as_posix()
+    tracked = subprocess.run(
+        ["git", "-C", str(repo_root), "ls-files", "--error-unmatch", "--", relative],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        shell=False,
+        check=False,
+    )
+    if tracked.returncode != 0:
+        raise PermissionError(
+            f"Local request must be committed/tracked before staging: {relative}"
+        )
+    dirty = subprocess.run(
+        ["git", "-C", str(repo_root), "status", "--porcelain=v1", "--", relative],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        shell=False,
+        check=False,
+    )
+    if dirty.returncode != 0:
+        raise RuntimeError("Could not verify Git state for local request")
+    if dirty.stdout.strip():
+        raise RuntimeError(
+            f"Local request has uncommitted changes and cannot be staged: {relative}"
+        )
+    return True
 
 def _assert_not_expired(job: dict[str, Any]) -> None:
     raw = job.get("expires_at")
@@ -47,6 +84,7 @@ def stage_request(request_path: Path, *, repo_root: Path = REPO_ROOT) -> tuple[P
     request_path = request_path.resolve()
     if not _inside(request_path, request_root):
         raise PermissionError("Only committed local_handoff/requests jobs can be staged")
+    git_verified = _assert_git_committed_clean(request_path, repo_root)
     job = read_job(request_path)
     _assert_not_expired(job)
     raw = canonical_job_bytes(job)
@@ -67,6 +105,7 @@ def stage_request(request_path: Path, *, repo_root: Path = REPO_ROOT) -> tuple[P
         "staged_job_path": f".local/jobs/staged/{job['job_id']}.json",
         "staged_at": utc_now(),
         "execution_requires_local_consent": True,
+        "source_git_verified": git_verified,
     }
     validate_payload(payload, "local/local_stage.schema.json")
     stage_meta.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
