@@ -193,3 +193,20 @@ CI mantiene un job separado `windows-local-harness` que instala el paquete con P
 Checklist de aceptación real: [acceptance.md](acceptance.md).
 
 Prompt listo para continuar desde la Zenbook/Resolve real: [NEXT_CONVERSATION.md](NEXT_CONVERSATION.md).
+
+
+## Self-audit del harness
+
+El harness también audita su propia integridad estructural. Esto no prueba tu hardware real; prueba que el repo conserve contratos y guards necesarios.
+
+PowerShell:
+
+    .\scripts\local\audit.ps1
+
+CLI directa:
+
+    .\.venv\Scripts\python.exe -m pipeline.local audit
+
+El audit verifica schemas/config/scripts/docs requeridos, estado local fuera de Git, CI Windows, parseo PowerShell, que la ejecución directa desde JSON del repo siga deshabilitada, staged provenance para side effects, shell=False, requests tracked+committed+clean y packaging de pipeline.local.
+
+El resultado separa explícitamente lo que CI demuestra de lo que sólo puede comprobarse en la Zenbook real.
