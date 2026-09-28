@@ -68,7 +68,9 @@ def evaluate_planner(case: StressCase, output: PlannerOutput) -> dict[str, Any]:
         entity = output.resolved_entity
         identity_blob = _identity_blob(output)
         query_blob = _query_blob(output)
-        combined = identity_blob + " | " + query_blob + " | " + " | ".join(output.exclusions)
+        # Exclusions are allowed (and encouraged) to NAME forbidden concepts.
+        # Only identity/search intent can be contaminated by a forbidden term.
+        combined = identity_blob + " | " + query_blob
 
         checks["ambiguity_refusal"] = case.target.ambiguity_policy != "refuse_if_ambiguous"
         checks["identity_type"] = bool(entity and entity.entity_type == case.target.entity_type)
