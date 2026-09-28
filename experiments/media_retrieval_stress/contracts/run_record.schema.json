@@ -135,6 +135,15 @@
           "pattern": "^[a-f0-9]{64}$"
         }
       }
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
     }
   }
 }
