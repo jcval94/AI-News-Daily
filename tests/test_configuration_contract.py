@@ -29,6 +29,14 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertIn("pipeline.source_naming", workflow)
         self.assertNotIn("-name '????-??-??.txt'", workflow)
 
+    def test_news_ingestion_watchdog_detects_early_and_recovers_on_news_push(self) -> None:
+        workflow = Path(".github/workflows/news-ingestion-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn('cron: "30 16 * * *"', workflow)
+        self.assertIn('cron: "0 20 * * *"', workflow)
+        self.assertIn('- "news/**"', workflow)
+        self.assertIn("pipeline.news_ingestion_health", workflow)
+        self.assertIn("NEWS_INGESTION_MISSING", workflow)
+
     def test_production_preflight_is_wired_before_scheduled_runs(self) -> None:
         preflight = Path(".github/workflows/production-preflight.yml").read_text(encoding="utf-8")
         review = Path(".github/workflows/editorial-review-hub.yml").read_text(encoding="utf-8")
