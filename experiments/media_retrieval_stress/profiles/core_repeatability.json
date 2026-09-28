@@ -16,6 +16,15 @@
       "ambiguity_refusal",
       "identity_type",
       "forbidden_terms"
+    ],
+    "hard_fail_critic_codes": [
+      "wrong_entity",
+      "forbidden_term",
+      "ambiguity_guess",
+      "negation_violation",
+      "period_loss",
+      "geography_loss",
+      "generic_substitution"
     ]
   }
 }
