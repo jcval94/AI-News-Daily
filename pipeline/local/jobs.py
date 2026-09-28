@@ -249,6 +249,7 @@ def run_job(
     *,
     repo_root: Path = REPO_ROOT,
     execute: bool = False,
+    provenance: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     validate_payload(job, "local/local_job.schema.json")
     roots = RootMap.from_config(config, repo_root=repo_root)
@@ -275,6 +276,14 @@ def run_job(
                 "executed": False,
             },
         }
+
+    if provenance is None:
+        raise RuntimeError(
+            "Execution requires staged provenance; use stage-request then run-staged --execute"
+        )
+    validate_payload(provenance, "local/local_stage.schema.json")
+    if str(provenance.get("job_id", "")) != str(job["job_id"]):
+        raise RuntimeError("Staged provenance job_id does not match the requested job")
 
     local_root = repo_root / ".local"
     receipts_dir = local_root / "jobs" / "receipts"
@@ -343,7 +352,7 @@ def run_job(
     (run_dir / "stderr.log").write_text(redacted_stderr, encoding="utf-8")
 
     receipt = {
-        "schema_version": 1,
+        "schema_version": 2,
         "job_id": job["job_id"],
         "operation": job["operation"],
         "target_date": job["target_date"],
@@ -352,6 +361,12 @@ def run_job(
         "finished_at": utc_now(),
         "exit_code": exit_code,
         "command": redacted_command,
+        "provenance": {
+            "source_repo_path": str(provenance["source_repo_path"]),
+            "source_git_commit": str(provenance["source_git_commit"]),
+            "request_sha256": str(provenance["request_sha256"]),
+            "staged_at": str(provenance["staged_at"]),
+        },
         "logs": {
             "stdout": f".local/runs/{job['job_id']}/stdout.log",
             "stderr": f".local/runs/{job['job_id']}/stderr.log",
