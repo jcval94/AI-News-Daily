@@ -412,6 +412,8 @@ jobs:
           grep -q 'data-memory-tab="stories"' pages-site/memory/index.html
           grep -q 'data-memory-tab="news"' pages-site/memory/index.html
           grep -q 'data-story-sort="date"' pages-site/memory/index.html
+          grep -q 'id="storyResultCount"' pages-site/memory/index.html
+          grep -q 'data-story-availability="available"' pages-site/memory/index.html
           grep -q 'Depósito en news/' pages-site/memory/index.html
           grep -q '"approved_items"' pages-site/memory/narrative-memory.json
           grep -q '"daily_updates"' pages-site/memory/narrative-memory.json
@@ -489,6 +491,8 @@ jobs:
               && grep -q 'data-memory-tab="stories"' /tmp/memory.html \
               && grep -q 'data-memory-tab="news"' /tmp/memory.html \
               && grep -q 'data-story-sort="date"' /tmp/memory.html \
+              && grep -q 'id="storyResultCount"' /tmp/memory.html \
+              && grep -q 'data-story-availability="available"' /tmp/memory.html \
               && curl -fsSL --max-time 20 "$METRICS_URL" -o /tmp/metrics.html \
               && grep -q 'data-metrics-page="video-metrics-history"' /tmp/metrics.html; then
               echo "Pages smoke test passed: $ROOT_URL"
