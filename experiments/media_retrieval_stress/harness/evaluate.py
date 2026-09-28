@@ -94,6 +94,14 @@ def evaluate_planner(case: StressCase, output: PlannerOutput) -> dict[str, Any]:
             True if not case.retrieval.query_term_groups
             else any(query_satisfies_groups(item.query) for item in output.queries)
         )
+        checks["media_types"] = all(
+            item.media_type in case.retrieval.media_types
+            for item in output.queries
+        )
+        checks["exactness"] = (
+            True if case.retrieval.exactness != "exact"
+            else all(item.purpose != "contextual_support" for item in output.queries)
+        )
 
         forbidden = [
             *case.target.forbidden_identity_terms,
