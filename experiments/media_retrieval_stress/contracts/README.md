@@ -20,3 +20,13 @@ Los contratos son versionados y deliberadamente independientes de los modelos de
 - `refuse_if_ambiguous` exige `decision=refuse` si el contexto no desambigua.
 - Los scores de confianza de un modelo no sustituyen estas reglas.
 - Derechos/licencias no forman parte del planner semántico.
+
+## Local contract vs API schema
+
+The JSON Schema files are the authoritative local contracts. The harness intentionally
+sends a reduced schema subset to Structured Outputs and then validates the returned
+payload again against the full local contract.
+
+This keeps semantic constraints such as string lengths, array bounds, URI formats,
+patterns and cross-file references under repository control instead of relying on the
+generation endpoint to enforce every JSON Schema keyword.
