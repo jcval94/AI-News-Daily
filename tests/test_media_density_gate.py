@@ -61,6 +61,19 @@ class MediaDensityGateTests(unittest.TestCase):
         self.assertFalse(report["ready"])
         self.assertTrue(any(item.startswith("unique_density:") for item in report["blockers"]))
 
+    def test_retry_cannot_overfill_delivery_budget(self) -> None:
+        report = evaluate_dense_media_handoff(
+            manifest=self._manifest(55),
+            plan={
+                "candidate_slot_count": 82,
+                "coverage_ratio": 0.99,
+                "deduplication": {"removed_count": 5},
+            },
+            budget=54,
+        )
+        self.assertFalse(report["ready"])
+        self.assertIn("delivery_budget:55>54", report["blockers"])
+
     def test_opening_and_timeline_reach_remain_hard_gates(self) -> None:
         report = evaluate_dense_media_handoff(
             manifest=self._manifest(40, opening=4),

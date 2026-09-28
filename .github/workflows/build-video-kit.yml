@@ -291,12 +291,41 @@ jobs:
           rm -rf "$OUTPUT_DIR" "$ZIP"
 
           run_offline() {
+            local acquisition_budget="${1:-$MAX_MEDIA}"
             rm -rf "$OUTPUT_DIR" "$ZIP"
             python -m pipeline.review_media_offline_dense \
               --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
               --output-dir "$OUTPUT_DIR" \
               --zip-out "$ZIP" \
-              --max-media-downloads "$MAX_MEDIA"
+              --max-media-downloads "$acquisition_budget"
+          }
+
+          recover_offline_density() {
+            set +e
+            python -m pipeline.media_density_gate \
+              --media-dir "$OUTPUT_DIR" \
+              --budget "$MAX_MEDIA" \
+              --output "$RUN_ROOT/media_density_gate.json"
+            local gate_status=$?
+            set -e
+            if [ "$gate_status" -eq 0 ]; then
+              return 0
+            fi
+            if [ "$gate_status" -ne 2 ]; then
+              return "$gate_status"
+            fi
+
+            local recovery_budget
+            recovery_budget="$(python -m pipeline.media_density_recovery \
+              --media-dir "$OUTPUT_DIR" \
+              --delivery-budget "$MAX_MEDIA" \
+              --max-extra-attempts 12 \
+              --value-only)"
+            if [ -z "$recovery_budget" ]; then
+              return "$gate_status"
+            fi
+            echo "::warning::Offline dense media lost too many assets to deduplication; retrying once with acquisition budget $recovery_budget while preserving delivery budget $MAX_MEDIA."
+            run_offline "$recovery_budget"
           }
 
           set +e
@@ -310,7 +339,8 @@ jobs:
           if [ "$STATUS" -ne 0 ]; then
             if grep -Eqi 'credit_balance_exhausted|insufficient_quota|no credits remaining' /tmp/production-dense-media.log; then
               echo "::warning::Model quota unavailable; rebuilding canonical multimedia deterministically."
-              run_offline
+              run_offline "$MAX_MEDIA"
+              recover_offline_density
             else
               exit "$STATUS"
             fi

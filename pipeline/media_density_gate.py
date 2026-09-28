@@ -51,6 +51,10 @@ def evaluate_dense_media_handoff(
         blockers.append(
             f"unique_density:{count}<{required_unique}"
         )
+    if budget > 0 and count > budget:
+        blockers.append(
+            f"delivery_budget:{count}>{budget}"
+        )
     if opening < minimum_opening_assets:
         blockers.append(
             f"opening_density:{opening}<{minimum_opening_assets}"
