@@ -6,6 +6,7 @@ from pipeline.review_media_density import (
     DENSE_DEFAULT_MAX_MEDIA,
     dense_candidate_slots,
     effective_budget,
+    fallback_query,
     install_density_policy,
 )
 from pipeline import review_media as review_media_base
@@ -59,6 +60,15 @@ class ReviewMediaDensityTests(unittest.TestCase):
         self.assertEqual(effective_budget(18), 54)
         self.assertEqual(effective_budget(60), 60)
         self.assertEqual(effective_budget(12), 12)
+
+    def test_fallback_queries_have_enough_visual_diversity_for_dense_handoff(self) -> None:
+        slot = {
+            "beat_kind": "evidence",
+            "section_key": "beat:evidence",
+            "evidence_ids": ["e1"],
+        }
+        queries = {fallback_query(slot, index) for index in range(36)}
+        self.assertEqual(len(queries), 36)
 
     def test_density_policy_fills_budget_and_keeps_video_mix(self) -> None:
         install_density_policy()
