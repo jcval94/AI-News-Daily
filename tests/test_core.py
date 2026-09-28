@@ -114,6 +114,24 @@ class CoreTests(unittest.TestCase):
         right = "¿Qué significa la confianza emocional tras meses conversando con un compañero de IA?"
         self.assertLess(topic_similarity(left, right), self.config.essay_duplicate_threshold)
 
+    def test_nearest_essay_similarity_ignores_script_excerpt_contamination(self) -> None:
+        candidate = (
+            "responsabilidad institucional agentes persistentes permisos revocacion "
+            "auditoria y delegacion continua"
+        )
+        previous = [{
+            "episode_date": "2026-09-04",
+            "topic_signature": "dependencia cognitiva y criterio humano",
+            "central_question": "¿Qué debemos seguir sabiendo hacer sin una IA?",
+            "thesis": "Conservar comprensión permite detectar límites y recuperar criterio.",
+            "narrative_lens": "cognicion aprendizaje",
+            "script_excerpt": candidate * 8,
+        }]
+        nearest = nearest_essay_similarity(candidate, previous)
+        self.assertIsNotNone(nearest)
+        assert nearest is not None
+        self.assertLess(nearest["similarity"], self.config.essay_duplicate_threshold)
+
     def test_nearest_essay_similarity_returns_best_match(self) -> None:
         previous = [
             {
