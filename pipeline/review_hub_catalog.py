@@ -282,6 +282,7 @@ function setHealth({{push=true}}={{}}){{
   if(select) select.value='__health__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
   if(healthLink) healthLink.classList.add('active');
+  if(readinessLink) readinessLink.classList.remove('active');
   if(memoryLink) memoryLink.classList.remove('active');
   if(metricsLink) metricsLink.classList.remove('active');
   document.title='Salud del repo · AI News Daily';
@@ -317,6 +318,7 @@ function setMemory({{push=true}}={{}}){{
   if(select) select.value='__memory__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
   if(healthLink) healthLink.classList.remove('active');
+  if(readinessLink) readinessLink.classList.remove('active');
   if(memoryLink) memoryLink.classList.add('active');
   if(metricsLink) metricsLink.classList.remove('active');
   document.title='Narrative Memory · AI News Daily';
