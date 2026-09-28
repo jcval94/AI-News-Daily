@@ -218,13 +218,13 @@ body{{overflow:hidden}}.catalog-shell{{display:grid;grid-template-columns:var(--
 <div class="catalog-shell">
   <aside class="episode-sidebar" aria-label="Selector de episodios">
     <div class="sidebar-head"><div class="brand">AI News Daily</div><h1>Episodios</h1><p>Selecciona un episodio y conserva el mismo Review Hub.</p></div>
-    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Narrative Memory</strong><small>casos · mecanismos · uso · cooldown</small></a><a id="metricsLink" class="repo-health-link" href="?view=metrics"><span>Performance</span><strong>Histórico de métricas</strong><small>Editorial · Attention · Voice · SEO</small></a></div>
+    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="readinessLink" class="repo-health-link" href="?view=readiness"><span>Preflight</span><strong>Production Readiness</strong><small>cobertura · parseabilidad · source quality</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Narrative Memory</strong><small>casos · mecanismos · uso · cooldown</small></a><a id="metricsLink" class="repo-health-link" href="?view=metrics"><span>Performance</span><strong>Histórico de métricas</strong><small>Editorial · Attention · Voice · SEO</small></a></div>
     <div class="episode-search-wrap"><input id="episodeSearch" class="episode-search" type="search" placeholder="Buscar episodio…" aria-label="Buscar episodio"></div>
     <nav id="episodeList" class="episode-list" aria-label="Episodios disponibles">{items}<div id="emptyFilter" class="empty-filter">No hay episodios que coincidan.</div></nav>
     <div class="sidebar-foot"><span id="episodeCount">{len(episodes)} episodio{'s' if len(episodes) != 1 else ''}</span> · artifacts disponibles</div>
   </aside>
   <main class="episode-stage">
-    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option><option value="__memory__">Narrative Memory</option><option value="__metrics__">Histórico de métricas</option>{options}</select></div>
+    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option><option value="__readiness__">Production Readiness</option><option value="__memory__">Narrative Memory</option><option value="__metrics__">Histórico de métricas</option>{options}</select></div>
     <iframe id="episodeFrame" class="episode-frame" src="{frame_src}" title="{frame_title}" loading="eager"></iframe>
   </main>
 </div>
@@ -238,12 +238,14 @@ const links=[...document.querySelectorAll('[data-episode-id]')];
 const search=document.getElementById('episodeSearch');
 const emptyFilter=document.getElementById('emptyFilter');
 const healthLink=document.getElementById('repoHealthLink');
+const readinessLink=document.getElementById('readinessLink');
 const memoryLink=document.getElementById('memoryLink');
 const metricsLink=document.getElementById('metricsLink');
 
 function selectedFromUrl(){{
   const params=new URLSearchParams(window.location.search);
   if(params.get('view')==='health') return '__health__';
+  if(params.get('view')==='readiness') return '__readiness__';
   if(params.get('view')==='memory') return '__memory__';
   if(params.get('view')==='metrics') return '__metrics__';
   const value=params.get('episode');
@@ -257,6 +259,7 @@ function setEpisode(id,{{push=true}}={{}}){{
   frame.title=`Review Hub — ${{episode.date}}`;
   if(select) select.value=id;
   if(healthLink) healthLink.classList.remove('active');
+  if(readinessLink) readinessLink.classList.remove('active');
   if(memoryLink) memoryLink.classList.remove('active');
   if(metricsLink) metricsLink.classList.remove('active');
   links.forEach(link=>{{
@@ -289,6 +292,24 @@ function setHealth({{push=true}}={{}}){{
     history.pushState({{view:'health'}},'',url);
   }}
 }}
+function setReadiness({{push=true}}={{}}){{
+  const expected=new URL('readiness/index.html',window.location.href).href;
+  if(frame.src!==expected) frame.src='readiness/index.html';
+  frame.title='Production Readiness';
+  if(select) select.value='__readiness__';
+  links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
+  if(healthLink) healthLink.classList.remove('active');
+  if(readinessLink) readinessLink.classList.add('active');
+  if(memoryLink) memoryLink.classList.remove('active');
+  if(metricsLink) metricsLink.classList.remove('active');
+  document.title='Production Readiness · AI News Daily';
+  if(push){{
+    const url=new URL(window.location.href);
+    url.searchParams.delete('episode');
+    url.searchParams.set('view','readiness');
+    history.pushState({{view:'readiness'}},'',url);
+  }}
+}}
 function setMemory({{push=true}}={{}}){{
   const expected=new URL('memory/index.html',window.location.href).href;
   if(frame.src!==expected) frame.src='memory/index.html';
@@ -313,6 +334,7 @@ function setMetrics({{push=true}}={{}}){{
   if(select) select.value='__metrics__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
   if(healthLink) healthLink.classList.remove('active');
+  if(readinessLink) readinessLink.classList.remove('active');
   if(memoryLink) memoryLink.classList.remove('active');
   if(metricsLink) metricsLink.classList.add('active');
   document.title='Histórico de métricas · AI News Daily';
@@ -325,12 +347,14 @@ function setMetrics({{push=true}}={{}}){{
 }}
 function setSelection(value,options={{}}){{
   if(value==='__health__') setHealth(options);
+  else if(value==='__readiness__') setReadiness(options);
   else if(value==='__memory__') setMemory(options);
   else if(value==='__metrics__') setMetrics(options);
   else setEpisode(value,options);
 }}
 links.forEach(link=>link.addEventListener('click',event=>{{event.preventDefault();setSelection(link.dataset.episodeId);}}));
 if(healthLink) healthLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__health__');}});
+if(readinessLink) readinessLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__readiness__');}});
 if(memoryLink) memoryLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__memory__');}});
 if(metricsLink) metricsLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__metrics__');}});
 if(select) select.addEventListener('change',()=>setSelection(select.value));
