@@ -71,6 +71,18 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn("pipeline.whisperx_adapter", workflow)
 
 
+    def test_video_workflows_install_ffmpeg_before_preview(self) -> None:
+        for path in (
+            ".github/workflows/build-video-kit.yml",
+            ".github/workflows/backfill-video-kit.yml",
+        ):
+            workflow = Path(path).read_text(encoding="utf-8")
+            install = workflow.index("sudo apt-get update -qq && sudo apt-get install -y ffmpeg")
+            preview = workflow.index("python -m pipeline.preview_render")
+            self.assertLess(install, preview, path)
+            self.assertIn("command -v ffmpeg >/dev/null", workflow)
+            self.assertIn("command -v ffprobe >/dev/null", workflow)
+
     def test_preview_mp4_stays_in_isolated_run_artifact(self) -> None:
         workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
         self.assertIn(
