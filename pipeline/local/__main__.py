@@ -102,8 +102,13 @@ def main() -> None:
         return
     if args.command == "run-staged":
         job, meta = load_staged_job(args.job_id, repo_root=REPO_ROOT)
-        payload = run_job(job, config, repo_root=REPO_ROOT, execute=args.execute)
-        payload["staged_request_sha256"] = meta["request_sha256"]
+        payload = run_job(
+            job,
+            config,
+            repo_root=REPO_ROOT,
+            execute=args.execute,
+            provenance=meta,
+        )
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         raise SystemExit(0 if payload["status"] in {"dry_run", "success"} else 3)
     if args.command == "doctor":
