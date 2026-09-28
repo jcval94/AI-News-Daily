@@ -21,6 +21,18 @@ def sample_job():
     }
 
 
+def init_git_with_request(root: Path, request: Path) -> None:
+    subprocess.run(["git", "-C", str(root), "init"], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(root), "config", "user.email", "test@example.com"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "user.name", "Test User"], check=True)
+    subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+    subprocess.run(
+        ["git", "-C", str(root), "commit", "-m", "add request"],
+        check=True,
+        capture_output=True,
+    )
+
+
 class LocalStagingTests(unittest.TestCase):
     def test_only_repo_request_root_can_be_staged_and_hash_is_verified(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -29,10 +41,14 @@ class LocalStagingTests(unittest.TestCase):
             request_dir.mkdir(parents=True)
             request = request_dir / "job.json"
             request.write_text(json.dumps(sample_job()), encoding="utf-8")
+            init_git_with_request(root, request)
             staged, meta, payload = stage_request(request, repo_root=root)
             self.assertTrue(staged.is_file())
             self.assertTrue(meta.is_file())
+            self.assertEqual(payload["schema_version"], 2)
             self.assertEqual(len(payload["request_sha256"]), 64)
+            self.assertRegex(payload["source_git_commit"], r"^[a-f0-9]{40}$")
+            self.assertTrue(payload["source_git_verified"])
             job, metadata = load_staged_job("stage-test-0001", repo_root=root)
             self.assertEqual(job["operation"], "timeline.build")
             self.assertEqual(metadata["request_sha256"], payload["request_sha256"])
@@ -44,6 +60,7 @@ class LocalStagingTests(unittest.TestCase):
             request_dir.mkdir(parents=True)
             request = request_dir / "job.json"
             request.write_text(json.dumps(sample_job()), encoding="utf-8")
+            init_git_with_request(root, request)
             staged, _, _ = stage_request(request, repo_root=root)
             data = json.loads(staged.read_text(encoding="utf-8"))
             data["target_date"] = "2026-09-26"
@@ -60,7 +77,19 @@ class LocalStagingTests(unittest.TestCase):
             payload["expires_at"] = "2020-01-01T00:00:00Z"
             request = request_dir / "expired.json"
             request.write_text(json.dumps(payload), encoding="utf-8")
+            init_git_with_request(root, request)
             with self.assertRaisesRegex(RuntimeError, "expired"):
+                stage_request(request, repo_root=root)
+
+
+    def test_staging_requires_real_git_checkout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            request_dir = root / "local_handoff" / "requests"
+            request_dir.mkdir(parents=True)
+            request = request_dir / "job.json"
+            request.write_text(json.dumps(sample_job()), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "real Git checkout"):
                 stage_request(request, repo_root=root)
 
     def test_non_handoff_file_cannot_be_staged(self):
