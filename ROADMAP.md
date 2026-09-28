@@ -175,24 +175,47 @@ Feed learnings back into editorial profiles and Attention evaluation carefully. 
 
 ---
 
-# Priority order
+# Current priority order
 
 ```text
 NOW
-1. Real editorial E2E from latest news
-2. Inspect plan + script + report
-3. Voice DNA calibration with reference scripts
-4. Small editorial regression set
+1. Run Local Harness P0 on the real Windows 11 Zenbook
+2. Verify Resolve scripting + native OTIO with doctor -Resolve -Deep -OtioSmoke
+3. Snapshot the real toolchain/hardware; choose WhisperX CPU/GPU strategy from evidence
+4. Run one controlled P1 episode through ingest → transcription → alignment → Resolve sync/import
 
 NEXT
-5. Better multimedia semantics
-6. TTS + subtitles + renderer
+5. Implement aligned_timeline.build from real A-roll timings
+6. Add proxy generation only if measured hardware/media performance needs it
+7. Add captions and audio normalization downstream of aligned media
+8. Validate one end-to-end rough cut in Resolve without overwriting the pre-recording timeline
 
 LATER
-7. Publication package
-8. Human approval workflow
-9. YouTube upload
-10. Analytics feedback loop
+9. Thin MCP layer for creating valid jobs and reading receipts — never arbitrary shell
+10. Publication package + human approval
+11. YouTube upload only after repeated local/production acceptance
+12. Audience analytics feedback loop
 ```
 
-The guiding rule is simple: **do not automate distribution faster than the system learns to produce something worth distributing.**
+## Local post-production milestone — implemented
+
+The repository already includes:
+
+- Recording Pack + teleprompter;
+- Recording Ingest Contract/scanner;
+- WhisperX adapter;
+- Recording Alignment;
+- Resolve Alignment Bridge;
+- Virtual Timeline + native OTIO;
+- physical placeholders;
+- pre-recording preview;
+- Asset Readiness Gate;
+- Windows Local Editing Harness with doctor/toolchain/status;
+- repo→local staging trust boundary;
+- idempotent receipts and Windows CI.
+
+The next architectural milestone is **real workstation acceptance**, not another abstraction layer.
+
+**Exit criteria:** P0/P0-Resolve pass on the Zenbook, then one P1 episode produces durable receipts and a non-destructive Resolve timeline using real media.
+
+The guiding rule remains: **do not automate distribution faster than the system learns to produce something worth distributing, and do not automate local side effects faster than the workstation can prove them.**
