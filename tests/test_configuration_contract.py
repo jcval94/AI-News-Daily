@@ -37,6 +37,7 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertIn("pipeline.production_preflight", preflight)
         self.assertIn("OPENAI_API_KEY", preflight)
         self.assertIn("- Production Preflight", review)
+        self.assertIn("- News Ingestion Watchdog", review)
         self.assertIn("WORKFLOW_RUN_NAME", review)
         self.assertIn("EVENT_NAME", review)
         self.assertIn("Repository push: canonical production history is authoritative", review)

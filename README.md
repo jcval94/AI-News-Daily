@@ -249,7 +249,10 @@ Daily inputs remain:
 
 ```text
 news/YYYY-MM-DD.txt
+news/YYYY-MM-DD-HH-MM-SS.txt
 ```
+
+A separate **News Ingestion Watchdog** runs every day at 14:00 America/Mexico_City. It does not generate content or call a model: it verifies that the local day's digest exists, parses successfully, and contains at least five news items. Missing/invalid ingestion opens a diagnostic GitHub issue, fails the watchdog visibly, and refreshes Repo Health through the Review Hub.
 
 Manual production can use `recent_window`, which considers the target day plus the preceding `NEWS_LOOKBACK_DAYS - 1` calendar days.
 

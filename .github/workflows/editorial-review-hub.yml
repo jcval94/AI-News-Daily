@@ -28,6 +28,7 @@ on:
       - Build AI News Video Kit
       - Backfill AI News Video Kit
       - Production Preflight
+      - News Ingestion Watchdog
     types: [completed]
   push:
     branches: [main]
@@ -166,8 +167,8 @@ jobs:
           else
             if [ "${EVENT_NAME:-}" = "push" ]; then
               echo "Repository push: canonical production history is authoritative; skipping Actions artifact discovery."
-            elif [ "${WORKFLOW_RUN_NAME:-}" = "Production Preflight" ]; then
-              echo "Production Preflight carries readiness evidence, not an episode; using canonical production history."
+            elif [ "${WORKFLOW_RUN_NAME:-}" = "Production Preflight" ] || [ "${WORKFLOW_RUN_NAME:-}" = "News Ingestion Watchdog" ]; then
+              echo "$WORKFLOW_RUN_NAME carries operational evidence, not an episode; using canonical production history."
             elif [ -n "${WORKFLOW_RUN_ID:-}" ]; then
               echo "Production workflow completion: inspecting only triggering run $WORKFLOW_RUN_ID."
               inspect_run "$WORKFLOW_RUN_ID" || true

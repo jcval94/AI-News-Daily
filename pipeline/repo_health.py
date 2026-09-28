@@ -23,6 +23,7 @@ PYTHON_VERSION_RE = re.compile(r'python-version:\s*["\']?([^"\'\s]+)')
 SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 IMPORTANT_WORKFLOWS = (
     "CI",
+    "News Ingestion Watchdog",
     "Production Preflight",
     "Build AI News Video Kit",
     "Editorial Regression",
@@ -34,6 +35,7 @@ REQUIRED_PATHS = (
     "pyproject.toml",
     "requirements.lock",
     ".github/workflows/ci.yml",
+    ".github/workflows/news-ingestion-watchdog.yml",
     ".github/workflows/build-video-kit.yml",
     ".github/workflows/production-preflight.yml",
     ".github/workflows/editorial-regression.yml",
@@ -339,12 +341,12 @@ def _news_health(root: Path, as_of: date) -> tuple[list[HealthCheck], dict[str, 
         if age is not None and age > 3:
             status = "critical"
             summary = "La ingesta diaria está claramente atrasada."
-        elif age is not None and age > 1:
+        elif age is not None and age > 0:
             status = "warn"
-            summary = "La última fuente tiene más de un día de antigüedad."
+            summary = "Todavía no hay un digest válido correspondiente al día local actual."
         else:
             status = "ok"
-            summary = "La ingesta de noticias está fresca."
+            summary = "La ingesta de noticias está fresca y existe un digest del día."
         checks.append(
             HealthCheck(
                 "news-freshness",
@@ -653,6 +655,7 @@ def _workflow_checks(github: dict[str, Any]) -> list[HealthCheck]:
         elif conclusion in {"failure", "timed_out", "action_required"}:
             status = "critical" if workflow in {
                 "CI",
+                "News Ingestion Watchdog",
                 "Production Preflight",
                 "Build AI News Video Kit",
                 "Editorial Review Hub",

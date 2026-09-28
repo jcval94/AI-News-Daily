@@ -1,0 +1,114 @@
+name: News Ingestion Watchdog
+
+on:
+  schedule:
+    - cron: "0 20 * * *" # 14:00 America/Mexico_City
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/news-ingestion-watchdog.yml"
+      - "pipeline/news_ingestion_health.py"
+      - "tests/test_news_ingestion_health.py"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: news-ingestion-watchdog
+  cancel-in-progress: true
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install project
+        run: python -m pip install -c requirements.lock .
+      - name: Verify today's digest
+        id: health
+        continue-on-error: true
+        run: python -m pipeline.news_ingestion_health --output news-ingestion-health.json
+      - name: Publish watchdog summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path('news-ingestion-health.json')
+          if not path.is_file():
+              raise SystemExit(0)
+          data = json.loads(path.read_text(encoding='utf-8'))
+          lines = [
+              '# News Ingestion Watchdog',
+              f"- Date: **{data.get('date')}**",
+              f"- Status: **{data.get('status')}**",
+              f"- Selected file: **{data.get('selected_file') or 'none'}**",
+              f"- Items: **{data.get('item_count', 0)}**",
+              f"- Reason: {data.get('reason', '')}",
+          ]
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as handle:
+              handle.write('\n'.join(lines) + '\n')
+          PY
+      - name: Open or update missing-ingestion incident
+        if: steps.health.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIGEST_DATE: ${{ steps.health.outputs.date }}
+        run: |
+          set -euo pipefail
+          TITLE="NEWS_INGESTION_MISSING — ${DIGEST_DATE:-unknown}"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('news-ingestion-health.json').read_text(encoding='utf-8'))
+          lines = [
+              'La entrada diaria de noticias no cumplió el contrato esperado.',
+              '',
+              f"- Fecha: `{data.get('date')}`",
+              f"- Estado: `{data.get('status')}`",
+              f"- Candidatos: `{data.get('candidate_count', 0)}`",
+              f"- Archivo seleccionado: `{data.get('selected_file') or 'ninguno'}`",
+              f"- Razón: {data.get('reason', '')}",
+              '',
+              'Revisar la tarea externa `AI News Daily` y el workflow `Ingest AI News Staging`.'
+          ]
+          Path('/tmp/news-ingestion-body.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
+          NUMBER="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)"
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/news-ingestion-body.md
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file /tmp/news-ingestion-body.md
+          fi
+      - name: Close recovered ingestion incident
+        if: steps.health.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIGEST_DATE: ${{ steps.health.outputs.date }}
+        run: |
+          set -euo pipefail
+          TITLE="NEWS_INGESTION_MISSING — ${DIGEST_DATE}"
+          NUMBER="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)"
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Ingesta recuperada: el digest del día ya existe y pasa el contrato mínimo."
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+          fi
+      - name: Upload watchdog evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-ingestion-health-${{ steps.health.outputs.date || 'unknown' }}
+          path: news-ingestion-health.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Propagate ingestion failure
+        if: steps.health.outcome == 'failure'
+        run: echo "::error::Daily AI News ingestion is missing or invalid." && exit 1
