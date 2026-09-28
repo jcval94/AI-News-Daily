@@ -102,6 +102,45 @@ class StagedNewsIssueTests(unittest.TestCase):
             self.assertEqual(output, existing)
 
     @patch("pipeline.staged_news_issue.datetime")
+    def test_previous_day_is_allowed_for_bounded_recovery(self, mock_datetime) -> None:
+        mock_datetime.now.return_value = datetime(2026, 9, 28, 8, 1, tzinfo=TZ)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            news = root / "news"
+            ev = root / "event.json"
+            event(
+                ev,
+                digest(
+                    "2026-09-27 23:55:00",
+                    item_date="2026-09-27",
+                    variant="late-recovery",
+                ),
+                stamp="2026-09-27 23:55:00",
+            )
+            status, output = process_event(ev, news)
+            self.assertEqual(status, "created")
+            self.assertEqual(output.name, "2026-09-27-23-55-00.txt")
+
+    @patch("pipeline.staged_news_issue.datetime")
+    def test_older_than_previous_day_is_rejected(self, mock_datetime) -> None:
+        mock_datetime.now.return_value = datetime(2026, 9, 28, 8, 1, tzinfo=TZ)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            news = root / "news"
+            ev = root / "event.json"
+            event(
+                ev,
+                digest(
+                    "2026-09-26 08:00:00",
+                    item_date="2026-09-26",
+                    variant="too-old",
+                ),
+                stamp="2026-09-26 08:00:00",
+            )
+            with self.assertRaisesRegex(ValueError, "día anterior"):
+                process_event(ev, news)
+
+    @patch("pipeline.staged_news_issue.datetime")
     def test_recent_duplicate_requires_material_update(self, mock_datetime) -> None:
         mock_datetime.now.return_value = datetime(2026, 9, 26, 8, 1, tzinfo=TZ)
         with tempfile.TemporaryDirectory() as tmp:
