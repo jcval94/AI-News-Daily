@@ -102,5 +102,12 @@ class LocalStagingTests(unittest.TestCase):
                 stage_request(request, repo_root=root)
 
 
+    def test_staged_job_id_cannot_escape_private_queue(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            with self.assertRaisesRegex(ValueError, "Invalid staged job_id"):
+                load_staged_job("../../outside", repo_root=root)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -106,5 +106,44 @@ class LocalJobTests(unittest.TestCase):
             self.assertNotIn(str(root), " ".join(result["command"]))
 
 
+    def test_transcript_output_cannot_target_repo_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            recordings = root / "recordings" / "2026-09-25"
+            recordings.mkdir(parents=True)
+            malicious = job(
+                "recording.transcribe",
+                params={
+                    "recordings_root": {
+                        "root_id": "recordings",
+                        "relative_path": "2026-09-25",
+                    },
+                    "output": {
+                        "root_id": "repo",
+                        "relative_path": "pipeline/run.py",
+                    },
+                },
+            )
+            with self.assertRaises(PermissionError):
+                build_command(malicious, config_for(root), repo_root=root)
+
+    def test_ingest_input_is_limited_to_recording_or_work_roots(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            source = root / "repo-media"
+            source.mkdir()
+            malicious = job(
+                "recording.ingest",
+                params={
+                    "input_dir": {
+                        "root_id": "repo",
+                        "relative_path": "repo-media",
+                    }
+                },
+            )
+            with self.assertRaises(PermissionError):
+                build_command(malicious, config_for(root), repo_root=root)
+
+
 if __name__ == "__main__":
     unittest.main()

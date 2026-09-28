@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,6 +15,7 @@ from pipeline.schema_validation import validate_payload
 
 REQUEST_ROOT = REPO_ROOT / "local_handoff" / "requests"
 STAGED_ROOT = REPO_ROOT / ".local" / "jobs" / "staged"
+_JOB_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{7,95}$")
 
 
 def _inside(path: Path, root: Path) -> bool:
@@ -113,6 +115,8 @@ def stage_request(request_path: Path, *, repo_root: Path = REPO_ROOT) -> tuple[P
 
 
 def load_staged_job(job_id: str, *, repo_root: Path = REPO_ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
+    if not _JOB_ID_RE.fullmatch(str(job_id)):
+        raise ValueError("Invalid staged job_id")
     staged_root = repo_root / ".local" / "jobs" / "staged"
     staged_job = staged_root / f"{job_id}.json"
     stage_meta = staged_root / f"{job_id}.stage.json"

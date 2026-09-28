@@ -64,6 +64,7 @@ def _path_param(
     required: bool,
     must_exist: bool = False,
     expect_dir: bool | None = None,
+    allowed_root_ids: set[str] | None = None,
 ) -> Path | None:
     value = params.get(key)
     if value is None:
@@ -72,6 +73,11 @@ def _path_param(
         return None
     if not isinstance(value, dict):
         raise ValueError(f"{key} must be a root_id/relative_path object")
+    root_id = str(value.get("root_id", "") or "")
+    if allowed_root_ids is not None and root_id not in allowed_root_ids:
+        raise PermissionError(
+            f"{key} cannot use root_id={root_id!r}; allowed roots: {sorted(allowed_root_ids)}"
+        )
     return roots.resolve_ref(value, must_exist=must_exist, expect_dir=expect_dir)
 
 
@@ -104,7 +110,10 @@ def build_command(
     mode = str(job.get("mode", "plan"))
 
     if operation == "media.scan":
-        media = _path_param(params, "media", roots, required=True, must_exist=True, expect_dir=False)
+        media = _path_param(
+            params, "media", roots, required=True, must_exist=True, expect_dir=False,
+            allowed_root_ids={"repo", "recordings", "work", "cache", "previews"},
+        )
         ffprobe = resolve_executable(
             config["executables"].get("ffprobe"), executable_name="ffprobe", repo_root=repo_root
         )
@@ -115,7 +124,10 @@ def build_command(
         ], {"kind": "ffprobe_json"}
 
     if operation == "recording.ingest":
-        input_dir = _path_param(params, "input_dir", roots, required=True, must_exist=True, expect_dir=True)
+        input_dir = _path_param(
+            params, "input_dir", roots, required=True, must_exist=True, expect_dir=True,
+            allowed_root_ids={"recordings", "work"},
+        )
         return [
             str(python), "-m", "pipeline.recording_ingest",
             "--target-date", date, "--repo-root", str(repo_root),
@@ -124,9 +136,13 @@ def build_command(
 
     if operation == "recording.transcribe":
         recordings_root = _path_param(
-            params, "recordings_root", roots, required=True, must_exist=True, expect_dir=True
+            params, "recordings_root", roots, required=True, must_exist=True, expect_dir=True,
+            allowed_root_ids={"recordings", "work"},
         )
-        output = _path_param(params, "output", roots, required=True)
+        output = _path_param(
+            params, "output", roots, required=True,
+            allowed_root_ids={"recordings", "work", "cache"},
+        )
         ingest_manifest = repo_root / "scripts" / date / "recording_ingest_manifest.json"
         whisperx = resolve_executable(
             config["executables"].get("whisperx_executable"),
@@ -155,7 +171,8 @@ def build_command(
 
     if operation == "recording.align":
         bundle = _path_param(
-            params, "transcript_bundle", roots, required=True, must_exist=True, expect_dir=False
+            params, "transcript_bundle", roots, required=True, must_exist=True, expect_dir=False,
+            allowed_root_ids={"recordings", "work", "cache"},
         )
         return [
             str(python), "-m", "pipeline.recording_alignment",
@@ -165,10 +182,12 @@ def build_command(
 
     if operation == "resolve.sync_audio":
         recordings_root = _path_param(
-            params, "recordings_root", roots, required=True, must_exist=True, expect_dir=True
+            params, "recordings_root", roots, required=True, must_exist=True, expect_dir=True,
+            allowed_root_ids={"recordings", "work"},
         )
         alignment = _path_param(
-            params, "alignment", roots, required=False, must_exist=True, expect_dir=False
+            params, "alignment", roots, required=False, must_exist=True, expect_dir=False,
+            allowed_root_ids={"repo", "recordings", "work"},
         ) or (repo_root / "scripts" / date / "recording_alignment.json")
         command = [
             str(python), "-m", "pipeline.resolve_alignment_bridge",
@@ -186,7 +205,8 @@ def build_command(
 
     if operation == "timeline.validate":
         timeline = _path_param(
-            params, "timeline", roots, required=False, must_exist=True, expect_dir=False
+            params, "timeline", roots, required=False, must_exist=True, expect_dir=False,
+            allowed_root_ids={"repo", "work"},
         ) or (repo_root / "scripts" / date / "timeline.otio")
         return None, {"kind": "otio_validate", "path": timeline}
 
