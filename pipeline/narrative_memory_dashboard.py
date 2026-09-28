@@ -260,6 +260,239 @@ def _score(value: Any) -> str:
         return "—"
 
 
+def memory_runtime_script() -> str:
+    return r"""(function () {
+  "use strict";
+
+  function bootMemoryRuntime() {
+    var runtimeWarning = document.getElementById("memoryRuntimeWarning");
+    try {
+      var storyCards = Array.prototype.slice.call(document.querySelectorAll("[data-memory-card]"));
+      var storyGrid = document.getElementById("memoryGrid");
+      var storySearch = document.getElementById("memorySearch");
+      var storyEmpty = document.getElementById("emptyMemory");
+      var storyResultCount = document.getElementById("storyResultCount");
+      var storyState = {availability: "", sort: "date", direction: "desc"};
+
+      function norm(value) {
+        return String(value || "").toLowerCase();
+      }
+
+      function setStoryAvailability(value, button) {
+        storyState.availability = value || "";
+        Array.prototype.forEach.call(document.querySelectorAll("[data-story-availability]"), function (item) {
+          var active = item === button;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        applyStoryView();
+      }
+
+      function compareStory(a, b) {
+        var dir = storyState.direction === "asc" ? 1 : -1;
+        var left;
+        var right;
+        if (storyState.sort === "surprise") {
+          left = Number(a.dataset.surprise) || 0;
+          right = Number(b.dataset.surprise) || 0;
+        } else if (storyState.sort === "quality") {
+          left = Number(a.dataset.quality) || 0;
+          right = Number(b.dataset.quality) || 0;
+        } else {
+          left = a.dataset.createdAt || "";
+          right = b.dataset.createdAt || "";
+        }
+        if (left < right) return -1 * dir;
+        if (left > right) return 1 * dir;
+        return (Number(b.dataset.surprise) || 0) - (Number(a.dataset.surprise) || 0);
+      }
+
+      function syncStorySortButtons() {
+        Array.prototype.forEach.call(document.querySelectorAll("[data-story-sort]"), function (item) {
+          var active = item.dataset.storySort === storyState.sort;
+          var arrow = item.querySelector(".arrow");
+          item.classList.toggle("active", active);
+          if (arrow) arrow.textContent = active ? (storyState.direction === "desc" ? "↓" : "↑") : "↓";
+        });
+      }
+
+      function applyStoryView() {
+        if (!storyGrid) throw new Error("Narrative Memory grid is missing");
+        var q = norm(storySearch ? storySearch.value : "").trim();
+        var visible = 0;
+        storyCards.forEach(function (card) {
+          var hit = (!q || norm(card.dataset.search).indexOf(q) !== -1)
+            && (!storyState.availability || card.dataset.availability === storyState.availability);
+          card.hidden = !hit;
+          if (hit) visible += 1;
+        });
+        storyCards.slice().sort(compareStory).forEach(function (card) {
+          storyGrid.appendChild(card);
+        });
+        if (storyEmpty) storyEmpty.hidden = visible !== 0;
+        if (storyResultCount) storyResultCount.textContent = "Mostrando " + visible + " de " + storyCards.length + " historias";
+      }
+
+      function resetStoryView() {
+        storyState.availability = "";
+        storyState.sort = "date";
+        storyState.direction = "desc";
+        if (storySearch) storySearch.value = "";
+        Array.prototype.forEach.call(document.querySelectorAll("[data-story-availability]"), function (item) {
+          var active = (item.dataset.storyAvailability || "") === "";
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        syncStorySortButtons();
+        applyStoryView();
+      }
+
+      var newsBatches = Array.prototype.slice.call(document.querySelectorAll("[data-news-batch]"));
+      var newsFeed = document.getElementById("newsFeed");
+      var newsSearch = document.getElementById("newsSearch");
+      var newsEmpty = document.getElementById("emptyNews");
+      var newsCategory = "";
+      var newsDirection = "desc";
+
+      function applyNewsView() {
+        var q = norm(newsSearch ? newsSearch.value : "").trim();
+        var totalVisible = 0;
+        newsBatches.forEach(function (batch) {
+          var batchVisible = 0;
+          Array.prototype.forEach.call(batch.querySelectorAll("[data-news-card]"), function (card) {
+            var hit = (!q || norm(card.dataset.search).indexOf(q) !== -1)
+              && (!newsCategory || norm(card.dataset.category) === norm(newsCategory));
+            card.hidden = !hit;
+            if (hit) {
+              batchVisible += 1;
+              totalVisible += 1;
+            }
+          });
+          batch.hidden = batchVisible === 0;
+        });
+        if (newsFeed) {
+          newsBatches.slice().sort(function (a, b) {
+            var left = a.dataset.depositKey || "";
+            var right = b.dataset.depositKey || "";
+            return newsDirection === "desc" ? right.localeCompare(left) : left.localeCompare(right);
+          }).forEach(function (batch) {
+            newsFeed.appendChild(batch);
+          });
+        }
+        if (newsEmpty) newsEmpty.hidden = totalVisible !== 0;
+      }
+
+      document.addEventListener("click", function (event) {
+        var target = event.target && event.target.closest ? event.target : null;
+        if (!target) return;
+
+        var storySort = target.closest("[data-story-sort]");
+        if (storySort) {
+          event.preventDefault();
+          var key = storySort.dataset.storySort;
+          if (storyState.sort === key) {
+            storyState.direction = storyState.direction === "desc" ? "asc" : "desc";
+          } else {
+            storyState.sort = key;
+            storyState.direction = "desc";
+          }
+          syncStorySortButtons();
+          applyStoryView();
+          return;
+        }
+
+        var availability = target.closest("[data-story-availability]");
+        if (availability) {
+          event.preventDefault();
+          setStoryAvailability(availability.dataset.storyAvailability || "", availability);
+          return;
+        }
+
+        var storyReset = target.closest("#storyReset");
+        if (storyReset) {
+          event.preventDefault();
+          resetStoryView();
+          return;
+        }
+
+        var newsCategoryButton = target.closest("[data-news-category]");
+        if (newsCategoryButton) {
+          event.preventDefault();
+          var value = newsCategoryButton.dataset.newsCategory || "";
+          newsCategory = newsCategory === value ? "" : value;
+          Array.prototype.forEach.call(document.querySelectorAll("[data-news-category]"), function (item) {
+            item.classList.toggle("active", item === newsCategoryButton && Boolean(newsCategory));
+          });
+          applyNewsView();
+          return;
+        }
+
+        var newsSort = target.closest("#newsDateSort");
+        if (newsSort) {
+          event.preventDefault();
+          newsDirection = newsDirection === "desc" ? "asc" : "desc";
+          newsSort.dataset.direction = newsDirection;
+          var newsArrow = newsSort.querySelector(".arrow");
+          if (newsArrow) newsArrow.textContent = newsDirection === "desc" ? "↓" : "↑";
+          applyNewsView();
+          return;
+        }
+
+        var newsReset = target.closest("#newsReset");
+        if (newsReset) {
+          event.preventDefault();
+          newsCategory = "";
+          newsDirection = "desc";
+          if (newsSearch) newsSearch.value = "";
+          Array.prototype.forEach.call(document.querySelectorAll("[data-news-category]"), function (item) {
+            item.classList.remove("active");
+          });
+          var sort = document.getElementById("newsDateSort");
+          var sortArrow = sort ? sort.querySelector(".arrow") : null;
+          if (sortArrow) sortArrow.textContent = "↓";
+          applyNewsView();
+          return;
+        }
+
+        var tabButton = target.closest("[data-memory-tab]");
+        if (tabButton) {
+          event.preventDefault();
+          var tab = tabButton.dataset.memoryTab;
+          Array.prototype.forEach.call(document.querySelectorAll("[data-memory-tab]"), function (item) {
+            item.classList.toggle("active", item === tabButton);
+          });
+          Array.prototype.forEach.call(document.querySelectorAll("[data-memory-panel]"), function (panel) {
+            panel.hidden = panel.dataset.memoryPanel !== tab;
+          });
+        }
+      });
+
+      if (storySearch) storySearch.addEventListener("input", applyStoryView);
+      if (newsSearch) newsSearch.addEventListener("input", applyNewsView);
+
+      applyStoryView();
+      applyNewsView();
+      document.body.setAttribute("data-memory-runtime", "ready");
+      if (runtimeWarning) runtimeWarning.hidden = true;
+    } catch (error) {
+      document.body.setAttribute("data-memory-runtime", "error");
+      if (runtimeWarning) {
+        runtimeWarning.hidden = false;
+        runtimeWarning.textContent = "Los controles de esta vista no pudieron iniciar. Recarga la página; si persiste, revisa el runtime de Narrative Memory.";
+      }
+      console.error("Narrative Memory runtime failed", error);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootMemoryRuntime, {once: true});
+  } else {
+    bootMemoryRuntime();
+  }
+})();
+"""
+
+
 def memory_document(report: dict[str, Any]) -> str:
     metrics = report.get("metrics", {}) if isinstance(report.get("metrics"), dict) else {}
     items = report.get("items", []) if isinstance(report.get("items"), list) else []
@@ -442,7 +675,7 @@ def memory_document(report: dict[str, Any]) -> str:
 <title>Narrative Memory · AI News Daily</title>
 <style>
 :root{{--bg:#080d13;--panel:#0e1620;--panel2:#111d29;--line:#223247;--text:#edf6ff;--muted:#8799aa;--accent:#6edaff;--story:#c7a6ff;--story-bg:#181327;--news:#6edaff;--news-bg:#0d1c27;--ok:#5bd0a3;--warn:#f2be62;--cool:#aa8cff}}
-*{{box-sizing:border-box}}html{{scroll-behavior:smooth}}body{{margin:0;background:radial-gradient(circle at 20% 0,#102638 0,transparent 34%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}}
+*{{box-sizing:border-box}}html{{scroll-behavior:smooth}}body{{margin:0;background:radial-gradient(circle at 20% 0,#102638 0,transparent 34%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}}.runtime-warning{{margin:10px 0 14px;border:1px solid #76552d;background:#2b1d0f;color:#f0c98b;border-radius:12px;padding:10px 12px;font-size:11px;line-height:1.45}}
 button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margin:auto;padding:34px 30px 70px}}.eyebrow{{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:850}}
 .hero{{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:28px;align-items:end;margin-bottom:18px}}h1{{font-size:clamp(34px,5vw,66px);line-height:.96;margin:8px 0 14px;letter-spacing:-.045em}}.hero p{{max-width:850px;color:#a9bac9;font-size:15px;line-height:1.65;margin:0}}.freshness{{background:#0d1924;border:1px solid var(--line);border-radius:16px;padding:17px}}.freshness strong{{display:block;font-size:20px;margin-top:4px}}.freshness small{{color:var(--muted)}}
 .source-legend{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 22px}}.source-card{{border:1px solid var(--line);border-radius:15px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}}.source-card.story{{background:linear-gradient(135deg,var(--story-bg),#101720);border-color:#4e3d6e}}.source-card.news{{background:linear-gradient(135deg,var(--news-bg),#101720);border-color:#28546b}}.source-dot{{width:10px;height:10px;border-radius:50%;margin-top:4px;flex:0 0 auto}}.story .source-dot{{background:var(--story)}}.news .source-dot{{background:var(--news)}}.source-card strong{{display:block;font-size:13px}}.source-card small{{display:block;color:var(--muted);margin-top:3px;line-height:1.4}}
@@ -457,7 +690,7 @@ button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margi
 @media(max-width:1180px){{.news-grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}@media(max-width:1000px){{.hero{{grid-template-columns:1fr}}.kpis{{grid-template-columns:repeat(3,1fr)}}.grid,.section-grid{{grid-template-columns:1fr}}.source-legend{{grid-template-columns:1fr}}}}@media(max-width:680px){{main{{padding:22px 14px 50px}}.kpis{{grid-template-columns:repeat(2,1fr)}}.controls{{position:static}}.search-row{{grid-template-columns:1fr}}.score-grid{{grid-template-columns:repeat(2,1fr)}}.news-grid{{grid-template-columns:1fr}}.news-batch-head{{align-items:flex-start;flex-direction:column}}}}
 </style>
 </head>
-<body data-memory-page="narrative-memory">
+<body data-memory-page="narrative-memory" data-memory-runtime="booting">
 <main>
 <section class="hero">
 <div><span class="eyebrow">Narrative Memory · observabilidad editorial</span><h1>¿Qué historias tiene el sistema para pensar mejor?</h1><p>Biblioteca verificada de paralelos narrativos. Esta vista separa inventario de uso real: muestra qué mecanismos están cubiertos, qué casos siguen disponibles, cuáles están en cooldown y qué paralelos llegaron efectivamente a episodios aprobados.</p></div>
@@ -482,6 +715,7 @@ button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margi
 </nav>
 <section class="tab-panel" data-memory-panel="stories">
 <div class="section-intro story"><span class="eyebrow">Narrative Memory</span><h2>Historias interesantes</h2><p>Contexto histórico, científico o económico para enriquecer el ensayo. Por defecto: lo más reciente y sorprendente primero.</p></div>
+<div id="memoryRuntimeWarning" class="runtime-warning">Inicializando controles interactivos…</div>
 <div class="controls story-filters">
 <div class="search-row"><input id="memorySearch" type="search" placeholder="Buscar historia, dominio o mecanismo…" aria-label="Buscar historias interesantes"><button id="storyReset" type="button" class="reset-button">Limpiar</button></div>
 <div class="control-line"><span class="control-label">Ordenar</span>
@@ -517,113 +751,7 @@ button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margi
 </section>
 <p class="footer-note">Noticias diarias y Narrative Memory son fuentes distintas: <code>news/</code> aporta hechos recientes; <code>editorial/narrative_memory.jsonl</code> aporta paralelos verificados y reutilizables. Esta vista no mezcla sus métricas ni sus filtros.</p>
 </main>
-<script>
-const norm=value=>(value||'').toLocaleLowerCase('es');
-const storyCards=[...document.querySelectorAll('[data-memory-card]')];
-const storyGrid=document.getElementById('memoryGrid');
-const storySearch=document.getElementById('memorySearch');
-const storyEmpty=document.getElementById('emptyMemory');
-const storyResultCount=document.getElementById('storyResultCount');
-const storyState={{availability:'',sort:'date',direction:'desc'}};
-function setStoryAvailability(value,button){{
-  storyState.availability=value||'';
-  document.querySelectorAll('[data-story-availability]').forEach(item=>{{
-    const active=item===button;
-    item.classList.toggle('active',active);
-    item.setAttribute('aria-pressed',active?'true':'false');
-  }});
-  applyStoryView();
-}}
-function compareStory(a,b){{
-  const dir=storyState.direction==='asc'?1:-1;
-  let left,right;
-  if(storyState.sort==='surprise'){{left=Number(a.dataset.surprise)||0;right=Number(b.dataset.surprise)||0;}}
-  else if(storyState.sort==='quality'){{left=Number(a.dataset.quality)||0;right=Number(b.dataset.quality)||0;}}
-  else{{left=a.dataset.createdAt||'';right=b.dataset.createdAt||'';}}
-  if(left<right)return -1*dir;if(left>right)return 1*dir;
-  return (Number(b.dataset.surprise)||0)-(Number(a.dataset.surprise)||0);
-}}
-function applyStoryView(){{
-  const q=norm(storySearch?.value).trim();let visible=0;
-  storyCards.forEach(card=>{{
-    const hit=(!q||norm(card.dataset.search).includes(q))
-      &&(!storyState.availability||card.dataset.availability===storyState.availability);
-    card.hidden=!hit;if(hit)visible+=1;
-  }});
-  [...storyCards].sort(compareStory).forEach(card=>storyGrid.appendChild(card));
-  storyEmpty.hidden=visible!==0;
-  if(storyResultCount)storyResultCount.textContent='Mostrando '+visible+' de '+storyCards.length+' historias';
-}}
-document.querySelectorAll('[data-story-availability]').forEach(button=>button.addEventListener('click',()=>setStoryAvailability(button.dataset.storyAvailability||'',button)));
-document.querySelectorAll('[data-story-sort]').forEach(button=>button.addEventListener('click',()=>{{
-  const key=button.dataset.storySort;
-  if(storyState.sort===key)storyState.direction=storyState.direction==='desc'?'asc':'desc';
-  else{{storyState.sort=key;storyState.direction='desc';}}
-  document.querySelectorAll('[data-story-sort]').forEach(item=>{{
-    const active=item.dataset.storySort===storyState.sort;item.classList.toggle('active',active);
-    item.querySelector('.arrow').textContent=active?(storyState.direction==='desc'?'↓':'↑'):'↓';
-  }});
-  applyStoryView();
-}}));
-storySearch?.addEventListener('input',applyStoryView);
-document.getElementById('storyReset')?.addEventListener('click',()=>{{
-  storyState.availability='';storyState.sort='date';storyState.direction='desc';
-  if(storySearch)storySearch.value='';
-  document.querySelectorAll('[data-story-availability]').forEach(item=>{{
-    const active=(item.dataset.storyAvailability||'')==='';
-    item.classList.toggle('active',active);
-    item.setAttribute('aria-pressed',active?'true':'false');
-  }});
-  document.querySelectorAll('[data-story-sort]').forEach(item=>{{const active=item.dataset.storySort==='date';item.classList.toggle('active',active);item.querySelector('.arrow').textContent='↓';}});
-  applyStoryView();
-}}));
-
-const newsBatches=[...document.querySelectorAll('[data-news-batch]')];
-const newsCards=[...document.querySelectorAll('[data-news-card]')];
-const newsFeed=document.getElementById('newsFeed');
-const newsSearch=document.getElementById('newsSearch');
-const newsEmpty=document.getElementById('emptyNews');
-let newsCategory='';let newsDirection='desc';
-function applyNewsView(){{
-  const q=norm(newsSearch?.value).trim();let totalVisible=0;
-  newsBatches.forEach(batch=>{{
-    let batchVisible=0;
-    batch.querySelectorAll('[data-news-card]').forEach(card=>{{
-      const hit=(!q||norm(card.dataset.search).includes(q))&&(!newsCategory||norm(card.dataset.category)===norm(newsCategory));
-      card.hidden=!hit;if(hit){{batchVisible+=1;totalVisible+=1;}}
-    }});
-    batch.hidden=batchVisible===0;
-  }});
-  [...newsBatches].sort((a,b)=>newsDirection==='desc'
-    ?(b.dataset.depositKey||'').localeCompare(a.dataset.depositKey||'')
-    :(a.dataset.depositKey||'').localeCompare(b.dataset.depositKey||'')
-  ).forEach(batch=>newsFeed.appendChild(batch));
-  newsEmpty.hidden=totalVisible!==0;
-}}
-document.querySelectorAll('[data-news-category]').forEach(button=>button.addEventListener('click',()=>{{
-  const value=button.dataset.newsCategory||'';newsCategory=newsCategory===value?'':value;
-  document.querySelectorAll('[data-news-category]').forEach(item=>item.classList.toggle('active',item===button&&Boolean(newsCategory)));
-  applyNewsView();
-}}));
-document.getElementById('newsDateSort')?.addEventListener('click',event=>{{
-  newsDirection=newsDirection==='desc'?'asc':'desc';event.currentTarget.dataset.direction=newsDirection;
-  event.currentTarget.querySelector('.arrow').textContent=newsDirection==='desc'?'↓':'↑';applyNewsView();
-}});
-newsSearch?.addEventListener('input',applyNewsView);
-document.getElementById('newsReset')?.addEventListener('click',()=>{{
-  newsCategory='';newsDirection='desc';if(newsSearch)newsSearch.value='';
-  document.querySelectorAll('[data-news-category]').forEach(item=>item.classList.remove('active'));
-  const sort=document.getElementById('newsDateSort');if(sort)sort.querySelector('.arrow').textContent='↓';
-  applyNewsView();
-}}));
-
-document.querySelectorAll('[data-memory-tab]').forEach(button=>button.addEventListener('click',()=>{{
-  const target=button.dataset.memoryTab;
-  document.querySelectorAll('[data-memory-tab]').forEach(item=>item.classList.toggle('active',item===button));
-  document.querySelectorAll('[data-memory-panel]').forEach(panel=>panel.hidden=panel.dataset.memoryPanel!==target);
-}}));
-applyStoryView();applyNewsView();
-</script>
+<script src="memory.js" defer></script>
 </body>
 </html>
 """
@@ -650,6 +778,7 @@ def build_dashboard(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    (output_dir / "memory.js").write_text(memory_runtime_script(), encoding="utf-8")
     index = output_dir / "index.html"
     index.write_text(memory_document(report), encoding="utf-8")
     return index
