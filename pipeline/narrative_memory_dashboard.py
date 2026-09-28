@@ -11,6 +11,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from pipeline.narrative_memory import DEFAULT_COOLDOWN_DAYS, load_memory, load_usage_history
+from pipeline.news import parse_news_file
 
 
 def _esc(value: Any) -> str:
@@ -32,6 +33,7 @@ def build_report(
     *,
     memory_path: Path,
     scripts_root: Path,
+    news_root: Path | None = None,
     as_of: date | None = None,
     cooldown_days: int = DEFAULT_COOLDOWN_DAYS,
 ) -> dict[str, Any]:
@@ -147,6 +149,41 @@ def build_report(
         for created_at, batch in sorted(daily_update_map.items(), reverse=True)
     ]
 
+    news_batches: list[dict[str, Any]] = []
+    news_issues: list[str] = []
+    news_category_counts: Counter[str] = Counter()
+    if news_root is not None and news_root.is_dir():
+        for news_path in sorted(
+            news_root.glob("*.txt"),
+            key=lambda path: path.name,
+            reverse=True,
+        ):
+            try:
+                parsed_news = parse_news_file(news_path)
+            except (OSError, ValueError) as exc:
+                news_issues.append(f"{news_path.name}: {exc}")
+                continue
+            if not parsed_news:
+                continue
+            serialized: list[dict[str, Any]] = []
+            for news_item in parsed_news:
+                payload = news_item.model_dump(exclude={"raw_content"})
+                category = str(payload.get("category") or "sin categoría")
+                news_category_counts[category] += 1
+                serialized.append(payload)
+            news_batches.append(
+                {
+                    "source_file": news_path.name,
+                    "deposit_key": news_path.stem,
+                    "date": str(serialized[0].get("date") or ""),
+                    "count": len(serialized),
+                    "categories": sorted(
+                        {str(item.get("category") or "sin categoría") for item in serialized}
+                    ),
+                    "items": serialized,
+                }
+            )
+
     score_fields = (
         "surprise_score",
         "explanatory_score",
@@ -201,6 +238,17 @@ def build_report(
         "issues": issues,
         "episode_usage": episode_usage,
         "daily_updates": daily_updates,
+        "news": {
+            "batch_count": len(news_batches),
+            "item_count": sum(int(batch["count"]) for batch in news_batches),
+            "latest_source_file": news_batches[0]["source_file"] if news_batches else None,
+            "categories": [
+                {"name": name, "count": count}
+                for name, count in news_category_counts.most_common()
+            ],
+            "issues": news_issues,
+            "batches": news_batches,
+        },
         "items": rows,
     }
 
@@ -220,27 +268,25 @@ def memory_document(report: dict[str, Any]) -> str:
     issues = report.get("issues", []) if isinstance(report.get("issues"), list) else []
     episode_usage = report.get("episode_usage", []) if isinstance(report.get("episode_usage"), list) else []
     daily_updates = report.get("daily_updates", []) if isinstance(report.get("daily_updates"), list) else []
+    news = report.get("news", {}) if isinstance(report.get("news"), dict) else {}
+    news_batches = news.get("batches", []) if isinstance(news.get("batches"), list) else []
+    news_categories = news.get("categories", []) if isinstance(news.get("categories"), list) else []
     averages = metrics.get("averages", {}) if isinstance(metrics.get("averages"), dict) else {}
 
-    mechanism_options = "".join(
-        f'<option value="{_esc(entry.get("name"))}">{_esc(entry.get("name"))} · {_esc(entry.get("count"))}</option>'
-        for entry in mechanisms
+    domain_filter_buttons = "".join(
+        f'<button type="button" class="filter-chip" data-story-filter="domain" data-value="{_esc(entry.get("name"))}">{_esc(entry.get("name"))}</button>'
+        for entry in domains[:8]
         if isinstance(entry, dict)
     )
-    domain_options = "".join(
-        f'<option value="{_esc(entry.get("name"))}">{_esc(entry.get("name"))} · {_esc(entry.get("count"))}</option>'
-        for entry in domains
+    mechanism_filter_buttons = "".join(
+        f'<button type="button" class="filter-chip" data-story-filter="mechanism" data-value="{_esc(entry.get("name"))}">{_esc(entry.get("name"))}</button>'
+        for entry in mechanisms[:8]
         if isinstance(entry, dict)
     )
-    source_kind_options = "".join(
-        f'<option value="{_esc(source_kind)}">{_esc(source_kind.replace("_", " ").title())}</option>'
-        for source_kind in sorted(
-            {
-                str(item.get("source_kind"))
-                for item in items
-                if isinstance(item, dict) and item.get("source_kind")
-            }
-        )
+    news_category_buttons = "".join(
+        f'<button type="button" class="filter-chip news-chip" data-news-category="{_esc(entry.get("name"))}">{_esc(entry.get("name"))} <span>{_esc(entry.get("count"))}</span></button>'
+        for entry in news_categories
+        if isinstance(entry, dict)
     )
     max_mechanism = max(
         (int(entry.get("count", 0)) for entry in mechanisms if isinstance(entry, dict)),
@@ -331,44 +377,63 @@ def memory_document(report: dict[str, Any]) -> str:
         if isinstance(entry, dict)
     )
 
-    update_sections: list[str] = []
-    for batch in daily_updates:
+    news_sections: list[str] = []
+    for batch in news_batches:
         if not isinstance(batch, dict):
             continue
-        update_items = []
+        news_cards: list[str] = []
         for item in batch.get("items", []):
             if not isinstance(item, dict):
                 continue
-            origin = str(item.get("source_kind") or "unknown").replace("_", " ")
-            update_items.append(
-                '<article class="update-card">'
-                '<div class="update-card-top">'
-                f'<span class="update-origin">{_esc(origin)}</span>'
-                f'<span class="update-surprise">Sorpresa {_score(item.get("surprise_score"))}</span>'
+            category = str(item.get("category") or "sin categoría")
+            search_text = " ".join(
+                [
+                    str(item.get("title") or ""),
+                    str(item.get("source") or ""),
+                    category,
+                    str(item.get("summary") or ""),
+                    str(item.get("why_it_matters") or ""),
+                ]
+            ).casefold()
+            link = str(item.get("url") or "").strip()
+            link_html = (
+                f'<a class="news-link" href="{html.escape(link, quote=True)}" target="_blank" rel="noopener">Abrir fuente ↗</a>'
+                if link
+                else '<span class="news-link muted-link">Sin enlace</span>'
+            )
+            news_cards.append(
+                '<article class="news-card" data-news-card '
+                f'data-category="{_esc(category)}" data-search="{_esc(search_text)}">'
+                '<div class="news-card-top">'
+                f'<span class="news-category">{_esc(category)}</span>'
+                f'<span class="news-source">{_esc(item.get("source"))}</span>'
                 '</div>'
                 f'<h3>{_esc(item.get("title"))}</h3>'
-                f'<p>{_esc(item.get("one_liner"))}</p>'
-                '<div class="update-meta">'
-                f'<span>Q {_score(item.get("quality_score"))}</span>'
-                f'<span>{_esc(" · ".join(str(v) for v in item.get("domains", [])))}</span>'
-                f'<span>{_esc(" · ".join(str(v) for v in item.get("mechanisms", [])))}</span>'
-                '</div>'
+                f'<p>{_esc(item.get("summary"))}</p>'
+                '<details><summary>Por qué importa</summary>'
+                f'<p>{_esc(item.get("why_it_matters"))}</p>'
+                '</details>'
+                f'{link_html}'
                 '</article>'
             )
-        update_sections.append(
-            '<section class="update-day">'
-            '<div class="update-day-head">'
-            f'<div><span class="eyebrow">Alta diaria</span><h2>{_esc(batch.get("date"))}</h2></div>'
-            '<div class="update-day-stats">'
-            f'<span><b>{_esc(batch.get("count"))}</b> altas</span>'
-            f'<span><b>{_esc(batch.get("scheduled_research_count"))}</b> research</span>'
-            f'<span><b>{_score(batch.get("average_surprise"))}</b> sorpresa media</span>'
+        news_sections.append(
+            '<section class="news-batch" data-news-batch '
+            f'data-deposit-key="{_esc(batch.get("deposit_key"))}">'
+            '<div class="news-batch-head">'
+            '<div>'
+            '<span class="eyebrow">Depósito en news/</span>'
+            f'<h2>{_esc(batch.get("date"))}</h2>'
+            f'<code>{_esc(batch.get("source_file"))}</code>'
+            '</div>'
+            '<div class="news-batch-stats">'
+            f'<span><b>{_esc(batch.get("count"))}</b> noticias</span>'
+            f'<span>{_esc(" · ".join(str(value) for value in batch.get("categories", [])))}</span>'
             '</div>'
             '</div>'
-            f'<div class="update-grid">{"".join(update_items)}</div>'
+            f'<div class="news-grid">{"".join(news_cards)}</div>'
             '</section>'
         )
-    updates_html = "".join(update_sections) or '<p class="empty">Aún no hay altas fechadas en Narrative Memory.</p>'
+    news_html = "".join(news_sections) or '<p class="empty">No hay depósitos parseables en news/.</p>'
 
     issues_block = (
         '<div class="warning"><strong>Filas fuera del contrato</strong><ul>'
@@ -386,20 +451,20 @@ def memory_document(report: dict[str, Any]) -> str:
 <meta name="color-scheme" content="dark">
 <title>Narrative Memory · AI News Daily</title>
 <style>
-:root{{--bg:#080d13;--panel:#0e1620;--panel2:#111d29;--line:#223247;--text:#edf6ff;--muted:#8799aa;--accent:#6edaff;--ok:#5bd0a3;--warn:#f2be62;--cool:#aa8cff}}
+:root{{--bg:#080d13;--panel:#0e1620;--panel2:#111d29;--line:#223247;--text:#edf6ff;--muted:#8799aa;--accent:#6edaff;--story:#c7a6ff;--story-bg:#181327;--news:#6edaff;--news-bg:#0d1c27;--ok:#5bd0a3;--warn:#f2be62;--cool:#aa8cff}}
 *{{box-sizing:border-box}}html{{scroll-behavior:smooth}}body{{margin:0;background:radial-gradient(circle at 20% 0,#102638 0,transparent 34%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}}
-main{{max-width:1500px;margin:auto;padding:34px 30px 70px}}.eyebrow{{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:850}}
-.hero{{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:28px;align-items:end;margin-bottom:22px}}h1{{font-size:clamp(34px,5vw,66px);line-height:.96;margin:8px 0 14px;letter-spacing:-.045em}}.hero p{{max-width:820px;color:#a9bac9;font-size:15px;line-height:1.65;margin:0}}.freshness{{background:#0d1924;border:1px solid var(--line);border-radius:16px;padding:17px}}.freshness strong{{display:block;font-size:20px;margin-top:4px}}
-.kpis{{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;margin:22px 0}}.kpi{{background:linear-gradient(180deg,#111c28,#0c141d);border:1px solid var(--line);border-radius:15px;padding:15px}}.kpi span{{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}}.kpi b{{display:block;font-size:28px;margin-top:5px;letter-spacing:-.03em}}.kpi small{{color:#8ea2b5;font-size:10px}}
-.tabs{{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0 6px;padding:5px;background:#0b131c;border:1px solid var(--line);border-radius:14px;width:max-content;max-width:100%}}.tab-button{{appearance:none;border:0;background:transparent;color:#8fa3b5;border-radius:10px;padding:9px 12px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}}.tab-button.active{{background:#152433;color:var(--text);box-shadow:inset 0 0 0 1px #294057}}.tab-panel[hidden]{{display:none}}
-.toolbar{{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(6,minmax(145px,.7fr));gap:9px;padding:11px 0;background:linear-gradient(180deg,#080d13 75%,transparent)}}input,select{{width:100%;background:#0c151f;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none}}input:focus,select:focus{{border-color:#4c9ec0;box-shadow:0 0 0 3px #17405a55}}
-.grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}}.memory-card{{background:linear-gradient(180deg,#111c27,#0d151e);border:1px solid var(--line);border-radius:17px;padding:18px;min-width:0}}.memory-card[hidden]{{display:none}}.card-top{{display:flex;justify-content:space-between;align-items:center;gap:12px}}.card-freshness{{display:flex;align-items:center;gap:8px;color:#7f93a5;font-size:10px}}.availability{{font-size:9px;font-weight:900;letter-spacing:.1em;border-radius:999px;padding:5px 8px;border:1px solid}}.availability.available{{color:var(--ok);border-color:#28644f;background:#10271f}}.availability.cooldown{{color:var(--cool);border-color:#574985;background:#1c1830}}.quality{{font-size:11px;color:#b7ddec;font-variant-numeric:tabular-nums}}.memory-card h3{{font-size:19px;margin:11px 0 6px}}.one-liner{{margin:0;color:#a9bac9;line-height:1.5;font-size:13px}}
-.chips{{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}}.chip{{font-size:9px;border:1px solid #304153;background:#111b25;color:#aabaca;border-radius:999px;padding:4px 7px}}.chip.mechanism{{border-color:#29546c;color:#8edfff;background:#10202b}}
-.score-grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:13px 0}}.score-grid span{{display:grid;gap:1px;background:#09121a;border:1px solid #1d2c3d;border-radius:10px;padding:9px;color:var(--muted);font-size:9px}}.score-grid b{{font-size:17px;color:var(--text)}}.card-meta{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;color:#8497a9;font-size:10px;margin-bottom:8px}}details{{border-top:1px solid #1d2c3b;padding-top:10px}}summary{{cursor:pointer;color:#9adcf4;font-size:11px;font-weight:750}}details p{{color:#9dafbd;line-height:1.55;font-size:11px}}.sources{{display:flex;gap:7px;flex-wrap:wrap}}.sources a{{color:var(--accent);font-size:10px}}
-.section-grid{{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(0,1.2fr);gap:14px;margin:28px 0}}.panel{{background:#0d151e;border:1px solid var(--line);border-radius:17px;padding:18px}}.panel h2{{font-size:19px;margin:4px 0 15px}}.mechanism-row{{display:grid;grid-template-columns:minmax(190px,1fr) minmax(100px,.65fr);gap:12px;align-items:center;margin:8px 0}}.mechanism-row>div:first-child{{display:flex;justify-content:space-between;gap:9px;font-size:10px}}.mechanism-row span{{color:var(--muted)}}.bar{{height:7px;background:#091018;border-radius:99px;overflow:hidden}}.bar i{{display:block;height:100%;background:linear-gradient(90deg,#3288ac,#6edaff);border-radius:99px}}
-table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:left;padding:9px 7px;border-bottom:1px solid #1c2a39;vertical-align:top}}th{{color:#8ca0b3;font-size:9px;text-transform:uppercase;letter-spacing:.08em}}.empty{{color:var(--muted);font-size:12px}}.warning,.ok-note{{margin-top:18px;border-radius:13px;padding:13px;font-size:11px;line-height:1.5}}.warning{{border:1px solid #6c5325;background:#261d0d;color:#e9c87e}}.ok-note{{border:1px solid #255744;background:#10251d;color:#84d9b8}}
-.update-day{{margin:18px 0 28px}}.update-day-head{{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:12px}}.update-day-head h2{{margin:3px 0 0;font-size:24px}}.update-day-stats{{display:flex;gap:8px;flex-wrap:wrap}}.update-day-stats span{{display:grid;gap:1px;min-width:92px;background:#0c151f;border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--muted);font-size:9px}}.update-day-stats b{{font-size:15px;color:var(--text)}}.update-grid{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}.update-card{{background:linear-gradient(180deg,#111c27,#0d151e);border:1px solid var(--line);border-radius:15px;padding:15px}}.update-card-top{{display:flex;justify-content:space-between;gap:8px;align-items:center}}.update-origin{{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}}.update-surprise{{font-size:10px;color:#f2d28b}}.update-card h3{{font-size:16px;margin:9px 0 6px}}.update-card p{{font-size:11px;line-height:1.5;color:#9dafbd;margin:0}}.update-meta{{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}}.update-meta span{{font-size:9px;color:#8397a9;border:1px solid #263748;border-radius:999px;padding:4px 7px}}
-.footer-note{{margin-top:24px;color:#718597;font-size:10px}}@media(max-width:1180px){{.toolbar{{grid-template-columns:repeat(3,minmax(0,1fr))}}.update-grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}@media(max-width:1000px){{.hero{{grid-template-columns:1fr}}.kpis{{grid-template-columns:repeat(3,1fr)}}.grid,.section-grid{{grid-template-columns:1fr}}}}@media(max-width:680px){{main{{padding:22px 14px 50px}}.kpis{{grid-template-columns:repeat(2,1fr)}}.toolbar{{grid-template-columns:1fr;position:static}}.score-grid{{grid-template-columns:repeat(2,1fr)}}.update-grid{{grid-template-columns:1fr}}.update-day-head{{align-items:flex-start;flex-direction:column}}}}
+button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margin:auto;padding:34px 30px 70px}}.eyebrow{{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:850}}
+.hero{{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:28px;align-items:end;margin-bottom:18px}}h1{{font-size:clamp(34px,5vw,66px);line-height:.96;margin:8px 0 14px;letter-spacing:-.045em}}.hero p{{max-width:850px;color:#a9bac9;font-size:15px;line-height:1.65;margin:0}}.freshness{{background:#0d1924;border:1px solid var(--line);border-radius:16px;padding:17px}}.freshness strong{{display:block;font-size:20px;margin-top:4px}}.freshness small{{color:var(--muted)}}
+.source-legend{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 22px}}.source-card{{border:1px solid var(--line);border-radius:15px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}}.source-card.story{{background:linear-gradient(135deg,var(--story-bg),#101720);border-color:#4e3d6e}}.source-card.news{{background:linear-gradient(135deg,var(--news-bg),#101720);border-color:#28546b}}.source-dot{{width:10px;height:10px;border-radius:50%;margin-top:4px;flex:0 0 auto}}.story .source-dot{{background:var(--story)}}.news .source-dot{{background:var(--news)}}.source-card strong{{display:block;font-size:13px}}.source-card small{{display:block;color:var(--muted);margin-top:3px;line-height:1.4}}
+.kpis{{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;margin:18px 0}}.kpi{{background:linear-gradient(180deg,#111c28,#0c141d);border:1px solid var(--line);border-radius:15px;padding:15px}}.kpi span{{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}}.kpi b{{display:block;font-size:28px;margin-top:5px;letter-spacing:-.03em}}.kpi small{{color:#8ea2b5;font-size:10px}}
+.tabs{{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 8px;padding:5px;background:#0b131c;border:1px solid var(--line);border-radius:14px;width:max-content;max-width:100%}}.tab-button{{appearance:none;border:0;background:transparent;color:#8fa3b5;border-radius:10px;padding:10px 13px;font-size:11px;font-weight:850}}.tab-button.active{{background:#152433;color:var(--text);box-shadow:inset 0 0 0 1px #294057}}.tab-panel[hidden]{{display:none}}
+.section-intro{{margin:12px 0 14px;border-radius:15px;padding:15px 17px;border:1px solid var(--line)}}.section-intro.story{{background:linear-gradient(135deg,#181327,#0e1720);border-color:#493967}}.section-intro.news{{background:linear-gradient(135deg,#0d1c27,#0e1720);border-color:#28546b}}.section-intro h2{{margin:3px 0 4px;font-size:20px}}.section-intro p{{margin:0;color:#9eb0bf;font-size:12px;line-height:1.5}}
+.controls{{position:sticky;top:0;z-index:5;padding:10px 0 12px;background:linear-gradient(180deg,#080d13 78%,transparent)}}.search-row{{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:8px;margin-bottom:8px}}input[type="search"]{{width:100%;background:#0c151f;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none}}input[type="search"]:focus{{border-color:#4c9ec0;box-shadow:0 0 0 3px #17405a55}}.reset-button{{border:1px solid var(--line);background:#101923;color:#9fb0bf;border-radius:11px;padding:0 13px;font-size:10px;font-weight:800}}
+.control-line{{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}}.control-label{{color:#708699;font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:850;margin-right:2px}}.filter-chip,.sort-chip{{border:1px solid #2b3d4e;background:#0d1720;color:#99adbd;border-radius:999px;padding:6px 9px;font-size:10px;line-height:1}}.filter-chip span{{opacity:.65}}.filter-chip:hover,.sort-chip:hover{{border-color:#4b6d86;color:#dceaf4}}.filter-chip.active{{background:#173146;border-color:#4380a4;color:#d9f4ff}}.story-filters .filter-chip.active{{background:#2b2140;border-color:#725b9d;color:#e6d9ff}}.sort-chip.active{{background:#132b38;border-color:#3b7898;color:#cdefff}}.sort-chip .arrow{{display:inline-block;min-width:10px;margin-left:3px}}
+.grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}}.memory-card{{background:linear-gradient(180deg,#151522,#0d151e);border:1px solid #382f4d;border-radius:17px;padding:18px;min-width:0}}.memory-card[hidden]{{display:none}}.card-top{{display:flex;justify-content:space-between;align-items:center;gap:12px}}.card-freshness{{display:flex;align-items:center;gap:8px;color:#7f93a5;font-size:10px}}.availability{{font-size:9px;font-weight:900;letter-spacing:.1em;border-radius:999px;padding:5px 8px;border:1px solid}}.availability.available{{color:var(--ok);border-color:#28644f;background:#10271f}}.availability.cooldown{{color:var(--cool);border-color:#574985;background:#1c1830}}.quality{{font-size:11px;color:#d8c6ff;font-variant-numeric:tabular-nums}}.memory-card h3{{font-size:19px;margin:11px 0 6px}}.one-liner{{margin:0;color:#a9bac9;line-height:1.5;font-size:13px}}.chips{{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}}.chip{{font-size:9px;border:1px solid #304153;background:#111b25;color:#aabaca;border-radius:999px;padding:4px 7px}}.chip.mechanism{{border-color:#5a477b;color:#d0baff;background:#1b1728}}.score-grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:13px 0}}.score-grid span{{display:grid;gap:1px;background:#09121a;border:1px solid #1d2c3d;border-radius:10px;padding:9px;color:var(--muted);font-size:9px}}.score-grid b{{font-size:17px;color:var(--text)}}.card-meta{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;color:#8497a9;font-size:10px;margin-bottom:8px}}details{{border-top:1px solid #1d2c3b;padding-top:10px}}summary{{cursor:pointer;color:#9adcf4;font-size:11px;font-weight:750}}details p{{color:#9dafbd;line-height:1.55;font-size:11px}}.sources{{display:flex;gap:7px;flex-wrap:wrap}}.sources a{{color:var(--accent);font-size:10px}}
+.news-batch{{margin:18px 0 30px}}.news-batch[hidden]{{display:none}}.news-batch-head{{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:11px;padding-bottom:10px;border-bottom:1px solid #1d3342}}.news-batch-head h2{{font-size:23px;margin:3px 0 2px}}.news-batch-head code{{font-size:9px;color:#6f8ea2}}.news-batch-stats{{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#7892a5;font-size:9px}}.news-batch-stats span{{border:1px solid #233b4b;background:#0d1a23;border-radius:999px;padding:6px 9px}}.news-batch-stats b{{color:#bdeeff}}.news-grid{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}.news-card{{background:linear-gradient(180deg,#101d27,#0c151d);border:1px solid #244052;border-radius:15px;padding:15px;min-width:0}}.news-card[hidden]{{display:none}}.news-card-top{{display:flex;justify-content:space-between;gap:10px;align-items:center}}.news-category{{font-size:9px;color:#bdeeff;text-transform:uppercase;letter-spacing:.08em}}.news-source{{font-size:9px;color:#718b9c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}}.news-card h3{{font-size:15px;line-height:1.3;margin:9px 0 6px}}.news-card>p{{font-size:11px;line-height:1.5;color:#9dafbd;margin:0 0 10px}}.news-card details{{margin-top:7px}}.news-link{{display:inline-block;margin-top:10px;color:var(--news);font-size:10px;text-decoration:none}}.muted-link{{color:#617584}}
+.section-grid{{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(0,1.2fr);gap:14px;margin:28px 0}}.panel{{background:#0d151e;border:1px solid var(--line);border-radius:17px;padding:18px}}.panel h2{{font-size:19px;margin:4px 0 15px}}.mechanism-row{{display:grid;grid-template-columns:minmax(190px,1fr) minmax(100px,.65fr);gap:12px;align-items:center;margin:8px 0}}.mechanism-row>div:first-child{{display:flex;justify-content:space-between;gap:9px;font-size:10px}}.mechanism-row span{{color:var(--muted)}}.bar{{height:7px;background:#091018;border-radius:99px;overflow:hidden}}.bar i{{display:block;height:100%;background:linear-gradient(90deg,#805fb3,#c7a6ff);border-radius:99px}}table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:left;padding:9px 7px;border-bottom:1px solid #1c2a39;vertical-align:top}}th{{color:#8ca0b3;font-size:9px;text-transform:uppercase;letter-spacing:.08em}}.empty{{color:var(--muted);font-size:12px}}.warning,.ok-note{{margin-top:18px;border-radius:13px;padding:13px;font-size:11px;line-height:1.5}}.warning{{border:1px solid #6c5325;background:#261d0d;color:#e9c87e}}.ok-note{{border:1px solid #255744;background:#10251d;color:#84d9b8}}.footer-note{{margin-top:24px;color:#718597;font-size:10px}}
+@media(max-width:1180px){{.news-grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}@media(max-width:1000px){{.hero{{grid-template-columns:1fr}}.kpis{{grid-template-columns:repeat(3,1fr)}}.grid,.section-grid{{grid-template-columns:1fr}}.source-legend{{grid-template-columns:1fr}}}}@media(max-width:680px){{main{{padding:22px 14px 50px}}.kpis{{grid-template-columns:repeat(2,1fr)}}.controls{{position:static}}.search-row{{grid-template-columns:1fr}}.score-grid{{grid-template-columns:repeat(2,1fr)}}.news-grid{{grid-template-columns:1fr}}.news-batch-head{{align-items:flex-start;flex-direction:column}}}}
 </style>
 </head>
 <body data-memory-page="narrative-memory">
@@ -416,98 +481,151 @@ table{{width:100%;border-collapse:collapse;font-size:11px}}th,td{{text-align:lef
 <div class="kpi"><span>Mecanismos</span><b>{_esc(metrics.get("unique_mechanisms"))}</b><small>estructuras distintas</small></div>
 <div class="kpi"><span>Calidad media</span><b>{_score(metrics.get("average_quality_score"))}</b><small>score compuesto / 10</small></div>
 </section>
+<div class="source-legend">
+<div class="source-card story"><span class="source-dot"></span><div><strong>Historias interesantes</strong><small>Casos verificados y reutilizables de Narrative Memory. Tienen sorpresa, analogía, calidad y cooldown.</small></div></div>
+<div class="source-card news"><span class="source-dot"></span><div><strong>Noticias diarias</strong><small>Entradas que realmente se depositan en <code>news/</code>. Son el input factual diario; no son Narrative Memory.</small></div></div>
+</div>
 <nav class="tabs" aria-label="Secciones de Editorial Memory">
-<button class="tab-button active" type="button" data-memory-tab="library">Explorar memoria</button>
-<button class="tab-button" type="button" data-memory-tab="updates">Actualizaciones diarias</button>
+<button class="tab-button active" type="button" data-memory-tab="stories">Historias interesantes · {_esc(metrics.get("approved_items"))}</button>
+<button class="tab-button" type="button" data-memory-tab="news">Noticias diarias · {_esc(news.get("batch_count", 0))} depósitos</button>
 <button class="tab-button" type="button" data-memory-tab="coverage">Cobertura &amp; uso</button>
 </nav>
-<section class="tab-panel" data-memory-panel="library">
-<div class="toolbar">
-<input id="memorySearch" type="search" placeholder="Buscar caso, dominio, mecanismo u origen…" aria-label="Buscar Narrative Memory">
-<select id="mechanismFilter" aria-label="Filtrar mecanismo"><option value="">Todos los mecanismos</option>{mechanism_options}</select>
-<select id="domainFilter" aria-label="Filtrar dominio"><option value="">Todos los dominios</option>{domain_options}</select>
-<select id="sourceKindFilter" aria-label="Filtrar origen"><option value="">Todos los orígenes</option>{source_kind_options}</select>
-<select id="availabilityFilter" aria-label="Filtrar disponibilidad"><option value="">Toda disponibilidad</option><option value="available">Disponibles</option><option value="cooldown">Cooldown</option></select>
-<select id="surpriseFilter" aria-label="Filtrar sorpresa"><option value="0">Toda sorpresa</option><option value="9">Sorpresa ≥ 9.0</option><option value="8.5">Sorpresa ≥ 8.5</option><option value="8">Sorpresa ≥ 8.0</option></select>
-<select id="memorySort" aria-label="Ordenar memoria"><option value="recent-surprise">Reciente + sorpresa</option><option value="surprise">Mayor sorpresa</option><option value="quality">Mayor calidad</option><option value="available">Disponibles primero</option></select>
+<section class="tab-panel" data-memory-panel="stories">
+<div class="section-intro story"><span class="eyebrow">Narrative Memory</span><h2>Historias interesantes</h2><p>Contexto histórico, científico o económico para enriquecer el ensayo. Por defecto: lo más reciente y sorprendente primero.</p></div>
+<div class="controls story-filters">
+<div class="search-row"><input id="memorySearch" type="search" placeholder="Buscar historia, dominio o mecanismo…" aria-label="Buscar historias interesantes"><button id="storyReset" type="button" class="reset-button">Limpiar</button></div>
+<div class="control-line"><span class="control-label">Ordenar</span>
+<button type="button" class="sort-chip active" data-story-sort="date" data-direction="desc">Fecha <span class="arrow">↓</span></button>
+<button type="button" class="sort-chip" data-story-sort="surprise" data-direction="desc">Sorpresa <span class="arrow">↓</span></button>
+<button type="button" class="sort-chip" data-story-sort="quality" data-direction="desc">Calidad <span class="arrow">↓</span></button>
+<button type="button" class="sort-chip" data-story-sort="usage" data-direction="desc">Uso <span class="arrow">↓</span></button>
+</div>
+<div class="control-line"><span class="control-label">Estado</span><button type="button" class="filter-chip" data-story-filter="availability" data-value="available">Disponibles</button><button type="button" class="filter-chip" data-story-filter="availability" data-value="cooldown">Cooldown</button><span class="control-label">Origen</span><button type="button" class="filter-chip" data-story-filter="source" data-value="scheduled_research">Investigadas</button><button type="button" class="filter-chip" data-story-filter="source" data-value="editorial_seed">Seeds editoriales</button></div>
+<div class="control-line"><span class="control-label">Dominio</span>{domain_filter_buttons}</div>
+<div class="control-line"><span class="control-label">Mecanismo</span>{mechanism_filter_buttons}</div>
 </div>
 <section id="memoryGrid" class="grid">{"".join(cards)}</section>
-<div id="emptyMemory" class="empty" hidden>No hay casos que coincidan con los filtros.</div>
+<div id="emptyMemory" class="empty" hidden>No hay historias que coincidan con esos filtros.</div>
 </section>
-<section class="tab-panel" data-memory-panel="updates" hidden>
-<div class="panel" style="margin:12px 0 18px"><span class="eyebrow">Feed de altas</span><h2>Qué cambió cada día</h2><p class="one-liner">Nuevos registros agrupados por <code>created_at</code>, con investigación programada y semillas editoriales visibles por separado. Dentro de cada día se prioriza sorpresa y calidad.</p></div>
-{updates_html}
+<section class="tab-panel" data-memory-panel="news" hidden>
+<div class="section-intro news"><span class="eyebrow">news/*.txt</span><h2>Noticias diarias</h2><p>{_esc(news.get("item_count", 0))} noticias en {_esc(news.get("batch_count", 0))} depósitos parseables. Último archivo: <code>{_esc(news.get("latest_source_file"))}</code>.</p></div>
+<div class="controls">
+<div class="search-row"><input id="newsSearch" type="search" placeholder="Buscar noticia, fuente o categoría…" aria-label="Buscar noticias diarias"><button id="newsReset" type="button" class="reset-button">Limpiar</button></div>
+<div class="control-line"><span class="control-label">Ordenar depósitos</span><button type="button" id="newsDateSort" class="sort-chip active" data-direction="desc">Fecha <span class="arrow">↓</span></button><span class="control-label">Categoría</span>{news_category_buttons}</div>
+</div>
+<div id="newsFeed">{news_html}</div>
+<div id="emptyNews" class="empty" hidden>No hay noticias que coincidan con ese filtro.</div>
 </section>
 <section class="tab-panel" data-memory-panel="coverage" hidden>
 <section class="section-grid">
-<div class="panel"><span class="eyebrow">Cobertura</span><h2>Mecanismos narrativos</h2>{mechanism_cards or '<p class="empty">Sin mecanismos disponibles.</p>'}<p class="footer-note">Concentración del mecanismo más frecuente: {_esc(metrics.get("primary_mechanism_concentration"))}. Un valor alto puede indicar que la biblioteca está acumulando variaciones de la misma idea.</p></div>
-<div class="panel"><span class="eyebrow">Uso real</span><h2>Qué paralelos utilizó cada episodio</h2><table><thead><tr><th>Episodio</th><th>Paralelos</th><th>Total</th></tr></thead><tbody>{episode_rows if episode_rows else '<tr><td colspan="3" class="empty">Aún no hay usos aprobados registrados.</td></tr>'}</tbody></table></div>
+<div class="panel"><span class="eyebrow">Narrative Memory</span><h2>Mecanismos narrativos</h2>{mechanism_cards or '<p class="empty">Sin mecanismos disponibles.</p>'}<p class="footer-note">Concentración del mecanismo más frecuente: {_esc(metrics.get("primary_mechanism_concentration"))}.</p></div>
+<div class="panel"><span class="eyebrow">Uso real</span><h2>Qué historias llegaron a episodios aprobados</h2><table><thead><tr><th>Episodio</th><th>Historias</th><th>Total</th></tr></thead><tbody>{episode_rows if episode_rows else '<tr><td colspan="3" class="empty">Aún no hay usos aprobados registrados.</td></tr>'}</tbody></table></div>
 </section>
 {issues_block}
 </section>
-<p class="footer-note">La biblioteca es contexto verificado, no autoridad factual sobre noticias actuales. El Director debe elegir 1–2 casos recuperados; uno debe ser el gancho de apertura y el Writer recibe solo esos registros. Un episodio rechazado no cuenta como uso. La vista principal prioriza fecha de alta y sorpresa; los controles permiten cambiar el orden sin alterar el contrato productivo.</p>
+<p class="footer-note">Noticias diarias y Narrative Memory son fuentes distintas: <code>news/</code> aporta hechos recientes; <code>editorial/narrative_memory.jsonl</code> aporta paralelos verificados y reutilizables. Esta vista no mezcla sus métricas ni sus filtros.</p>
 </main>
 <script>
-const cards=[...document.querySelectorAll('[data-memory-card]')];
-const grid=document.getElementById('memoryGrid');
-const search=document.getElementById('memorySearch');
-const mechanism=document.getElementById('mechanismFilter');
-const domain=document.getElementById('domainFilter');
-const sourceKind=document.getElementById('sourceKindFilter');
-const availability=document.getElementById('availabilityFilter');
-const surprise=document.getElementById('surpriseFilter');
-const sort=document.getElementById('memorySort');
-const empty=document.getElementById('emptyMemory');
 const norm=value=>(value||'').toLocaleLowerCase('es');
-function sortCards(){{
-  const mode=sort?.value||'recent-surprise';
-  const sorted=[...cards].sort((left,right)=>{{
-    const dateDiff=norm(right.dataset.createdAt).localeCompare(norm(left.dataset.createdAt));
-    const surpriseDiff=(Number(right.dataset.surprise)||0)-(Number(left.dataset.surprise)||0);
-    const qualityDiff=(Number(right.dataset.quality)||0)-(Number(left.dataset.quality)||0);
-    if(mode==='surprise') return surpriseDiff||dateDiff||qualityDiff;
-    if(mode==='quality') return qualityDiff||dateDiff||surpriseDiff;
-    if(mode==='available'){{
-      const availabilityDiff=(left.dataset.availability==='available'?0:1)-(right.dataset.availability==='available'?0:1);
-      return availabilityDiff||dateDiff||surpriseDiff||qualityDiff;
-    }}
-    return dateDiff||surpriseDiff||qualityDiff;
-  }});
-  sorted.forEach(card=>grid.appendChild(card));
+const storyCards=[...document.querySelectorAll('[data-memory-card]')];
+const storyGrid=document.getElementById('memoryGrid');
+const storySearch=document.getElementById('memorySearch');
+const storyEmpty=document.getElementById('emptyMemory');
+const storyState={{availability:'',source:'',domain:'',mechanism:'',sort:'date',direction:'desc'}};
+function setSingleStoryFilter(type,value,button){{
+  const next=storyState[type]===value?'':value;
+  storyState[type]=next;
+  document.querySelectorAll('[data-story-filter="'+type+'"]').forEach(item=>item.classList.toggle('active',item===button&&Boolean(next)));
+  applyStoryView();
 }}
-function applyFilters(){{
-  const q=norm(search?.value).trim();
-  const m=norm(mechanism?.value);
-  const d=norm(domain?.value);
-  const sk=norm(sourceKind?.value);
-  const a=availability?.value||'';
-  const minSurprise=Number(surprise?.value||0);
-  let visible=0;
-  cards.forEach(card=>{{
-    const text=norm(card.dataset.search);
-    const mechanisms=norm(card.dataset.mechanisms);
-    const domains=norm(card.dataset.domains);
-    const origin=norm(card.dataset.sourceKind);
-    const score=Number(card.dataset.surprise)||0;
-    const hit=(!q||text.includes(q))
-      &&(!m||mechanisms.split(' ').includes(m))
-      &&(!d||domains.includes(d))
-      &&(!sk||origin===sk)
-      &&(!a||card.dataset.availability===a)
-      &&score>=minSurprise;
-    card.hidden=!hit;
-    if(hit) visible+=1;
-  }});
-  sortCards();
-  empty.hidden=visible!==0;
+function compareStory(a,b){{
+  const dir=storyState.direction==='asc'?1:-1;
+  let left,right;
+  if(storyState.sort==='surprise'){{left=Number(a.dataset.surprise)||0;right=Number(b.dataset.surprise)||0;}}
+  else if(storyState.sort==='quality'){{left=Number(a.dataset.quality)||0;right=Number(b.dataset.quality)||0;}}
+  else if(storyState.sort==='usage'){{left=Number(a.dataset.timesUsed)||0;right=Number(b.dataset.timesUsed)||0;}}
+  else{{left=a.dataset.createdAt||'';right=b.dataset.createdAt||'';}}
+  if(left<right)return -1*dir;if(left>right)return 1*dir;
+  return (Number(b.dataset.surprise)||0)-(Number(a.dataset.surprise)||0);
 }}
-[search,mechanism,domain,sourceKind,availability,surprise,sort].forEach(el=>el&&el.addEventListener(el===search?'input':'change',applyFilters));
+function applyStoryView(){{
+  const q=norm(storySearch?.value).trim();let visible=0;
+  storyCards.forEach(card=>{{
+    const hit=(!q||norm(card.dataset.search).includes(q))
+      &&(!storyState.availability||card.dataset.availability===storyState.availability)
+      &&(!storyState.source||norm(card.dataset.sourceKind)===norm(storyState.source))
+      &&(!storyState.domain||norm(card.dataset.domains).includes(norm(storyState.domain)))
+      &&(!storyState.mechanism||norm(card.dataset.mechanisms).includes(norm(storyState.mechanism)));
+    card.hidden=!hit;if(hit)visible+=1;
+  }});
+  [...storyCards].sort(compareStory).forEach(card=>storyGrid.appendChild(card));
+  storyEmpty.hidden=visible!==0;
+}}
+document.querySelectorAll('[data-story-filter]').forEach(button=>button.addEventListener('click',()=>setSingleStoryFilter(button.dataset.storyFilter,button.dataset.value,button)));
+document.querySelectorAll('[data-story-sort]').forEach(button=>button.addEventListener('click',()=>{{
+  const key=button.dataset.storySort;
+  if(storyState.sort===key)storyState.direction=storyState.direction==='desc'?'asc':'desc';
+  else{{storyState.sort=key;storyState.direction='desc';}}
+  document.querySelectorAll('[data-story-sort]').forEach(item=>{{
+    const active=item.dataset.storySort===storyState.sort;item.classList.toggle('active',active);
+    item.querySelector('.arrow').textContent=active?(storyState.direction==='desc'?'↓':'↑'):'↓';
+  }});
+  applyStoryView();
+}}));
+storySearch?.addEventListener('input',applyStoryView);
+document.getElementById('storyReset')?.addEventListener('click',()=>{{
+  storyState.availability='';storyState.source='';storyState.domain='';storyState.mechanism='';storyState.sort='date';storyState.direction='desc';
+  if(storySearch)storySearch.value='';
+  document.querySelectorAll('[data-story-filter]').forEach(item=>item.classList.remove('active'));
+  document.querySelectorAll('[data-story-sort]').forEach(item=>{{const active=item.dataset.storySort==='date';item.classList.toggle('active',active);item.querySelector('.arrow').textContent='↓';}});
+  applyStoryView();
+}}));
+
+const newsBatches=[...document.querySelectorAll('[data-news-batch]')];
+const newsCards=[...document.querySelectorAll('[data-news-card]')];
+const newsFeed=document.getElementById('newsFeed');
+const newsSearch=document.getElementById('newsSearch');
+const newsEmpty=document.getElementById('emptyNews');
+let newsCategory='';let newsDirection='desc';
+function applyNewsView(){{
+  const q=norm(newsSearch?.value).trim();let totalVisible=0;
+  newsBatches.forEach(batch=>{{
+    let batchVisible=0;
+    batch.querySelectorAll('[data-news-card]').forEach(card=>{{
+      const hit=(!q||norm(card.dataset.search).includes(q))&&(!newsCategory||norm(card.dataset.category)===norm(newsCategory));
+      card.hidden=!hit;if(hit){{batchVisible+=1;totalVisible+=1;}}
+    }});
+    batch.hidden=batchVisible===0;
+  }});
+  [...newsBatches].sort((a,b)=>newsDirection==='desc'
+    ?(b.dataset.depositKey||'').localeCompare(a.dataset.depositKey||'')
+    :(a.dataset.depositKey||'').localeCompare(b.dataset.depositKey||'')
+  ).forEach(batch=>newsFeed.appendChild(batch));
+  newsEmpty.hidden=totalVisible!==0;
+}}
+document.querySelectorAll('[data-news-category]').forEach(button=>button.addEventListener('click',()=>{{
+  const value=button.dataset.newsCategory||'';newsCategory=newsCategory===value?'':value;
+  document.querySelectorAll('[data-news-category]').forEach(item=>item.classList.toggle('active',item===button&&Boolean(newsCategory)));
+  applyNewsView();
+}}));
+document.getElementById('newsDateSort')?.addEventListener('click',event=>{{
+  newsDirection=newsDirection==='desc'?'asc':'desc';event.currentTarget.dataset.direction=newsDirection;
+  event.currentTarget.querySelector('.arrow').textContent=newsDirection==='desc'?'↓':'↑';applyNewsView();
+}});
+newsSearch?.addEventListener('input',applyNewsView);
+document.getElementById('newsReset')?.addEventListener('click',()=>{{
+  newsCategory='';newsDirection='desc';if(newsSearch)newsSearch.value='';
+  document.querySelectorAll('[data-news-category]').forEach(item=>item.classList.remove('active'));
+  const sort=document.getElementById('newsDateSort');if(sort)sort.querySelector('.arrow').textContent='↓';
+  applyNewsView();
+}}));
+
 document.querySelectorAll('[data-memory-tab]').forEach(button=>button.addEventListener('click',()=>{{
   const target=button.dataset.memoryTab;
   document.querySelectorAll('[data-memory-tab]').forEach(item=>item.classList.toggle('active',item===button));
   document.querySelectorAll('[data-memory-panel]').forEach(panel=>panel.hidden=panel.dataset.memoryPanel!==target);
 }}));
-applyFilters();
+applyStoryView();applyNewsView();
 </script>
 </body>
 </html>
@@ -519,12 +637,14 @@ def build_dashboard(
     memory_path: Path,
     scripts_root: Path,
     output_dir: Path,
+    news_root: Path | None = None,
     as_of: date | None = None,
     cooldown_days: int = DEFAULT_COOLDOWN_DAYS,
 ) -> Path:
     report = build_report(
         memory_path=memory_path,
         scripts_root=scripts_root,
+        news_root=news_root,
         as_of=as_of,
         cooldown_days=cooldown_days,
     )
@@ -542,6 +662,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build Narrative Memory observability for GitHub Pages")
     parser.add_argument("--memory", default="editorial/narrative_memory.jsonl")
     parser.add_argument("--scripts-root", default="scripts")
+    parser.add_argument("--news-root", default="news")
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--as-of", default="")
     parser.add_argument("--cooldown-days", type=int, default=DEFAULT_COOLDOWN_DAYS)
@@ -554,6 +675,7 @@ def main() -> None:
     result = build_dashboard(
         memory_path=Path(args.memory),
         scripts_root=Path(args.scripts_root),
+        news_root=Path(args.news_root),
         output_dir=Path(args.output_dir),
         as_of=as_of,
         cooldown_days=args.cooldown_days,
