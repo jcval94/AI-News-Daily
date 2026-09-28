@@ -5,6 +5,7 @@ import json
 from copy import deepcopy
 from pathlib import Path
 
+from .candidate_selftest import run_candidate_selftest
 from .contracts import contract_names, validate as validate_contract
 from .evaluate import canonical_signature, evaluate_planner
 from .gates import evaluate_scorecard
@@ -106,6 +107,8 @@ def main() -> None:
     names = contract_names()
     expected_contracts = {
         "candidate.schema.json",
+        "candidate_case.schema.json",
+        "candidate_selection.schema.json",
         "case.schema.json",
         "critic_output.schema.json",
         "experiment_profile.schema.json",
@@ -204,6 +207,8 @@ def main() -> None:
     if not any(item["code"] == "forbidden_terms" for item in failing_scorecard["hard_failures"]):
         raise AssertionError("strict gate did not preserve the forbidden-term failure reason")
 
+    candidate_summary = run_candidate_selftest()
+
     print(
         json.dumps(
             {
@@ -217,6 +222,7 @@ def main() -> None:
                 "known_bad_scorecard": failing_scorecard["verdict"],
                 "critic_contract": "pass",
                 "run_record_contract": "pass",
+                **candidate_summary,
             },
             ensure_ascii=False,
             indent=2,
