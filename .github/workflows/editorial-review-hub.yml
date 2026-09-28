@@ -100,6 +100,7 @@ jobs:
           INPUT_RUN_ID: ${{ inputs.source_run_id }}
           INPUT_TARGET_DATE: ${{ inputs.target_date }}
           WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
           DEFAULT_RUN_ID: ${{ vars.REVIEW_HUB_SOURCE_RUN_ID }}
         run: |
           set -euo pipefail
@@ -162,16 +163,20 @@ jobs:
               exit 1
             }
           else
-            inspect_run "${WORKFLOW_RUN_ID:-}" || true
-            [ -n "$SELECTED_RUN_ID" ] || inspect_run "${DEFAULT_RUN_ID:-}" || true
-            if [ -z "$SELECTED_RUN_ID" ]; then
-              while IFS= read -r candidate_run; do
-                [ -n "$candidate_run" ] || continue
-                inspect_run "$candidate_run" && break
-              done < <(
-                gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=main&status=completed&per_page=100" \
-                  --jq '.workflow_runs | sort_by(.updated_at) | reverse | .[].id' 2>/dev/null || true
-              )
+            if [ "${WORKFLOW_RUN_NAME:-}" = "Production Preflight" ]; then
+              echo "Production Preflight carries readiness evidence, not an episode; using canonical production history."
+            else
+              inspect_run "${WORKFLOW_RUN_ID:-}" || true
+              [ -n "$SELECTED_RUN_ID" ] || inspect_run "${DEFAULT_RUN_ID:-}" || true
+              if [ -z "$SELECTED_RUN_ID" ]; then
+                while IFS= read -r candidate_run; do
+                  [ -n "$candidate_run" ] || continue
+                  inspect_run "$candidate_run" && break
+                done < <(
+                  gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=main&status=completed&per_page=100" \
+                    --jq '.workflow_runs | sort_by(.updated_at) | reverse | .[].id' 2>/dev/null || true
+                )
+              fi
             fi
           fi
 

@@ -37,6 +37,8 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertIn("pipeline.production_preflight", preflight)
         self.assertIn("OPENAI_API_KEY", preflight)
         self.assertIn("- Production Preflight", review)
+        self.assertIn("WORKFLOW_RUN_NAME", review)
+        self.assertIn("Production Preflight carries readiness evidence, not an episode", review)
         self.assertIn("Probe source quality and model availability", build)
         self.assertIn("steps.model_preflight.outcome == 'success'", build)
 
