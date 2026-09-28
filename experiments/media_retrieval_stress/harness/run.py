@@ -6,6 +6,7 @@ It does not call production media acquisition code.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -177,6 +178,11 @@ def build_payload(
         "completed_at": completed_at,
         "config": config.model_dump(),
         "source_cases": str(source_cases.resolve().relative_to(LAB_ROOT.resolve())),
+        "source_cases_sha256": hashlib.sha256(source_cases.read_bytes()).hexdigest(),
+        "prompt_fingerprints": {
+            "planner_sha256": hashlib.sha256(PLANNER_SYSTEM.encode("utf-8")).hexdigest(),
+            "critic_sha256": hashlib.sha256(CRITIC_SYSTEM.encode("utf-8")).hexdigest(),
+        },
         "summary": {
             "cases": len(cases),
             "repetitions": config.repetitions,
