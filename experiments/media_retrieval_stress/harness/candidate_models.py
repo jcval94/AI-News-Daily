@@ -76,7 +76,7 @@ CandidateFailureCode = Literal[
     "wrong_entity", "wrong_period", "wrong_geography", "generic_substitute",
     "metadata_only", "metadata_visual_mismatch", "preview_miss",
     "duplicate_lower_quality", "rights_ineligible", "low_resolution",
-    "prompt_injection_metadata", "other",
+    "prompt_injection_metadata", "historical_anachronism", "other",
 ]
 
 
