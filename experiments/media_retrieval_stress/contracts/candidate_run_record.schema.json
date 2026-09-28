@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/candidate-run-record.schema.json",
+  "title": "Candidate Selection Stress Run Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "started_at",
+    "completed_at",
+    "config",
+    "source_cases",
+    "source_cases_sha256",
+    "profile_id",
+    "profile_sha256",
+    "prompt_fingerprint",
+    "summary",
+    "case_results"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "config": {
+      "$ref": "https://ai-news-daily.local/media-retrieval-stress/run-config.schema.json"
+    },
+    "source_cases": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "source_cases_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "prompt_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "repetitions",
+        "attempts",
+        "selector_passes",
+        "overall_passes"
+      ],
+      "properties": {
+        "cases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "selector_passes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "overall_passes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "case_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "runs",
+          "pass_rate",
+          "stable",
+          "errors"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string"
+          },
+          "runs": {
+            "type": "array"
+          },
+          "pass_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "stable": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}
