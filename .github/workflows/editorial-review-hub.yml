@@ -394,7 +394,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python -m pipeline.readiness_history             --repository "$GITHUB_REPOSITORY"             --download-root .preflight-history             --output-dir pages-site/readiness             --max-artifacts 20
+          python -m pipeline.readiness_history \
+            --repository "$GITHUB_REPOSITORY" \
+            --download-root .preflight-history \
+            --output-dir pages-site/readiness \
+            --max-artifacts 20
           test -s pages-site/readiness/index.html
           test -s pages-site/readiness/production-readiness-history.json
           grep -q 'data-readiness-page="production-readiness"' pages-site/readiness/index.html
