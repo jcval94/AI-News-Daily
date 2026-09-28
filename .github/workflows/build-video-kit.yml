@@ -42,6 +42,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: ai-news-video-${{ github.ref }}
@@ -77,14 +78,26 @@ jobs:
         id: script_date
         env:
           MANUAL_TARGET_DATE: ${{ inputs.target_date }}
+          EVENT_NAME: ${{ github.event_name }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           if [ -n "$MANUAL_TARGET_DATE" ]; then
             TARGET_DATE="$MANUAL_TARGET_DATE"
+            DATE_ORIGIN="manual_input"
+          elif [ "$EVENT_NAME" = "schedule" ] && [ "${RUN_ATTEMPT:-1}" -gt 1 ]; then
+            ORIGINAL_CREATED_AT="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq '.created_at')"
+            test -n "$ORIGINAL_CREATED_AT"
+            TARGET_DATE="$(TZ=America/Mexico_City date -d "$ORIGINAL_CREATED_AT" +%F)"
+            DATE_ORIGIN="scheduled_run_created_at"
           else
             TARGET_DATE="$(TZ=America/Mexico_City date +%F)"
+            DATE_ORIGIN="current_local_date"
           fi
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
-          echo "Script target date: $TARGET_DATE"
+          echo "date_origin=$DATE_ORIGIN" >> "$GITHUB_OUTPUT"
+          echo "Script target date: $TARGET_DATE ($DATE_ORIGIN)"
 
       - name: Resolve runtime options
         id: runtime_options

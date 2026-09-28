@@ -54,6 +54,15 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertIn("Probe source quality and model availability", build)
         self.assertIn("steps.model_preflight.outcome == 'success'", build)
 
+    def test_scheduled_rerun_preserves_original_target_date(self) -> None:
+        workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn("actions: read", workflow)
+        self.assertIn("github.run_attempt", workflow)
+        self.assertIn("actions/runs/$GITHUB_RUN_ID", workflow)
+        self.assertIn("ORIGINAL_CREATED_AT", workflow)
+        self.assertIn("scheduled_run_created_at", workflow)
+        self.assertIn('date -d "$ORIGINAL_CREATED_AT" +%F', workflow)
+
     def test_python_floor_matches_ci_runtime(self) -> None:
         pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
         self.assertIn('requires-python = ">=3.12"', pyproject)
