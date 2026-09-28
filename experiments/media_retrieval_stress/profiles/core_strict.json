@@ -23,6 +23,20 @@
       "forbidden_terms",
       "period",
       "geography"
+    ],
+    "hard_fail_critic_codes": [
+      "wrong_entity",
+      "missing_qualifier",
+      "query_drift",
+      "forbidden_term",
+      "ambiguity_guess",
+      "unsupported_alias",
+      "literalized_metaphor",
+      "negation_violation",
+      "period_loss",
+      "geography_loss",
+      "generic_substitution",
+      "unsearchable_query"
     ]
   }
 }
