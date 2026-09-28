@@ -32,6 +32,15 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn("MEDIA_HTTP_MAX_ATTEMPTS:", handoff)
         self.assertIn("MEDIA_HTTP_RETRY_BASE_SECONDS:", handoff)
 
+    def test_backfill_installs_preview_runtime_and_reuses_approved_editorial_artifact(self) -> None:
+        workflow = Path(".github/workflows/backfill-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn("actions: read", workflow)
+        self.assertIn("sudo apt-get update -qq && sudo apt-get install -y ffmpeg", workflow)
+        self.assertIn("Restore approved script from recent diagnostic", workflow)
+        self.assertIn("gh run download", workflow)
+        self.assertIn("if: steps.reuse.outputs.restored != 'true'", workflow)
+        self.assertIn("Reused approved editorial artifact from run", workflow)
+
     def test_dense_media_gate_is_shared_and_dedup_aware(self) -> None:
         for path in (
             ".github/workflows/build-video-kit.yml",
