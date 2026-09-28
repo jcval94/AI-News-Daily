@@ -53,8 +53,11 @@ def read_cases(path: Path) -> list[StressCase]:
 
 
 def write_json(path: Path, payload: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    resolved = path.resolve()
+    if not resolved.is_relative_to(RESULTS_ROOT.resolve()):
+        raise ValueError("stress harness attempted to write outside its results directory")
+    resolved.parent.mkdir(parents=True, exist_ok=True)
+    resolved.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def run_one(case: StressCase, config: RunConfig, repetition: int) -> dict[str, Any]:
@@ -104,7 +107,7 @@ def run_one(case: StressCase, config: RunConfig, repetition: int) -> dict[str, A
 
         record["passed"] = bool(deterministic["passed"] and critic_pass)
         record["signature"] = canonical_signature(planner)
-    except (LLMCallError, ValueError, TypeError) as exc:
+    except (LLMCallError, JsonSchemaValidationError, ValueError, TypeError) as exc:
         record["error"] = f"{type(exc).__name__}: {exc}"
     record["completed_at"] = utc_now()
     return record
