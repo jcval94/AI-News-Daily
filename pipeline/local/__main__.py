@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from pipeline.local.audit import write_harness_audit
 from pipeline.local.config import (
     DEFAULT_PRIVATE_CONFIG,
     REPO_ROOT,
@@ -42,6 +43,8 @@ def parse_args() -> argparse.Namespace:
 
     sub.add_parser("operations", help="List allowlisted local operations")
     sub.add_parser("status", help="Show local preflight, staged jobs, requests and receipts")
+    audit = sub.add_parser("audit", help="Audit the committed local harness contracts and safety guards")
+    audit.add_argument("--json-out", default=".local/harness-audit.latest.json")
 
     toolchain = sub.add_parser("toolchain", help="Snapshot local tool versions without absolute paths")
     toolchain.add_argument("--config", default=str(DEFAULT_PRIVATE_CONFIG))
@@ -78,6 +81,13 @@ def main() -> None:
     if args.command == "status":
         print(json.dumps(build_status(repo_root=REPO_ROOT), ensure_ascii=False, indent=2))
         return
+    if args.command == "audit":
+        output = Path(args.json_out)
+        if not output.is_absolute():
+            output = (REPO_ROOT / output).resolve()
+        _, payload = write_harness_audit(output, repo_root=REPO_ROOT)
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        raise SystemExit(0 if payload["status"] == "pass" else 4)
     if args.command == "stage-request":
         staged_job, stage_meta, payload = stage_request(Path(args.request), repo_root=REPO_ROOT)
         print(json.dumps({"staged_job": str(staged_job.relative_to(REPO_ROOT)), "stage_metadata": str(stage_meta.relative_to(REPO_ROOT)), "sha256": payload["request_sha256"]}, indent=2))
