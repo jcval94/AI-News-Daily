@@ -100,7 +100,16 @@
               "exactness",
               "forbidden_terms",
               "period",
-              "geography"
+              "geography",
+              "assessment_coverage",
+              "selection_expected",
+              "required_rejections",
+              "unresolved",
+              "required_warnings",
+              "selected_identity",
+              "selected_rights",
+              "selected_verdict",
+              "duplicate_quality"
             ]
           }
         },
