@@ -193,8 +193,10 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
         self.assertIn('data-memory-page="narrative-memory"', workflow)
         self.assertIn('id="memoryLink"', workflow)
         self.assertIn('"editorial/narrative_memory.jsonl"', workflow)
+        self.assertIn('"news/**"', workflow)
+        self.assertIn("--news-root news", workflow)
 
-    def test_build_dashboard_publishes_json_and_filterable_html(self) -> None:
+    def test_build_dashboard_separates_daily_news_from_story_memory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             memory = root / "narrative_memory.jsonl"
@@ -202,11 +204,25 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
                 json.dumps(memory_item("case-a", "coordination_failure")) + "\n",
                 encoding="utf-8",
             )
+            news_root = root / "news"
+            news_root.mkdir()
+            (news_root / "2026-09-24-08-15-00.txt").write_text(
+                "# AI News Daily — 2026-09-24 08:15:00 America/Mexico_City\n\n"
+                "Título: Daily factual item\n"
+                "Fecha: 2026-09-24\n"
+                "Fuente: Example News\n"
+                "Enlace: https://example.org/article\n"
+                "Resumen breve: A factual daily update.\n"
+                "Por qué importa: It may affect a broader AI trend.\n"
+                "Categoría: modelos\n",
+                encoding="utf-8",
+            )
             output = root / "pages" / "memory"
 
             index = build_dashboard(
                 memory_path=memory,
                 scripts_root=root / "scripts",
+                news_root=news_root,
                 output_dir=output,
                 as_of=date(2026, 9, 24),
             )
@@ -216,20 +232,24 @@ class NarrativeMemoryDashboardTests(unittest.TestCase):
 
             self.assertIn('data-memory-page="narrative-memory"', document)
             self.assertIn('id="memorySearch"', document)
-            self.assertIn('id="mechanismFilter"', document)
-            self.assertIn('id="availabilityFilter"', document)
-            self.assertIn('id="domainFilter"', document)
-            self.assertIn('id="sourceKindFilter"', document)
-            self.assertIn('id="surpriseFilter"', document)
-            self.assertIn('id="memorySort"', document)
-            self.assertIn('data-memory-tab="library"', document)
-            self.assertIn('data-memory-tab="updates"', document)
+            self.assertNotIn("<select", document)
+            self.assertIn('data-story-sort="date"', document)
+            self.assertIn('data-story-sort="surprise"', document)
+            self.assertIn('data-story-filter="availability"', document)
+            self.assertIn('data-memory-tab="stories"', document)
+            self.assertIn('data-memory-tab="news"', document)
             self.assertIn('data-memory-tab="coverage"', document)
-            self.assertIn("Actualizaciones diarias", document)
+            self.assertIn("Historias interesantes", document)
+            self.assertIn("Noticias diarias", document)
+            self.assertIn("Depósito en news/", document)
+            self.assertIn("Daily factual item", document)
             self.assertIn("Mecanismos narrativos", document)
-            self.assertIn("Qué paralelos utilizó cada episodio", document)
+            self.assertIn("Qué historias llegaron a episodios aprobados", document)
             self.assertEqual(payload["metrics"]["approved_items"], 1)
             self.assertEqual(payload["items"][0]["id"], "case-a")
+            self.assertEqual(payload["news"]["batch_count"], 1)
+            self.assertEqual(payload["news"]["item_count"], 1)
+            self.assertEqual(payload["news"]["batches"][0]["source_file"], "2026-09-24-08-15-00.txt")
 
 
 if __name__ == "__main__":
