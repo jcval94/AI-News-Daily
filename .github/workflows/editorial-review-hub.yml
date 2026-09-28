@@ -33,6 +33,7 @@ on:
     paths:
       - ".github/workflows/editorial-review-hub.yml"
       - "scripts/**"
+      - "news/**"
       - "pipeline/review_source.py"
       - "pipeline/pages_history.py"
       - "pipeline/review_hub*.py"
@@ -391,12 +392,15 @@ jobs:
           python -m pipeline.narrative_memory_dashboard \
             --memory editorial/narrative_memory.jsonl \
             --scripts-root scripts \
+            --news-root news \
             --output-dir pages-site/memory
           test -s pages-site/memory/index.html
           test -s pages-site/memory/narrative-memory.json
           grep -q 'data-memory-page="narrative-memory"' pages-site/memory/index.html
-          grep -q 'data-memory-tab="updates"' pages-site/memory/index.html
-          grep -q 'id="memorySort"' pages-site/memory/index.html
+          grep -q 'data-memory-tab="stories"' pages-site/memory/index.html
+          grep -q 'data-memory-tab="news"' pages-site/memory/index.html
+          grep -q 'data-story-sort="date"' pages-site/memory/index.html
+          grep -q 'Depósito en news/' pages-site/memory/index.html
           grep -q '"approved_items"' pages-site/memory/narrative-memory.json
           grep -q '"daily_updates"' pages-site/memory/narrative-memory.json
 
@@ -470,8 +474,9 @@ jobs:
               && grep -q 'data-health-page="repo-health"' /tmp/health.html \
               && curl -fsSL --max-time 20 "$MEMORY_URL" -o /tmp/memory.html \
               && grep -q 'data-memory-page="narrative-memory"' /tmp/memory.html \
-              && grep -q 'data-memory-tab="updates"' /tmp/memory.html \
-              && grep -q 'id="memorySort"' /tmp/memory.html \
+              && grep -q 'data-memory-tab="stories"' /tmp/memory.html \
+              && grep -q 'data-memory-tab="news"' /tmp/memory.html \
+              && grep -q 'data-story-sort="date"' /tmp/memory.html \
               && curl -fsSL --max-time 20 "$METRICS_URL" -o /tmp/metrics.html \
               && grep -q 'data-metrics-page="video-metrics-history"' /tmp/metrics.html; then
               echo "Pages smoke test passed: $ROOT_URL"
