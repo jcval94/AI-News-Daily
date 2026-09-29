@@ -168,6 +168,12 @@ def _render_sections_with_engine(
             silence_noise_db=float(qa_policy.get("silence_noise_db", -50.0)),
             silence_min_duration=float(qa_policy.get("silence_min_duration_seconds", 1.0)),
         )
+        web_path = run_dir / "web/sections" / f"{stem}.mp3"
+        _web_preview(
+            edit_path,
+            web_path,
+            str(tts.get("web", {}).get("bitrate", "64k")),
+        )
         qa_warnings = validate_edit_wav(edit_metrics, expected_rate=sample_rate)
         qa_warnings.extend(
             validate_ffmpeg_audio(
@@ -194,6 +200,8 @@ def _render_sections_with_engine(
             "voice": voice,
             "audio_native_file": native_path.relative_to(run_dir).as_posix(),
             "audio_edit_file": edit_path.relative_to(run_dir).as_posix(),
+            "audio_web_file": web_path.relative_to(run_dir).as_posix(),
+            "web_file_size_bytes": web_path.stat().st_size,
             "start_seconds": round(cursor, 6),
             "end_seconds": round(cursor + duration, 6),
             "duration_seconds": round(duration, 6),
