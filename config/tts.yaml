@@ -32,6 +32,12 @@ tts:
   pronunciation:
     enabled: true
     entries: {}
+  qa:
+    silence_noise_db: -50.0
+    silence_min_duration_seconds: 1.0
+    long_silence_seconds: 3.0
+    advisory_lufs_min: -28.0
+    advisory_lufs_max: -12.0
   web:
     codec: mp3
     bitrate: 64k
