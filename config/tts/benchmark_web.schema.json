@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "benchmark_web.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "available",
+    "generated_at_utc",
+    "fixture",
+    "common_text",
+    "candidates"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "available": {"type": "boolean"},
+    "generated_at_utc": {"type": "string", "minLength": 10},
+    "fixture": {"type": "string", "minLength": 1},
+    "common_text": {"type": "string", "minLength": 1, "maxLength": 8000},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "engine",
+          "voice",
+          "status",
+          "error",
+          "generation_seconds",
+          "duration_seconds",
+          "real_time_factor",
+          "file_size_bytes",
+          "preview_url",
+          "perceptual"
+        ],
+        "properties": {
+          "engine": {"enum": ["kokoro", "piper", "edge"]},
+          "voice": {"type": "string", "minLength": 1},
+          "status": {"enum": ["ok", "error"]},
+          "error": {"type": ["string", "null"]},
+          "generation_seconds": {"type": "number", "minimum": 0},
+          "duration_seconds": {"type": "number", "minimum": 0},
+          "real_time_factor": {"type": ["number", "null"], "minimum": 0},
+          "file_size_bytes": {"type": ["integer", "null"], "minimum": 0},
+          "preview_url": {"type": ["string", "null"]},
+          "perceptual": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "naturalness",
+              "pronunciation",
+              "prosody",
+              "energy",
+              "clarity",
+              "pace",
+              "stability",
+              "notes"
+            ],
+            "properties": {
+              "naturalness": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "pronunciation": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "prosody": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "energy": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "clarity": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "pace": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "stability": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+              "notes": {"type": ["string", "null"], "maxLength": 2000}
+            }
+          }
+        }
+      }
+    }
+  }
+}

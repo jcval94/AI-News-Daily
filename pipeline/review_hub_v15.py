@@ -14,6 +14,12 @@ VOICE_CSS = r"""
 .voice-panel{max-width:850px;margin:0 auto 12px;border:1px solid #2b4156;border-radius:15px;background:#0d1620;padding:12px 13px;color:#dce9f5}
 .voice-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.voice-head h3{margin:0;font-size:13px}.voice-head p{margin:3px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.voice-state{font-size:9px;font-weight:800;border:1px solid #35506a;border-radius:999px;padding:4px 7px;white-space:nowrap}.voice-state.ready{border-color:#357257;color:#a8efc7}.voice-state.off{color:#9fb0c1}
 .voice-meta{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}.voice-chip{font-size:9px;border:1px solid #2c4054;border-radius:999px;padding:4px 7px;color:#b9cad9}.voice-master{margin:9px 0}.voice-master audio,.voice-section audio{width:100%;height:32px}.voice-sections{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:7px}.voice-section{border:1px solid #263a4d;border-radius:10px;background:#101b26;padding:8px}.voice-section strong{font-size:10px}.voice-section small{display:block;color:#8fa2b6;font-size:9px;margin:3px 0 6px}.voice-empty{font-size:10px;color:#91a4b5;padding:7px 0}.voice-qa{font-size:9px;color:#93a8b9;margin-top:8px}
+.voice-benchmark{max-width:850px;margin:0 auto 12px;border:1px solid #293d50;border-radius:15px;background:#0b141d;padding:12px 13px;color:#dce9f5}
+.voice-benchmark h3{margin:0;font-size:12px}.voice-benchmark p{margin:3px 0 8px;color:var(--muted);font-size:10px;line-height:1.45}
+.voice-benchmark details{border:1px solid #26394b;border-radius:9px;padding:7px 8px;margin:7px 0}.voice-benchmark summary{cursor:pointer;font-size:9px;color:#b9cad9}
+.voice-benchmark-text{white-space:pre-wrap;font-size:9px;color:#9eb0c0;line-height:1.5;margin-top:7px}
+.voice-benchmark-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:7px}.voice-candidate{border:1px solid #263a4d;border-radius:10px;background:#101b26;padding:8px}
+.voice-candidate strong{font-size:10px}.voice-candidate small{display:block;color:#8fa2b6;font-size:9px;margin:3px 0 6px}.voice-candidate audio{width:100%;height:32px}
 """
 
 
@@ -86,13 +92,61 @@ def _voice_markup(episode_dir: Path) -> str:
     )
 
 
+
+def _benchmark_markup(episode_dir: Path) -> str:
+    web = _read_json(episode_dir / "tts" / "benchmark_web.json")
+    if not web:
+        return ""
+    candidates = web.get("candidates") if isinstance(web.get("candidates"), list) else []
+    cards: list[str] = []
+    for item in candidates:
+        if not isinstance(item, dict):
+            continue
+        engine = html.escape(str(item.get("engine") or "—"))
+        voice = html.escape(str(item.get("voice") or "—"))
+        status = str(item.get("status") or "error")
+        duration = _duration(item.get("duration_seconds"))
+        rtf_value = item.get("real_time_factor")
+        try:
+            rtf = f"{float(rtf_value):.2f}× RTF" if rtf_value is not None else "RTF —"
+        except (TypeError, ValueError):
+            rtf = "RTF —"
+        player = ""
+        if item.get("preview_url"):
+            player = f'<audio controls preload="none" src="{html.escape(str(item["preview_url"]), quote=True)}"></audio>'
+        perceptual = item.get("perceptual") if isinstance(item.get("perceptual"), dict) else {}
+        manual_values = [
+            perceptual.get(key)
+            for key in ("naturalness", "pronunciation", "prosody", "energy", "clarity", "pace", "stability")
+        ]
+        manual = "evaluación manual pendiente" if all(value is None for value in manual_values) else "evaluación manual registrada"
+        error = f'<div class="voice-qa">{html.escape(str(item.get("error")))}</div>' if status != "ok" and item.get("error") else ""
+        cards.append(
+            f'<div class="voice-candidate"><strong>{engine} · {voice}</strong>'
+            f'<small>{html.escape(status)} · {duration} · {html.escape(rtf)} · {manual}</small>{player}{error}</div>'
+        )
+    common_text = html.escape(str(web.get("common_text") or ""))
+    fixture = html.escape(str(web.get("fixture") or ""))
+    return (
+        '<section class="voice-benchmark" data-tts-benchmark="v1">'
+        '<h3>Voice Bake-off</h3>'
+        '<p>Mismo texto, métricas técnicas medidas y evaluación perceptual separada. Ningún score automático decide naturalidad.</p>'
+        f'<details><summary>Texto común · {fixture}</summary><div class="voice-benchmark-text">{common_text}</div></details>'
+        + ('<div class="voice-benchmark-grid">' + ''.join(cards) + '</div>' if cards else '<div class="voice-empty">Sin candidatos publicados.</div>')
+        + '</section>'
+    )
+
 def apply_voice_panel(document: str, *, episode_dir: Path) -> str:
     if 'data-tts-panel="v1"' in document:
         return document
     script_node = '<div id="scriptText" class="script" data-search-script>'
     if script_node not in document:
         raise RuntimeError("Review Hub v15 could not find Script node")
-    document = document.replace(script_node, _voice_markup(episode_dir) + script_node, 1)
+    document = document.replace(
+        script_node,
+        _voice_markup(episode_dir) + _benchmark_markup(episode_dir) + script_node,
+        1,
+    )
     return document.replace('</style>', VOICE_CSS + '\n</style>', 1)
 
 
