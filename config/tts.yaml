@@ -1,0 +1,52 @@
+schema_version: 1
+
+tts:
+  engine: kokoro
+  language: es
+  edit_sample_rate_hz: 48000
+  runtime:
+    python: .venv-tts/Scripts/python.exe
+  speech:
+    speed: 1.0
+  engines:
+    kokoro:
+      voice: ef_dora
+      native_sample_rate_hz: 24000
+      local: true
+      license: Apache-2.0
+    piper:
+      voice: es_MX-claude-high
+      native_sample_rate_hz: 22050
+      local: true
+      model_dir: .local/models/piper
+      engine_license: GPL-3.0-or-later
+      voice_dataset_license: Apache-2.0
+    edge:
+      voice: es-MX-DaliaMultilingualNeural
+      local: false
+      network_required: true
+      package_license: LGPL-3.0
+  fallback:
+    enabled: true
+    engine: piper
+  pronunciation:
+    enabled: true
+    entries: {}
+  web:
+    codec: mp3
+    bitrate: 64k
+    preload: none
+  retention:
+    local_runs_per_episode: 3
+    local_benchmark_runs: 3
+    pages_episode_audio_limit: 3
+    policy: "Never commit WAV/MP3 audio to Git; publish only bounded release/web assets and small manifests."
+  benchmark:
+    candidates:
+      - {engine: kokoro, voice: ef_dora}
+      - {engine: kokoro, voice: em_alex}
+      - {engine: kokoro, voice: em_santa}
+      - {engine: piper, voice: es_MX-claude-high}
+      - {engine: piper, voice: es_MX-ald-medium}
+      - {engine: edge, voice: es-MX-DaliaMultilingualNeural}
+      - {engine: edge, voice: es-MX-JorgeNeural}
