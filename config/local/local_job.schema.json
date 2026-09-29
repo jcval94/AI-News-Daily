@@ -32,7 +32,8 @@
         "timeline.build",
         "timeline.validate",
         "resolve.import_timeline",
-        "preview.render"
+        "preview.render",
+        "tts.render"
       ]
     },
     "target_date": {
@@ -228,6 +229,18 @@
         },
         "reuse_project": {
           "type": "boolean"
+        },
+        "engine": {
+          "enum": [
+            "kokoro",
+            "piper",
+            "edge"
+          ]
+        },
+        "voice": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         }
       }
     },
