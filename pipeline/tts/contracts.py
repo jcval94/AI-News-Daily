@@ -67,3 +67,7 @@ def write_manifest(path: Path, payload: dict[str, Any]) -> Path:
 
 def validate_web_manifest(payload: dict[str, Any]) -> None:
     validate_payload(payload, "tts/narration_web.schema.json")
+
+
+def validate_benchmark_web_manifest(payload: dict[str, Any]) -> None:
+    validate_payload(payload, "tts/benchmark_web.schema.json")
