@@ -86,6 +86,21 @@ class LocalJobTests(unittest.TestCase):
             command, _ = build_command(job("resolve.import_timeline", mode="execute"), config_for(root), repo_root=root)
             self.assertIn("--execute", command)
 
+    def test_tts_render_is_allowlisted_and_has_no_shell_surface(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            command, metadata = build_command(
+                job("tts.render", params={"engine": "kokoro", "voice": "ef_dora"}),
+                config_for(root),
+                repo_root=root,
+            )
+            self.assertEqual(command[1:5], ["-m", "pipeline.tts", "render", "--script"])
+            self.assertIn("2026-09-25", command)
+            self.assertIn("kokoro", command)
+            self.assertIn("ef_dora", command)
+            self.assertTrue(metadata["local_audio"])
+            self.assertFalse(metadata["network_required"])
+
     def test_execute_requires_both_job_mode_and_cli_flag(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()

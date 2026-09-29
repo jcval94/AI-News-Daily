@@ -78,7 +78,7 @@ Puedes mover media de C: a D: cambiando sólo la config privada.
 .\.venv\Scripts\python.exe -m pipeline.local operations
 ```
 
-P0 implementa `media.scan`, `recording.ingest`, `recording.transcribe`, `recording.align`, `resolve.sync_audio`, `timeline.build`, `timeline.validate`, `resolve.import_timeline` y `preview.render`.
+P0 implementa `media.scan`, `recording.ingest`, `recording.transcribe`, `recording.align`, `resolve.sync_audio`, `timeline.build`, `timeline.validate`, `resolve.import_timeline`, `preview.render` y `tts.render`. TTS conserva el runtime pesado en `.venv-tts`/`.local/tts`; el job sólo invoca el contrato allowlisted.
 
 Planeadas: `proxy.generate`, `captions.burn_or_track`, `audio.normalize`, `aligned_timeline.build`.
 
