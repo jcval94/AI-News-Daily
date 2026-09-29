@@ -49,6 +49,13 @@ def resolve_episode(script: str, scripts_root: Path = Path("scripts")) -> Path:
     return sorted(candidates, key=lambda p: p.name)[-1]
 
 
+def _repo_relative(path: Path, repo_root: Path) -> str:
+    try:
+        return path.resolve().relative_to(repo_root.resolve()).as_posix()
+    except ValueError as exc:
+        raise ValueError(f"TTS source path must live inside the repository: {path}") from exc
+
+
 def _script_id(episode_dir: Path) -> str:
     digest = hashlib.sha256()
     for name in ("script.txt", "script_sections.json"):
@@ -310,8 +317,10 @@ def render_episode(
             "speed": float(tts.get("speech", {}).get("speed", 1.0)),
         },
         "source": {
-            "script_path": (episode_dir / "script.txt").as_posix(),
-            "sections_path": (episode_dir / "script_sections.json").as_posix(),
+            "script_path": _repo_relative(episode_dir / "script.txt", repo_root),
+            "sections_path": _repo_relative(
+                episode_dir / "script_sections.json", repo_root
+            ),
             "sections_schema_version": raw_sections.get("schema_version"),
         },
         "files": {
