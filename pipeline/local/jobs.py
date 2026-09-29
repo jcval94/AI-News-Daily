@@ -23,6 +23,7 @@ IMPLEMENTED_OPERATIONS = (
     "timeline.validate",
     "resolve.import_timeline",
     "preview.render",
+    "tts.render",
 )
 
 _ALLOWED_PARAMS: dict[str, set[str]] = {
@@ -35,6 +36,7 @@ _ALLOWED_PARAMS: dict[str, set[str]] = {
     "timeline.validate": {"timeline"},
     "resolve.import_timeline": {"reuse_project"},
     "preview.render": set(),
+    "tts.render": {"engine", "voice"},
 }
 
 
@@ -220,6 +222,23 @@ def build_command(
         if bool(params.get("reuse_project")):
             command.append("--reuse-project")
         return command, {"kind": "python_module", "resolve": mode == "execute"}
+
+    if operation == "tts.render":
+        command = [
+            str(python), "-m", "pipeline.tts", "render",
+            "--script", date,
+        ]
+        engine = str(params.get("engine") or "").strip()
+        voice = str(params.get("voice") or "").strip()
+        if engine:
+            command.extend(["--engine", engine])
+        if voice:
+            command.extend(["--voice", voice])
+        return command, {
+            "kind": "python_module",
+            "local_audio": True,
+            "network_required": engine == "edge",
+        }
 
     if operation == "preview.render":
         command = [
