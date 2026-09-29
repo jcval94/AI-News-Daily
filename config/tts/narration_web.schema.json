@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"narration_web.schema.json",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","available","episode_date","script_id","generated_at_utc","engine","voice","duration_seconds","section_count","qa_status","warnings","master_preview_url","sections"],
+  "properties":{
+    "schema_version":{"const":"1.0"},
+    "available":{"type":"boolean"},
+    "episode_date":{"type":"string"},
+    "script_id":{"type":"string"},
+    "generated_at_utc":{"type":"string"},
+    "engine":{"enum":["kokoro","piper","edge"]},
+    "voice":{"type":"string"},
+    "duration_seconds":{"type":"number","minimum":0},
+    "section_count":{"type":"integer","minimum":0},
+    "qa_status":{"enum":["pass","warn","fail"]},
+    "warnings":{"type":"array","items":{"type":"string"}},
+    "master_preview_url":{"type":["string","null"]},
+    "sections":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["id","order","kind","duration_seconds","preview_url"],"properties":{
+      "id":{"type":"string"},"order":{"type":"integer"},"kind":{"type":"string"},"duration_seconds":{"type":"number"},"preview_url":{"type":["string","null"]}
+    }}}
+  }
+}
