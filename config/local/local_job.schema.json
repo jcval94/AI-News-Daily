@@ -233,8 +233,7 @@
         "engine": {
           "enum": [
             "kokoro",
-            "piper",
-            "edge"
+            "piper"
           ]
         },
         "voice": {
