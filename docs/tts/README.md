@@ -11,3 +11,15 @@ py -3.12 -m venv .venv-tts
 ```
 
 Kokoro es el candidato local principal; Piper es fallback local; Edge-TTS sólo benchmark online. FFmpeg es obligatorio para el derivado PCM 48 kHz y el preview web.
+
+
+## Document map
+
+- [ARCHITECTURE](ARCHITECTURE.md)
+- [CONTRACTS](CONTRACTS.md)
+- [WINDOWS_SETUP](WINDOWS_SETUP.md)
+- [ENGINES](ENGINES.md)
+- [VOICE_BAKEOFF](VOICE_BAKEOFF.md)
+- [PAGES](PAGES.md)
+- [TROUBLESHOOTING](TROUBLESHOOTING.md)
+- [ROADMAP / Definition of Done](ROADMAP.md)
