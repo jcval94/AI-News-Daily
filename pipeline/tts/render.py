@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .audio_qa import inspect_wav, validate_edit_wav
+from .audio_qa import (\n    inspect_ffmpeg_audio,\n    inspect_wav,\n    validate_edit_wav,\n    validate_ffmpeg_audio,\n)
 from .config import load_tts_config
 from .contracts import write_manifest
 from .engines import EngineError, render_native
@@ -150,7 +150,21 @@ def _render_sections_with_engine(
         native_metrics = inspect_wav(native_path)
         _convert_edit(native_path, edit_path, sample_rate)
         edit_metrics = inspect_wav(edit_path)
+        qa_policy = tts.get("qa", {})
+        ffmpeg_metrics = inspect_ffmpeg_audio(
+            edit_path,
+            silence_noise_db=float(qa_policy.get("silence_noise_db", -50.0)),
+            silence_min_duration=float(qa_policy.get("silence_min_duration_seconds", 1.0)),
+        )
         qa_warnings = validate_edit_wav(edit_metrics, expected_rate=sample_rate)
+        qa_warnings.extend(
+            validate_ffmpeg_audio(
+                ffmpeg_metrics,
+                long_silence_seconds=float(qa_policy.get("long_silence_seconds", 3.0)),
+                advisory_lufs_min=float(qa_policy.get("advisory_lufs_min", -28.0)),
+                advisory_lufs_max=float(qa_policy.get("advisory_lufs_max", -12.0)),
+            )
+        )
         if edit_metrics["duration_seconds"] < 0.2:
             qa_warnings.append("suspiciously_short")
         warnings.extend(f"{section['id']}:{item}" for item in qa_warnings)
@@ -174,6 +188,8 @@ def _render_sections_with_engine(
             "generation_seconds": round(generation, 4),
             "real_time_factor": round(generation / duration, 4) if duration > 0 else None,
             "native_audio": native_metrics,
+            "edit_audio": edit_metrics,
+            "ffmpeg_audio": ffmpeg_metrics,
             "qa": {
                 "status": "warn" if qa_warnings else "pass",
                 "warnings": qa_warnings,
