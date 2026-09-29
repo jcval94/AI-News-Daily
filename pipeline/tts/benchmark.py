@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .audio_qa import inspect_wav
@@ -44,7 +45,9 @@ def benchmark_voices(*, fixture: Path, output_dir: Path, config_path: Path, repo
             },
         })
     report = {
-        "schema_version": 1, "fixture": fixture.as_posix(),
+        "schema_version": 1,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "fixture": fixture.as_posix(),
         "technical_metrics_are_measured": True,
         "perceptual_scores_are_manual": True, "results": results
     }
