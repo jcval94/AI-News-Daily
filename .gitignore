@@ -10,3 +10,9 @@ recordings/
 local_cache/
 local_exports/
 .venv-whisperx/
+# Local TTS runtime and audio are never source-controlled
+.venv-tts/
+scripts/*/tts/*.wav
+scripts/*/tts/*.mp3
+scripts/*/tts/*.ogg
+scripts/*/tts/*.m4a
