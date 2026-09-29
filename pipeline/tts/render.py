@@ -248,7 +248,12 @@ def render_episode(
     fallback = tts.get("fallback", {})
     engines = [requested_engine]
     fallback_engine = str(fallback.get("engine") or "")
-    if (\n        requested_engine != "edge"\n        and bool(fallback.get("enabled"))\n        and fallback_engine\n        and fallback_engine not in engines\n    ):
+    if (
+        requested_engine != "edge"
+        and bool(fallback.get("enabled"))
+        and fallback_engine
+        and fallback_engine not in engines
+    ):
         engines.append(fallback_engine)
 
     errors: list[str] = []
