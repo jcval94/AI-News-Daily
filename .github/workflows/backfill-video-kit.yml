@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: ai-news-video-backfill
@@ -29,6 +30,9 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+
+      - name: Install media validation tools
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
 
       - name: Install project
         run: python -m pip install -c requirements.lock .
@@ -82,7 +86,326 @@ jobs:
             --output "$RUN_ROOT/source_coverage.json" \
             --state-out "$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
 
+      - name: Restore approved script from recent diagnostic
+        id: reuse
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          echo "restored=false" >> "$GITHUB_OUTPUT"
+          PREFIX="ai-news-backfill-diagnostic-${TARGET_DATE}-"
+          rm -rf .backfill-reuse
+          mkdir -p .backfill-reuse
+
+          while IFS='|' read -r SOURCE_RUN_ID ARTIFACT_NAME; do
+            [ -n "$SOURCE_RUN_ID" ] || continue
+            CANDIDATE=".backfill-reuse/$SOURCE_RUN_ID"
+            rm -rf "$CANDIDATE"
+            mkdir -p "$CANDIDATE"
+            if ! gh run download "$SOURCE_RUN_ID" --name "$ARTIFACT_NAME" --dir "$CANDIDATE" >/dev/null 2>&1; then
+              continue
+            fi
+
+            STATE="$CANDIDATE/scripts/$TARGET_DATE/run_state.json"
+            SCRIPT="$CANDIDATE/scripts/$TARGET_DATE/script.txt"
+            [ -s "$STATE" ] && [ -s "$SCRIPT" ] || continue
+            STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("status",""))' "$STATE")"
+            EPISODE_DATE="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("episode_date",""))' "$STATE")"
+            if [ "$STATUS" != "approved" ] || [ "$EPISODE_DATE" != "$TARGET_DATE" ]; then
+              continue
+            fi
+
+            rm -rf "$RUN_ROOT/scripts/$TARGET_DATE"
+            mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE"
+            cp -a "$CANDIDATE/scripts/$TARGET_DATE/." "$RUN_ROOT/scripts/$TARGET_DATE/"
+            echo "restored=true" >> "$GITHUB_OUTPUT"
+            echo "source_run_id=$SOURCE_RUN_ID" >> "$GITHUB_OUTPUT"
+            echo "Reused approved editorial artifact from run $SOURCE_RUN_ID for $TARGET_DATE."
+            exit 0
+          done < <(
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+              --jq ".artifacts
+                | map(select(
+                    .expired == false
+                    and (.name | startswith(\"$PREFIX\"))
+                    and (.workflow_run.id != $GITHUB_RUN_ID)
+                  ))
+                | sort_by(.created_at)
+                | reverse
+                | .[]
+                | \"\\(.workflow_run.id)|\\(.name)\"" 2>/dev/null || true
+          )
+
+          echo "No reusable approved diagnostic found; editorial backfill will run normally."
+
       - name: Build retroactive episode
+        if: steps.reuse.outputs.restored != 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.BACKFILL_OPENAI_MODEL || 'gpt-5.6-terra' }}
+          SCRIPT_QUALITY_THRESHOLD: ${{ vars.SCRIPT_QUALITY_THRESHOLD || '8.7' }}
+          JUDGE_THRESHOLD: ${{ vars.JUDGE_THRESHOLD || '8.5' }}
+          VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
+          MAX_REFINEMENT_ITERATIONS: ${{ vars.BACKFILL_MAX_REFINEMENT_ITERATIONS || '7' }}
+          MAX_SELECTED_NEWS: "8"
+          DOWNLOAD_MULTIMEDIA: "false"
+          SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
+          ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
+          MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
+          ESSAY_DUPLICATE_THRESHOLD: ${{ vars.ESSAY_DUPLICATE_THRESHOLD || '0.42' }}
+          MAX_NOVELTY_REPLANS: ${{ vars.MAX_NOVELTY_REPLANS || '2' }}
+          TARGET_MIN_SECONDS: ${{ vars.TARGET_MIN_SECONDS || '420' }}
+          TARGET_MAX_SECONDS: ${{ vars.TARGET_MAX_SECONDS || '1200' }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          AGENT_MAX_ATTEMPTS: ${{ vars.AGENT_MAX_ATTEMPTS || '3' }}
+          AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
+          NEWS_SOURCE_MODE: scheduled_window
+          NEWS_LOOKBACK_DAYS: "4"
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+        run: |
+          set -euo pipefail
+          test -n "${OPENAI_API_KEY:-}" || { echo "OPENAI_API_KEY is not configured"; exit 1; }
+          echo "Backfill editorial model: $OPENAI_MODEL; refinement budget: $MAX_REFINEMENT_ITERATIONS"
+          python -m pipeline.run_hardened \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --history-scripts-dir scripts \
+            --editorial-dir editorial \
+            --max-media-downloads 0 \
+            --no-download-multimedia
+
+      - name: Upload backfill diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-news-backfill-diagnostic-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Require approved script
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          STATE="$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
+          SCRIPT="$RUN_ROOT/scripts/$TARGET_DATE/script.txt"
+          test -s "$STATE"
+          test -s "$SCRIPT"
+          STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$STATE")"
+          echo "Backfill episode status: $STATUS"
+          test "$STATUS" = "approved"
+
+      - name: Build deterministic dense multimedia handoff
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          MAX_MEDIA: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
+          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
+        run: |
+          set -euo pipefail
+          OUTPUT_DIR="$RUN_ROOT/multimedia/$TARGET_DATE"
+          ZIP="$RUN_ROOT/multimedia/multimedia-${TARGET_DATE}-run-${GITHUB_RUN_ID}.zip"
+
+          build_offline() {
+            local acquisition_budget="$1"
+            rm -rf "$OUTPUT_DIR" "$ZIP"
+            python -m pipeline.review_media_offline_dense \
+              --episode-dir "$RUN_ROOT/scripts/$TARGET_DATE" \
+              --output-dir "$OUTPUT_DIR" \
+              --zip-out "$ZIP" \
+              --max-media-downloads "$acquisition_budget"
+          }
+
+          build_offline "$MAX_MEDIA"
+
+          set +e
+          python -m pipeline.media_density_gate \
+            --media-dir "$OUTPUT_DIR" \
+            --budget "$MAX_MEDIA" \
+            --output "$RUN_ROOT/media_density_gate.json"
+          GATE_STATUS=$?
+          set -e
+
+          if [ "$GATE_STATUS" -eq 2 ]; then
+            RECOVERY_BUDGET="$(python -m pipeline.media_density_recovery \
+              --media-dir "$OUTPUT_DIR" \
+              --delivery-budget "$MAX_MEDIA" \
+              --max-extra-attempts 12 \
+              --value-only)"
+            if [ -n "$RECOVERY_BUDGET" ]; then
+              echo "::warning::Dense media lost too many assets to deduplication; retrying once with acquisition budget $RECOVERY_BUDGET while preserving delivery budget $MAX_MEDIA."
+              build_offline "$RECOVERY_BUDGET"
+              python -m pipeline.media_density_gate \
+                --media-dir "$OUTPUT_DIR" \
+                --budget "$MAX_MEDIA" \
+                --output "$RUN_ROOT/media_density_gate.json"
+            else
+              exit "$GATE_STATUS"
+            fi
+          elif [ "$GATE_STATUS" -ne 0 ]; then
+            exit "$GATE_STATUS"
+          fi
+
+      - name: Create production handoff contracts
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+          WORDS_PER_SECOND: ${{ vars.WORDS_PER_SECOND || '2.5' }}
+          PRODUCTION_CTA_TEXT: ${{ vars.PRODUCTION_CTA_TEXT }}
+          RECORDING_MIN_TAKE_SECONDS: ${{ vars.RECORDING_MIN_TAKE_SECONDS || '20' }}
+          RECORDING_TARGET_TAKE_SECONDS: ${{ vars.RECORDING_TARGET_TAKE_SECONDS || '35' }}
+          RECORDING_MAX_TAKE_SECONDS: ${{ vars.RECORDING_MAX_TAKE_SECONDS || '60' }}
+        run: |
+          set -euo pipefail
+          python -m pipeline.production_script \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --words-per-second "$WORDS_PER_SECOND"
+          python -m pipeline.recording_pack \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --words-per-second "$WORDS_PER_SECOND" \
+            --min-take-seconds "$RECORDING_MIN_TAKE_SECONDS" \
+            --target-take-seconds "$RECORDING_TARGET_TAKE_SECONDS" \
+            --max-take-seconds "$RECORDING_MAX_TAKE_SECONDS"
+          python -m pipeline.recording_ingest \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts
+          python -m pipeline.recording_alignment \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts \
+            --policy config/recording_alignment.yaml
+          python -m pipeline.virtual_timeline \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia"
+          python -m pipeline.placeholder_media \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts"
+          python -m pipeline.otio_export \
+            --target-date "$TARGET_DATE" \
+            --scripts-dir "$RUN_ROOT/scripts"
+          python -m pipeline.resolve_bridge \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts
+          command -v ffmpeg >/dev/null
+          command -v ffprobe >/dev/null
+          mkdir -p "$RUN_ROOT/previews/$TARGET_DATE"
+          python -m pipeline.preview_render \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts \
+            --output "$RUN_ROOT/previews/$TARGET_DATE/pre_recording_preview.mp4"
+          python -m pipeline.asset_readiness \
+            --target-date "$TARGET_DATE" \
+            --repo-root "$RUN_ROOT" \
+            --scripts-dir scripts \
+            --policy config/asset_readiness.yaml
+          python -m pipeline.report \
+            --target-date "$TARGET_DATE" \
+            --build-outcome approved \
+            --scripts-dir "$RUN_ROOT/scripts" \
+            --multimedia-dir "$RUN_ROOT/multimedia" \
+            --editorial-dir editorial
+          export RUN_ROOT TARGET_DATE
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path(os.environ["RUN_ROOT"]) / "scripts" / os.environ["TARGET_DATE"] / "asset_readiness.json"
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          if not payload.get("gate", {}).get("ready_to_record"):
+              raise SystemExit("Backfill blocked by asset readiness: " + ", ".join(payload.get("gate", {}).get("blockers", [])))
+          PY
+
+      - name: Promote approved production kit to main
+        env:
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+          rm -rf "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          mkdir -p "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          cp -a "$RUN_ROOT/scripts/$TARGET_DATE/." "scripts/$TARGET_DATE/"
+          cp -a "$RUN_ROOT/multimedia/$TARGET_DATE/." "multimedia/$TARGET_DATE/"
+          git add "scripts/$TARGET_DATE" "multimedia/$TARGET_DATE"
+          if ! git diff --cached --quiet; then
+            git commit -m "backfill: promote approved episode $TARGET_DATE"
+            git push origin HEAD:main
+          fi
+
+      - name: Upload production-compatible artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-news-run-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/
+          if-no-files-found: error
+          retention-days: 30
+\t' read -r SOURCE_RUN_ID ARTIFACT_NAME; do
+            [ -n "$SOURCE_RUN_ID" ] || continue
+            CANDIDATE=".backfill-reuse/$SOURCE_RUN_ID"
+            rm -rf "$CANDIDATE"
+            mkdir -p "$CANDIDATE"
+            if ! gh run download "$SOURCE_RUN_ID" --name "$ARTIFACT_NAME" --dir "$CANDIDATE" >/dev/null 2>&1; then
+              continue
+            fi
+
+            STATE="$CANDIDATE/scripts/$TARGET_DATE/run_state.json"
+            SCRIPT="$CANDIDATE/scripts/$TARGET_DATE/script.txt"
+            [ -s "$STATE" ] && [ -s "$SCRIPT" ] || continue
+
+            read -r STATUS EPISODE_DATE < <(
+              python - "$STATE" <<'PY'
+          import json, sys
+          payload = json.load(open(sys.argv[1], encoding="utf-8"))
+          print(str(payload.get("status", "")), str(payload.get("episode_date", "")))
+          PY
+            )
+            if [ "$STATUS" != "approved" ] || [ "$EPISODE_DATE" != "$TARGET_DATE" ]; then
+              continue
+            fi
+
+            rm -rf "$RUN_ROOT/scripts/$TARGET_DATE"
+            mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE"
+            cp -a "$CANDIDATE/scripts/$TARGET_DATE/." "$RUN_ROOT/scripts/$TARGET_DATE/"
+            echo "restored=true" >> "$GITHUB_OUTPUT"
+            echo "source_run_id=$SOURCE_RUN_ID" >> "$GITHUB_OUTPUT"
+            echo "Reused approved editorial artifact from run $SOURCE_RUN_ID for $TARGET_DATE."
+            exit 0
+          done < <(
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+              --jq ".artifacts
+                | map(select(
+                    .expired == false
+                    and (.name | startswith(\"$PREFIX\"))
+                    and (.workflow_run.id != $GITHUB_RUN_ID)
+                  ))
+                | sort_by(.created_at)
+                | reverse
+                | .[]
+                | [(.workflow_run.id|tostring), .name]
+                | @tsv" 2>/dev/null || true
+          )
+
+          echo "No reusable approved diagnostic found; editorial backfill will run normally."
+
+      - name: Build retroactive episode
+        if: steps.reuse.outputs.restored != 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.BACKFILL_OPENAI_MODEL || 'gpt-5.6-terra' }}
