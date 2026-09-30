@@ -45,3 +45,36 @@ Antes de publicar, el JSON debe:
 - usar `digest_date == window.to`.
 
 Esta carpeta no debe modificar ni sustituir `news/`, `scripts/`, `multimedia/` ni los contratos de promoción de episodios.
+
+## Enforcement GitHub-native
+
+El contrato se aplica mediante:
+
+` .github/workflows/weekly-research-contract.yml `
+
+La Action corre cuando cambia `research/**`, en pull requests relevantes, bajo
+`workflow_dispatch` y cada viernes a las 10:00 America/Mexico_City
+(`16:00 UTC`).
+
+Además de JSON Schema, valida invariantes de historial:
+
+- el nombre `YYYY-MM-DD.json` coincide con `digest_date`;
+- cada JSON tiene su Markdown hermano y no existen Markdown huérfanos;
+- un `items[].id` aparece primero como `new_publication`;
+- si reaparece, debe conservar el ID y usar `material_update`;
+- una actualización material requiere `updated_at` posterior al evento anterior;
+- el watchdog del viernes exige que exista el par JSON/Markdown de la semana,
+  incluso si no hubo ningún push que pudiera disparar CI.
+
+Cada ejecución publica un Job Summary y un artifact
+`weekly-research-contract-<run_id>` con el reporte estructurado de validación,
+retenido durante 30 días.
+
+Si falla en `main`, por schedule o ejecución manual, el workflow abre o
+actualiza un único issue operativo:
+
+`RESEARCH_WEEKLY_CONTRACT_BROKEN`
+
+Al recuperarse el contrato, ese incidente se comenta y se cierra
+automáticamente. Los pull requests sólo reciben el check fallido; no generan
+incidentes para evitar ruido.
