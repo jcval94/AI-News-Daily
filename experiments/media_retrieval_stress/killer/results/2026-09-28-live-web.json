@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "run_id": "killer-live-web-2026-09-28",
+  "run_date": "2026-09-28",
+  "method": "Manual live-web evidence run using exact-identity search first, followed by source-level visual/context verification and explicit rights/usability classification. No copyrighted asset was downloaded or treated as automatically reusable merely because it was found.",
+  "summary": {
+    "cases": 5,
+    "entity_resolution_pass": 5,
+    "exact_discovery_pass": 5,
+    "visual_verification_pass": 5,
+    "exact_usable": 3,
+    "exact_reference_only": 2,
+    "wrong_substitutions": 0,
+    "scene_offsets_resolved": 1
+  },
+  "cases": [
+    {
+      "id": "killer_time_wizard",
+      "target": "El Mago del Tiempo / Time Wizard (Yu-Gi-Oh! TCG card)",
+      "entity_resolution": {
+        "status": "pass",
+        "canonical_identity": "Time Wizard",
+        "reason": "The official Yu-Gi-Oh! TCG database resolves the target to the exact card Time Wizard (cid=4022), including its card type, stats and historical printings."
+      },
+      "exact_discovery": {
+        "status": "found_exact",
+        "best_reference": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=4022&ope=2&request_locale=en",
+        "source_type": "official",
+        "reason": "An exact official card record exists; discovery no longer depends on generic stock or public-domain catalogues."
+      },
+      "visual_verification": {
+        "status": "verified",
+        "method": "page_and_image",
+        "reason": "The official record identifies the exact card and a web image result independently shows the Time Wizard trading card artwork, eliminating the generic-magician failure mode.",
+        "scene_intervals": []
+      },
+      "usability": {
+        "status": "reference_only",
+        "rights_basis": "The official database carries Konami/Studio Dice/Shueisha/TV Tokyo copyright notices and no reusable-media license was identified for the card artwork in this run.",
+        "conditions": [
+          "Keep exact card reference for editorial/research use.",
+          "Do not auto-export the card art into the production bundle without an explicit reuse basis or manual clearance."
+        ]
+      },
+      "final_status": "FOUND_EXACT_REFERENCE_ONLY",
+      "evidence": [
+        {
+          "label": "Official Yu-Gi-Oh! TCG Time Wizard card record",
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=4022&ope=2&request_locale=en",
+          "supports": [
+            "identity",
+            "discovery",
+            "visual",
+            "rights"
+          ]
+        },
+        {
+          "label": "Exact Time Wizard card image result",
+          "url": "https://www.hillscards.co.uk/trading-card-games-c78/singles-c91/yu-gi-oh-trading-card-game-time-wizard-ss02-enb07-speed-duel-common-card-1st-edition-p53527",
+          "supports": [
+            "visual"
+          ]
+        }
+      ],
+      "diagnosis": "The original failure was not semantic understanding. Exact discovery succeeds once commercial/reference-only sources are allowed. The remaining bottleneck is reuse rights, so the correct state is reference-only rather than substituting a generic magician."
+    },
+    {
+      "id": "killer_lake_nyos_1986",
+      "target": "1986 Lake Nyos disaster",
+      "entity_resolution": {
+        "status": "pass",
+        "canonical_identity": "1986 Lake Nyos limnic disaster, Cameroon",
+        "reason": "Government scientific sources explicitly identify the 1986 Lake Nyos CO2 disaster and documentary investigations immediately after the event."
+      },
+      "exact_discovery": {
+        "status": "found_exact",
+        "best_reference": "https://www.usgs.gov/media/images/exploding-lakes-cameroon-0",
+        "source_type": "government",
+        "reason": "USGS exposes an image tied directly to Lake Nyos and describes the 1986 gas release; a USGS field report also documents photographs and movies from the immediate aftermath."
+      },
+      "visual_verification": {
+        "status": "verified",
+        "method": "documentary_context",
+        "reason": "The USGS media record depicts Lake Nyos and explicitly connects the image to the 1986 disaster context; the field report independently confirms documentary photography/movies from August 1986.",
+        "scene_intervals": []
+      },
+      "usability": {
+        "status": "usable",
+        "rights_basis": "The USGS media result labels Sources/Usage as Public Domain.",
+        "conditions": [
+          "Preserve source attribution/metadata even though public-domain reuse does not require a copyright license."
+        ]
+      },
+      "final_status": "FOUND_EXACT_USABLE",
+      "evidence": [
+        {
+          "label": "USGS Exploding Lakes in Cameroon image",
+          "url": "https://www.usgs.gov/media/images/exploding-lakes-cameroon-0",
+          "supports": [
+            "identity",
+            "discovery",
+            "visual",
+            "rights"
+          ]
+        },
+        {
+          "label": "USGS 1987 Lake Nyos investigation report",
+          "url": "https://pubs.usgs.gov/of/1987/0097/report.pdf",
+          "supports": [
+            "identity",
+            "visual"
+          ]
+        }
+      ],
+      "diagnosis": "This case is solvable end-to-end with an exact documentary/government source. Public-domain government media materially improves the acquisition outcome compared with generic scenic-lake search."
+    },
+    {
+      "id": "killer_plato_bust",
+      "target": "Plato historical depiction",
+      "entity_resolution": {
+        "status": "pass",
+        "canonical_identity": "Plato, represented by a historical bust/sculpture",
+        "reason": "The exact visual requirement is a historically appropriate depiction of Plato rather than an anachronistic photograph."
+      },
+      "exact_discovery": {
+        "status": "found_exact",
+        "best_reference": "https://commons.wikimedia.org/wiki/File:Plato-Musei_Capitolini.jpg",
+        "source_type": "commons",
+        "reason": "Wikimedia Commons provides a high-resolution photograph explicitly identified as a bust of Plato at the Capitoline Museum."
+      },
+      "visual_verification": {
+        "status": "verified",
+        "method": "image",
+        "reason": "The source description and image identify the subject as Plato's bust; the original file is 2448×3264, making it materially usable for video editing.",
+        "scene_intervals": []
+      },
+      "usability": {
+        "status": "usable",
+        "rights_basis": "The Commons file is licensed CC BY-SA 3.0 (with an alternative GFDL license also listed).",
+        "conditions": [
+          "Provide attribution.",
+          "If adapting under CC BY-SA, comply with the share-alike condition or choose an applicable listed license."
+        ]
+      },
+      "final_status": "FOUND_EXACT_USABLE",
+      "evidence": [
+        {
+          "label": "Wikimedia Commons — Plato-Musei Capitolini.jpg",
+          "url": "https://commons.wikimedia.org/wiki/File:Plato-Musei_Capitolini.jpg",
+          "supports": [
+            "identity",
+            "discovery",
+            "visual",
+            "rights"
+          ]
+        }
+      ],
+      "diagnosis": "Exact identity, strong resolution and explicit reuse terms are all available. The stress case should prefer this type of museum/Commons evidence and reject photorealistic fake depictions."
+    },
+    {
+      "id": "killer_alphafold_interface",
+      "target": "AlphaFold Protein Structure Database interface / 3D viewer",
+      "entity_resolution": {
+        "status": "pass",
+        "canonical_identity": "AlphaFold Protein Structure Database structure page interface",
+        "reason": "EMBL-EBI training and product pages explicitly describe the structure page, Mol* 3D viewer, pLDDT confidence and PAE interface."
+      },
+      "exact_discovery": {
+        "status": "found_exact",
+        "best_reference": "https://www.ebi.ac.uk/training/online/courses/navigating-alphafold-database/understanding-the-structure-prediction-page/summary-and-model-confidence-tab/",
+        "source_type": "institutional",
+        "reason": "The official EMBL-EBI training page contains interface screenshots and names the precise UI elements requested by the narration."
+      },
+      "visual_verification": {
+        "status": "verified",
+        "method": "page_and_image",
+        "reason": "The training page includes an image of the Summary and Model Confidence tab and describes the interactive 3D viewer and PAE plot; this is direct interface evidence rather than a talking-head substitute.",
+        "scene_intervals": []
+      },
+      "usability": {
+        "status": "usable",
+        "rights_basis": "The EMBL-EBI course states that all materials are licensed CC BY 4.0 except where further licensing details are provided.",
+        "conditions": [
+          "Attribute EMBL-EBI/training material and preserve the CC BY 4.0 notice.",
+          "If a specific embedded asset later exposes separate licensing details, those asset-level terms take precedence."
+        ]
+      },
+      "final_status": "FOUND_EXACT_USABLE",
+      "evidence": [
+        {
+          "label": "EMBL-EBI Summary and Model Confidence training page",
+          "url": "https://www.ebi.ac.uk/training/online/courses/navigating-alphafold-database/understanding-the-structure-prediction-page/summary-and-model-confidence-tab/",
+          "supports": [
+            "identity",
+            "discovery",
+            "visual",
+            "rights"
+          ]
+        },
+        {
+          "label": "EMBL-EBI AlphaFold course licensing page",
+          "url": "https://www.ebi.ac.uk/training/online/courses/navigating-alphafold-database/",
+          "supports": [
+            "rights"
+          ]
+        }
+      ],
+      "diagnosis": "The interface case succeeds when institutional training/documentation sources are searched explicitly. This is much better than relying on title relevance from arbitrary videos."
+    },
+    {
+      "id": "killer_iphone_2007_keynote",
+      "target": "Steve Jobs demonstrating iPhone gestures at Macworld 2007",
+      "entity_resolution": {
+        "status": "pass",
+        "canonical_identity": "Macworld 2007 original iPhone keynote gesture demonstrations",
+        "reason": "The full keynote transcript identifies the exact 2007 event and contains timestamped gesture demonstrations."
+      },
+      "exact_discovery": {
+        "status": "found_exact",
+        "best_reference": "https://www.youtube.com/watch?v=VQKMoT-6XSg",
+        "source_type": "video_platform",
+        "reason": "A full 2007 iPhone presentation is available on YouTube, and an independent timestamped transcript maps specific gesture scenes."
+      },
+      "visual_verification": {
+        "status": "verified",
+        "method": "transcript_and_scene",
+        "reason": "The timestamped transcript resolves usable windows instead of assuming the useful shot is in the first 30 seconds.",
+        "scene_intervals": [
+          {
+            "start": "00:41:48",
+            "end": "00:42:02",
+            "label": "Slide-to-unlock gesture"
+          },
+          {
+            "start": "00:42:20",
+            "end": "00:42:44",
+            "label": "Finger scrolling through artists"
+          },
+          {
+            "start": "00:59:28",
+            "end": "01:00:01",
+            "label": "Pinch gesture on photos"
+          },
+          {
+            "start": "01:13:35",
+            "end": "01:14:42",
+            "label": "Pinch/double-tap zoom in Google Maps"
+          }
+        ]
+      },
+      "usability": {
+        "status": "reference_only",
+        "rights_basis": "The located full keynote and derivative clips do not expose a clear reusable-media license in the evidence gathered during this run.",
+        "conditions": [
+          "Keep the exact source and timestamps as scene references.",
+          "Do not auto-download/export the footage as cleared media without a separate rights decision."
+        ]
+      },
+      "final_status": "FOUND_EXACT_REFERENCE_ONLY",
+      "evidence": [
+        {
+          "label": "Full iPhone 2007 presentation on YouTube",
+          "url": "https://www.youtube.com/watch?v=VQKMoT-6XSg",
+          "supports": [
+            "discovery",
+            "visual"
+          ]
+        },
+        {
+          "label": "Timestamped Macworld 2007 keynote transcript",
+          "url": "https://allaboutstevejobs.com/videos/keynotes/macworld_2007",
+          "supports": [
+            "identity",
+            "visual",
+            "scene_offset"
+          ]
+        },
+        {
+          "label": "Dedicated 2007 pinch-gesture clip",
+          "url": "https://www.youtube.com/watch?v=fxu07I2wBdc",
+          "supports": [
+            "visual",
+            "scene_offset"
+          ]
+        }
+      ],
+      "diagnosis": "Scene scouting solves the previous first-30-seconds failure. Exact footage is discoverable and time-addressable, but automatic reuse remains a rights question; the correct machine state is reference-only with precise scene intervals."
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/candidate-selection.schema.json",
+  "title": "Adversarial Candidate Selection Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "assessments",
+    "selected_provider_asset_ids",
+    "unresolved",
+    "warnings",
+    "selection_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "assessments": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "provider_asset_id",
+          "verdict",
+          "identity_match",
+          "period_match",
+          "geography_match",
+          "visual_utility",
+          "quality_status",
+          "rights_eligible",
+          "failure_codes",
+          "evidence"
+        ],
+        "properties": {
+          "provider_asset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "verdict": {
+            "enum": [
+              "direct",
+              "contextual",
+              "reject"
+            ]
+          },
+          "identity_match": {
+            "type": "boolean"
+          },
+          "period_match": {
+            "enum": [
+              "match",
+              "mismatch",
+              "not_applicable",
+              "unknown"
+            ]
+          },
+          "geography_match": {
+            "enum": [
+              "match",
+              "mismatch",
+              "not_applicable",
+              "unknown"
+            ]
+          },
+          "visual_utility": {
+            "enum": [
+              "high",
+              "usable",
+              "low",
+              "none",
+              "unknown"
+            ]
+          },
+          "quality_status": {
+            "enum": [
+              "high",
+              "usable",
+              "low",
+              "unknown"
+            ]
+          },
+          "rights_eligible": {
+            "type": "boolean"
+          },
+          "failure_codes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "wrong_entity",
+                "wrong_period",
+                "wrong_geography",
+                "generic_substitute",
+                "metadata_only",
+                "metadata_visual_mismatch",
+                "preview_miss",
+                "duplicate_lower_quality",
+                "rights_ineligible",
+                "low_resolution",
+                "prompt_injection_metadata",
+                "other",
+                "historical_anachronism"
+              ]
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
+          }
+        }
+      }
+    },
+    "selected_provider_asset_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      }
+    },
+    "unresolved": {
+      "type": "boolean"
+    },
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "low_resolution",
+          "clip_offset_required",
+          "rights_blocked",
+          "frame_level_review",
+          "metadata_visual_mismatch",
+          "duplicate_collapsed"
+        ]
+      }
+    },
+    "selection_reason": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 1200
+    }
+  }
+}

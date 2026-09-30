@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/local-result.schema.json",
+  "title": "Local Media Forensics Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "case_id",
+    "machine",
+    "status",
+    "artifacts",
+    "evidence",
+    "scene_candidates",
+    "final"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100
+    },
+    "machine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "worker_version"
+      ],
+      "properties": {
+        "platform": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "worker_version": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "ffmpeg": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "yt_dlp": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "playwright": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "partial",
+        "fail",
+        "manual_review"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "path",
+          "sha256",
+          "bytes",
+          "retention"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "metadata",
+              "thumbnail",
+              "screenshot",
+              "frame",
+              "transcript",
+              "binary",
+              "clip",
+              "resolve_manifest",
+              "log"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "retention": {
+            "enum": [
+              "ephemeral",
+              "cache",
+              "keep"
+            ]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "value",
+          "supports"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "title",
+              "description",
+              "ocr",
+              "transcript",
+              "visual_label",
+              "frame_similarity",
+              "url",
+              "rights",
+              "technical"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "supports": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "identity",
+                "visual",
+                "scene",
+                "rights",
+                "quality"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "scene_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start_seconds",
+          "end_seconds",
+          "score",
+          "reason"
+        ],
+        "properties": {
+          "start_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "end_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "final": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_verified",
+        "visual_verified",
+        "rights_status",
+        "recommended_action"
+      ],
+      "properties": {
+        "identity_verified": {
+          "type": "boolean"
+        },
+        "visual_verified": {
+          "type": "boolean"
+        },
+        "rights_status": {
+          "enum": [
+            "usable",
+            "reference_only",
+            "review_required",
+            "blocked"
+          ]
+        },
+        "recommended_action": {
+          "enum": [
+            "use_asset",
+            "use_clip",
+            "keep_reference",
+            "manual_review",
+            "reject"
+          ]
+        },
+        "selected_artifact_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000
+        },
+        "selected_scene": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "start_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_seconds": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "start_seconds",
+            "end_seconds"
+          ]
+        }
+      }
+    }
+  }
+}
