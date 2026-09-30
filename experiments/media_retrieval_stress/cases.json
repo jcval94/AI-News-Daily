@@ -1,0 +1,576 @@
+{
+  "schema_version": 1,
+  "description": "Adversarial multimedia retrieval cases. These are diagnostic: live failures are preserved rather than hidden.",
+  "cases": [
+    {
+      "id": "franchise_yugioh_time_wizard",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "localized_alias_franchise",
+      "severity": "critical",
+      "narration": "En Yu-Gi-Oh!, una de las cartas más reconocibles de Joey era El Mago del Tiempo.",
+      "subject": "El Mago del Tiempo",
+      "visual_query": "Yu-Gi-Oh Time Wizard trading card Joey",
+      "kinds": [
+        "image"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "time wizard",
+        "mago del tiempo",
+        "yu-gi-oh",
+        "yugioh"
+      ],
+      "forbidden_terms": [
+        "weather wizard",
+        "generic magician",
+        "clock wizard"
+      ],
+      "may_be_rights_blocked": true,
+      "note": "Must resolve the localized card name to the Yu-Gi-Oh! card, not a generic wizard. Rights can prevent materialization, but not semantic resolution."
+    },
+    {
+      "id": "product_claude_ai_not_monet",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "namesake_context",
+      "severity": "critical",
+      "narration": "Claude de Anthropic cambió la forma en que muchos equipos prueban agentes.",
+      "subject": "Claude de Anthropic",
+      "visual_query": "Anthropic Claude AI product interface",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "anthropic",
+        "claude ai",
+        "claude"
+      ],
+      "forbidden_terms": [
+        "monet",
+        "claude debussy"
+      ],
+      "may_be_rights_blocked": true,
+      "note": "Brand/product context must defeat famous-person namesakes."
+    },
+    {
+      "id": "product_gemini_google_not_zodiac",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "polysemy",
+      "severity": "critical",
+      "narration": "Gemini de Google compite en una carrera donde el nombre del modelo importa menos que su comportamiento.",
+      "subject": "Gemini de Google",
+      "visual_query": "Google Gemini AI model interface",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "google gemini",
+        "gemini ai",
+        "google"
+      ],
+      "forbidden_terms": [
+        "zodiac",
+        "horoscope",
+        "constellation"
+      ],
+      "may_be_rights_blocked": true,
+      "note": "The common noun/brand collision should resolve from context."
+    },
+    {
+      "id": "product_apple_vision_pro_not_fruit",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "brand_common_noun",
+      "severity": "high",
+      "narration": "El Apple Vision Pro convirtió una pantalla en algo que se lleva puesto.",
+      "subject": "Apple Vision Pro",
+      "visual_query": "Apple Vision Pro headset",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "vision pro",
+        "apple vision"
+      ],
+      "forbidden_terms": [
+        "apple fruit",
+        "orchard"
+      ],
+      "may_be_rights_blocked": true,
+      "note": "Exact commercial hardware should never degrade into literal apples."
+    },
+    {
+      "id": "product_tesla_model_3_not_3d_model",
+      "profile": [
+        "full"
+      ],
+      "category": "numeric_entity",
+      "severity": "high",
+      "narration": "El Tesla Model 3 volvió masivo un formato que antes parecía de nicho.",
+      "subject": "Tesla Model 3",
+      "visual_query": "Tesla Model 3 electric car",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "tesla model 3",
+        "model 3 tesla"
+      ],
+      "forbidden_terms": [
+        "3d model",
+        "scale model"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Numbers and generic words are a classic search collision."
+    },
+    {
+      "id": "product_nvidia_blackwell_b200_not_person",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "product_version_specificity",
+      "severity": "critical",
+      "narration": "La GPU NVIDIA Blackwell B200 concentra una parte enorme de la discusión sobre infraestructura de IA.",
+      "subject": "NVIDIA Blackwell B200",
+      "visual_query": "NVIDIA Blackwell B200 GPU",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "blackwell b200",
+        "nvidia b200",
+        "b200 gpu"
+      ],
+      "forbidden_terms": [
+        "blackwell person",
+        "blackwell portrait"
+      ],
+      "may_be_rights_blocked": true,
+      "note": "Exact model/version, not the architecture name alone and not a namesake."
+    },
+    {
+      "id": "history_lake_nyos_1986_event",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "event_vs_place",
+      "severity": "critical",
+      "narration": "En 1986, el desastre del lago Nyos mató a comunidades enteras cuando una nube de CO2 salió del lago.",
+      "subject": "desastre del lago Nyos",
+      "period": "1986",
+      "geography": "lago Nyos",
+      "visual_query": "Lake Nyos disaster 1986 aftermath Cameroon",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "lake nyos",
+        "nyos disaster",
+        "lago nyos"
+      ],
+      "forbidden_terms": [
+        "vacation",
+        "tourism",
+        "travel vlog"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "The event, not merely the lake, must be the substantive subject."
+    },
+    {
+      "id": "history_plato_no_fake_photo",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "pre_photography_person",
+      "severity": "critical",
+      "narration": "Platón ya sospechaba que una herramienta para recordar podía cambiar la forma de pensar.",
+      "subject": "Platón",
+      "visual_query": "Plato ancient bust sculpture museum",
+      "kinds": [
+        "image"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "plato",
+        "platón"
+      ],
+      "forbidden_terms": [
+        "cosplay",
+        "actor",
+        "ai generated"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "A bust or historical artwork is valid; a fake 'photo of Plato' is not."
+    },
+    {
+      "id": "geography_georgia_country_not_state",
+      "profile": [
+        "full"
+      ],
+      "category": "geographic_ambiguity",
+      "severity": "high",
+      "narration": "En Georgia, el país del Cáucaso, la infraestructura digital se convirtió en parte de la política económica.",
+      "subject": "Georgia, el país del Cáucaso",
+      "geography": "Cáucaso",
+      "visual_query": "Georgia country Caucasus Tbilisi",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "georgia country",
+        "tbilisi",
+        "caucasus"
+      ],
+      "forbidden_terms": [
+        "atlanta",
+        "georgia usa",
+        "savannah"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Place disambiguation must use the explicit geographic qualifier."
+    },
+    {
+      "id": "history_macintosh_1984_not_modern_mac",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "temporal_object",
+      "severity": "critical",
+      "narration": "El Macintosh de 1984 puso una interfaz gráfica frente a un público masivo.",
+      "subject": "Macintosh de 1984",
+      "period": "1984",
+      "visual_query": "1984 Apple Macintosh original computer",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "macintosh 1984",
+        "1984 macintosh",
+        "original macintosh"
+      ],
+      "forbidden_terms": [
+        "macbook pro",
+        "imac 2025",
+        "modern mac"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Correct product family is insufficient when the period is explicit."
+    },
+    {
+      "id": "history_apollo_11_landing_not_museum",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "event_footage_vs_exhibit",
+      "severity": "critical",
+      "narration": "El alunizaje del Apollo 11 en 1969 fue visto casi en tiempo real por cientos de millones de personas.",
+      "subject": "alunizaje del Apollo 11",
+      "period": "1969",
+      "visual_query": "Apollo 11 1969 moon landing archival footage",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "apollo 11",
+        "moon landing",
+        "alunizaje"
+      ],
+      "forbidden_terms": [
+        "museum gift shop",
+        "apollo theater"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Prefer actual event material; exhibits are contextual and should not satisfy exact evidence."
+    },
+    {
+      "id": "artifact_antikythera_mechanism",
+      "profile": [
+        "full"
+      ],
+      "category": "rare_named_object",
+      "severity": "high",
+      "narration": "El mecanismo de Anticitera parecía imposible para la época en la que fue construido.",
+      "subject": "mecanismo de Anticitera",
+      "visual_query": "Antikythera mechanism artifact museum",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "antikythera mechanism",
+        "mecanismo de anticitera"
+      ],
+      "forbidden_terms": [
+        "generic gears",
+        "steampunk"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Rare named artifacts should beat decorative stand-ins."
+    },
+    {
+      "id": "person_tsutomu_yamaguchi_not_bomb_city",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "person_associated_events",
+      "severity": "critical",
+      "narration": "Tsutomu Yamaguchi sobrevivió a Hiroshima y Nagasaki.",
+      "subject": "Tsutomu Yamaguchi",
+      "visual_query": "Tsutomu Yamaguchi portrait",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "tsutomu yamaguchi",
+        "yamaguchi"
+      ],
+      "forbidden_terms": [
+        "hiroshima skyline only",
+        "nagasaki skyline only"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Associated events cannot substitute for the named person."
+    },
+    {
+      "id": "ambiguity_mercury_fail_closed",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "genuine_ambiguity",
+      "severity": "critical",
+      "narration": "Mercury cambió la conversación por completo.",
+      "subject": "Mercury",
+      "visual_query": "Mercury",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "refuse_ambiguity",
+      "semantic_terms_any": [],
+      "forbidden_terms": [],
+      "may_be_rights_blocked": false,
+      "note": "With no disambiguating context, choosing planet/element/car/person is worse than returning nothing."
+    },
+    {
+      "id": "metaphor_compute_bottleneck_not_bottle",
+      "profile": [
+        "core",
+        "full"
+      ],
+      "category": "metaphor",
+      "severity": "high",
+      "narration": "El cuello de botella ya no está en entrenar el modelo, sino en mover datos entre chips.",
+      "subject": "cuello de botella",
+      "visual_query": "data center GPU interconnect bandwidth bottleneck",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "context",
+      "semantic_terms_any": [
+        "data center",
+        "gpu",
+        "interconnect",
+        "bandwidth",
+        "server"
+      ],
+      "forbidden_terms": [
+        "glass bottle",
+        "wine bottle"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Literal visual metaphors can be actively misleading."
+    },
+    {
+      "id": "negation_no_humanoid_robots",
+      "profile": [
+        "full"
+      ],
+      "category": "negation",
+      "severity": "high",
+      "narration": "No estamos hablando de robots humanoides; estamos hablando de software que decide qué tarea hacer después.",
+      "subject": "software que decide qué tarea hacer después",
+      "visual_query": "software agent task planning interface workflow",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "context",
+      "semantic_terms_any": [
+        "software",
+        "workflow",
+        "agent",
+        "task"
+      ],
+      "forbidden_terms": [
+        "humanoid robot",
+        "android robot"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "A visually salient negated noun must not hijack retrieval."
+    },
+    {
+      "id": "history_wtc_pre_2001_not_one_wtc",
+      "profile": [
+        "full"
+      ],
+      "category": "temporal_place",
+      "severity": "critical",
+      "narration": "Antes de 2001, las Torres Gemelas dominaban el skyline del World Trade Center de Nueva York.",
+      "subject": "Torres Gemelas",
+      "period": "antes de 2001",
+      "geography": "Nueva York",
+      "visual_query": "World Trade Center Twin Towers New York before 2001",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "twin towers",
+        "world trade center"
+      ],
+      "forbidden_terms": [
+        "one world trade center",
+        "freedom tower"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "Same place name, different physical object across time."
+    },
+    {
+      "id": "video_scene_late_in_source",
+      "profile": [
+        "full"
+      ],
+      "category": "video_clip_offset",
+      "severity": "critical",
+      "narration": "En la presentación del iPhone de 2007, Steve Jobs reveló el gesto de deslizar para desbloquear.",
+      "subject": "presentación del iPhone de 2007",
+      "period": "2007",
+      "visual_query": "Steve Jobs 2007 iPhone keynote slide to unlock demonstration",
+      "kinds": [
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "iphone keynote",
+        "steve jobs",
+        "2007 iphone"
+      ],
+      "forbidden_terms": [],
+      "may_be_rights_blocked": true,
+      "note": "Metadata can identify the correct long video while the relevant shot occurs well after the first 30 seconds. This exposes the current clip-from-zero weakness."
+    },
+    {
+      "id": "video_title_relevant_content_static",
+      "profile": [
+        "full"
+      ],
+      "category": "video_metadata_visual_mismatch",
+      "severity": "high",
+      "narration": "La interfaz de AlphaFold convirtió predicciones estructurales en algo visualmente inspeccionable.",
+      "subject": "AlphaFold",
+      "visual_query": "AlphaFold protein structure interface demonstration",
+      "kinds": [
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "alphafold",
+        "protein structure"
+      ],
+      "forbidden_terms": [],
+      "may_be_rights_blocked": true,
+      "note": "A relevant title can still lead to a static title card, podcast, or talking head with no usable visual evidence."
+    },
+    {
+      "id": "quality_lowres_exact_beats_wrong_hd",
+      "profile": [
+        "full"
+      ],
+      "category": "quality_vs_identity",
+      "severity": "critical",
+      "narration": "La primera webcam apuntaba a la cafetera Trojan Room en Cambridge.",
+      "subject": "cafetera Trojan Room",
+      "visual_query": "Trojan Room coffee pot first webcam Cambridge",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "exact",
+      "semantic_terms_any": [
+        "trojan room coffee",
+        "coffee pot webcam",
+        "trojan room"
+      ],
+      "forbidden_terms": [
+        "modern coffee shop",
+        "generic webcam"
+      ],
+      "may_be_rights_blocked": false,
+      "note": "If only a low-resolution exact historical asset exists, it should beat a beautiful but wrong substitute and be flagged lowres."
+    },
+    {
+      "id": "security_prompt_injection_metadata",
+      "profile": [
+        "full"
+      ],
+      "category": "untrusted_metadata",
+      "severity": "critical",
+      "narration": "Una captura de un dashboard de seguridad puede mostrar cómo se priorizan alertas.",
+      "subject": "dashboard de seguridad",
+      "visual_query": "cybersecurity incident monitoring dashboard",
+      "kinds": [
+        "image",
+        "video"
+      ],
+      "expected_mode": "context",
+      "semantic_terms_any": [
+        "cybersecurity",
+        "security dashboard",
+        "incident monitoring"
+      ],
+      "forbidden_terms": [],
+      "may_be_rights_blocked": false,
+      "note": "Candidate metadata may contain prompt-like text; it must remain evidence, never instructions."
+    }
+  ]
+}
