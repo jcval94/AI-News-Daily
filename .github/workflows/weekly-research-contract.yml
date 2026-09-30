@@ -1,0 +1,352 @@
+name: Weekly Applied GenAI Research Contract
+
+on:
+  pull_request:
+    paths:
+      - "research/**"
+      - ".github/workflows/weekly-research-contract.yml"
+  push:
+    branches: [main]
+    paths:
+      - "research/**"
+      - ".github/workflows/weekly-research-contract.yml"
+  schedule:
+    - cron: "0 16 * * 5" # Friday 10:00 America/Mexico_City (UTC-6)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: weekly-applied-genai-research-contract
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+
+      - name: Install JSON Schema validator
+        run: python -m pip install -c requirements.lock "jsonschema>=4.23,<5.0"
+
+      - name: Validate weekly research history
+        id: contract
+        continue-on-error: true
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          import re
+          from datetime import datetime, timedelta
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          from jsonschema import Draft202012Validator, FormatChecker
+
+          ROOT = Path("research")
+          WEEKLY = ROOT / "weekly"
+          SCHEMA_PATH = ROOT / "weekly_digest.schema.json"
+          REPORT_PATH = Path("weekly-research-contract-report.json")
+          DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+          errors: list[str] = []
+          warnings: list[str] = []
+          validated: list[str] = []
+          first_seen: dict[str, dict] = {}
+          event_name = os.environ.get("EVENT_NAME", "")
+
+          def add_error(message: str) -> None:
+              errors.append(message)
+
+          try:
+              schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+          except Exception as exc:
+              schema = None
+              add_error(f"Cannot read schema {SCHEMA_PATH}: {exc}")
+
+          validator = (
+              Draft202012Validator(schema, format_checker=FormatChecker())
+              if schema is not None
+              else None
+          )
+
+          json_files = sorted(WEEKLY.glob("*.json")) if WEEKLY.is_dir() else []
+          md_files = sorted(WEEKLY.glob("*.md")) if WEEKLY.is_dir() else []
+
+          if not WEEKLY.is_dir():
+              warnings.append("research/weekly does not exist yet.")
+
+          for path in json_files:
+              if not DATE_RE.fullmatch(path.stem):
+                  add_error(f"{path}: filename must be YYYY-MM-DD.json")
+                  continue
+
+              try:
+                  payload = json.loads(path.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  add_error(f"{path}: invalid JSON: {exc}")
+                  continue
+
+              if validator is not None:
+                  schema_errors = sorted(
+                      validator.iter_errors(payload),
+                      key=lambda err: [str(part) for part in err.absolute_path],
+                  )
+                  for err in schema_errors:
+                      location = ".".join(str(part) for part in err.absolute_path) or "<root>"
+                      add_error(f"{path} [{location}]: {err.message}")
+
+              digest_date = payload.get("digest_date")
+              if digest_date != path.stem:
+                  add_error(
+                      f"{path}: digest_date={digest_date!r} must equal filename date {path.stem!r}"
+                  )
+
+              sibling_md = path.with_suffix(".md")
+              if not sibling_md.is_file():
+                  add_error(f"{path}: missing sibling Markdown {sibling_md}")
+
+              items = payload.get("items", [])
+              if not isinstance(items, list):
+                  continue
+
+              seen_in_digest: set[str] = set()
+              for index, item in enumerate(items):
+                  if not isinstance(item, dict):
+                      continue
+                  item_id = item.get("id")
+                  if not isinstance(item_id, str) or not item_id:
+                      continue
+
+                  if item_id in seen_in_digest:
+                      add_error(f"{path}: duplicate item id {item_id!r}")
+                      continue
+                  seen_in_digest.add(item_id)
+
+                  basis = item.get("selection_basis")
+                  updated_at = item.get("updated_at")
+                  effective_date = updated_at or item.get("published_at")
+
+                  previous = first_seen.get(item_id)
+                  if previous is None:
+                      if basis != "new_publication":
+                          add_error(
+                              f"{path}: first occurrence of {item_id!r} must use "
+                              "selection_basis='new_publication'"
+                          )
+                      first_seen[item_id] = {
+                          "digest_date": digest_date,
+                          "effective_date": effective_date,
+                          "path": str(path),
+                      }
+                  else:
+                      if basis != "material_update":
+                          add_error(
+                              f"{path}: repeated id {item_id!r} was already seen in "
+                              f"{previous['path']}; it must use selection_basis='material_update'"
+                          )
+                      if not updated_at:
+                          add_error(
+                              f"{path}: repeated id {item_id!r} requires non-null updated_at"
+                          )
+                      if (
+                          isinstance(updated_at, str)
+                          and isinstance(previous.get("effective_date"), str)
+                          and updated_at <= previous["effective_date"]
+                      ):
+                          add_error(
+                              f"{path}: repeated id {item_id!r} has updated_at={updated_at!r}, "
+                              f"not later than prior effective date "
+                              f"{previous['effective_date']!r}"
+                          )
+                      first_seen[item_id] = {
+                          "digest_date": digest_date,
+                          "effective_date": effective_date,
+                          "path": str(path),
+                      }
+
+              validated.append(str(path))
+
+          for path in md_files:
+              if not DATE_RE.fullmatch(path.stem):
+                  add_error(f"{path}: filename must be YYYY-MM-DD.md")
+                  continue
+              sibling_json = path.with_suffix(".json")
+              if not sibling_json.is_file():
+                  add_error(f"{path}: orphan Markdown; missing {sibling_json}")
+
+          required_digest = None
+          if event_name == "schedule":
+              now_local = datetime.now(ZoneInfo("America/Mexico_City"))
+              today = now_local.date()
+              days_since_friday = (today.weekday() - 4) % 7
+              target = today - timedelta(days=days_since_friday)
+              required_digest = target.isoformat()
+              for suffix in (".json", ".md"):
+                  expected = WEEKLY / f"{required_digest}{suffix}"
+                  if not expected.is_file():
+                      add_error(
+                          f"Scheduled Friday watchdog: missing expected digest file {expected}"
+                      )
+
+          status = "ok" if not errors else "failure"
+          report = {
+              "status": status,
+              "event": event_name,
+              "schema": str(SCHEMA_PATH),
+              "validated_json_files": validated,
+              "json_count": len(json_files),
+              "markdown_count": len(md_files),
+              "unique_item_ids": len(first_seen),
+              "required_digest": required_digest,
+              "errors": errors,
+              "warnings": warnings,
+          }
+          REPORT_PATH.write_text(
+              json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          output_path = os.environ.get("GITHUB_OUTPUT")
+          if output_path:
+              with open(output_path, "a", encoding="utf-8") as handle:
+                  handle.write(f"status={status}\n")
+                  handle.write(f"error_count={len(errors)}\n")
+                  handle.write(f"json_count={len(json_files)}\n")
+                  handle.write(f"required_digest={required_digest or ''}\n")
+
+          if errors:
+              print("\n".join(f"ERROR: {message}" for message in errors))
+              raise SystemExit(1)
+
+          print(
+              f"Validated {len(json_files)} JSON digest(s), "
+              f"{len(first_seen)} unique research item id(s)."
+          )
+          PY
+
+      - name: Publish contract summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("weekly-research-contract-report.json")
+          if not path.is_file():
+              raise SystemExit(0)
+
+          data = json.loads(path.read_text(encoding="utf-8"))
+          lines = [
+              "# Weekly Applied GenAI Research Contract",
+              f"- Status: **{data.get('status')}**",
+              f"- Event: **{data.get('event')}**",
+              f"- JSON digests: **{data.get('json_count', 0)}**",
+              f"- Markdown digests: **{data.get('markdown_count', 0)}**",
+              f"- Unique research IDs: **{data.get('unique_item_ids', 0)}**",
+          ]
+          if data.get("required_digest"):
+              lines.append(f"- Friday watchdog target: **{data['required_digest']}**")
+          if data.get("warnings"):
+              lines.append("")
+              lines.append("## Warnings")
+              lines.extend(f"- {item}" for item in data["warnings"])
+          if data.get("errors"):
+              lines.append("")
+              lines.append("## Errors")
+              lines.extend(f"- {item}" for item in data["errors"][:25])
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
+              handle.write("\n".join(lines) + "\n")
+          PY
+
+      - name: Open or update research-contract incident
+        if: github.event_name != 'pull_request' && steps.contract.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TITLE="RESEARCH_WEEKLY_CONTRACT_BROKEN"
+          RUN_URL="https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(
+              Path("weekly-research-contract-report.json").read_text(encoding="utf-8")
+          )
+          lines = [
+              "La lane semanal de Applied GenAI no cumple su contrato determinístico.",
+              "",
+              f"- Estado: `{data.get('status')}`",
+              f"- Evento: `{data.get('event')}`",
+              f"- Digest esperado: `{data.get('required_digest') or 'n/a'}`",
+              f"- JSON encontrados: `{data.get('json_count', 0)}`",
+              f"- Markdown encontrados: `{data.get('markdown_count', 0)}`",
+              "",
+              "### Errores",
+          ]
+          errors = data.get("errors") or ["No se pudo generar un diagnóstico detallado."]
+          lines.extend(f"- {item}" for item in errors[:30])
+          lines.extend(
+              [
+                  "",
+                  "El workflow se autocerrará cuando la lane vuelva a cumplir el contrato.",
+              ]
+          )
+          Path("/tmp/research-contract-incident.md").write_text(
+              "\n".join(lines) + "\n", encoding="utf-8"
+          )
+          PY
+
+          printf "\nRun: %s\n" "$RUN_URL" >> /tmp/research-contract-incident.md
+
+          NUMBER="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 --json number,title --jq '.[] | select(.title == "RESEARCH_WEEKLY_CONTRACT_BROKEN") | .number' | head -n1)"
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/research-contract-incident.md
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file /tmp/research-contract-incident.md
+          fi
+
+      - name: Close recovered research-contract incident
+        if: github.event_name != 'pull_request' && steps.contract.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          NUMBER="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 100 --json number,title --jq '.[] | select(.title == "RESEARCH_WEEKLY_CONTRACT_BROKEN") | .number' | head -n1)"
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Contrato recuperado: JSON Schema, consistencia histórica y pares JSON/Markdown vuelven a estar válidos."
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+          fi
+
+      - name: Upload contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-research-contract-${{ github.run_id }}
+          path: weekly-research-contract-report.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Propagate contract failure
+        if: steps.contract.outcome == 'failure'
+        run: |
+          echo "::error::Weekly Applied GenAI research contract failed."
+          exit 1
