@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jcval94/AI-News-Daily/blob/main/research/weekly_digest.schema.json",
+  "title": "AI News Daily Weekly Applied GenAI Digest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "digest_date", "window", "topics", "weekly_changes", "items", "practical_implications"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "digest_date": {"type": "string", "format": "date"},
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"type": "string", "format": "date"},
+        "to": {"type": "string", "format": "date"}
+      }
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["rag", "retrieval", "agents", "tool_use", "llm_production", "evaluation", "observability", "serving", "inference", "memory", "safety", "guardrails", "architecture"]}
+    },
+    "weekly_changes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary", "why_it_matters"],
+        "properties": {
+          "summary": {"type": "string", "minLength": 1},
+          "why_it_matters": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "items": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "practical_implications": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["design", "evaluation", "deployment"],
+      "properties": {
+        "design": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "evaluation": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "deployment": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "type", "selection_basis", "published_at", "updated_at", "authors", "organization", "url", "topics", "summary", "what_changed", "why_it_matters", "evidence", "limitations", "practical_applications", "reading_recommendation", "priority", "source_tier"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "pattern": "^[a-z0-9][a-z0-9._:/-]*$"},
+        "title": {"type": "string", "minLength": 1},
+        "type": {"enum": ["paper", "report", "analysis", "benchmark", "documentation", "technical_post"]},
+        "selection_basis": {"enum": ["new_publication", "material_update"]},
+        "published_at": {"type": "string", "format": "date"},
+        "updated_at": {"type": ["string", "null"], "format": "date"},
+        "authors": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "organization": {"type": ["string", "null"]},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "external_ids": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "doi": {"type": ["string", "null"]},
+            "arxiv": {"type": ["string", "null"]}
+          }
+        },
+        "topics": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["rag", "retrieval", "agents", "tool_use", "llm_production", "evaluation", "observability", "serving", "inference", "memory", "safety", "guardrails", "architecture"]}
+        },
+        "summary": {"type": "string", "minLength": 1},
+        "what_changed": {"type": "string", "minLength": 1},
+        "why_it_matters": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "practical_applications": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["design", "evaluation", "deployment", "retrieval", "agents", "serving", "safety", "observability"]}
+        },
+        "reading_recommendation": {"enum": ["full_read", "skim", "summary_only"]},
+        "priority": {"enum": ["high", "medium", "low"]},
+        "source_tier": {"enum": ["primary", "secondary"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"selection_basis": {"const": "material_update"}}, "required": ["selection_basis"]},
+          "then": {"properties": {"updated_at": {"type": "string", "format": "date"}}}
+        }
+      ]
+    }
+  }
+}
