@@ -8,6 +8,7 @@ from PIL import Image
 from pipeline.media_dedup import (
     asset_identity_keys,
     deduplicate_materialized_media,
+    fallback_unresolved_duplicate_cues_to_presenter,
     resolution_rank,
 )
 
@@ -100,6 +101,30 @@ class MediaDedupTests(unittest.TestCase):
             self.assertEqual(len(kept_segments), 2)
             self.assertEqual(len(removed), 1)
             self.assertEqual(kept[0]["shot_number"], 7)
+
+    def test_unfilled_duplicate_gap_returns_to_presenter(self) -> None:
+        segments = [
+            {
+                "slot_number": 1,
+                "mode": "media",
+                "file": "",
+                "retrieval_status": "unresolved",
+                "missing_reason": "duplicate_asset",
+                "reason": "Visual support",
+            },
+            {
+                "slot_number": 2,
+                "mode": "media",
+                "file": "unique.jpg",
+            },
+        ]
+
+        resolved = fallback_unresolved_duplicate_cues_to_presenter(segments)
+
+        self.assertEqual(resolved[0]["mode"], "presenter")
+        self.assertEqual(resolved[0]["retrieval_status"], "presenter_fallback")
+        self.assertEqual(resolved[0]["missing_reason"], "duplicate_asset_removed")
+        self.assertEqual(resolved[1]["mode"], "media")
 
     def test_source_url_identity_ignores_query_parameters(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -11,7 +11,7 @@ from pipeline.core import PipelineConfig, timeline_duration_seconds
 from pipeline.credits import write_credits
 from pipeline.edit_manifest import write_edit_manifest
 from pipeline.media import download_shot_asset, download_video_shot_asset
-from pipeline.media_dedup import deduplicate_materialized_media
+from pipeline.media_dedup import deduplicate_materialized_media, fallback_unresolved_duplicate_cues_to_presenter
 from pipeline.media_pool import prepare_pool, finish_assignment, retrieval_mode, is_specific
 from pipeline.review_media import (
     OPENING_DENSE_MEDIA_SECONDS,
@@ -421,6 +421,7 @@ def build_offline_review_media(
     )
 
     selected_segments = finish_assignment(pool, manifest, selected_segments, planned_segments, output_dir)
+    selected_segments = fallback_unresolved_duplicate_cues_to_presenter(selected_segments)
 
     opening_assets = [
         item for item in manifest
