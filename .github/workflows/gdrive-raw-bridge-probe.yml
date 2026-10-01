@@ -22,8 +22,9 @@ jobs:
       INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
       PROCESSED_FOLDER_ID: 1o-2WPz514dFJDg7seGz2dZ4X87doPkdK
       FAILED_FOLDER_ID: 1m03IN_GY0rJgpz_gXtwm1by91GcSOuZz
-      FILE_PREFIX: ai-news-daily__scheduled-e2e-probe__2026-10-01-1630
+      FILE_PREFIX: ai-news-daily__scheduled-e2e-probe__2026-10-01-1645
       ALLOWED_TARGET_PREFIX: bridge-consumed/
+      EXPECTED_MARKER: AI_NEWS_GDRIVE_RAW_TXT_SCHEDULED_E2E_2026-10-01_1645
 
     steps:
       - name: Checkout
@@ -44,7 +45,7 @@ jobs:
         shell: bash
         run: python -m pip install --disable-pip-version-check --quiet google-auth requests
 
-      - name: Mint Google Drive token from service-account key
+      - name: Mint Google Drive token
         id: auth
         shell: bash
         env:
@@ -62,24 +63,22 @@ jobs:
               scopes=["https://www.googleapis.com/auth/drive"],
           )
           creds.refresh(Request())
-          token = creds.token
-          print(f"::add-mask::{token}")
+          print(f"::add-mask::{creds.token}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              print(f"access_token={token}", file=out)
+              print(f"access_token={creds.token}", file=out)
           PY
 
-      - name: Select probe payload
+      - name: Select 16:45 probe payload
         id: select
         shell: bash
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           set -euo pipefail
-          token="$ACCESS_TOKEN"
-          echo "::add-mask::$token"
+          echo "::add-mask::$ACCESS_TOKEN"
           query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain' and name contains '$FILE_PREFIX'"
           curl --fail-with-body -sS -G \
-            -H "Authorization: Bearer $token" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "q=$query" \
             --data-urlencode "fields=files(id,name,createdTime,parents,mimeType)" \
             --data-urlencode "orderBy=createdTime asc" \
@@ -88,8 +87,7 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
-          data = json.loads(Path('/tmp/drive-list.json').read_text())
-          files = data.get('files', [])
+          files = json.loads(Path('/tmp/drive-list.json').read_text()).get('files', [])
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
               if files:
                   f = files[0]
@@ -107,80 +105,90 @@ jobs:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           set -euo pipefail
-          token="$ACCESS_TOKEN"
-          echo "::add-mask::$token"
+          echo "::add-mask::$ACCESS_TOKEN"
           curl --fail-with-body -sS \
-            -H "Authorization: Bearer $token" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
             "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}?alt=media" \
             -o /tmp/bridge-envelope.txt
 
-      - name: Validate and materialize probe
+      - name: Validate TXT and materialize JSON
         if: steps.select.outputs.file_id != ''
         id: validate
         continue-on-error: true
         shell: bash
+        env:
+          SOURCE_FILE_ID: ${{ steps.select.outputs.file_id }}
+          SOURCE_FILE_NAME: ${{ steps.select.outputs.file_name }}
         run: |
           set -euo pipefail
-          python - "$GITHUB_REPOSITORY" "$ALLOWED_TARGET_PREFIX" <<'PY'
-          import base64, hashlib, json, pathlib, sys
+          python - "$GITHUB_REPOSITORY" "$ALLOWED_TARGET_PREFIX" "$EXPECTED_MARKER" <<'PY'
+          import hashlib, json, os, pathlib, sys
 
-          expected_repo, allowed_prefix = sys.argv[1], sys.argv[2]
-          lines = pathlib.Path('/tmp/bridge-envelope.txt').read_text(encoding='utf-8').splitlines()
+          expected_repo, allowed_prefix, expected_marker = sys.argv[1:4]
+          raw = pathlib.Path('/tmp/bridge-envelope.txt').read_bytes()
+          text = raw.decode('utf-8-sig')
           env = {}
-          for raw in lines:
-              line = raw.strip()
+          for raw_line in text.splitlines():
+              line = raw_line.strip().strip('"')
               if not line:
                   continue
               if '=' not in line:
-                  raise SystemExit(f"Malformed envelope line: {line!r}")
+                  raise SystemExit(f"Malformed line: {line!r}")
               key, value = line.split('=', 1)
               if key in env:
                   raise SystemExit(f"Duplicate key: {key}")
               env[key] = value
 
-          required = {'format','sha256','target_repo','target_path','payload_b64'}
-          missing = required - env.keys()
-          if missing:
-              raise SystemExit(f"Missing fields: {sorted(missing)}")
-          if env['format'] != 'base64-json-v1':
-              raise SystemExit("Unsupported format")
+          required = {'format','marker','source','status','target_repo','target_path'}
+          if set(env) != required:
+              raise SystemExit(f"Envelope keys mismatch: got={sorted(env)} expected={sorted(required)}")
+          if env['format'] != 'kv-json-v1':
+              raise SystemExit('Unsupported format')
+          if env['marker'] != expected_marker:
+              raise SystemExit('Marker mismatch')
+          if env['source'] != 'chatgpt_scheduled_task':
+              raise SystemExit('Source mismatch')
+          if env['status'] != 'ready':
+              raise SystemExit('Status mismatch')
           if env['target_repo'] != expected_repo:
               raise SystemExit(f"target_repo mismatch: {env['target_repo']} != {expected_repo}")
 
           target = pathlib.PurePosixPath(env['target_path'])
           if target.is_absolute() or '..' in target.parts:
-              raise SystemExit("Unsafe target_path")
+              raise SystemExit('Unsafe target_path')
           if not env['target_path'].startswith(allowed_prefix) or target.suffix != '.json':
-              raise SystemExit("Probe target_path outside isolated bridge-consumed/")
-          payload = base64.b64decode(env['payload_b64'], validate=True)
-          actual_sha = hashlib.sha256(payload).hexdigest()
-          if actual_sha != env['sha256']:
-              raise SystemExit("SHA mismatch")
+              raise SystemExit('Target outside isolated bridge-consumed/')
 
-          data = json.loads(payload.decode('utf-8'))
-          if data.get('target_repo') != expected_repo:
-              raise SystemExit("Decoded target_repo mismatch")
-          if data.get('target_path') != env['target_path']:
-              raise SystemExit("Decoded target_path mismatch")
-          if data.get('marker') != 'AI_NEWS_GDRIVE_RAW_TXT_SCHEDULED_E2E_2026-10-01_1630':
-              raise SystemExit("Marker mismatch")
-          if data.get('status') != 'ready':
-              raise SystemExit("status must be ready")
-
+          data = {
+              'schema_version': '1.0',
+              'kind': 'drive_bridge_e2e_probe',
+              'marker': env['marker'],
+              'source': env['source'],
+              'status': env['status'],
+              'target_repo': env['target_repo'],
+              'target_path': env['target_path'],
+              'transport': {
+                  'format': env['format'],
+                  'envelope_sha256': hashlib.sha256(raw).hexdigest(),
+                  'drive_file_id': os.environ['SOURCE_FILE_ID'],
+                  'drive_file_name': os.environ['SOURCE_FILE_NAME'],
+              },
+          }
           out = pathlib.Path(env['target_path'])
           out.parent.mkdir(parents=True, exist_ok=True)
-          out.write_bytes(payload + b'\n')
-          print(f"validated={out} sha256={actual_sha}")
+          out.write_text(json.dumps(data, ensure_ascii=False, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+          print(f"validated={out} envelope_sha256={data['transport']['envelope_sha256']}")
           PY
 
       - name: Move invalid payload to failed
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
         shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           set -euo pipefail
-          token="$(gcloud auth print-access-token)"
           curl --fail-with-body -sS -X PATCH -G \
-            -H "Authorization: Bearer $token" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "addParents=$FAILED_FOLDER_ID" \
             --data-urlencode "removeParents=$INBOX_FOLDER_ID" \
             --data-urlencode "fields=id,name,parents" \
@@ -201,18 +209,19 @@ jobs:
           if git diff --cached --quiet; then
             echo "Probe already materialized; no commit needed."
           else
-            git commit -m "test: consume Drive raw bridge probe 16:30"
+            git commit -m "test: consume Drive raw bridge probe 16:45"
             git push
           fi
 
       - name: Move successful payload to processed
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success'
         shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           set -euo pipefail
-          token="$(gcloud auth print-access-token)"
           curl --fail-with-body -sS -X PATCH -G \
-            -H "Authorization: Bearer $token" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "addParents=$PROCESSED_FOLDER_ID" \
             --data-urlencode "removeParents=$INBOX_FOLDER_ID" \
             --data-urlencode "fields=id,name,parents" \
@@ -220,4 +229,4 @@ jobs:
 
       - name: Idle
         if: steps.select.outputs.file_id == ''
-        run: echo "No 16:30 probe payload found yet."
+        run: echo "No 16:45 probe payload found yet."
