@@ -1,4 +1,4 @@
-name: Google Drive Raw Bridge Probe
+name: Google Drive Apps Script Bridge Probe
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: gdrive-raw-bridge-probe
+  group: gdrive-appscript-bridge-probe
   cancel-in-progress: false
 
 jobs:
@@ -22,9 +22,9 @@ jobs:
       INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
       PROCESSED_FOLDER_ID: 1o-2WPz514dFJDg7seGz2dZ4X87doPkdK
       FAILED_FOLDER_ID: 1m03IN_GY0rJgpz_gXtwm1by91GcSOuZz
-      FILE_PREFIX: ai-news-daily__scheduled-e2e-probe__2026-10-01-1645
-      ALLOWED_TARGET_PREFIX: bridge-consumed/
-      EXPECTED_MARKER: AI_NEWS_GDRIVE_RAW_TXT_SCHEDULED_E2E_2026-10-01_1645
+      EXPECTED_FILE_NAME: ai-news-daily__apps-script-e2e__2026-10-01-1750.txt
+      EXPECTED_MESSAGE_ID: ai-news-daily__apps-script-e2e__2026-10-01-1750
+      EXPECTED_TARGET_PATH: bridge-consumed/ai-news-daily-appscript-e2e-2026-10-01-1750.txt
 
     steps:
       - name: Checkout
@@ -68,7 +68,7 @@ jobs:
               print(f"access_token={creds.token}", file=out)
           PY
 
-      - name: Select 16:45 probe payload
+      - name: Select exact pending bridge TXT
         id: select
         shell: bash
         env:
@@ -76,18 +76,19 @@ jobs:
         run: |
           set -euo pipefail
           echo "::add-mask::$ACCESS_TOKEN"
-          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain' and name contains '$FILE_PREFIX'"
+          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain' and name='$EXPECTED_FILE_NAME'"
           curl --fail-with-body -sS -G \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "q=$query" \
             --data-urlencode "fields=files(id,name,createdTime,parents,mimeType)" \
-            --data-urlencode "orderBy=createdTime asc" \
             --data-urlencode "pageSize=10" \
             "https://www.googleapis.com/drive/v3/files" > /tmp/drive-list.json
           python - <<'PY'
           import json, os
           from pathlib import Path
           files = json.loads(Path('/tmp/drive-list.json').read_text()).get('files', [])
+          if len(files) > 1:
+              raise SystemExit(f"Expected at most one matching bridge file, got {len(files)}")
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
               if files:
                   f = files[0]
@@ -98,7 +99,7 @@ jobs:
                   print("file_name=", file=out)
           PY
 
-      - name: Download probe TXT
+      - name: Download bridge TXT
         if: steps.select.outputs.file_id != ''
         shell: bash
         env:
@@ -111,7 +112,7 @@ jobs:
             "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}?alt=media" \
             -o /tmp/bridge-envelope.txt
 
-      - name: Validate TXT and materialize JSON
+      - name: Validate envelope and materialize payload
         if: steps.select.outputs.file_id != ''
         id: validate
         continue-on-error: true
@@ -121,15 +122,14 @@ jobs:
           SOURCE_FILE_NAME: ${{ steps.select.outputs.file_name }}
         run: |
           set -euo pipefail
-          python - "$GITHUB_REPOSITORY" "$ALLOWED_TARGET_PREFIX" "$EXPECTED_MARKER" <<'PY'
-          import hashlib, json, os, pathlib, sys
+          python - "$GITHUB_REPOSITORY" "$EXPECTED_MESSAGE_ID" "$EXPECTED_TARGET_PATH" <<'PY'
+          import base64, hashlib, pathlib, sys
 
-          expected_repo, allowed_prefix, expected_marker = sys.argv[1:4]
-          raw = pathlib.Path('/tmp/bridge-envelope.txt').read_bytes()
-          text = raw.decode('utf-8-sig')
+          expected_repo, expected_message_id, expected_target_path = sys.argv[1:4]
+          raw = pathlib.Path('/tmp/bridge-envelope.txt').read_text(encoding='utf-8-sig')
           env = {}
-          for raw_line in text.splitlines():
-              line = raw_line.strip().strip('"')
+          for raw_line in raw.splitlines():
+              line = raw_line.strip()
               if not line:
                   continue
               if '=' not in line:
@@ -139,45 +139,49 @@ jobs:
                   raise SystemExit(f"Duplicate key: {key}")
               env[key] = value
 
-          required = {'format','marker','source','status','target_repo','target_path'}
+          required = {
+              'format','schema_version','message_id','target_repo',
+              'target_path','content_type','sha256','payload_b64'
+          }
           if set(env) != required:
               raise SystemExit(f"Envelope keys mismatch: got={sorted(env)} expected={sorted(required)}")
-          if env['format'] != 'kv-json-v1':
+          if env['format'] != 'base64-payload-v1':
               raise SystemExit('Unsupported format')
-          if env['marker'] != expected_marker:
-              raise SystemExit('Marker mismatch')
-          if env['source'] != 'chatgpt_scheduled_task':
-              raise SystemExit('Source mismatch')
-          if env['status'] != 'ready':
-              raise SystemExit('Status mismatch')
+          if env['schema_version'] != '1.0':
+              raise SystemExit('Unsupported schema_version')
+          if env['message_id'] != expected_message_id:
+              raise SystemExit('message_id mismatch')
           if env['target_repo'] != expected_repo:
               raise SystemExit(f"target_repo mismatch: {env['target_repo']} != {expected_repo}")
+          if env['target_path'] != expected_target_path:
+              raise SystemExit('target_path mismatch')
+          if env['content_type'] != 'text/plain':
+              raise SystemExit('content_type mismatch')
 
           target = pathlib.PurePosixPath(env['target_path'])
           if target.is_absolute() or '..' in target.parts:
               raise SystemExit('Unsafe target_path')
-          if not env['target_path'].startswith(allowed_prefix) or target.suffix != '.json':
+          if not env['target_path'].startswith('bridge-consumed/'):
               raise SystemExit('Target outside isolated bridge-consumed/')
 
-          data = {
-              'schema_version': '1.0',
-              'kind': 'drive_bridge_e2e_probe',
-              'marker': env['marker'],
-              'source': env['source'],
-              'status': env['status'],
-              'target_repo': env['target_repo'],
-              'target_path': env['target_path'],
-              'transport': {
-                  'format': env['format'],
-                  'envelope_sha256': hashlib.sha256(raw).hexdigest(),
-                  'drive_file_id': os.environ['SOURCE_FILE_ID'],
-                  'drive_file_name': os.environ['SOURCE_FILE_NAME'],
-              },
-          }
+          payload = base64.b64decode(env['payload_b64'], validate=True)
+          actual_sha = hashlib.sha256(payload).hexdigest()
+          if actual_sha != env['sha256']:
+              raise SystemExit(f"SHA mismatch: {actual_sha} != {env['sha256']}")
+
+          expected_payload = (
+              "AI_NEWS_APPS_SCRIPT_BRIDGE_E2E_2026-10-01_1750\n"
+              "source=chatgpt_scheduled_task\n"
+              "transport=google_apps_script\n"
+              "status=ready\n"
+          ).encode('utf-8')
+          if payload != expected_payload:
+              raise SystemExit(f"Payload mismatch: {payload!r}")
+
           out = pathlib.Path(env['target_path'])
           out.parent.mkdir(parents=True, exist_ok=True)
-          out.write_text(json.dumps(data, ensure_ascii=False, sort_keys=True, indent=2) + '\n', encoding='utf-8')
-          print(f"validated={out} envelope_sha256={data['transport']['envelope_sha256']}")
+          out.write_bytes(payload)
+          print(f"validated={out} sha256={actual_sha}")
           PY
 
       - name: Move invalid payload to failed
@@ -198,7 +202,7 @@ jobs:
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
         run: exit 1
 
-      - name: Commit materialized probe
+      - name: Commit materialized payload
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success'
         shell: bash
         run: |
@@ -207,9 +211,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add bridge-consumed/
           if git diff --cached --quiet; then
-            echo "Probe already materialized; no commit needed."
+            echo "Payload already materialized; no commit needed."
           else
-            git commit -m "test: consume Drive raw bridge probe 16:45"
+            git commit -m "test: consume Apps Script bridge probe 17:50"
             git push
           fi
 
@@ -229,4 +233,4 @@ jobs:
 
       - name: Idle
         if: steps.select.outputs.file_id == ''
-        run: echo "No 16:45 probe payload found yet."
+        run: echo "No 17:50 Apps Script bridge payload found yet."
