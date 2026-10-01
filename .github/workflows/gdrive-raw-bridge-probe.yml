@@ -40,6 +40,10 @@ jobs:
             exit 2
           fi
 
+      - name: Install Google auth client
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --quiet google-auth requests
+
       - name: Mint Google Drive token from service-account key
         id: auth
         shell: bash
