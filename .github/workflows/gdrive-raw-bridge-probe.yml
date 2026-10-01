@@ -22,9 +22,9 @@ jobs:
       INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
       PROCESSED_FOLDER_ID: 1o-2WPz514dFJDg7seGz2dZ4X87doPkdK
       FAILED_FOLDER_ID: 1m03IN_GY0rJgpz_gXtwm1by91GcSOuZz
-      EXPECTED_FILE_NAME: ai-news-daily__apps-script-e2e__2026-10-01-1750.txt
-      EXPECTED_MESSAGE_ID: ai-news-daily__apps-script-e2e__2026-10-01-1750
-      EXPECTED_TARGET_PATH: bridge-consumed/ai-news-daily-appscript-e2e-2026-10-01-1750.txt
+      EXPECTED_FILE_NAME: ai-news-daily__apps-script-e2e__2026-10-01-1752.txt
+      EXPECTED_MESSAGE_ID: ai-news-daily__apps-script-e2e__2026-10-01-1752
+      EXPECTED_TARGET_PATH: bridge-consumed/ai-news-daily-appscript-e2e-2026-10-01-1752.txt
 
     steps:
       - name: Checkout
@@ -170,7 +170,7 @@ jobs:
               raise SystemExit(f"SHA mismatch: {actual_sha} != {env['sha256']}")
 
           expected_payload = (
-              "AI_NEWS_APPS_SCRIPT_BRIDGE_E2E_2026-10-01_1750\n"
+              "AI_NEWS_APPS_SCRIPT_BRIDGE_E2E_2026-10-01_1752\n"
               "source=chatgpt_scheduled_task\n"
               "transport=google_apps_script\n"
               "status=ready\n"
@@ -213,7 +213,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Payload already materialized; no commit needed."
           else
-            git commit -m "test: consume Apps Script bridge probe 17:50"
+            git commit -m "test: consume Apps Script bridge probe 17:52"
             git push
           fi
 
@@ -233,4 +233,4 @@ jobs:
 
       - name: Idle
         if: steps.select.outputs.file_id == ''
-        run: echo "No 17:50 Apps Script bridge payload found yet."
+        run: echo "No 17:52 Apps Script bridge payload found yet."
