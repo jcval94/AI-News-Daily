@@ -80,7 +80,7 @@ jobs:
               f"- Archivo seleccionado: `{data.get('selected_file') or 'ninguno'}`",
               f"- Razón: {data.get('reason', '')}",
               '',
-              'Revisar la tarea externa `AI News Daily` y el workflow `Ingest AI News Staging`.'
+              'Revisar la tarea externa `AI News Daily` y el workflow `Google Drive AI News Bridge`.'
           ]
           Path('/tmp/news-ingestion-body.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
           PY
