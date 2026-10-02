@@ -68,10 +68,7 @@ jobs:
           info = json.loads(os.environ["GDRIVE_SERVICE_ACCOUNT_JSON"])
           creds = service_account.Credentials.from_service_account_info(
               info,
-              scopes=[
-                  "https://www.googleapis.com/auth/drive",
-                  "https://www.googleapis.com/auth/spreadsheets.readonly",
-              ],
+              scopes=["https://www.googleapis.com/auth/drive"],
           )
           creds.refresh(Request())
           print(f"::add-mask::{creds.token}")
@@ -134,10 +131,10 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import base64
+          import csv
           import hashlib
-          import json
+          import io
           import os
-          import urllib.parse
 
           import requests
 
@@ -145,33 +142,18 @@ jobs:
           file_id = os.environ["FILE_ID"]
           headers = {"Authorization": f"Bearer {token}"}
 
-          meta_url = f"https://sheets.googleapis.com/v4/spreadsheets/{file_id}"
-          meta = requests.get(
-              meta_url,
+          export = requests.get(
+              f"https://www.googleapis.com/drive/v3/files/{file_id}/export",
               headers=headers,
-              params={"fields": "sheets(properties(sheetId,title,index))"},
+              params={"mimeType": "text/csv"},
               timeout=30,
           )
-          meta.raise_for_status()
-          sheets = meta.json().get("sheets", [])
-          if not sheets:
-              raise SystemExit("spreadsheet has no sheets")
-          first = min(sheets, key=lambda s: int(s.get("properties", {}).get("index", 0)))
-          title = str(first["properties"]["title"])
-          a1 = f"'{title.replace(chr(39), chr(39)*2)}'!A1:B8"
-          values_url = (
-              f"https://sheets.googleapis.com/v4/spreadsheets/{file_id}/values/"
-              + urllib.parse.quote(a1, safe="")
-          )
-          resp = requests.get(
-              values_url,
-              headers=headers,
-              params={"valueRenderOption": "UNFORMATTED_VALUE"},
-              timeout=30,
-          )
-          resp.raise_for_status()
-          rows = resp.json().get("values", [])
+          if not export.ok:
+              raise SystemExit(
+                  f"Drive CSV export failed: {export.status_code} {export.text[:500]}"
+              )
 
+          rows = list(csv.reader(io.StringIO(export.content.decode("utf-8-sig"))))
           keys = [
               "format",
               "message_id",
