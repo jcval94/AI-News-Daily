@@ -252,7 +252,21 @@ news/YYYY-MM-DD.txt
 news/YYYY-MM-DD-HH-MM-SS.txt
 ```
 
-A separate **News Ingestion Watchdog** runs every day at 14:00 America/Mexico_City. It does not generate content or call a model: it verifies that the local day's digest exists, parses successfully, and contains at least five news items. Missing/invalid ingestion opens a diagnostic GitHub issue, fails the watchdog visibly, and refreshes Repo Health through the Review Hub.
+Daily ingestion is transported through a fail-closed Drive bridge rather than direct ChatGPT→GitHub writes:
+
+```text
+ChatGPT scheduled task
+    ↓ research + validated A1:B8 handoff
+Google Sheet in shared Drive inbox
+    ↓ Drive CSV export
+Google Drive AI News Bridge
+    ↓ deterministic transport + digest validation
+news/YYYY-MM-DD-HH-MM-SS.txt
+```
+
+The full production contract, recovery policy, troubleshooting guide, invariants, and proven E2E evidence live in [`docs/news_ingestion_drive_bridge.md`](docs/news_ingestion_drive_bridge.md).
+
+A separate **News Ingestion Watchdog** runs every day at 10:30 and 14:00 America/Mexico_City. It does not generate content or call a model: it verifies that the local day's digest exists, parses successfully, and contains at least five news items. Missing/invalid ingestion opens a diagnostic GitHub issue, fails the watchdog visibly, and refreshes Repo Health through the Review Hub.
 
 Manual production can use `recent_window`, which considers the target day plus the preceding `NEWS_LOOKBACK_DAYS - 1` calendar days.
 
