@@ -20,7 +20,7 @@ def _write_output(name: str, value: str) -> None:
     output = os.getenv("GITHUB_OUTPUT")
     if output:
         with open(output, "a", encoding="utf-8") as handle:
-            handle.write(f"${name}=${value}\n")
+            handle.write(f"{name}={value}\n")
 
 
 def _canonical(payload: dict[str, Any]) -> str:
@@ -41,7 +41,7 @@ def _validate_schema(payload: dict[str, Any], schema: dict[str, Any]) -> None:
         rendered = []
         for err in errors[:20]:
             location = ".".join(str(part) for part in err.absolute_path) or "<root>"
-            rendered.append(f"${location}: ${err.message}")
+            rendered.append(f"{location}: {err.message}")
         raise ValueError("weekly schema inválido: " + " | ".join(rendered))
 
 
@@ -53,16 +53,16 @@ def _history_state(weekly_dir: Path, exclude: Path) -> dict[str, dict[str, str]]
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-            raise ValueError(f"histórico inválido ${path}: ${exc}") from exc
+            raise ValueError(f"histórico inválido {path}: {exc}") from exc
         items = payload.get("items", [])
         if not isinstance(items, list):
-            raise ValueError(f"histórico inválido ${path}: items no es lista")
+            raise ValueError(f"histórico inválido {path}: items no es lista")
         for item in items:
             if not isinstance(item, dict):
-                raise ValueError(f"histórico inválido ${path}: item no es objeto")
+                raise ValueError(f"histórico inválido {path}: item no es objeto")
             item_id = str(item.get("id") or "")
             if not item_id:
-                raise ValueError(f"histórico inválido ${path}: id vacío")
+                raise ValueError(f"histórico inválido {path}: id vacío")
             basis = item.get("selection_basis")
             updated_at = item.get("updated_at")
             effective = updated_at or item.get("published_at")
@@ -70,18 +70,18 @@ def _history_state(weekly_dir: Path, exclude: Path) -> dict[str, dict[str, str]]
             if previous is None:
                 if basis != "new_publication":
                     raise ValueError(
-                        f"histórico inválido ${path}: primera aparición de ${item_id} "
+                        f"histórico inválido {path}: primera aparición de {item_id} "
                         "no es new_publication"
                     )
             else:
                 if basis != "material_update" or not updated_at:
                     raise ValueError(
-                        f"histórico inválido ${path}: repetición de ${item_id} "
+                        f"histórico inválido {path}: repetición de {item_id} "
                         "sin material_update/updated_at"
                     )
                 if str(updated_at) <= str(previous["effective_date"]):
                     raise ValueError(
-                        f"histórico inválido ${path}: updated_at de ${item_id} no avanza"
+                        f"histórico inválido {path}: updated_at de {item_id} no avanza"
                     )
             state[item_id] = {"effective_date": str(effective or ""), "path": str(path)}
     return state
@@ -93,7 +93,7 @@ def _validate_history(payload: dict[str, Any], weekly_dir: Path, target: Path) -
     for index, item in enumerate(payload.get("items", []), start=1):
         item_id = str(item["id"])
         if item_id in seen:
-            raise ValueError(f"item ${index}: id duplicado en digest: ${item_id}")
+            raise ValueError(f"item {index}: id duplicado en digest: {item_id}")
         seen.add(item_id)
         previous = state.get(item_id)
         basis = item["selection_basis"]
@@ -101,48 +101,48 @@ def _validate_history(payload: dict[str, Any], weekly_dir: Path, target: Path) -
         effective = updated_at or item.get("published_at")
         if previous is None:
             if basis != "new_publication":
-                raise ValueError(f"item ${item_id}: primera aparición debe ser new_publication")
+                raise ValueError(f"item {item_id}: primera aparición debe ser new_publication")
         else:
             if basis != "material_update":
                 raise ValueError(
-                    f"item ${item_id}: ya apareció en ${previous['path']}; debe ser material_update"
+                    f"item {item_id}: ya apareció en {previous['path']}; debe ser material_update"
                 )
             if not updated_at:
-                raise ValueError(f"item ${item_id}: material_update requiere updated_at")
+                raise ValueError(f"item {item_id}: material_update requiere updated_at")
             if str(updated_at) <= str(previous["effective_date"]):
                 raise ValueError(
-                    f"item ${item_id}: updated_at=${updated_at} no es posterior a "
-                    f"${previous['effective_date']}"
+                    f"item {item_id}: updated_at={updated_at} no es posterior a "
+                    f"{previous['effective_date']}"
                 )
         state[item_id] = {"effective_date": str(effective or ""), "path": str(target)}
 
 
 def render_markdown(payload: dict[str, Any]) -> str:
     lines = [
-        f"# Applied GenAI Weekly — ${payload['digest_date']}",
+        f"# Applied GenAI Weekly — {payload['digest_date']}",
         "",
-        f"Ventana: **${payload['window']['from']} → ${payload['window']['to']}**",
+        f"Ventana: **{payload['window']['from']} → {payload['window']['to']}**",
         "",
         "## Cambios de la semana",
         "",
     ]
     for change in payload["weekly_changes"]:
-        lines.append(f"- **${change['summary']}** — ${change['why_it_matters']}")
+        lines.append(f"- **{change['summary']}** — {change['why_it_matters']}")
     lines.extend(["", "## Lecturas seleccionadas", ""])
 
     for item in payload["items"]:
         lines.extend([
-            f"### ${item['title']}",
+            f"### {item['title']}",
             "",
-            f"- **ID:** ${item['id']}",
-            f"- **Tipo:** ${item['type']}",
-            f"- **Publicado:** ${item['published_at']}",
-            f"- **Actualizado:** ${item.get('updated_at') or '—'}",
-            f"- **Organización:** ${item.get('organization') or '—'}",
-            f"- **Fuente:** ${item['url']}",
-            f"- **Temas:** ${', '.join(item['topics'])}",
-            f"- **Prioridad:** ${item['priority']}",
-            f"- **Recomendación:** ${item['reading_recommendation']}",
+            f"- **ID:** {item['id']}",
+            f"- **Tipo:** {item['type']}",
+            f"- **Publicado:** {item['published_at']}",
+            f"- **Actualizado:** {item.get('updated_at') or '—'}",
+            f"- **Organización:** {item.get('organization') or '—'}",
+            f"- **Fuente:** {item['url']}",
+            f"- **Temas:** {', '.join(item['topics'])}",
+            f"- **Prioridad:** {item['priority']}",
+            f"- **Recomendación:** {item['reading_recommendation']}",
             "",
             "**Resumen**",
             "",
@@ -159,20 +159,20 @@ def render_markdown(payload: dict[str, Any]) -> str:
             "**Evidencia**",
             "",
         ])
-        lines.extend(f"- ${value}" for value in item["evidence"])
+        lines.extend(f"- {value}" for value in item["evidence"])
         lines.extend(["", "**Limitaciones**", ""])
-        lines.extend(f"- ${value}" for value in item["limitations"])
+        lines.extend(f"- {value}" for value in item["limitations"])
         lines.extend(["", "**Aplicaciones prácticas**", ""])
-        lines.extend(f"- ${value}" for value in item["practical_applications"])
+        lines.extend(f"- {value}" for value in item["practical_applications"])
         lines.append("")
 
     implications = payload["practical_implications"]
     lines.extend(["## Implicaciones prácticas", ""])
     for label, key in [("Diseño", "design"), ("Evaluación", "evaluation"), ("Despliegue", "deployment")]:
-        lines.extend([f"### ${label}", ""])
+        lines.extend([f"### {label}", ""])
         values = implications[key]
         if values:
-            lines.extend(f"- ${value}" for value in values)
+            lines.extend(f"- {value}" for value in values)
         else:
             lines.append("- Sin implicaciones adicionales registradas.")
         lines.append("")
@@ -196,14 +196,14 @@ def process_envelope(
     if not match:
         raise ValueError("target_path debe ser research/weekly/YYYY-MM-DD.json")
     target_date = match.group("date")
-    if not env["message_id"].startswith(f"${MESSAGE_PREFIX}${target_date}"):
+    if not env["message_id"].startswith(f"{MESSAGE_PREFIX}{target_date}"):
         raise ValueError("message_id no coincide con target_path")
 
     payload_text = decode_payload(env)
     try:
         payload = json.loads(payload_text)
     except json.JSONDecodeError as exc:
-        raise ValueError(f"payload JSON inválido: ${exc}") from exc
+        raise ValueError(f"payload JSON inválido: {exc}") from exc
     if not isinstance(payload, dict):
         raise ValueError("payload semanal debe ser un objeto JSON")
 
@@ -217,8 +217,8 @@ def process_envelope(
 
     weekly_dir = research_root / "weekly"
     weekly_dir.mkdir(parents=True, exist_ok=True)
-    target_json = weekly_dir / f"${target_date}.json"
-    target_md = weekly_dir / f"${target_date}.md"
+    target_json = weekly_dir / f"{target_date}.json"
+    target_md = weekly_dir / f"{target_date}.md"
     _validate_history(payload, weekly_dir, target_json)
 
     normalized_json = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
@@ -253,9 +253,9 @@ def main(argv: list[str] | None = None) -> int:
             args.envelope, args.repo, args.research_root, apply=args.apply
         )
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
-        print(f"ERROR: ${exc}", file=sys.stderr)
+        print(f"ERROR: {exc}", file=sys.stderr)
         return 1
-    print(f"${status}: ${json_path} ${md_path}")
+    print(f"{status}: {json_path} {md_path}")
     return 0
 
 
