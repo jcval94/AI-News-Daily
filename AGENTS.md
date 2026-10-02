@@ -19,6 +19,8 @@ Prompts implement those profiles; they are not the source of truth. Do not imita
 
 ## Scheduled ChatGPT → Drive publication contracts
 
+The cross-lane source of truth is `docs/scheduled_drive_publication.md`. Lane-specific documents refine that shared transport contract and may not weaken its authority boundary.
+
 Scheduled ChatGPT research may generate candidate content, but GitHub remains the final publication authority. The common transport is a native Google Sheet with the exact A1:B8 bridge contract, read back by the task and then moved into the shared Drive inbox.
 
 Three production lanes currently use this boundary:
