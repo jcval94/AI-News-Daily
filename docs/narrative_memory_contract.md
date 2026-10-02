@@ -156,6 +156,9 @@ current news as evidence
 
 ## Scheduled-task Drive bridge
 
+The shared transport, lifecycle, status vocabulary and operational troubleshooting contract lives in `docs/scheduled_drive_publication.md`.
+
+
 The scheduled research task **must not write repository contents directly** and must not use GitHub issues as its production transport.
 
 Its only permitted persistence side effect is one native Google Sheet handoff with a title beginning:
