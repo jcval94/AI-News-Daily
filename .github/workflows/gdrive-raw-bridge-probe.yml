@@ -1,4 +1,4 @@
-name: Google Drive Apps Script Bridge Probe
+name: Google Drive AI News Bridge
 
 on:
   workflow_dispatch:
@@ -7,28 +7,33 @@ on:
   push:
     paths:
       - ".github/workflows/gdrive-raw-bridge-probe.yml"
+      - "pipeline/gdrive_news_bridge.py"
+      - "pipeline/staged_news_issue.py"
+      - "tests/test_gdrive_news_bridge.py"
 
 permissions:
   contents: write
 
 concurrency:
-  group: gdrive-appscript-bridge-probe
+  group: gdrive-ai-news-bridge
   cancel-in-progress: false
 
 jobs:
   consume:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
       PROCESSED_FOLDER_ID: 1o-2WPz514dFJDg7seGz2dZ4X87doPkdK
       FAILED_FOLDER_ID: 1m03IN_GY0rJgpz_gXtwm1by91GcSOuZz
-      EXPECTED_FILE_NAME: ai-news-daily__apps-script-e2e__2026-10-01-1752.txt
-      EXPECTED_MESSAGE_ID: ai-news-daily__apps-script-e2e__2026-10-01-1752
-      EXPECTED_TARGET_PATH: bridge-consumed/ai-news-daily-appscript-e2e-2026-10-01-1752.txt
+      FILE_PREFIX: ai-news-daily.news.
 
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Require Drive credential
         shell: bash
@@ -41,9 +46,11 @@ jobs:
             exit 2
           fi
 
-      - name: Install Google auth client
+      - name: Install bridge dependencies
         shell: bash
-        run: python -m pip install --disable-pip-version-check --quiet google-auth requests
+        run: |
+          python -m pip install --disable-pip-version-check --quiet google-auth requests
+          python -m pip install -c requirements.lock pydantic
 
       - name: Mint Google Drive token
         id: auth
@@ -68,7 +75,7 @@ jobs:
               print(f"access_token={creds.token}", file=out)
           PY
 
-      - name: Select exact pending bridge TXT
+      - name: Select oldest pending production envelope
         id: select
         shell: bash
         env:
@@ -76,20 +83,20 @@ jobs:
         run: |
           set -euo pipefail
           echo "::add-mask::$ACCESS_TOKEN"
-          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain' and name='$EXPECTED_FILE_NAME'"
+          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain' and name contains '$FILE_PREFIX'"
           curl --fail-with-body -sS -G \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "q=$query" \
+            --data-urlencode "orderBy=createdTime asc" \
             --data-urlencode "fields=files(id,name,createdTime,parents,mimeType)" \
-            --data-urlencode "pageSize=10" \
+            --data-urlencode "pageSize=1" \
             "https://www.googleapis.com/drive/v3/files" > /tmp/drive-list.json
           python - <<'PY'
           import json, os
           from pathlib import Path
-          files = json.loads(Path('/tmp/drive-list.json').read_text()).get('files', [])
-          if len(files) > 1:
-              raise SystemExit(f"Expected at most one matching bridge file, got {len(files)}")
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+
+          files = json.loads(Path("/tmp/drive-list.json").read_text()).get("files", [])
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               if files:
                   f = files[0]
                   print(f"file_id={f['id']}", file=out)
@@ -99,7 +106,7 @@ jobs:
                   print("file_name=", file=out)
           PY
 
-      - name: Download bridge TXT
+      - name: Download production envelope
         if: steps.select.outputs.file_id != ''
         shell: bash
         env:
@@ -110,81 +117,21 @@ jobs:
           curl --fail-with-body -sS \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}?alt=media" \
-            -o /tmp/bridge-envelope.txt
+            -o /tmp/ai-news-envelope.txt
 
-      - name: Validate envelope and materialize payload
+      - name: Validate envelope and materialize digest
         if: steps.select.outputs.file_id != ''
         id: validate
         continue-on-error: true
         shell: bash
-        env:
-          SOURCE_FILE_ID: ${{ steps.select.outputs.file_id }}
-          SOURCE_FILE_NAME: ${{ steps.select.outputs.file_name }}
         run: |
           set -euo pipefail
-          python - "$GITHUB_REPOSITORY" "$EXPECTED_MESSAGE_ID" "$EXPECTED_TARGET_PATH" <<'PY'
-          import base64, hashlib, pathlib, sys
+          python -m pipeline.gdrive_news_bridge \
+            --envelope /tmp/ai-news-envelope.txt \
+            --repo "$GITHUB_REPOSITORY" \
+            --news-dir news
 
-          expected_repo, expected_message_id, expected_target_path = sys.argv[1:4]
-          raw = pathlib.Path('/tmp/bridge-envelope.txt').read_text(encoding='utf-8-sig')
-          env = {}
-          for raw_line in raw.splitlines():
-              line = raw_line.strip()
-              if not line:
-                  continue
-              if '=' not in line:
-                  raise SystemExit(f"Malformed line: {line!r}")
-              key, value = line.split('=', 1)
-              if key in env:
-                  raise SystemExit(f"Duplicate key: {key}")
-              env[key] = value
-
-          required = {
-              'format','schema_version','message_id','target_repo',
-              'target_path','content_type','sha256','payload_b64'
-          }
-          if set(env) != required:
-              raise SystemExit(f"Envelope keys mismatch: got={sorted(env)} expected={sorted(required)}")
-          if env['format'] != 'base64-payload-v1':
-              raise SystemExit('Unsupported format')
-          if env['schema_version'] != '1.0':
-              raise SystemExit('Unsupported schema_version')
-          if env['message_id'] != expected_message_id:
-              raise SystemExit('message_id mismatch')
-          if env['target_repo'] != expected_repo:
-              raise SystemExit(f"target_repo mismatch: {env['target_repo']} != {expected_repo}")
-          if env['target_path'] != expected_target_path:
-              raise SystemExit('target_path mismatch')
-          if env['content_type'] != 'text/plain':
-              raise SystemExit('content_type mismatch')
-
-          target = pathlib.PurePosixPath(env['target_path'])
-          if target.is_absolute() or '..' in target.parts:
-              raise SystemExit('Unsafe target_path')
-          if not env['target_path'].startswith('bridge-consumed/'):
-              raise SystemExit('Target outside isolated bridge-consumed/')
-
-          payload = base64.b64decode(env['payload_b64'], validate=True)
-          actual_sha = hashlib.sha256(payload).hexdigest()
-          if actual_sha != env['sha256']:
-              raise SystemExit(f"SHA mismatch: {actual_sha} != {env['sha256']}")
-
-          expected_payload = (
-              "AI_NEWS_APPS_SCRIPT_BRIDGE_E2E_2026-10-01_1752\n"
-              "source=chatgpt_scheduled_task\n"
-              "transport=google_apps_script\n"
-              "status=ready\n"
-          ).encode('utf-8')
-          if payload != expected_payload:
-              raise SystemExit(f"Payload mismatch: {payload!r}")
-
-          out = pathlib.Path(env['target_path'])
-          out.parent.mkdir(parents=True, exist_ok=True)
-          out.write_bytes(payload)
-          print(f"validated={out} sha256={actual_sha}")
-          PY
-
-      - name: Move invalid payload to failed
+      - name: Move invalid envelope to failed
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
         shell: bash
         env:
@@ -198,27 +145,52 @@ jobs:
             --data-urlencode "fields=id,name,parents" \
             "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}" >/dev/null
 
-      - name: Fail invalid payload
+      - name: Fail invalid envelope
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
         run: exit 1
 
-      - name: Commit materialized payload
-        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success'
+      - name: Recheck main and commit exactly one digest
+        id: publish
+        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success' && steps.validate.outputs.status == 'created'
+        env:
+          DIGEST_PATH: ${{ steps.validate.outputs.path }}
+          DIGEST_DATE: ${{ steps.validate.outputs.date }}
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bridge-consumed/
-          if git diff --cached --quiet; then
-            echo "Payload already materialized; no commit needed."
-          else
-            git commit -m "test: consume Apps Script bridge probe 17:52"
-            git push
+          git fetch origin main
+
+          if git ls-tree -r --name-only origin/main -- news/ | grep -Eq "^news/${DIGEST_DATE}(-|\.txt$)"; then
+            echo "A digest for ${DIGEST_DATE} already exists on origin/main; refusing duplicate publication."
+            rm -f -- "$DIGEST_PATH"
+            echo "status=race_existing" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-      - name: Move successful payload to processed
-        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success'
+          git rebase origin/main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "$DIGEST_PATH"
+
+          mapfile -t STAGED < <(git diff --cached --name-only)
+          if [ "${#STAGED[@]}" -ne 1 ] || [ "${STAGED[0]}" != "$DIGEST_PATH" ]; then
+            printf 'Refusing commit; staged files were:\n%s\n' "${STAGED[*]}"
+            exit 1
+          fi
+
+          git commit -m "Add AI news digest for ${DIGEST_DATE} via Drive bridge"
+          git push origin HEAD:main
+          echo "status=published" >> "$GITHUB_OUTPUT"
+
+      - name: Move consumed envelope to processed
+        if: >-
+          steps.select.outputs.file_id != '' &&
+          steps.validate.outcome == 'success' &&
+          (
+            steps.validate.outputs.status == 'already_exists' ||
+            steps.publish.outputs.status == 'published' ||
+            steps.publish.outputs.status == 'race_existing'
+          )
         shell: bash
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
@@ -233,4 +205,4 @@ jobs:
 
       - name: Idle
         if: steps.select.outputs.file_id == ''
-        run: echo "No 17:52 Apps Script bridge payload found yet."
+        run: echo "No pending AI News production envelope found."
