@@ -1,0 +1,273 @@
+name: Google Drive Narrative Memory Bridge
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/gdrive-narrative-memory-bridge.yml"
+      - "pipeline/gdrive_envelope.py"
+      - "pipeline/gdrive_narrative_memory_bridge.py"
+      - "pipeline/staged_narrative_memory_issue.py"
+      - "tests/test_gdrive_narrative_memory_bridge.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gdrive-narrative-memory-bridge
+  cancel-in-progress: false
+
+jobs:
+  consume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
+      PROCESSED_FOLDER_ID: 1o-2WPz514dFJDg7seGz2dZ4X87doPkdK
+      FAILED_FOLDER_ID: 1m03IN_GY0rJgpz_gXtwm1by91GcSOuZz
+      SHEET_PREFIX: __bridge_inbox_AI-News-Daily__narrative-memory__
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Require Drive credential
+        shell: bash
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -euo pipefail
+          test -n "${GDRIVE_SERVICE_ACCOUNT_JSON:-}" || {
+            echo "::error::Missing required secret: GDRIVE_SERVICE_ACCOUNT_JSON"
+            exit 2
+          }
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --quiet google-auth requests
+          python -m pip install -c requirements.lock pydantic
+
+      - name: Mint Google Drive token
+        id: auth
+        shell: bash
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from google.oauth2 import service_account
+          from google.auth.transport.requests import Request
+          info = json.loads(os.environ["GDRIVE_SERVICE_ACCOUNT_JSON"])
+          creds = service_account.Credentials.from_service_account_info(
+              info, scopes=["https://www.googleapis.com/auth/drive"]
+          )
+          creds.refresh(Request())
+          print(f"::add-mask::${creds.token}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              print(f"access_token=${creds.token}", file=out)
+          PY
+
+      - name: Select oldest Narrative Memory Sheet
+        id: select
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='application/vnd.google-apps.spreadsheet'"
+          curl --fail-with-body -sS -G \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            --data-urlencode "q=$query" \
+            --data-urlencode "orderBy=createdTime asc" \
+            --data-urlencode "fields=files(id,name,createdTime,parents,mimeType)" \
+            --data-urlencode "pageSize=100" \
+            "https://www.googleapis.com/drive/v3/files" > /tmp/drive-list.json
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          candidates = json.loads(Path("/tmp/drive-list.json").read_text()).get("files", [])
+          prefix = os.environ["SHEET_PREFIX"]
+          files = [f for f in candidates if str(f.get("name") or "").startswith(prefix)]
+          files.sort(key=lambda f: str(f.get("createdTime") or ""))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              if files:
+                  print(f"file_id=${files[0]['id']}", file=out)
+                  print(f"file_name=${files[0]['name']}", file=out)
+              else:
+                  print("file_id=", file=out)
+                  print("file_name=", file=out)
+          PY
+
+      - name: Convert Sheet to verified envelope
+        if: steps.select.outputs.file_id != ''
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          FILE_ID: ${{ steps.select.outputs.file_id }}
+        run: |
+          python - <<'PY'
+          import base64, csv, hashlib, io, os, requests
+          headers = {"Authorization": f"Bearer ${os.environ['ACCESS_TOKEN']}"}
+          r = requests.get(
+              f"https://www.googleapis.com/drive/v3/files/${os.environ['FILE_ID']}/export",
+              headers=headers,
+              params={"mimeType": "text/csv"},
+              timeout=30,
+          )
+          r.raise_for_status()
+          rows = list(csv.reader(io.StringIO(r.content.decode("utf-8-sig"))))
+          keys = ["format","message_id","namespace","target_repo","target_path","content_type","status","payload"]
+          if len(rows) != 8 or any(len(row) != 2 for row in rows):
+              raise SystemExit(f"A1:B8 shape mismatch: ${rows!r}")
+          if [row[0] for row in rows] != keys:
+              raise SystemExit("A1:A8 keys mismatch")
+          kv = {k: v for k, v in rows}
+          if kv["format"] != "bridge-sheet-v1":
+              raise SystemExit("format mismatch")
+          if kv["namespace"] != "AI-News-Daily":
+              raise SystemExit("namespace mismatch")
+          if kv["target_repo"] != os.environ["GITHUB_REPOSITORY"]:
+              raise SystemExit("target_repo mismatch")
+          if kv["target_path"] != "editorial/narrative_memory.jsonl":
+              raise SystemExit("target_path mismatch")
+          if kv["content_type"] != "text/plain" or kv["status"] != "ready":
+              raise SystemExit("content_type/status mismatch")
+          raw = kv["payload"].encode("utf-8")
+          body = "\n".join([
+              "format=base64-payload-v1",
+              "schema_version=1.0",
+              "message_id=" + kv["message_id"],
+              "target_repo=" + kv["target_repo"],
+              "target_path=" + kv["target_path"],
+              "content_type=" + kv["content_type"],
+              "sha256=" + hashlib.sha256(raw).hexdigest(),
+              "payload_b64=" + base64.b64encode(raw).decode("ascii"),
+              "",
+          ])
+          open("/tmp/narrative-memory-envelope.txt","w",encoding="utf-8").write(body)
+          PY
+
+      - name: Validate handoff against current main
+        if: steps.select.outputs.file_id != ''
+        id: validate
+        continue-on-error: true
+        run: |
+          python -m pipeline.gdrive_narrative_memory_bridge \
+            --envelope /tmp/narrative-memory-envelope.txt \
+            --repo "$GITHUB_REPOSITORY"
+
+      - name: Move invalid handoff to failed
+        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          FILE_ID: ${{ steps.select.outputs.file_id }}
+          FILE_NAME: ${{ steps.select.outputs.file_name }}
+        run: |
+          python - <<'PY'
+          import os, requests
+          r = requests.patch(
+              f"https://www.googleapis.com/drive/v3/files/${os.environ['FILE_ID']}",
+              headers={"Authorization": f"Bearer ${os.environ['ACCESS_TOKEN']}"},
+              params={
+                  "addParents": os.environ["FAILED_FOLDER_ID"],
+                  "removeParents": os.environ["INBOX_FOLDER_ID"],
+                  "fields": "id,name,parents",
+              },
+              json={"name": "failed__" + os.environ["FILE_NAME"]},
+              timeout=30,
+          )
+          r.raise_for_status()
+          PY
+
+      - name: Fail invalid handoff
+        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
+        run: exit 1
+
+      - name: Recheck main, append safely, and publish
+        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success'
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          published=0
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            tmp_output="$RUNNER_TEMP/narrative-drive-output-$attempt"
+            : > "$tmp_output"
+
+            if ! GITHUB_OUTPUT="$tmp_output" python -m pipeline.gdrive_narrative_memory_bridge \
+              --envelope /tmp/narrative-memory-envelope.txt \
+              --repo "$GITHUB_REPOSITORY" \
+              --apply; then
+              echo "Revalidation failed against latest main."
+              exit 1
+            fi
+
+            status="$(grep '^status=' "$tmp_output" | tail -1 | cut -d= -f2-)"
+            ids="$(grep '^ids=' "$tmp_output" | tail -1 | cut -d= -f2-)"
+            count="$(grep '^added_count=' "$tmp_output" | tail -1 | cut -d= -f2-)"
+
+            if [ "$status" = "already_exists" ]; then
+              echo "status=already_exists" >> "$GITHUB_OUTPUT"
+              echo "ids=$ids" >> "$GITHUB_OUTPUT"
+              echo "added_count=0" >> "$GITHUB_OUTPUT"
+              published=1
+              break
+            fi
+
+            test "$status" = "applied"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add editorial/narrative_memory.jsonl
+            mapfile -t staged < <(git diff --cached --name-only)
+            if [ "${#staged[@]}" -ne 1 ] || [ "${staged[0]}" != "editorial/narrative_memory.jsonl" ]; then
+              printf 'Refusing commit; staged files were:\n%s\n' "${staged[*]}"
+              exit 1
+            fi
+            git commit -m "Append Narrative Memory via Drive bridge"
+            if git push origin HEAD:main; then
+              echo "status=published" >> "$GITHUB_OUTPUT"
+              echo "ids=$ids" >> "$GITHUB_OUTPUT"
+              echo "added_count=$count" >> "$GITHUB_OUTPUT"
+              published=1
+              break
+            fi
+          done
+          test "$published" -eq 1
+
+      - name: Move consumed handoff to processed
+        if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'success' && steps.publish.outcome == 'success'
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          FILE_ID: ${{ steps.select.outputs.file_id }}
+          FILE_NAME: ${{ steps.select.outputs.file_name }}
+        run: |
+          python - <<'PY'
+          import os, requests
+          r = requests.patch(
+              f"https://www.googleapis.com/drive/v3/files/${os.environ['FILE_ID']}",
+              headers={"Authorization": f"Bearer ${os.environ['ACCESS_TOKEN']}"},
+              params={
+                  "addParents": os.environ["PROCESSED_FOLDER_ID"],
+                  "removeParents": os.environ["INBOX_FOLDER_ID"],
+                  "fields": "id,name,parents",
+              },
+              json={"name": "processed__" + os.environ["FILE_NAME"]},
+              timeout=30,
+          )
+          r.raise_for_status()
+          PY
+
+      - name: Idle
+        if: steps.select.outputs.file_id == ''
+        run: echo "No pending Narrative Memory handoff found."
