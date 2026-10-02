@@ -266,6 +266,8 @@ news/YYYY-MM-DD-HH-MM-SS.txt
 
 The full production contract, recovery policy, troubleshooting guide, invariants, and proven E2E evidence live in [`docs/news_ingestion_drive_bridge.md`](docs/news_ingestion_drive_bridge.md).
 
+The shared architecture for **all scheduled ChatGPT → Drive → GitHub publication lanes** lives in [`docs/scheduled_drive_publication.md`](docs/scheduled_drive_publication.md).
+
 A separate **News Ingestion Watchdog** runs every day at 10:30 and 14:00 America/Mexico_City. It does not generate content or call a model: it verifies that the local day's digest exists, parses successfully, and contains at least five news items. Missing/invalid ingestion opens a diagnostic GitHub issue, fails the watchdog visibly, and refreshes Repo Health through the Review Hub.
 
 Manual production can use `recent_window`, which considers the target day plus the preceding `NEWS_LOOKBACK_DAYS - 1` calendar days.
