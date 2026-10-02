@@ -93,17 +93,19 @@ jobs:
             --data-urlencode "pageSize=100" \
             "https://www.googleapis.com/drive/v3/files" > /tmp/drive-list.json
           python - <<'PY'
-          import json, os
+          import json, os, re
           from pathlib import Path
 
           candidates = json.loads(Path("/tmp/drive-list.json").read_text()).get("files", [])
           sheet_prefix = os.environ["SHEET_PREFIX"]
+          # The shared prefix also contains weekly and Narrative Memory lanes.
+          daily_sheet_re = re.compile(re.escape(sheet_prefix) + r"[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{6}")
           raw_prefix = os.environ["RAW_PREFIX"]
           eligible = []
           for f in candidates:
               name = str(f.get("name") or "")
               mime = str(f.get("mimeType") or "")
-              if mime == "application/vnd.google-apps.spreadsheet" and name.startswith(sheet_prefix):
+              if mime == "application/vnd.google-apps.spreadsheet" and daily_sheet_re.fullmatch(name):
                   eligible.append((str(f.get("createdTime") or ""), 0, "sheet", f))
               elif mime == "text/plain" and name.startswith(raw_prefix):
                   eligible.append((str(f.get("createdTime") or ""), 1, "raw", f))
@@ -135,6 +137,7 @@ jobs:
           import hashlib
           import io
           import os
+          import re
 
           import requests
 
@@ -177,6 +180,10 @@ jobs:
               raise SystemExit("namespace must be AI-News-Daily")
           if kv["target_repo"] != os.environ["GITHUB_REPOSITORY"]:
               raise SystemExit("target_repo mismatch")
+          if not kv["message_id"].startswith("ai-news-daily.news."):
+              raise SystemExit("message_id outside daily news namespace")
+          if not re.fullmatch(r"news/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}\.txt", kv["target_path"]):
+              raise SystemExit("target_path must be news/YYYY-MM-DD-HH-MM-SS.txt")
           if kv["content_type"] != "text/plain":
               raise SystemExit("content_type must be text/plain")
           if kv["status"] != "ready":
