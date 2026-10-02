@@ -8,6 +8,17 @@ tts:
     python: .venv-tts/Scripts/python.exe
   speech:
     speed: 1.0
+    pauses:
+      default_ms: 280
+      after_kind_ms:
+        opening: 320
+        hook: 380
+        story: 450
+        news: 320
+        context: 260
+        development: 240
+        insight: 420
+        closing: 0
   engines:
     kokoro:
       voice: ef_dora
@@ -42,6 +53,10 @@ tts:
     codec: mp3
     bitrate: 64k
     preload: none
+    release:
+      preview_prefix: tts-preview-
+      benchmark_tag: tts-benchmark-latest
+      target_branch: main
   retention:
     local_runs_per_episode: 3
     local_benchmark_runs: 3
