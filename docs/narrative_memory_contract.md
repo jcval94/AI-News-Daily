@@ -154,29 +154,54 @@ provisional thesis
 current news as evidence
 ```
 
-## Scheduled-task staging bridge
+## Scheduled-task Drive bridge
 
-The scheduled research task **must not write repository contents directly**. Its only permitted repository side effect is creating one owner-authored GitHub issue whose title is:
+The scheduled research task **must not write repository contents directly** and must not use GitHub issues as its production transport.
 
-`NARRATIVE_MEMORY_STAGING — YYYY-MM-DD HH:MM:SS America/Mexico_City`
+Its only permitted persistence side effect is one native Google Sheet handoff with a title beginning:
 
-The issue body starts with:
+`__bridge_inbox_AI-News-Daily__narrative-memory__`
+
+The Sheet uses the common A1:B8 bridge contract:
+
+| Row | Key | Value |
+| --- | --- | --- |
+| 1 | `format` | `bridge-sheet-v1` |
+| 2 | `message_id` | `ai-news-daily.narrative-memory.YYYY-MM-DD.HHMMSS` |
+| 3 | `namespace` | `AI-News-Daily` |
+| 4 | `target_repo` | `jcval94/AI-News-Daily` |
+| 5 | `target_path` | `editorial/narrative_memory.jsonl` |
+| 6 | `content_type` | `text/plain` |
+| 7 | `status` | `ready` |
+| 8 | `payload` | staging header + 1–4 raw JSONL records |
+
+The payload begins exactly with:
 
 `# Narrative Memory Staging — YYYY-MM-DD HH:MM:SS America/Mexico_City`
 
-and then contains 1–4 approved Narrative Memory objects as raw JSONL, one object per line, with no Markdown fences.
+and then contains only the approved records as raw JSONL, one complete object per line.
 
-`.github/workflows/ingest-narrative-memory-staging.yml` is the only component allowed to materialize those records into `editorial/narrative_memory.jsonl`. It revalidates schema and deterministic gates, checks same-day metadata, rejects conflicting IDs and likely duplicates, re-reads the latest `main` before every append attempt, stages exactly one canonical file, retries push races, and closes the issue only after a successful publication or an idempotent already-present result.
+The scheduled task must read back A1:B8, then move the same Sheet into the shared `AI-News-Daily/inbox` folder. A successful handoff means **queued in Drive**, not published.
+
+`.github/workflows/gdrive-narrative-memory-bridge.yml` (**Google Drive Narrative Memory Bridge**) is the publication authority. It:
+
+1. accepts only the Narrative Memory Sheet prefix;
+2. exports A1:B8 through the Drive API;
+3. verifies transport metadata and payload integrity;
+4. delegates schema, admission-gate, same-day metadata, ID conflict and semantic-duplicate validation to `pipeline.staged_narrative_memory_issue`;
+5. re-reads the latest `main` before apply;
+6. appends only to `editorial/narrative_memory.jsonl`;
+7. retries push races;
+8. moves the original handoff to `processed/` after success/idempotency or `failed/` after deterministic rejection.
 
 ```text
 ChatGPT scheduled research
     ↓ research / verification / semantic deduplication
-GitHub staging issue
+Google Sheet A1:B8
+    ↓ readback + move to shared Drive inbox
+Google Drive Narrative Memory Bridge
     ↓ deterministic schema + gate + race validation
-GitHub Actions
-    ↓ append-only mutation
 editorial/narrative_memory.jsonl
 ```
 
-The production loader remains authoritative and revalidates every stored record.
-
+The historical issue workflow may remain for backward compatibility, but scheduled production must use the Drive bridge. The production loader remains authoritative and revalidates every stored record.
