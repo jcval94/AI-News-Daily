@@ -6,7 +6,7 @@ from pipeline.tts.release_store import (
 
 
 class ReleaseRetentionTests(unittest.TestCase):
-    def test_preview_release_gc_keeps_newest_and_current(self):
+    def test_preview_release_gc_keeps_exact_bound_including_current(self):
         releases = [
             {
                 "tagName": "tts-preview-2026-09-28-a",
@@ -40,7 +40,7 @@ class ReleaseRetentionTests(unittest.TestCase):
             ["tts-preview-2026-09-28-a"],
         )
 
-    def test_current_release_is_never_deleted_if_older(self):
+    def test_current_release_counts_toward_bound_even_if_older(self):
         releases = [
             {
                 "tagName": "tts-preview-current",
@@ -57,7 +57,19 @@ class ReleaseRetentionTests(unittest.TestCase):
             keep=1,
             current_tag="tts-preview-current",
         )
-        self.assertEqual(deleted, [])
+        self.assertEqual(
+            deleted,
+            ["tts-preview-new"],
+        )
+
+    def test_keep_must_be_positive(self):
+        with self.assertRaisesRegex(ValueError, "keep"):
+            preview_release_tags_to_delete(
+                [],
+                prefix="tts-preview-",
+                keep=0,
+                current_tag="tts-preview-current",
+            )
 
 
 if __name__ == "__main__":
