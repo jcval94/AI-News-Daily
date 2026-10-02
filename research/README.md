@@ -81,6 +81,9 @@ incidentes para evitar ruido.
 
 ## Scheduled-task Drive publication
 
+The common ChatGPT → Drive → GitHub transport and operational contract is documented in `docs/scheduled_drive_publication.md`.
+
+
 The Friday scheduled research task no longer writes `research/weekly/` directly.
 
 The production path is:
