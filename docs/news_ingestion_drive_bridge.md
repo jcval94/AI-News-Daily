@@ -1,5 +1,7 @@
 # AI News Daily — Google Drive ingestion bridge
 
+> Shared transport/lifecycle rules for all scheduled publication lanes: `docs/scheduled_drive_publication.md`.
+
 This document is the operational contract and runbook for the production path that moves a daily AI-news digest from a ChatGPT scheduled task into the canonical `news/` directory.
 
 The design deliberately separates **probabilistic editorial work** from **deterministic publication authority**.
