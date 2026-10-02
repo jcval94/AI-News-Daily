@@ -83,19 +83,25 @@ jobs:
         run: |
           set -euo pipefail
           echo "::add-mask::$ACCESS_TOKEN"
-          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain' and name contains '$FILE_PREFIX'"
+          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain'"
           curl --fail-with-body -sS -G \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "q=$query" \
             --data-urlencode "orderBy=createdTime asc" \
             --data-urlencode "fields=files(id,name,createdTime,parents,mimeType)" \
-            --data-urlencode "pageSize=1" \
+            --data-urlencode "pageSize=100" \
             "https://www.googleapis.com/drive/v3/files" > /tmp/drive-list.json
           python - <<'PY'
           import json, os
           from pathlib import Path
 
-          files = json.loads(Path("/tmp/drive-list.json").read_text()).get("files", [])
+          prefix = os.environ["FILE_PREFIX"]
+          candidates = json.loads(Path("/tmp/drive-list.json").read_text()).get("files", [])
+          files = [
+              f for f in candidates
+              if str(f.get("name") or "").startswith(prefix)
+          ]
+          files.sort(key=lambda f: str(f.get("createdTime") or ""))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               if files:
                   f = files[0]
