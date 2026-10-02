@@ -17,20 +17,41 @@ The stable editorial identity lives in:
 
 Prompts implement those profiles; they are not the source of truth. Do not imitate the distinctive wording/persona of a named creator. Extract transferable narrative principles instead.
 
-## Daily news ingestion contract
+## Scheduled ChatGPT → Drive publication contracts
 
-The canonical daily-news transport is documented in `docs/news_ingestion_drive_bridge.md`.
+Scheduled ChatGPT research may generate candidate content, but GitHub remains the final publication authority. The common transport is a native Google Sheet with the exact A1:B8 bridge contract, read back by the task and then moved into the shared Drive inbox.
 
-Preserve this authority boundary:
+Three production lanes currently use this boundary:
 
-- the external ChatGPT scheduled task may research, select, write, self-check, create/read back a temporary Google Sheet, and move that handoff into the shared Drive inbox;
-- it must not write canonical `news/` files directly or use GitHub issues as the primary production transport;
-- `.github/workflows/gdrive-raw-bridge-probe.yml` (**Google Drive AI News Bridge**) is the publication bridge;
-- `pipeline/gdrive_news_bridge.py` validates the transport and delegates digest validation to `pipeline.staged_news_issue`;
-- GitHub must recheck `origin/main`, stage exactly one digest, and remain the final publication authority;
-- automatic recovery is bounded to TODAY + YESTERDAY unless an explicit backfill is requested.
+1. **Daily news**
+   - Runbook: `docs/news_ingestion_drive_bridge.md`
+   - Bridge: `.github/workflows/gdrive-raw-bridge-probe.yml`
+   - Validator: `pipeline/gdrive_news_bridge.py` → `pipeline.staged_news_issue`
+   - Canonical output: exactly one `news/YYYY-MM-DD-HH-MM-SS.txt` per target day.
+   - Automatic recovery is bounded to TODAY + YESTERDAY.
 
-Do not weaken the shared digest validator or treat a successful Drive handoff as proof that publication completed.
+2. **Narrative Memory**
+   - Contract: `docs/narrative_memory_contract.md`
+   - Bridge: `.github/workflows/gdrive-narrative-memory-bridge.yml`
+   - Validator: `pipeline/gdrive_narrative_memory_bridge.py` → `pipeline.staged_narrative_memory_issue`
+   - Canonical output: append-only `editorial/narrative_memory.jsonl`.
+   - The scheduled task must not use GitHub issues as its production transport.
+
+3. **Weekly Applied GenAI research**
+   - Contract: `research/README.md` + `research/weekly_digest.schema.json`
+   - Bridge: `.github/workflows/gdrive-weekly-research-bridge.yml`
+   - Validator/renderer: `pipeline/gdrive_weekly_research_bridge.py`
+   - Canonical input: `research/weekly/YYYY-MM-DD.json`.
+   - Markdown is derived deterministically by GitHub from the accepted JSON; ChatGPT must not publish a separate Markdown authority.
+
+For every lane:
+
+- the scheduled task may research, select, write, self-check, create/read back its Sheet and move that Sheet into the Drive inbox;
+- the task must not write canonical repository files directly;
+- a successful Drive handoff proves only that work is **queued**, not published;
+- GitHub must validate against latest `main`, fail closed on contract violations, and move the handoff to `processed/` or `failed/`;
+- do not weaken deterministic validators merely to make one generated payload pass.
+
 
 ## Narrative Memory contract
 
