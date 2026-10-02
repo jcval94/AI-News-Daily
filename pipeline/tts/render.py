@@ -73,26 +73,53 @@ def _ffmpeg() -> str:
 def _convert_edit(native: Path, edit: Path, sample_rate: int) -> None:
     edit.parent.mkdir(parents=True, exist_ok=True)
     proc = subprocess.run(
-        [_ffmpeg(), "-y", "-v", "error", "-i", str(native), "-ar", str(sample_rate),
-         "-ac", "1", "-c:a", "pcm_s16le", str(edit)],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-        shell=False, check=False,
+        [
+            _ffmpeg(),
+            "-y",
+            "-v",
+            "error",
+            "-i",
+            str(native),
+            "-ar",
+            str(sample_rate),
+            "-ac",
+            "1",
+            "-c:a",
+            "pcm_s16le",
+            str(edit),
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        shell=False,
+        check=False,
     )
     if proc.returncode != 0:
         raise RuntimeError(f"ffmpeg edit conversion failed: {proc.stderr[-2000:]}")
 
 
-def _concat_wav(paths: list[Path], output: Path) -> None:
+def _concat_wav(
+    paths: list[Path],
+    output: Path,
+    pauses_after_seconds: list[float] | None = None,
+) -> None:
     if not paths:
         raise ValueError("No WAV files to concatenate")
+    if pauses_after_seconds is None:
+        pauses_after_seconds = [0.0] * len(paths)
+    if len(pauses_after_seconds) != len(paths):
+        raise ValueError("pauses_after_seconds must match the number of WAV files")
     output.parent.mkdir(parents=True, exist_ok=True)
     params: tuple[int, int, int, str] | None = None
     with wave.open(str(output), "wb") as target:
-        for path in paths:
+        for index, path in enumerate(paths):
             with wave.open(str(path), "rb") as source:
                 current = (
-                    source.getnchannels(), source.getsampwidth(),
-                    source.getframerate(), source.getcomptype(),
+                    source.getnchannels(),
+                    source.getsampwidth(),
+                    source.getframerate(),
+                    source.getcomptype(),
                 )
                 if params is None:
                     params = current
@@ -103,18 +130,55 @@ def _concat_wav(paths: list[Path], output: Path) -> None:
                 elif current != params:
                     raise ValueError(f"WAV concat format mismatch: {path}")
                 target.writeframes(source.readframes(source.getnframes()))
+                pause_seconds = max(0.0, float(pauses_after_seconds[index]))
+                if pause_seconds:
+                    silence_frames = round(pause_seconds * current[2])
+                    silence_bytes = b"\x00" * silence_frames * current[0] * current[1]
+                    target.writeframes(silence_bytes)
 
 
 def _web_preview(master: Path, output: Path, bitrate: str) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     proc = subprocess.run(
-        [_ffmpeg(), "-y", "-v", "error", "-i", str(master),
-         "-c:a", "libmp3lame", "-b:a", bitrate, str(output)],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-        shell=False, check=False,
+        [
+            _ffmpeg(),
+            "-y",
+            "-v",
+            "error",
+            "-i",
+            str(master),
+            "-c:a",
+            "libmp3lame",
+            "-b:a",
+            bitrate,
+            str(output),
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        shell=False,
+        check=False,
     )
     if proc.returncode != 0:
         raise RuntimeError(f"ffmpeg web preview failed: {proc.stderr[-2000:]}")
+
+
+def _pause_after_seconds(
+    section: dict[str, Any],
+    *,
+    index: int,
+    total_sections: int,
+    config: dict[str, Any],
+) -> float:
+    if index >= total_sections - 1:
+        return 0.0
+    pauses = config["tts"].get("speech", {}).get("pauses", {})
+    default_ms = float(pauses.get("default_ms", 0.0))
+    by_kind = pauses.get("after_kind_ms", {})
+    kind = str(section.get("kind") or section.get("section_key") or "")
+    value_ms = float(by_kind.get(kind, default_ms)) if isinstance(by_kind, dict) else default_ms
+    return round(max(0.0, value_ms) / 1000.0, 6)
 
 
 def _render_sections_with_engine(
@@ -138,7 +202,7 @@ def _render_sections_with_engine(
     cursor = 0.0
     generation_total = 0.0
 
-    for section in sections:
+    for index, section in enumerate(sections):
         stem = section["filename_stem"]
         text_path = text_dir / f"{stem}.txt"
         text_path.parent.mkdir(parents=True, exist_ok=True)
@@ -146,76 +210,125 @@ def _render_sections_with_engine(
         native_path = native_dir / f"{stem}.wav"
         edit_path = edit_dir / f"{stem}.wav"
 
-        meta = render_native(
-            engine=engine,
-            voice=voice,
-            text_file=text_path,
-            output_file=native_path,
-            config=config,
-            repo_root=repo_root.resolve(),
-        )
-        logs_dir.mkdir(parents=True, exist_ok=True)
-        (logs_dir / f"{stem}.log").write_text(
-            str(meta.get("log_tail") or ""), encoding="utf-8"
-        )
-
-        native_metrics = inspect_wav(native_path)
-        _convert_edit(native_path, edit_path, sample_rate)
-        edit_metrics = inspect_wav(edit_path)
-        qa_policy = tts.get("qa", {})
-        ffmpeg_metrics = inspect_ffmpeg_audio(
-            edit_path,
-            silence_noise_db=float(qa_policy.get("silence_noise_db", -50.0)),
-            silence_min_duration=float(qa_policy.get("silence_min_duration_seconds", 1.0)),
-        )
-        web_path = run_dir / "web/sections" / f"{stem}.mp3"
-        _web_preview(
-            edit_path,
-            web_path,
-            str(tts.get("web", {}).get("bitrate", "64k")),
-        )
-        qa_warnings = validate_edit_wav(edit_metrics, expected_rate=sample_rate)
-        qa_warnings.extend(
-            validate_ffmpeg_audio(
-                ffmpeg_metrics,
-                long_silence_seconds=float(qa_policy.get("long_silence_seconds", 3.0)),
-                advisory_lufs_min=float(qa_policy.get("advisory_lufs_min", -28.0)),
-                advisory_lufs_max=float(qa_policy.get("advisory_lufs_max", -12.0)),
+        try:
+            meta = render_native(
+                engine=engine,
+                voice=voice,
+                text_file=text_path,
+                output_file=native_path,
+                config=config,
+                repo_root=repo_root.resolve(),
             )
-        )
+            logs_dir.mkdir(parents=True, exist_ok=True)
+            (logs_dir / f"{stem}.log").write_text(
+                str(meta.get("log_tail") or ""), encoding="utf-8"
+            )
+
+            native_metrics = inspect_wav(native_path)
+            _convert_edit(native_path, edit_path, sample_rate)
+            edit_metrics = inspect_wav(edit_path)
+            qa_policy = tts.get("qa", {})
+            ffmpeg_metrics = inspect_ffmpeg_audio(
+                edit_path,
+                silence_noise_db=float(qa_policy.get("silence_noise_db", -50.0)),
+                silence_min_duration=float(
+                    qa_policy.get("silence_min_duration_seconds", 1.0)
+                ),
+            )
+            web_path = run_dir / "web/sections" / f"{stem}.mp3"
+            _web_preview(
+                edit_path,
+                web_path,
+                str(tts.get("web", {}).get("bitrate", "64k")),
+            )
+            qa_warnings = validate_edit_wav(edit_metrics, expected_rate=sample_rate)
+            qa_warnings.extend(
+                validate_ffmpeg_audio(
+                    ffmpeg_metrics,
+                    long_silence_seconds=float(
+                        qa_policy.get("long_silence_seconds", 3.0)
+                    ),
+                    advisory_lufs_min=float(
+                        qa_policy.get("advisory_lufs_min", -28.0)
+                    ),
+                    advisory_lufs_max=float(
+                        qa_policy.get("advisory_lufs_max", -12.0)
+                    ),
+                )
+            )
+        except (
+            EngineError,
+            ValueError,
+            RuntimeError,
+            subprocess.SubprocessError,
+            OSError,
+        ) as exc:
+            raise EngineError(
+                f"{engine}/{voice} failed while validating section "
+                f"{section.get('id', stem)!r}: {exc}"
+            ) from exc
+
         if edit_metrics["duration_seconds"] < 0.2:
             qa_warnings.append("suspiciously_short")
         warnings.extend(f"{section['id']}:{item}" for item in qa_warnings)
 
-        duration = float(edit_metrics["duration_seconds"])
+        speech_duration = float(edit_metrics["duration_seconds"])
         generation = float(meta.get("generation_seconds") or 0.0)
+        pause_after = _pause_after_seconds(
+            section,
+            index=index,
+            total_sections=len(sections),
+            config=config,
+        )
+        start = cursor
+        end = start + speech_duration
+        timeline_end = end + pause_after
         generation_total += generation
-        records.append({
-            **{key: section[key] for key in (
-                "id", "order", "section_key", "kind", "beat_id", "beat_kind",
-                "evidence_ids", "source_text", "source_text_sha256",
-                "spoken_text", "spoken_text_sha256",
-            )},
-            "engine": engine,
-            "voice": voice,
-            "audio_native_file": native_path.relative_to(run_dir).as_posix(),
-            "audio_edit_file": edit_path.relative_to(run_dir).as_posix(),
-            "audio_web_file": web_path.relative_to(run_dir).as_posix(),
-            "web_file_size_bytes": web_path.stat().st_size,
-            "start_seconds": round(cursor, 6),
-            "end_seconds": round(cursor + duration, 6),
-            "duration_seconds": round(duration, 6),
-            "generation_seconds": round(generation, 4),
-            "real_time_factor": round(generation / duration, 4) if duration > 0 else None,
-            "native_audio": native_metrics,
-            "edit_audio": edit_metrics,
-            "ffmpeg_audio": ffmpeg_metrics,
-            "qa": {
-                "status": "warn" if qa_warnings else "pass",
-                "warnings": qa_warnings,
-            },
-        })
-        cursor += duration
+        records.append(
+            {
+                **{
+                    key: section[key]
+                    for key in (
+                        "id",
+                        "order",
+                        "section_key",
+                        "kind",
+                        "beat_id",
+                        "beat_kind",
+                        "evidence_ids",
+                        "source_text",
+                        "source_text_sha256",
+                        "spoken_text",
+                        "spoken_text_sha256",
+                    )
+                },
+                "engine": engine,
+                "voice": voice,
+                "audio_native_file": native_path.relative_to(run_dir).as_posix(),
+                "audio_edit_file": edit_path.relative_to(run_dir).as_posix(),
+                "audio_web_file": web_path.relative_to(run_dir).as_posix(),
+                "web_file_size_bytes": web_path.stat().st_size,
+                "start_seconds": round(start, 6),
+                "end_seconds": round(end, 6),
+                "duration_seconds": round(speech_duration, 6),
+                "pause_after_seconds": round(pause_after, 6),
+                "timeline_end_seconds": round(timeline_end, 6),
+                "generation_seconds": round(generation, 4),
+                "real_time_factor": (
+                    round(generation / speech_duration, 4)
+                    if speech_duration > 0
+                    else None
+                ),
+                "native_audio": native_metrics,
+                "edit_audio": edit_metrics,
+                "ffmpeg_audio": ffmpeg_metrics,
+                "qa": {
+                    "status": "warn" if qa_warnings else "pass",
+                    "warnings": qa_warnings,
+                },
+            }
+        )
+        cursor = timeline_end
         edit_paths.append(edit_path)
 
     return records, edit_paths, cursor, generation_total, warnings
@@ -258,13 +371,23 @@ def render_episode(
 
     errors: list[str] = []
     records: list[dict[str, Any]] = []
-    edit_paths: list[Path] = []
     duration = 0.0
     generation_total = 0.0
     qa_warnings: list[str] = []
+    master_warnings: list[str] = []
+    master_metrics: dict[str, Any] = {}
     used_engine = requested_engine
     used_voice = requested_voice
+    master = run_dir / "audio/edit/narration_master.wav"
+    preview = run_dir / "web/narration_preview.mp3"
 
+    retryable = (
+        EngineError,
+        subprocess.SubprocessError,
+        OSError,
+        ValueError,
+        RuntimeError,
+    )
     for candidate_engine in engines:
         candidate_voice = (
             requested_voice
@@ -273,42 +396,54 @@ def render_episode(
         )
         shutil.rmtree(run_dir, ignore_errors=True)
         try:
-            records, edit_paths, duration, generation_total, qa_warnings = (
-                _render_sections_with_engine(
-                    sections=sections,
-                    engine=candidate_engine,
-                    voice=candidate_voice,
-                    config=config,
-                    run_dir=run_dir,
-                    repo_root=repo_root,
-                )
+            (
+                records,
+                edit_paths,
+                duration,
+                generation_total,
+                qa_warnings,
+            ) = _render_sections_with_engine(
+                sections=sections,
+                engine=candidate_engine,
+                voice=candidate_voice,
+                config=config,
+                run_dir=run_dir,
+                repo_root=repo_root,
+            )
+            pauses_after = [
+                float(item.get("pause_after_seconds", 0.0)) for item in records
+            ]
+            _concat_wav(edit_paths, master, pauses_after)
+            master_metrics = inspect_wav(master)
+            master_warnings = validate_edit_wav(
+                master_metrics, expected_rate=int(tts["edit_sample_rate_hz"])
+            )
+            _web_preview(
+                master,
+                preview,
+                str(tts.get("web", {}).get("bitrate", "64k")),
             )
             used_engine = candidate_engine
             used_voice = candidate_voice
             break
-        except (EngineError, subprocess.SubprocessError, OSError) as exc:
+        except retryable as exc:
             errors.append(f"{candidate_engine}:{exc}")
     else:
         shutil.rmtree(run_dir, ignore_errors=True)
-        raise EngineError("All configured TTS engines failed: " + " | ".join(errors))
+        raise EngineError(
+            "All configured TTS engines failed: " + " | ".join(errors)
+        )
 
     warnings = list(qa_warnings)
+    warnings.extend(f"master:{item}" for item in master_warnings)
     if used_engine != requested_engine:
         warnings.insert(0, f"fallback_used:{requested_engine}->{used_engine}")
 
-    master = run_dir / "audio/edit/narration_master.wav"
-    _concat_wav(edit_paths, master)
-    master_metrics = inspect_wav(master)
-    master_warnings = validate_edit_wav(
-        master_metrics, expected_rate=int(tts["edit_sample_rate_hz"])
-    )
-    warnings.extend(f"master:{item}" for item in master_warnings)
-
-    preview = run_dir / "web/narration_preview.mp3"
-    _web_preview(master, preview, str(tts.get("web", {}).get("bitrate", "64k")))
+    spoken_duration = sum(float(item["duration_seconds"]) for item in records)
+    pause_duration = sum(float(item.get("pause_after_seconds", 0.0)) for item in records)
 
     manifest = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "manifest_id": f"tts:{episode_dir.name}:{run_id}",
         "run_id": run_id,
         "script_id": script_id,
@@ -344,9 +479,13 @@ def render_episode(
         "metrics": {
             "section_count": len(records),
             "duration_seconds": round(duration, 6),
+            "spoken_duration_seconds": round(spoken_duration, 6),
+            "pause_duration_seconds": round(pause_duration, 6),
             "generation_seconds": round(generation_total, 4),
             "real_time_factor": (
-                round(generation_total / duration, 4) if duration > 0 else None
+                round(generation_total / spoken_duration, 4)
+                if spoken_duration > 0
+                else None
             ),
             "web_preview_size_bytes": preview.stat().st_size,
         },

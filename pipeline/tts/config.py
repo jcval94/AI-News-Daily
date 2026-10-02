@@ -37,9 +37,27 @@ def load_tts_config(path: Path = DEFAULT_CONFIG) -> dict[str, Any]:
         if not str(engine_config.get("voice") or "").strip():
             raise ValueError(f"Engine {engine} requires a voice")
 
-    speed = float(tts.get("speech", {}).get("speed", 0.0))
+    speech = tts.get("speech", {})
+    speed = float(speech.get("speed", 0.0))
     if speed <= 0:
         raise ValueError("TTS speech.speed must be > 0")
+    pauses = speech.get("pauses", {})
+    if not isinstance(pauses, dict):
+        raise ValueError("TTS speech.pauses must be a mapping")
+    default_ms = float(pauses.get("default_ms", 0.0))
+    if default_ms < 0 or default_ms > 5000:
+        raise ValueError("TTS speech.pauses.default_ms must be between 0 and 5000")
+    after_kind = pauses.get("after_kind_ms", {})
+    if not isinstance(after_kind, dict):
+        raise ValueError("TTS speech.pauses.after_kind_ms must be a mapping")
+    for key, value in after_kind.items():
+        if not str(key).strip():
+            raise ValueError("TTS pause kind keys cannot be empty")
+        numeric = float(value)
+        if numeric < 0 or numeric > 5000:
+            raise ValueError(
+                f"TTS pause for {key!r} must be between 0 and 5000 milliseconds"
+            )
 
     fallback = tts.get("fallback", {})
     if bool(fallback.get("enabled")):
@@ -60,6 +78,25 @@ def load_tts_config(path: Path = DEFAULT_CONFIG) -> dict[str, Any]:
     pronunciations = tts.get("pronunciation", {}).get("entries", {})
     if not isinstance(pronunciations, dict):
         raise ValueError("TTS pronunciation.entries must be a mapping")
-    if any(not str(key).strip() or not str(value).strip() for key, value in pronunciations.items()):
+    if any(
+        not str(key).strip() or not str(value).strip()
+        for key, value in pronunciations.items()
+    ):
         raise ValueError("TTS pronunciation entries cannot be empty")
+
+    web = tts.get("web", {})
+    release = web.get("release", {})
+    if not isinstance(release, dict):
+        raise ValueError("TTS web.release must be a mapping")
+    if release:
+        if not str(release.get("preview_prefix") or "").strip():
+            raise ValueError("TTS web.release.preview_prefix cannot be empty")
+        if not str(release.get("benchmark_tag") or "").strip():
+            raise ValueError("TTS web.release.benchmark_tag cannot be empty")
+        if not str(release.get("target_branch") or "").strip():
+            raise ValueError("TTS web.release.target_branch cannot be empty")
+
+    retention = tts.get("retention", {})
+    if int(retention.get("pages_episode_audio_limit", 3)) < 1:
+        raise ValueError("TTS pages_episode_audio_limit must be >= 1")
     return payload
