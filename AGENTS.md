@@ -17,6 +17,21 @@ The stable editorial identity lives in:
 
 Prompts implement those profiles; they are not the source of truth. Do not imitate the distinctive wording/persona of a named creator. Extract transferable narrative principles instead.
 
+## Daily news ingestion contract
+
+The canonical daily-news transport is documented in `docs/news_ingestion_drive_bridge.md`.
+
+Preserve this authority boundary:
+
+- the external ChatGPT scheduled task may research, select, write, self-check, create/read back a temporary Google Sheet, and move that handoff into the shared Drive inbox;
+- it must not write canonical `news/` files directly or use GitHub issues as the primary production transport;
+- `.github/workflows/gdrive-raw-bridge-probe.yml` (**Google Drive AI News Bridge**) is the publication bridge;
+- `pipeline/gdrive_news_bridge.py` validates the transport and delegates digest validation to `pipeline.staged_news_issue`;
+- GitHub must recheck `origin/main`, stage exactly one digest, and remain the final publication authority;
+- automatic recovery is bounded to TODAY + YESTERDAY unless an explicit backfill is requested.
+
+Do not weaken the shared digest validator or treat a successful Drive handoff as proof that publication completed.
+
 ## Narrative Memory contract
 
 Reusable verified historical/scientific/economic/natural parallels live in `editorial/narrative_memory.jsonl`; the contract is `docs/narrative_memory_contract.md`.
