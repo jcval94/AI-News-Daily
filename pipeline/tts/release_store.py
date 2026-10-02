@@ -97,6 +97,43 @@ def _ensure_release(
     )
 
 
+def _replace_release(
+    *,
+    tag: str,
+    title: str,
+    notes: str,
+    repo_slug: str,
+    target_branch: str,
+    repo_root: Path,
+) -> None:
+    exists = _run_gh(
+        ["release", "view", tag, "--repo", repo_slug],
+        repo_root=repo_root,
+        check=False,
+    )
+    if exists.returncode == 0:
+        _run_gh(
+            [
+                "release",
+                "delete",
+                tag,
+                "--repo",
+                repo_slug,
+                "--cleanup-tag",
+                "--yes",
+            ],
+            repo_root=repo_root,
+        )
+    _ensure_release(
+        tag=tag,
+        title=title,
+        notes=notes,
+        repo_slug=repo_slug,
+        target_branch=target_branch,
+        repo_root=repo_root,
+    )
+
+
 def _asset_url(repo_slug: str, tag: str, path: Path) -> str:
     return (
         f"https://github.com/{repo_slug}/releases/download/"
@@ -138,6 +175,8 @@ def preview_release_tags_to_delete(
     keep: int,
     current_tag: str,
 ) -> list[str]:
+    if keep < 1:
+        raise ValueError("keep must be >= 1")
     candidates = [
         item
         for item in releases
@@ -148,8 +187,13 @@ def preview_release_tags_to_delete(
         reverse=True,
     )
     protected: set[str] = {current_tag}
-    for item in candidates[: max(keep, 0)]:
-        protected.add(str(item.get("tagName") or ""))
+    for item in candidates:
+        tag = str(item.get("tagName") or "")
+        if not tag or tag in protected:
+            continue
+        if len(protected) >= keep:
+            break
+        protected.add(tag)
     return [
         str(item.get("tagName"))
         for item in candidates
@@ -376,12 +420,12 @@ def promote_benchmark(
         _web_preview(edit, output, bitrate)
         preview_paths[key] = output
 
-    _ensure_release(
+    _replace_release(
         tag=tag,
         title="TTS voice bake-off · latest",
         notes=(
             "Rolling AI-News-Daily TTS bake-off previews. "
-            "This release is intentionally reused and bounded."
+            "The release is replaced on promotion so stale assets cannot accumulate."
         ),
         repo_slug=repo_slug,
         target_branch=branch,
