@@ -69,9 +69,9 @@ jobs:
               info, scopes=["https://www.googleapis.com/auth/drive"]
           )
           creds.refresh(Request())
-          print(f"::add-mask::${creds.token}")
+          print(f"::add-mask::{creds.token}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              print(f"access_token=${creds.token}", file=out)
+              print(f"access_token={creds.token}", file=out)
           PY
 
       - name: Select oldest weekly research Sheet
@@ -98,8 +98,8 @@ jobs:
           files.sort(key=lambda f: str(f.get("createdTime") or ""))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               if files:
-                  print(f"file_id=${files[0]['id']}", file=out)
-                  print(f"file_name=${files[0]['name']}", file=out)
+                  print(f"file_id={files[0]['id']}", file=out)
+                  print(f"file_name={files[0]['name']}", file=out)
               else:
                   print("file_id=", file=out)
                   print("file_name=", file=out)
@@ -115,8 +115,8 @@ jobs:
           python - <<'PY'
           import base64, csv, hashlib, io, os, requests
           r = requests.get(
-              f"https://www.googleapis.com/drive/v3/files/${os.environ['FILE_ID']}/export",
-              headers={"Authorization": f"Bearer ${os.environ['ACCESS_TOKEN']}"},
+              f"https://www.googleapis.com/drive/v3/files/{os.environ['FILE_ID']}/export",
+              headers={"Authorization": f"Bearer {os.environ['ACCESS_TOKEN']}"},
               params={"mimeType": "text/csv"},
               timeout=30,
           )
@@ -124,7 +124,7 @@ jobs:
           rows = list(csv.reader(io.StringIO(r.content.decode("utf-8-sig"))))
           keys = ["format","message_id","namespace","target_repo","target_path","content_type","status","payload"]
           if len(rows) != 8 or any(len(row) != 2 for row in rows):
-              raise SystemExit(f"A1:B8 shape mismatch: ${rows!r}")
+              raise SystemExit(f"A1:B8 shape mismatch: {rows!r}")
           if [row[0] for row in rows] != keys:
               raise SystemExit("A1:A8 keys mismatch")
           kv = {k: v for k, v in rows}
@@ -173,8 +173,8 @@ jobs:
           python - <<'PY'
           import os, requests
           r = requests.patch(
-              f"https://www.googleapis.com/drive/v3/files/${os.environ['FILE_ID']}",
-              headers={"Authorization": f"Bearer ${os.environ['ACCESS_TOKEN']}"},
+              f"https://www.googleapis.com/drive/v3/files/{os.environ['FILE_ID']}",
+              headers={"Authorization": f"Bearer {os.environ['ACCESS_TOKEN']}"},
               params={
                   "addParents": os.environ["FAILED_FOLDER_ID"],
                   "removeParents": os.environ["INBOX_FOLDER_ID"],
@@ -261,8 +261,8 @@ jobs:
           python - <<'PY'
           import os, requests
           r = requests.patch(
-              f"https://www.googleapis.com/drive/v3/files/${os.environ['FILE_ID']}",
-              headers={"Authorization": f"Bearer ${os.environ['ACCESS_TOKEN']}"},
+              f"https://www.googleapis.com/drive/v3/files/{os.environ['FILE_ID']}",
+              headers={"Authorization": f"Bearer {os.environ['ACCESS_TOKEN']}"},
               params={
                   "addParents": os.environ["PROCESSED_FOLDER_ID"],
                   "removeParents": os.environ["INBOX_FOLDER_ID"],
