@@ -26,7 +26,8 @@ jobs:
       INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
       PROCESSED_FOLDER_ID: 1o-2WPz514dFJDg7seGz2dZ4X87doPkdK
       FAILED_FOLDER_ID: 1m03IN_GY0rJgpz_gXtwm1by91GcSOuZz
-      FILE_PREFIX: ai-news-daily.news.
+      SHEET_PREFIX: __bridge_inbox_AI-News-Daily__
+      RAW_PREFIX: ai-news-daily.news.
 
     steps:
       - name: Checkout main
@@ -52,7 +53,7 @@ jobs:
           python -m pip install --disable-pip-version-check --quiet google-auth requests
           python -m pip install -c requirements.lock pydantic
 
-      - name: Mint Google Drive token
+      - name: Mint Google Drive and Sheets token
         id: auth
         shell: bash
         env:
@@ -67,7 +68,10 @@ jobs:
           info = json.loads(os.environ["GDRIVE_SERVICE_ACCOUNT_JSON"])
           creds = service_account.Credentials.from_service_account_info(
               info,
-              scopes=["https://www.googleapis.com/auth/drive"],
+              scopes=[
+                  "https://www.googleapis.com/auth/drive",
+                  "https://www.googleapis.com/auth/spreadsheets.readonly",
+              ],
           )
           creds.refresh(Request())
           print(f"::add-mask::{creds.token}")
@@ -75,7 +79,7 @@ jobs:
               print(f"access_token={creds.token}", file=out)
           PY
 
-      - name: Select oldest pending production envelope
+      - name: Select oldest pending AI News handoff
         id: select
         shell: bash
         env:
@@ -83,7 +87,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "::add-mask::$ACCESS_TOKEN"
-          query="'$INBOX_FOLDER_ID' in parents and trashed=false and mimeType='text/plain'"
+          query="'$INBOX_FOLDER_ID' in parents and trashed=false"
           curl --fail-with-body -sS -G \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             --data-urlencode "q=$query" \
@@ -95,25 +99,127 @@ jobs:
           import json, os
           from pathlib import Path
 
-          prefix = os.environ["FILE_PREFIX"]
           candidates = json.loads(Path("/tmp/drive-list.json").read_text()).get("files", [])
-          files = [
-              f for f in candidates
-              if str(f.get("name") or "").startswith(prefix)
-          ]
-          files.sort(key=lambda f: str(f.get("createdTime") or ""))
+          sheet_prefix = os.environ["SHEET_PREFIX"]
+          raw_prefix = os.environ["RAW_PREFIX"]
+          eligible = []
+          for f in candidates:
+              name = str(f.get("name") or "")
+              mime = str(f.get("mimeType") or "")
+              if mime == "application/vnd.google-apps.spreadsheet" and name.startswith(sheet_prefix):
+                  eligible.append((str(f.get("createdTime") or ""), 0, "sheet", f))
+              elif mime == "text/plain" and name.startswith(raw_prefix):
+                  eligible.append((str(f.get("createdTime") or ""), 1, "raw", f))
+          eligible.sort(key=lambda x: (x[0], x[1]))
+
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              if files:
-                  f = files[0]
+              if eligible:
+                  _, _, kind, f = eligible[0]
                   print(f"file_id={f['id']}", file=out)
                   print(f"file_name={f['name']}", file=out)
+                  print(f"file_kind={kind}", file=out)
               else:
                   print("file_id=", file=out)
                   print("file_name=", file=out)
+                  print("file_kind=", file=out)
           PY
 
-      - name: Download production envelope
-        if: steps.select.outputs.file_id != ''
+      - name: Convert Sheet handoff to verified envelope
+        if: steps.select.outputs.file_kind == 'sheet'
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          FILE_ID: ${{ steps.select.outputs.file_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import os
+          import urllib.parse
+
+          import requests
+
+          token = os.environ["ACCESS_TOKEN"]
+          file_id = os.environ["FILE_ID"]
+          headers = {"Authorization": f"Bearer {token}"}
+
+          meta_url = f"https://sheets.googleapis.com/v4/spreadsheets/{file_id}"
+          meta = requests.get(
+              meta_url,
+              headers=headers,
+              params={"fields": "sheets(properties(sheetId,title,index))"},
+              timeout=30,
+          )
+          meta.raise_for_status()
+          sheets = meta.json().get("sheets", [])
+          if not sheets:
+              raise SystemExit("spreadsheet has no sheets")
+          first = min(sheets, key=lambda s: int(s.get("properties", {}).get("index", 0)))
+          title = str(first["properties"]["title"])
+          a1 = f"'{title.replace(chr(39), chr(39)*2)}'!A1:B8"
+          values_url = (
+              f"https://sheets.googleapis.com/v4/spreadsheets/{file_id}/values/"
+              + urllib.parse.quote(a1, safe="")
+          )
+          resp = requests.get(
+              values_url,
+              headers=headers,
+              params={"valueRenderOption": "UNFORMATTED_VALUE"},
+              timeout=30,
+          )
+          resp.raise_for_status()
+          rows = resp.json().get("values", [])
+
+          keys = [
+              "format",
+              "message_id",
+              "namespace",
+              "target_repo",
+              "target_path",
+              "content_type",
+              "status",
+              "payload",
+          ]
+          if len(rows) != 8 or any(len(row) != 2 for row in rows):
+              raise SystemExit(f"A1:B8 shape mismatch: {rows!r}")
+          got_keys = [str(row[0]) for row in rows]
+          if got_keys != keys:
+              raise SystemExit(f"A1:A8 keys mismatch: {got_keys!r}")
+
+          kv = {str(k): str(v) for k, v in rows}
+          if kv["format"] != "bridge-sheet-v1":
+              raise SystemExit("format must be bridge-sheet-v1")
+          if kv["namespace"] != "AI-News-Daily":
+              raise SystemExit("namespace must be AI-News-Daily")
+          if kv["target_repo"] != os.environ["GITHUB_REPOSITORY"]:
+              raise SystemExit("target_repo mismatch")
+          if kv["content_type"] != "text/plain":
+              raise SystemExit("content_type must be text/plain")
+          if kv["status"] != "ready":
+              raise SystemExit("status must be ready")
+          if not kv["payload"]:
+              raise SystemExit("payload is empty")
+
+          payload_bytes = kv["payload"].encode("utf-8")
+          envelope = "\n".join([
+              "format=base64-payload-v1",
+              "schema_version=1.0",
+              "message_id=" + kv["message_id"],
+              "target_repo=" + kv["target_repo"],
+              "target_path=" + kv["target_path"],
+              "content_type=" + kv["content_type"],
+              "sha256=" + hashlib.sha256(payload_bytes).hexdigest(),
+              "payload_b64=" + base64.b64encode(payload_bytes).decode("ascii"),
+              "",
+          ])
+          with open("/tmp/ai-news-envelope.txt", "w", encoding="utf-8") as fh:
+              fh.write(envelope)
+          PY
+
+      - name: Download raw production envelope
+        if: steps.select.outputs.file_kind == 'raw'
         shell: bash
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
@@ -125,7 +231,7 @@ jobs:
             "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}?alt=media" \
             -o /tmp/ai-news-envelope.txt
 
-      - name: Validate envelope and materialize digest
+      - name: Validate handoff and materialize digest
         if: steps.select.outputs.file_id != ''
         id: validate
         continue-on-error: true
@@ -137,21 +243,37 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --news-dir news
 
-      - name: Move invalid envelope to failed
+      - name: Move invalid handoff to failed
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
         shell: bash
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          FILE_ID: ${{ steps.select.outputs.file_id }}
+          FILE_NAME: ${{ steps.select.outputs.file_name }}
         run: |
           set -euo pipefail
-          curl --fail-with-body -sS -X PATCH -G \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            --data-urlencode "addParents=$FAILED_FOLDER_ID" \
-            --data-urlencode "removeParents=$INBOX_FOLDER_ID" \
-            --data-urlencode "fields=id,name,parents" \
-            "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}" >/dev/null
+          python - <<'PY'
+          import os
+          import requests
 
-      - name: Fail invalid envelope
+          token = os.environ["ACCESS_TOKEN"]
+          file_id = os.environ["FILE_ID"]
+          file_name = os.environ["FILE_NAME"]
+          r = requests.patch(
+              f"https://www.googleapis.com/drive/v3/files/{file_id}",
+              headers={"Authorization": f"Bearer {token}"},
+              params={
+                  "addParents": os.environ["FAILED_FOLDER_ID"],
+                  "removeParents": os.environ["INBOX_FOLDER_ID"],
+                  "fields": "id,name,parents",
+              },
+              json={"name": "failed__" + file_name},
+              timeout=30,
+          )
+          r.raise_for_status()
+          PY
+
+      - name: Fail invalid handoff
         if: steps.select.outputs.file_id != '' && steps.validate.outcome == 'failure'
         run: exit 1
 
@@ -188,7 +310,7 @@ jobs:
           git push origin HEAD:main
           echo "status=published" >> "$GITHUB_OUTPUT"
 
-      - name: Move consumed envelope to processed
+      - name: Move consumed handoff to processed
         if: >-
           steps.select.outputs.file_id != '' &&
           steps.validate.outcome == 'success' &&
@@ -200,15 +322,31 @@ jobs:
         shell: bash
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          FILE_ID: ${{ steps.select.outputs.file_id }}
+          FILE_NAME: ${{ steps.select.outputs.file_name }}
         run: |
           set -euo pipefail
-          curl --fail-with-body -sS -X PATCH -G \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            --data-urlencode "addParents=$PROCESSED_FOLDER_ID" \
-            --data-urlencode "removeParents=$INBOX_FOLDER_ID" \
-            --data-urlencode "fields=id,name,parents" \
-            "https://www.googleapis.com/drive/v3/files/${{ steps.select.outputs.file_id }}" >/dev/null
+          python - <<'PY'
+          import os
+          import requests
+
+          token = os.environ["ACCESS_TOKEN"]
+          file_id = os.environ["FILE_ID"]
+          file_name = os.environ["FILE_NAME"]
+          r = requests.patch(
+              f"https://www.googleapis.com/drive/v3/files/{file_id}",
+              headers={"Authorization": f"Bearer {token}"},
+              params={
+                  "addParents": os.environ["PROCESSED_FOLDER_ID"],
+                  "removeParents": os.environ["INBOX_FOLDER_ID"],
+                  "fields": "id,name,parents",
+              },
+              json={"name": "processed__" + file_name},
+              timeout=30,
+          )
+          r.raise_for_status()
+          PY
 
       - name: Idle
         if: steps.select.outputs.file_id == ''
-        run: echo "No pending AI News production envelope found."
+        run: echo "No pending AI News production handoff found."
