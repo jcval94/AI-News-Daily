@@ -25,7 +25,7 @@ ENVELOPE_KEYS = {
 }
 MESSAGE_ID_RE = re.compile(r"^[A-Za-z0-9._-]{6,160}$")
 TARGET_RE = re.compile(
-    r"^news/(?P<date>\\d{4}-\\d{2}-\\d{2})-(?P<hour>\\d{2})-(?P<minute>\\d{2})-(?P<second>\\d{2})\\.txt$"
+    r"^news/(?P<date>\d{4}-\d{2}-\d{2})-(?P<hour>\d{2})-(?P<minute>\d{2})-(?P<second>\d{2})\.txt$"
 )
 
 
@@ -33,7 +33,7 @@ def _write_output(name: str, value: str) -> None:
     output = os.getenv("GITHUB_OUTPUT")
     if output:
         with open(output, "a", encoding="utf-8") as handle:
-            handle.write(f"{name}={value}\\n")
+            handle.write(f"{name}={value}\n")
 
 
 def parse_envelope(path: Path) -> dict[str, str]:
