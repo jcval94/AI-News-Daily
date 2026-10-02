@@ -78,3 +78,31 @@ actualiza un único issue operativo:
 Al recuperarse el contrato, ese incidente se comenta y se cierra
 automáticamente. Los pull requests sólo reciben el check fallido; no generan
 incidentes para evitar ruido.
+
+## Scheduled-task Drive publication
+
+The Friday scheduled research task no longer writes `research/weekly/` directly.
+
+The production path is:
+
+```text
+ChatGPT weekly research
+    ↓ canonical JSON only
+Google Sheet A1:B8
+    ↓ readback + move to shared Drive inbox
+Google Drive Weekly Research Bridge
+    ↓ JSON Schema + historical-ID validation
+research/weekly/YYYY-MM-DD.json
+    ↓ deterministic renderer
+research/weekly/YYYY-MM-DD.md
+```
+
+The handoff Sheet title begins with:
+
+`__bridge_inbox_AI-News-Daily__research-weekly__`
+
+and uses the shared bridge keys `format`, `message_id`, `namespace`, `target_repo`, `target_path`, `content_type`, `status`, and `payload`. The payload is the complete canonical JSON; `content_type` is `application/json`.
+
+`.github/workflows/gdrive-weekly-research-bridge.yml` is the only scheduled-task publication path. It validates the JSON against `weekly_digest.schema.json`, enforces historical ID semantics, derives Markdown deterministically from the accepted JSON, rechecks latest `main`, stages exactly the JSON/Markdown pair, and moves the Drive handoff to `processed/` or `failed/`.
+
+A successful task-side Sheet handoff means only **queued in Drive**. The independent **Weekly Applied GenAI Research Contract** workflow remains the post-publication watchdog and must continue to validate the complete research history.
