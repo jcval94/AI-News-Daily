@@ -52,7 +52,7 @@ The external scheduled task performs the non-deterministic editorial work:
 
 1. resolve local time in `America/Mexico_City`;
 2. inspect canonical `news/` read-only;
-3. repair at most **YESTERDAY + TODAY**;
+3. produce **TODAY only**; the separate **AI News Repair Watch** handles missing TODAY, then YESTERDAY;
 4. research recent sources;
 5. deduplicate against recent valid digests;
 6. select the strongest stories;
@@ -238,13 +238,23 @@ Do not switch back to direct Sheets API reads without proving that the service a
 
 ## Recovery contract
 
-The external task repairs only **YESTERDAY and TODAY**.
+The producer **AI News Daily** handles **TODAY only**. The separate **AI News
+Repair Watch** repairs missing **TODAY, then YESTERDAY**, completing each target
+before beginning the next.
 
 This is intentional. It prevents a transient scheduling problem from causing an unbounded historical backfill with changing editorial context.
 
 Older gaps require an explicit manual/backfill decision.
 
-A failure for YESTERDAY must not prevent an independent attempt for TODAY.
+A failure for TODAY must not prevent an independent attempt for YESTERDAY.
+
+After a healthy digest is published or confirmed present, both ingestion lanes
+explicitly dispatch the existing ingestion watchdog with that digest's date.
+When its source window is complete by calendar date, they also dispatch the
+existing production preflight with the original Tuesday/Friday target. These
+checks refresh Pages through the existing Review Hub `workflow_run` triggers.
+An idle bridge dispatches nothing. If dispatch fails, a Drive handoff remains
+in the inbox for idempotent retry before acknowledgement.
 
 ## Monitoring
 

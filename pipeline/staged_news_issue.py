@@ -30,7 +30,7 @@ def _items(path: Path):
 
 def valid_for_day(news_dir: Path, day: date) -> Path | None:
     for path in files_for_date(news_dir, day):
-        if _items(path):
+        if len(_items(path)) >= 5:
             return path
     return None
 

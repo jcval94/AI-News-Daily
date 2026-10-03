@@ -2,19 +2,20 @@ name: Ingest AI News Staging
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited, reopened]
 
 permissions:
   contents: write
   issues: write
+  actions: write
 
 concurrency:
-  group: ai-news-staging-main
+  group: ai-news-ingestion-main
   cancel-in-progress: false
 
 jobs:
   ingest:
-    if: startsWith(github.event.issue.title, 'AI_NEWS_STAGING — ')
+    if: github.event.issue.state == 'open' && startsWith(github.event.issue.title, 'AI_NEWS_STAGING — ')
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -60,12 +61,17 @@ jobs:
           set -euo pipefail
           git fetch origin main
 
-          if git ls-tree -r --name-only origin/main -- news/ | grep -Eq "^news/${DIGEST_DATE}(-|\\.txt$)"; then
-            echo "A valid-date candidate for ${DIGEST_DATE} already exists on origin/main; refusing duplicate publication."
+          REMOTE_NEWS="$(mktemp -d)"
+          git archive origin/main news/ | tar -x -C "$REMOTE_NEWS"
+          if python -m pipeline.news_ingestion_health --date "$DIGEST_DATE" --news-dir "$REMOTE_NEWS/news" --output "$REMOTE_NEWS/health.json"; then
+            echo "A healthy digest for ${DIGEST_DATE} already exists on origin/main; refusing duplicate publication."
             rm -f -- "$DIGEST_PATH"
+            rm -rf -- "$REMOTE_NEWS"
+            git rebase origin/main
             echo "status=race_existing" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          rm -rf -- "$REMOTE_NEWS"
 
           git rebase origin/main
           git config user.name "github-actions[bot]"
@@ -81,6 +87,13 @@ jobs:
           git commit -m "Add AI news digest for ${DIGEST_DATE}"
           git push origin HEAD:main
           echo "status=published" >> "$GITHUB_OUTPUT"
+
+      - name: Refresh ingestion health and production readiness
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIGEST_DATE: ${{ steps.ingest.outputs.date }}
+        run: python -m pipeline.news_ingestion_followup --date "$DIGEST_DATE" --repo "$GITHUB_REPOSITORY"
 
       - name: Comment and close successful staging issue
         if: success()

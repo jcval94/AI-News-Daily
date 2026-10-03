@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "0 23 * * 1,4" # Monday/Thursday 17:00 America/Mexico_City
   workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Production target to recheck (YYYY-MM-DD); empty means next scheduled target"
+        required: false
+        default: ""
+        type: string
   push:
     branches: [main]
     paths:
@@ -17,7 +23,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: production-preflight
+  group: production-preflight-${{ inputs.target_date || 'next' }}
   cancel-in-progress: true
 
 jobs:
@@ -42,7 +48,8 @@ jobs:
           NEWS_SOURCE_MODE: scheduled_window
           NEWS_LOOKBACK_DAYS: '4'
           MIN_SOURCE_COVERAGE_RATIO: ${{ vars.MIN_SOURCE_COVERAGE_RATIO || '0.75' }}
-        run: python -m pipeline.production_preflight --output production-preflight.json
+          TARGET_DATE: ${{ inputs.target_date }}
+        run: python -m pipeline.production_preflight --target-date "$TARGET_DATE" --output production-preflight.json
       - name: Publish preflight summary
         if: always()
         run: |

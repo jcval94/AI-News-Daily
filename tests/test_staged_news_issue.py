@@ -74,6 +74,22 @@ def event(path: Path, body: str, stamp: str = "2026-09-26 08:00:00") -> None:
 
 class StagedNewsIssueTests(unittest.TestCase):
     @patch("pipeline.staged_news_issue.datetime")
+    def test_thin_existing_candidate_does_not_block_valid_recovery(self, mock_datetime) -> None:
+        mock_datetime.now.return_value = datetime(2026, 9, 26, 8, 1, tzinfo=TZ)
+        with tempfile.TemporaryDirectory() as tmp:
+            news = Path(tmp) / "news"
+            news.mkdir()
+            thin = f"# AI News Daily — 2026-09-26 07:00:00 America/Mexico_City\n\n{story(1)}"
+            existing = news / "2026-09-26-07-00-00.txt"
+            existing.write_text(thin, encoding="utf-8")
+            ev = Path(tmp) / "event.json"
+            event(ev, digest())
+            status, output = process_event(ev, news)
+            self.assertEqual(status, "created")
+            self.assertNotEqual(output, existing)
+            self.assertEqual(existing.read_text(encoding="utf-8"), thin)
+
+    @patch("pipeline.staged_news_issue.datetime")
     def test_materializes_one_valid_digest(self, mock_datetime) -> None:
         mock_datetime.now.return_value = datetime(2026, 9, 26, 8, 1, tzinfo=TZ)
         with tempfile.TemporaryDirectory() as tmp:

@@ -522,7 +522,7 @@ jobs:
 
       - name: Create run report
         id: report
-        if: always()
+        if: always() && steps.workspace.outcome == 'success' && steps.runtime_options.outcome == 'success'
         env:
           EPISODE_RUN_ID: ${{ github.run_id }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
@@ -623,7 +623,7 @@ jobs:
           git push origin "HEAD:$GITHUB_REF_NAME"
 
       - name: Upload isolated run artifact
-        if: always()
+        if: always() && steps.workspace.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: ai-news-run-${{ steps.script_date.outputs.target_date }}-${{ github.run_id }}
@@ -634,7 +634,7 @@ jobs:
           retention-days: 30
 
       - name: Preserve independent media library
-        if: always() && inputs.media_retrieval_mode != 'off'
+        if: always() && steps.workspace.outcome == 'success' && inputs.media_retrieval_mode != 'off'
         uses: actions/upload-artifact@v4
         with:
           name: media-library-${{ github.run_id }}

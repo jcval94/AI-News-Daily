@@ -5,6 +5,12 @@ on:
     - cron: "30 16 * * *" # 10:30 America/Mexico_City: early missing-ingestion detection
     - cron: "0 20 * * *"  # 14:00 America/Mexico_City: same-day recovery verification
   workflow_dispatch:
+    inputs:
+      date:
+        description: "Digest date to verify (YYYY-MM-DD); empty means today"
+        required: false
+        default: ""
+        type: string
   push:
     branches: [main]
     paths:
@@ -18,7 +24,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: news-ingestion-watchdog
+  group: news-ingestion-watchdog-${{ inputs.date || 'today' }}
   cancel-in-progress: true
 
 jobs:
@@ -37,7 +43,9 @@ jobs:
       - name: Verify today's digest
         id: health
         continue-on-error: true
-        run: python -m pipeline.news_ingestion_health --output news-ingestion-health.json
+        env:
+          DIGEST_DATE: ${{ inputs.date }}
+        run: python -m pipeline.news_ingestion_health --date "$DIGEST_DATE" --output news-ingestion-health.json
       - name: Publish watchdog summary
         if: always()
         run: |

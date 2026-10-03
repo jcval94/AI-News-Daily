@@ -13,9 +13,10 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
-  group: gdrive-ai-news-bridge
+  group: ai-news-ingestion-main
   cancel-in-progress: false
 
 jobs:
@@ -277,12 +278,17 @@ jobs:
           set -euo pipefail
           git fetch origin main
 
-          if git ls-tree -r --name-only origin/main -- news/ | grep -Eq "^news/${DIGEST_DATE}(-|\.txt$)"; then
-            echo "A digest for ${DIGEST_DATE} already exists on origin/main; refusing duplicate publication."
+          REMOTE_NEWS="$(mktemp -d)"
+          git archive origin/main news/ | tar -x -C "$REMOTE_NEWS"
+          if python -m pipeline.news_ingestion_health --date "$DIGEST_DATE" --news-dir "$REMOTE_NEWS/news" --output "$REMOTE_NEWS/health.json"; then
+            echo "A healthy digest for ${DIGEST_DATE} already exists on origin/main; refusing duplicate publication."
             rm -f -- "$DIGEST_PATH"
+            rm -rf -- "$REMOTE_NEWS"
+            git rebase origin/main
             echo "status=race_existing" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          rm -rf -- "$REMOTE_NEWS"
 
           git rebase origin/main
           git config user.name "github-actions[bot]"
@@ -298,6 +304,20 @@ jobs:
           git commit -m "Add AI news digest for ${DIGEST_DATE} via Drive bridge"
           git push origin HEAD:main
           echo "status=published" >> "$GITHUB_OUTPUT"
+
+      - name: Refresh ingestion health and production readiness
+        if: >-
+          steps.select.outputs.file_id != '' &&
+          steps.validate.outcome == 'success' &&
+          (
+            steps.validate.outputs.status == 'already_exists' ||
+            steps.publish.outputs.status == 'published' ||
+            steps.publish.outputs.status == 'race_existing'
+          )
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIGEST_DATE: ${{ steps.validate.outputs.date }}
+        run: python -m pipeline.news_ingestion_followup --date "$DIGEST_DATE" --repo "$GITHUB_REPOSITORY"
 
       - name: Move consumed handoff to processed
         if: >-
