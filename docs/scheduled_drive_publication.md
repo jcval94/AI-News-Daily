@@ -85,7 +85,16 @@ The task must:
 7. verify the inbox parent;
 8. stop; after any write/readback failure, retain the Sheet ID, report the failed phase, do not enqueue or create a replacement Sheet within that execution.
 
-The two other active producer prompts currently request a single batch but do not yet spell out all these hardened mechanics. Track adoption per lane rather than treating a shared document as proof that every task has been updated. See [the daily verified baseline and applicability audit](daily_bridge_verified_2026-10-03.md).
+On 2026-10-03, the saved prompts for **GenAI Applied Weekly**, **Narrative Memory Builder** and **AI News Repair Watch** were updated and read back exactly. Schedules, enabled states and all other tasks (including CV_fit) were preserved.
+
+| Task | Configuration verified | Execution evidence |
+| --- | --- | --- |
+| AI News Daily | Existing hardened contract | Real 2026-10-03 Sheet → inbox → main → processed → Pages proof |
+| GenAI Applied Weekly | Frozen canonical JSON, pre-transport validation, real sheetId, one structured updateCells, exact readback, same-file move, no replacement/retry after failure | New prompt has not yet completed a lane-specific real handoff in this audit |
+| Narrative Memory Builder | Same transport protections; zero-approved stop, JSONL gates, semantic dedup and append-only preserved | New prompt has not yet completed a lane-specific real handoff in this audit |
+| AI News Repair Watch | Freeze before canonical-header validation; explicit metadata/write/read/move failure handling and sole-parent checks; independent TODAY/YESTERDAY processing preserved | Revised recovery path has not yet been exercised with a missing target in this audit |
+
+Prompt readback proves configuration adoption, not end-to-end execution. No synthetic production handoffs were created for this update. See [the daily verified baseline and applicability audit](daily_bridge_verified_2026-10-03.md).
 
 It must not export the Sheet, create repository files, create commits, create production GitHub staging issues, or claim publication.
 
@@ -329,6 +338,7 @@ Recommended:
 ```text
 already_present
 queued_in_drive
+failed_validation
 failed_to_sheet
 failed_to_inbox
 bridge_unavailable
