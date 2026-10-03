@@ -76,14 +76,16 @@ Every production lane uses exactly eight key/value rows on the first sheet.
 
 The task must:
 
-1. create the Sheet;
-2. write A1:B8 in one batch;
-3. read back A1:B8;
+1. freeze the candidate payload and identifiers, create exactly one Sheet per target per execution, and immediately retain its ID;
+2. read metadata to resolve the first tab and its real numeric sheetId; write A1:B8 with exactly one structured updateCells request, a precise userEnteredValue field mask, and stringValue for all 16 cells;
+3. read back the resolved tab's A1:B8 using unformatted values;
 4. verify all eight keys and values;
 5. verify that the full multiline payload survived intact;
 6. move the same Sheet into the shared inbox;
 7. verify the inbox parent;
-8. stop.
+8. stop; after any write/readback failure, retain the Sheet ID, report the failed phase, do not enqueue or create a replacement Sheet within that execution.
+
+The two other active producer prompts currently request a single batch but do not yet spell out all these hardened mechanics. Track adoption per lane rather than treating a shared document as proof that every task has been updated. See [the daily verified baseline and applicability audit](daily_bridge_verified_2026-10-03.md).
 
 It must not export the Sheet, create repository files, create commits, create production GitHub staging issues, or claim publication.
 
@@ -93,11 +95,13 @@ It must not export the Sheet, create repository files, create commits, create pr
 
 Task: **AI News Daily**
 
-Sheet prefix:
+Sheet name must match the complete daily form:
 
 ```text
-__bridge_inbox_AI-News-Daily__
+^__bridge_inbox_AI-News-Daily__\d{4}-\d{2}-\d{2}_\d{6}$
 ```
+
+Do not use only a startswith match: it also matches the weekly and Narrative Memory lanes.
 
 Message ID:
 
@@ -128,7 +132,8 @@ pipeline.staged_news_issue
 
 Special rules:
 
-- TODAY and YESTERDAY only for automatic recovery;
+- the normal producer handles TODAY only;
+- a separate Repair Watch checks TODAY then YESTERDAY, only if missing; never automatic older backfill;
 - 5–10 parseable stories;
 - editorial depth and allowed categories;
 - recent semantic deduplication;
