@@ -78,7 +78,87 @@ GitHub is publication authority.
 The bridge:
 
 1. selects the oldest eligible handoff from the Drive inbox;
-2. accepts production Sheets prefixed `__bridge_inbox_AI-News-Daily__`;
+2. accepts only full daily Sheet names matching `^__bridge_inbox_AI-News-Daily__\\d{4}-\\d{2}-\\d{2}_\\d{6}# AI News Daily — Google Drive ingestion bridge
+
+> Shared transport/lifecycle rules for all scheduled publication lanes: `docs/scheduled_drive_publication.md`.
+
+This document is the operational contract and runbook for the production path that moves a daily AI-news digest from a ChatGPT scheduled task into the canonical `news/` directory.
+
+The design deliberately separates **probabilistic editorial work** from **deterministic publication authority**.
+
+## Production path
+
+```text
+ChatGPT scheduled task
+    │ research + select + write + self-check
+    ▼
+temporary Google Sheet
+    │ exact A1:B8 contract + readback
+    ▼
+shared Drive inbox
+    │ no GitHub write from ChatGPT
+    ▼
+Google Drive AI News Bridge
+    │ Drive CSV export + envelope construction
+    ▼
+pipeline.gdrive_news_bridge
+    │ SHA / repo / path / timestamp validation
+    ▼
+pipeline.staged_news_issue
+    │ parser + editorial/dedup/date gates
+    ▼
+git recheck against origin/main
+    │ exactly one digest staged
+    ▼
+news/YYYY-MM-DD-HH-MM-SS.txt
+    │
+    ├── success / idempotent -> Drive processed/
+    └── invalid                -> Drive failed/
+```
+
+The canonical GitHub workflow is:
+
+- `.github/workflows/gdrive-raw-bridge-probe.yml`
+- workflow name: **Google Drive AI News Bridge**
+- scheduled every five minutes and manually dispatchable.
+
+The filename is historical; despite the old `probe` name, this workflow is the production consumer.
+
+## Responsibility boundary
+
+### ChatGPT scheduled task owns
+
+The external scheduled task performs the non-deterministic editorial work:
+
+1. resolve local time in `America/Mexico_City`;
+2. inspect canonical `news/` read-only;
+3. produce **TODAY only**; the separate **AI News Repair Watch** handles missing TODAY, then YESTERDAY;
+4. research recent sources;
+5. deduplicate against recent valid digests;
+6. select the strongest stories;
+7. write the complete digest;
+8. self-check the digest against the editorial contract;
+9. create one Google Sheet per missing target;
+10. write and read back the exact A1:B8 handoff;
+11. move the verified Sheet into the shared Drive inbox.
+
+The scheduled task must **not**:
+
+- write repository files directly;
+- create a GitHub staging issue;
+- bypass the deterministic validator;
+- claim GitHub publication merely because the Sheet handoff succeeded.
+
+A successful task-side handoff means only **queued in Drive**.
+
+### GitHub Actions owns
+
+GitHub is publication authority.
+
+The bridge:
+
+1. selects the oldest eligible handoff from the Drive inbox;
+; weekly and Narrative Memory handoffs are excluded;
 3. retains compatibility with legacy raw envelopes prefixed `ai-news-daily.news.`;
 4. exports a Sheet through the Google Drive API as CSV;
 5. requires exactly eight two-column rows with the expected keys;
@@ -95,13 +175,7 @@ GitHub Actions does not generate news content with an AI model.
 
 ## Google Sheet handoff contract
 
-The Sheet title must begin with:
-
-```text
-__bridge_inbox_AI-News-Daily__
-```
-
-Recommended full form:
+The Sheet title must match the complete daily form (a shared prefix alone is insufficient):
 
 ```text
 __bridge_inbox_AI-News-Daily__YYYY-MM-DD_HHMMSS
@@ -136,7 +210,11 @@ The payload first line must be exactly:
 # AI News Daily — YYYY-MM-DD HH:MM:SS America/Mexico_City
 ```
 
-The task must read back `A1:B8` before moving the Sheet into the inbox. A failed readback is not a valid handoff.
+Freeze the payload and identifiers before transport. Create exactly one Sheet per target per execution, resolve the real numeric first-tab `sheetId` from metadata, and write A1:B8 with exactly one structured `updateCells` request using `start={sheetId:<REAL>, rowIndex:0, columnIndex:0}`, `fields=userEnteredValue`, and 8×2 `userEnteredValue.stringValue` cells. Never create a replacement Sheet after an error within that execution.
+
+The task must read back `A1:B8` with unformatted values and compare all 16 values, including the complete multiline payload, before moving that same Sheet into the inbox. A failed readback is not a valid handoff. Verify the sole inbox parent after the move; `queued_in_drive` is transport success only.
+
+See [the verified 2026-10-03 baseline](daily_bridge_verified_2026-10-03.md) for actual schedules, file IDs, consuming-run evidence, and live Pages verification.
 
 ## Internal envelope
 
@@ -296,7 +374,7 @@ Check whether the handoff:
 
 - is actually inside the configured inbox;
 - is a native Google Sheet;
-- starts with `__bridge_inbox_AI-News-Daily__`.
+- matches the complete daily name `__bridge_inbox_AI-News-Daily__YYYY-MM-DD_HHMMSS`.
 
 Legacy raw envelopes must be `text/plain` and start with `ai-news-daily.news.`.
 
