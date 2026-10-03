@@ -123,10 +123,11 @@ A single successful run does not prove long-term scheduling reliability, all fai
 
 | Process/repository | Evidence | Proposed follow-up |
 | --- | --- | --- |
-| AI-News-Daily: GenAI Applied Weekly | Active task uses one batch/readback/move, but does not name updateCells, real sheetId, frozen payload, or explicit prohibition of replacement creation after failure | Adopt the same deterministic write/freeze/error contract while preserving canonical JSON and stable research IDs; perform a lane-specific real test |
-| AI-News-Daily: Narrative Memory Builder | Active task has the same transport omissions; already has zero-candidate stop and append-only semantics | Adopt the same write/freeze/error contract, preserving JSONL, semantic dedup and append-only validator; perform its own real test |
+| AI-News-Daily: GenAI Applied Weekly | Prompt upgraded and exact readback verified on 2026-10-03; schedule/state preserved | Transport contract adopted, canonical JSON and stable IDs preserved; lane-specific real execution of the new prompt remains pending |
+| AI-News-Daily: Narrative Memory Builder | Prompt upgraded and exact readback verified on 2026-10-03; schedule/state preserved | Transport contract adopted; zero-candidate stop, JSONL gates, semantic dedup and append-only preserved; lane-specific real execution remains pending |
+| AI-News-Daily: AI News Repair Watch | Prompt revised and exact readback verified on 2026-10-03 | Freeze precedes canonical-header validation; sole-parent and phase-specific failure checks added; missing-target recovery test remains pending |
 | CV_fit: Final Review / vacancy tasks | Related tasks currently disabled; final review prompt writes canonical files directly to main | Consider candidate handoff + deterministic review/publish authority before reactivation; use a separate namespace and validator rather than copying news rules |
 | floor | Its intraday pipeline is GitHub-native; this audit does not establish a Drive transport defect | Reuse separation of heartbeat/recovery and outcome verification where useful; a Sheets migration is not justified by the daily-news evidence |
 | Other repositories | Inventory alone does not prove a similar integration | Inspect actual writers and consumers before recommending migration |
 
-No other tasks or repository workflows were changed by this documentation audit.
+Follow-up on 2026-10-03 updated only the three task prompts above. All task schedules and enabled states were verified unchanged, as were the other task prompts, including CV_fit. No repository code, validator or workflow was changed. Configuration readback is not a new E2E proof; see the adoption matrix in `docs/scheduled_drive_publication.md`.
