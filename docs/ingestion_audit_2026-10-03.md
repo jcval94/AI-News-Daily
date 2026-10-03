@@ -81,7 +81,7 @@ https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows
 ## Validation and remaining data work
 
 `python -m compileall app pipeline` and the complete deterministic suite passed:
-**471 tests**. New regressions cover dated follow-ups, pending future windows,
+**472 tests**. New regressions cover dated follow-ups, pending future windows,
 missing/thin sources, dispatch failure, idle gating, and recovery from a thin
 existing candidate. Workflow YAML and embedded shell/Python are also checked.
 
@@ -90,3 +90,25 @@ with real dated sources and the same editorial/dedup validator. It must not be
 replaced by an empty marker, another day's digest, a relaxed coverage threshold,
 or expanded automatic Repair Watch responsibilities. Keep #79/#83 open until
 the source gap is actually filled and the original target passes preflight.
+
+## Live validation after the patch
+
+- Commit `f00263a87d687ecd6f941dbd12caeec60a874ab5` published the first correction.
+- [CI 37134183906](https://github.com/jcval94/AI-News-Daily/actions/runs/37134183906)
+  passed both deterministic and Windows local-harness jobs.
+- [Bridge 37134183905](https://github.com/jcval94/AI-News-Daily/actions/runs/37134183905)
+  selected today's existing Sheet, converted/validated it, published
+  `news/2026-10-03-08-33-36.txt` in commit
+  `abf05070261feb7731b55e9619006e40f7455197`, dispatched the dated watchdog, and
+  moved the same Sheet to the verified processed folder.
+- [Dated watchdog 37134199462](https://github.com/jcval94/AI-News-Daily/actions/runs/37134199462)
+  passed and triggered the existing Review Hub flow. #81 was closed after its
+  canonical September 30 digest passed the same local health contract.
+- The push-triggered preflight also exposed premature future-window alerts:
+  target October 6 was checked on October 3, before October 4/5 source days.
+  Follow-up correction reports these as `pending=true`, `ready=false` when the
+  only blocker is coverage, available sources are healthy, and future missing
+  days exist. CLI continues to fail closed; the monitoring workflow suppresses
+  premature incidents/failure propagation only for this pending case. Historical
+  gaps and model/quality failures retain their blocking behavior. No pending
+  result closes a preflight incident or authorizes production.

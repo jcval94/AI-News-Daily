@@ -67,6 +67,7 @@ jobs:
               '# Production Preflight',
               f"- Target: **{data.get('target_date')}**",
               f"- Ready: **{data.get('ready')}**",
+              f"- Pending future sources: **{', '.join(data.get('pending_source_dates', [])) or 'none'}**",
               f"- Coverage: **{coverage.get('available_day_count', 0)}/{coverage.get('expected_day_count', 0)} ({float(coverage.get('coverage_ratio', 0) or 0):.0%})**",
               f"- Source quality: **{'OK' if quality.get('sufficient') else 'FAIL'}**",
               f"- Model probe: **{model.get('status', 'unknown')}**",
@@ -76,7 +77,7 @@ jobs:
               handle.write('\n'.join(lines) + '\n')
           PY
       - name: Open or update preflight incident
-        if: steps.preflight.outcome == 'failure'
+        if: steps.preflight.outcome == 'failure' && steps.preflight.outputs.pending != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_DATE: ${{ steps.preflight.outputs.target_date }}
@@ -131,5 +132,9 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Propagate readiness failure
-        if: steps.preflight.outcome == 'failure'
+        if: steps.preflight.outcome == 'failure' && steps.preflight.outputs.pending != 'true'
         run: echo "::error::Production preflight failed; inspect production-preflight.json and the incident issue." && exit 1
+
+      - name: Report pending source window
+        if: steps.preflight.outputs.pending == 'true'
+        run: echo "Source window is still pending future dates; ready=false. No production or incident closure is authorized."

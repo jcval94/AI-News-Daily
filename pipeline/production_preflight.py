@@ -149,12 +149,24 @@ def run_preflight(
     if not model_probe.get("available"):
         blockers.append(f"model_probe:{model_probe.get('status', 'unknown')}")
 
+    pending_dates = [
+        str(raw_day) for raw_day in coverage.get("missing_dates", [])
+        if date.fromisoformat(str(raw_day)) > as_of
+    ]
+    pending = (
+        bool(pending_dates)
+        and blockers == ["source_coverage"]
+        and source_quality.get("sufficient", False)
+    )
+
     return {
         "schema_version": 1,
         "checked_at_utc": _utc_now(),
         "as_of_date": as_of.isoformat(),
         "target_date": target.isoformat(),
         "ready": not blockers,
+        "pending": pending,
+        "pending_source_dates": pending_dates,
         "blockers": blockers,
         "source_coverage": coverage,
         "source_quality": source_quality,
@@ -211,6 +223,7 @@ def main() -> None:
 
     _write_output("target_date", str(report["target_date"]))
     _write_output("ready", "true" if report["ready"] else "false")
+    _write_output("pending", "true" if report["pending"] else "false")
     _write_output("model_status", str(report["model_probe"].get("status") or "unknown"))
     if not report["ready"]:
         raise SystemExit(2)

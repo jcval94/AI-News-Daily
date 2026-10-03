@@ -16,6 +16,31 @@ from pipeline.production_preflight import (
 
 
 class ProductionPreflightTests(unittest.TestCase):
+    def test_future_missing_days_are_pending_but_historical_gaps_still_fail(self) -> None:
+        coverage = {
+            "sufficient": False,
+            "missing_dates": ["2026-10-04", "2026-10-05"],
+            "expected_dates": [],
+        }
+        with tempfile.TemporaryDirectory() as tmp, patch(
+            "pipeline.production_preflight.evaluate_source_coverage", return_value=coverage
+        ), patch(
+            "pipeline.production_preflight.evaluate_source_quality", return_value={"sufficient": True}
+        ):
+            kwargs = dict(target_date=date(2026, 10, 6), news_dir=Path(tmp), min_ratio=.75,
+                          model="test", api_key="", probe_fn=lambda *_: {"available": True, "status": "ok"})
+            report = run_preflight(as_of=date(2026, 10, 3), **kwargs)
+            self.assertTrue(report["pending"])
+            self.assertFalse(report["ready"])
+            self.assertEqual(report["blockers"], ["source_coverage"])
+            report = run_preflight(as_of=date(2026, 10, 6), **kwargs)
+            self.assertFalse(report["pending"])
+            self.assertFalse(report["ready"])
+            kwargs["probe_fn"] = lambda *_: {"available": False, "status": "missing_secret"}
+            report = run_preflight(as_of=date(2026, 10, 3), **kwargs)
+            self.assertFalse(report["pending"])
+            self.assertIn("model_probe:missing_secret", report["blockers"])
+
     def test_next_scheduled_date_targets_tuesday_and_friday(self) -> None:
         self.assertEqual(next_scheduled_date(date(2026, 9, 28)), date(2026, 9, 29))
         self.assertEqual(next_scheduled_date(date(2026, 10, 1)), date(2026, 10, 2))
