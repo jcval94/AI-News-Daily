@@ -141,3 +141,41 @@ References:
 - https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
 - https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event
 - https://developers.google.com/workspace/drive/api/guides/push
+
+
+## Observed production acceptance — 2026-10-04
+
+The fix was merged in PR #87 (`b214b6242e608d5a9760ee71168af4a65510dfbc`).
+Its Linux and Windows deterministic CI passed in run `37219868347`.
+The real handoffs below were consumed automatically; no new producer Sheet or
+replacement payload was created by this maintenance work.
+
+| Evidence | Observed outcome |
+| --- | --- |
+| Original daily Sheet `1l2_uM81KB8cCH4eo3sigI75fmLa5-623TYvufru2L-Q` | Run `37219986795` published `news/2026-10-04-08-36-40.txt`; its content equals the frozen original after the validator's canonical trailing-newline normalization. Fresh Drive metadata showed the same ID with the sole processed parent `1o-2WPz514dFJDg7seGz2dZ4X87doPkdK`. |
+| Canonical daily health | Artifact from run `37220059001` reports `healthy=true`, `candidate_count=1`, `item_count=5`, selected original file. |
+| Narrative Sheet `112p6Wl7mwQn2TNQgMRxoKGCqm2mWdrAr8PrJBXkcCPM` | Run `37219986731` accepted four new IDs (Apollo 11 scheduling, ARPANET packet storm, Braess and Jevons); all four were independently found in canonical memory, now 13 rows. Same Sheet's sole processed parent was verified. |
+| Pre-existing Repair Watch duplicate `1Ud3QXnho5Yj97MYH4FQivMzsWCGT6CoTKqKRumYkzU8` | Reconcile report from run `37220011727` dispatched exact ID to run `37220041876`. Consumer validation succeeded, commit was skipped because the original day already existed, and the same Sheet's processed parent was verified. Canonical discovery still found exactly one daily file. |
+
+The original freeze was 08:36:40 America/Mexico_City; the Sheet reached the inbox
+at 08:37:35.619. Merge-triggered consumers started at 11:18:11 and subsequently
+completed publication. These timestamps demonstrate this incident's resolution,
+not a five-minute polling SLA. GitHub's internal cause for absent earlier cron
+wakeups remains unproven; the deployment does not claim that the platform
+scheduler was repaired.
+
+### Downstream test dependency discovered during acceptance
+
+Editorial Review Hub run `37220108507` failed its deterministic contract gate
+before deployment. Two failure-path tests selected a fixed memory ID from the
+live library; today's four accepted rows changed the ranked retrieval set and
+excluded that ID. This was a test-input isolation defect, not invalid newly
+accepted memory. The fix gives those three failure-path tests an explicit,
+versioned one-record fixture and temporary editorial profiles. Production ranking,
+selection validation, memory content and the contract gate remain unchanged.
+The Hub push paths include the tests and fixture so this repair receives a fresh
+end-to-end build/deploy, rather than rerunning an obsolete source snapshot.
+
+Weekly's real accepted-payload publication E2E is still pending. The common
+pagination/routing/move/dispatch and race behavior is covered deterministically;
+that coverage must not be presented as a live Weekly delivery demonstration.
