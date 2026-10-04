@@ -1,4 +1,5 @@
 name: Editorial Review Hub
+run-name: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'News Ingestion Watchdog' && github.event.workflow_run.event == 'workflow_run' && 'Drive reconciliation acknowledged (no Pages build)' || 'Editorial Review Hub' }}
 
 on:
   workflow_dispatch:
@@ -65,11 +66,17 @@ permissions:
   id-token: write
 
 concurrency:
-  group: editorial-review-hub-main
+  # Reconciliation-only watchdog completions must not cancel a real Pages build.
+  group: editorial-review-hub-${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'News Ingestion Watchdog' && github.event.workflow_run.event == 'workflow_run' && github.run_id || 'main' }}
   cancel-in-progress: true
 
 jobs:
   build:
+    # Actual canonical pushes and normal watchdog health checks still rebuild.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.name != 'News Ingestion Watchdog' ||
+      github.event.workflow_run.event != 'workflow_run'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     outputs:

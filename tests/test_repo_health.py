@@ -100,6 +100,24 @@ run-name: regression
             "workflow_runs": successful,
         }
 
+    def test_reconcile_noop_success_does_not_mask_failed_pages_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._bootstrap(root)
+            github = self._github()
+            for run in github["workflow_runs"]:
+                if run["name"] == "Editorial Review Hub":
+                    run["conclusion"] = "failure"
+            github["workflow_runs"].insert(0, {
+                "id": 999, "name": "Drive reconciliation acknowledged (no Pages build)",
+                "conclusion": "success", "updated_at": "2026-09-24T12:01:00Z",
+            })
+            report = audit_repository(repo_root=root, as_of=date(2026, 9, 24),
+                                      github_snapshot=github, current_workflow_context={})
+            checks = {item["id"]: item for item in report["checks"]}
+            self.assertEqual(checks["workflow-editorial-review-hub"]["status"], "critical")
+            self.assertIn("failure", checks["workflow-editorial-review-hub"]["summary"])
+
     def test_clean_fixture_is_healthy(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
