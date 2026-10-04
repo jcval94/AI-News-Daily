@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "30 16 * * *" # 10:30 America/Mexico_City: early missing-ingestion detection
     - cron: "0 20 * * *"  # 14:00 America/Mexico_City: same-day recovery verification
+  workflow_run:
+    # Reuse surviving native wakeups. The watchdog itself is deliberately excluded.
+    workflows: ["Google Drive AI News Bridge", "Google Drive Weekly Research Bridge", "Google Drive Narrative Memory Bridge", "CI", "Production Preflight"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       date:
@@ -15,6 +20,9 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/news-ingestion-watchdog.yml"
+      - "pipeline/gdrive_bridge_reconcile.py"
+      - "pipeline/gdrive_bridge_io.py"
+      - "tests/test_gdrive_bridge_reconcile.py"
       - "news/**"
       - "pipeline/news_ingestion_health.py"
       - "tests/test_news_ingestion_health.py"
@@ -25,10 +33,67 @@ permissions:
 
 concurrency:
   group: news-ingestion-watchdog-${{ inputs.date || 'today' }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  reconcile-drive:
+    if: >-
+      github.ref == 'refs/heads/main' && inputs.date == '' &&
+      (github.event_name != 'workflow_run' ||
+       (github.event.workflow_run.head_branch == 'main' &&
+        github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
+    concurrency:
+      group: drive-handoff-reconcile-main
+      cancel-in-progress: false
+    env:
+      INBOX_FOLDER_ID: 1bPEr91j4HDGihnDbcCtoBPFWCW2RPYQ_
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Install Drive dependencies
+        run: python -m pip install --disable-pip-version-check --quiet google-auth requests
+      - name: Mint read-only Drive token
+        id: auth
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          python - <<'PYTOKEN'
+          import json, os
+          from google.oauth2 import service_account
+          from google.auth.transport.requests import Request
+          secret = os.environ.get("GDRIVE_SERVICE_ACCOUNT_JSON")
+          if not secret:
+              raise SystemExit("Missing required Drive credential")
+          creds = service_account.Credentials.from_service_account_info(
+              json.loads(secret), scopes=["https://www.googleapis.com/auth/drive.readonly"])
+          creds.refresh(Request())
+          print(f"::add-mask::{creds.token}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              print(f"access_token={creds.token}", file=out)
+          PYTOKEN
+      - name: Reconcile pending handoffs and request bounded wakeups
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GH_TOKEN: ${{ github.token }}
+        run: python -m pipeline.gdrive_bridge_reconcile --repo "$GITHUB_REPOSITORY" --output drive-reconcile-report.json
+      - name: Preserve reconciliation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drive-reconcile-${{ github.run_id }}
+          path: drive-reconcile-report.json
+          if-no-files-found: warn
+          retention-days: 14
+
   watchdog:
+    if: github.event_name != 'workflow_run'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-import json
+import io
 import os
 import tempfile
-import textwrap
+from contextlib import redirect_stdout
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+
+from pipeline.gdrive_bridge_io import main
 
 
 PREFIX = "__bridge_inbox_AI-News-Daily__"
@@ -20,15 +22,14 @@ def candidate(name: str, created: str, mime: str = SHEET) -> dict[str, str]:
 
 class DailyRoutingTests(unittest.TestCase):
     def select(self, files: list[dict[str, str]]) -> dict[str, str]:
-        # Execute the deployed selector itself, including its ordering/output logic.
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        step = workflow.split("      - name: Select oldest pending AI News handoff\n", 1)[1]
-        script = textwrap.dedent(step.split("python - <<'PY'\n", 1)[1].split("          PY\n", 1)[0])
+        # Exercise the production CLI; only the Drive read is replaced.
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "output"
-            with patch.dict(os.environ, {"SHEET_PREFIX": PREFIX, "RAW_PREFIX": "ai-news-daily.news.", "GITHUB_OUTPUT": str(output)}):
-                with patch.object(Path, "read_text", return_value=json.dumps({"files": files})):
-                    exec(compile(script, str(WORKFLOW), "exec"), {})
+            with patch.dict(os.environ, {"ACCESS_TOKEN": "test-token", "INBOX_FOLDER_ID": "inbox", "REQUESTED_FILE_ID": "", "GITHUB_OUTPUT": str(output)}):
+                with patch("sys.argv", ["gdrive_bridge_io", "select", "--lane", "daily"]), patch("pipeline.gdrive_bridge_io.Drive") as client:
+                    client.return_value.list_inbox.return_value = files
+                    with redirect_stdout(io.StringIO()):
+                        main()
             return dict(line.split("=", 1) for line in output.read_text().splitlines())
 
     def test_other_lanes_cannot_take_precedence_over_daily(self) -> None:
