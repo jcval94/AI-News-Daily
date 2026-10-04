@@ -91,6 +91,21 @@ def write_news(news: Path) -> None:
     )
 
 
+def write_editorial(editorial: Path) -> None:
+    """Keep failure-path retrieval independent of the growing production library."""
+    editorial.mkdir()
+    editorial.joinpath("voice_profile.md").write_text(
+        "Explain verified facts, uncertainty and human consequences clearly.", encoding="utf-8"
+    )
+    editorial.joinpath("discourse_profile.md").write_text(
+        "Use evidence to develop one question and acknowledge analogy limits.", encoding="utf-8"
+    )
+    fixture = Path(__file__).parent / "fixtures" / "e2e_narrative_memory.jsonl"
+    editorial.joinpath("narrative_memory.jsonl").write_text(
+        fixture.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+
+
 class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
     async def test_unknown_memory_id_gets_one_repair_then_stops_before_writer(self) -> None:
         plans = []
@@ -105,6 +120,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
             return {"episode_plan": plan}
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            write_editorial(root / "editorial")
             news = root / "news"
             news.mkdir()
             write_news(news)
@@ -112,7 +128,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaisesRegex(ValueError, "outside retrieval set"):
                     await pipeline_run.build(target_date=date(2026, 8, 21), news_dir=news,
                         scripts_root=root / "scripts", multimedia_root=root / "media",
-                        history_scripts_root=root / "history", max_media_downloads=0, download_multimedia=False)
+                        history_scripts_root=root / "history", max_media_downloads=0, download_multimedia=False, editorial_dir=root / "editorial")
             self.assertEqual(len(plans), 2)
             self.assertIn("invented-memory", plans[1])
             self.assertIn("allowed IDs", plans[0])
@@ -140,9 +156,10 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); news = root/"news"; scripts=root/"scripts"; media=root/"media"; history=root/"history"
             news.mkdir(); history.mkdir(); write_news(news)
+            write_editorial(root / "editorial")
             config = replace(pipeline_run.CONFIG, max_refinement_iterations=1)
             with patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), patch.object(pipeline_run, "CONFIG", config), patch.object(pipeline_run, "run_agent", side_effect=fake):
-                out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False)
+                out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False, editorial_dir=root / "editorial")
             state = json.loads((out/"run_state.json").read_text())
             self.assertEqual(state["status"], "script_not_approved")
             self.assertNotIn("plan_multimedia", steps)
@@ -161,6 +178,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); news = root/"news"; scripts=root/"scripts"; media=root/"media"; history=root/"history"
             news.mkdir(); history.mkdir(); write_news(news)
+            write_editorial(root / "editorial")
             old = history/"2026-08-20"; old.mkdir()
             (old/"reviews.json").write_text(json.dumps({"approved_for_multimedia": True}))
             (old/"episode_plan.json").write_text(json.dumps(plan_payload()))
@@ -168,7 +186,7 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
             config = replace(pipeline_run.CONFIG, max_novelty_replans=1)
             duplicate = {"similarity": 0.95, "episode_date": "2026-08-20", "topic_signature": "same"}
             with patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), patch.object(pipeline_run, "CONFIG", config), patch.object(pipeline_run, "run_agent", side_effect=fake), patch.object(pipeline_run, "nearest_essay_similarity", return_value=duplicate):
-                out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False)
+                out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False, editorial_dir=root / "editorial")
             state = json.loads((out/"run_state.json").read_text())
             self.assertEqual(state["status"], "no_novel_essay_angle")
             self.assertEqual(steps.count("replan_episode_novelty"), 1)

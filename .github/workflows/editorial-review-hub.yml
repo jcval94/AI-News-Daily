@@ -50,6 +50,8 @@ on:
       - "pipeline/narrative_memory*.py"
       - "editorial/narrative_memory.jsonl"
       - "pipeline/video_metrics_dashboard.py"
+      - "tests/test_e2e_failure_paths.py"
+      - "tests/fixtures/e2e_narrative_memory.jsonl"
       - "tests/test_repo_health.py"
       - "tests/test_narrative_memory_dashboard.py"
       - "tests/test_video_metrics_dashboard.py"
