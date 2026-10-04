@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import unittest
@@ -89,6 +90,42 @@ class ReconcileTests(unittest.TestCase):
             for outcome in ("processed", "failed"):
                 step = next(s for s in steps if s.get("name", "").startswith("Move ") and s["name"].endswith(outcome))
                 self.assertIn("move --outcome " + outcome, step["run"])
+
+    def test_reconcile_only_watchdog_cannot_cancel_or_build_pages(self):
+        root = Path(__file__).resolve().parents[1]
+        data = yaml.load((root / ".github/workflows/editorial-review-hub.yml").read_text(), Loader=yaml.BaseLoader)
+        condition = data["jobs"]["build"]["if"]
+        group = data["concurrency"]["group"].split("${{", 1)[1].split("}}", 1)[0]
+
+        def evaluate(expression, context):
+            # Evaluate only this boolean/comparison subset from trusted workflow YAML.
+            for key in sorted(context, key=len, reverse=True):
+                expression = expression.replace(key, repr(context[key]))
+            tree = ast.parse(expression.strip().replace("&&", "and").replace("||", "or"), mode="eval")
+            allowed = (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.Compare, ast.Eq, ast.NotEq, ast.Constant)
+            self.assertTrue(all(isinstance(node, allowed) for node in ast.walk(tree)))
+            return eval(compile(tree, "workflow-condition", "eval"), {"__builtins__": {}}, {})
+
+        cases = [
+            ("push", "", "", True),
+            ("workflow_dispatch", "", "", True),
+            ("workflow_run", "News Ingestion Watchdog", "schedule", True),
+            ("workflow_run", "News Ingestion Watchdog", "workflow_dispatch", True),
+            ("workflow_run", "Production Preflight", "workflow_run", True),
+            ("workflow_run", "News Ingestion Watchdog", "workflow_run", False),
+        ]
+        for event, upstream_name, upstream_event, builds in cases:
+            with self.subTest(event=event, upstream=upstream_name, source=upstream_event):
+                context = {"github.event_name": event, "github.event.workflow_run.name": upstream_name,
+                           "github.event.workflow_run.event": upstream_event, "github.run_id": 123}
+                self.assertEqual(evaluate(condition, context), builds)
+                self.assertEqual(evaluate(group, context), "main" if builds else 123)
+                if not builds:
+                    context["github.run_id"] = 124
+                    self.assertNotEqual(evaluate(group, context), 123)
+        self.assertIn("build", data["jobs"]["deploy"]["needs"])
+        self.assertIn("news/**", data["on"]["push"]["paths"])
+        self.assertIn("editorial/narrative_memory.jsonl", data["on"]["push"]["paths"])
 
     def test_watchdog_mesh_cannot_self_trigger_or_read_pr_artifacts(self):
         root = Path(__file__).resolve().parents[1]

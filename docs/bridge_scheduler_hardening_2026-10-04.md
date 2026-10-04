@@ -179,3 +179,30 @@ end-to-end build/deploy, rather than rerunning an obsolete source snapshot.
 Weekly's real accepted-payload publication E2E is still pending. The common
 pagination/routing/move/dispatch and race behavior is covered deterministically;
 that coverage must not be presented as a live Weekly delivery demonstration.
+
+
+### Pages cancellation boundary
+
+PR #89 (`b00b07704cd37cea5e709b00537c8b01c642a860`) restored the isolated
+failure-path tests; Linux and Windows CI passed in run `37220822825` and main CI
+passed in `37220940514`. A subsequent live check exposed a second coupling:
+reconciliation-only Watchdog completions woke Review Hub and canceled an active
+push build (`37220940494`). At normal three-lane polling frequency this could
+starve publication even when consumers and validators are healthy.
+
+Review Hub therefore skips its build for Watchdog completions whose originating
+event is itself `workflow_run` (the reconciliation-only branch). Those no-op
+runs receive a unique concurrency group, so skipping a job cannot still cancel
+a genuine build at workflow admission. Canonical Daily/Narrative pushes and
+normal scheduled or explicitly dispatched Watchdog health checks retain the
+shared main build/deploy group and their existing publication behavior. Regression
+cases evaluate the actual YAML condition and group across both event families;
+no-op runs must neither build nor contend with real Pages publication.
+
+
+Review Hub subsequently completed run `37221046231` successfully on #89 main
+SHA `b00b07704cd37cea5e709b00537c8b01c642a860`: build job `111491325061`
+and Pages deploy job `111491906517` both passed. This verifies restoration of
+the downstream deterministic gate and deployment on the corrected memory fixture.
+The cancellation boundary above is an additional prevention for frequent idle
+consumer wakes; it does not change content generation or deployment permissions.
