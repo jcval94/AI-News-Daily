@@ -465,3 +465,11 @@ A retention policy should eventually prune:
 Until retention automation exists, deletion is a manual operational task and must not be confused with successful consumption.
 
 Apps Script is not part of this production architecture. Its periodic trigger should remain disabled once the Drive-native route is confirmed for all active lanes.
+
+## Verified consumption and scheduler resilience
+
+See [the 2026-10-04 hardening runbook](bridge_scheduler_hardening_2026-10-04.md)
+for shared paginated discovery, exact-file dispatches, verified same-file moves,
+bounded wakeups in the existing watchdog, and the remaining platform-wide
+availability limit. A pending transport is not missing editorial content: Repair
+Watch must inspect the inbox before generating a replacement handoff.
