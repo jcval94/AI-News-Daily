@@ -95,6 +95,7 @@ class ReconcileTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         data = yaml.load((root / ".github/workflows/editorial-review-hub.yml").read_text(), Loader=yaml.BaseLoader)
         condition = data["jobs"]["build"]["if"]
+        name = data["run-name"].split("${{", 1)[1].split("}}", 1)[0]
         group = data["concurrency"]["group"].split("${{", 1)[1].split("}}", 1)[0]
 
         def evaluate(expression, context):
@@ -119,6 +120,7 @@ class ReconcileTests(unittest.TestCase):
                 context = {"github.event_name": event, "github.event.workflow_run.name": upstream_name,
                            "github.event.workflow_run.event": upstream_event, "github.run_id": 123}
                 self.assertEqual(evaluate(condition, context), builds)
+                self.assertEqual(evaluate(name, context), "Editorial Review Hub" if builds else "Drive reconciliation acknowledged (no Pages build)")
                 self.assertEqual(evaluate(group, context), "main" if builds else 123)
                 if not builds:
                     context["github.run_id"] = 124

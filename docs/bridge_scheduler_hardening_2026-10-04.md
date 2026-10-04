@@ -206,3 +206,9 @@ and Pages deploy job `111491906517` both passed. This verifies restoration of
 the downstream deterministic gate and deployment on the corrected memory fixture.
 The cancellation boundary above is an additional prevention for frequent idle
 consumer wakes; it does not change content generation or deployment permissions.
+
+No-op completions use the distinct display name `Drive reconciliation acknowledged
+(no Pages build)`; genuine publication retains `Editorial Review Hub`. This keeps
+repository health's latest-run view from mistaking a successful skipped workflow
+for a successful deployment. A failed real Hub run must remain visible even when
+a newer reconciliation acknowledgement is green.
