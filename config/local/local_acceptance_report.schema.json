@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_acceptance_report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "tier",
+    "status",
+    "requested",
+    "scopes",
+    "tests",
+    "environment",
+    "toolchain",
+    "local_status",
+    "evidence_boundaries",
+    "blockers",
+    "warnings",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 10
+    },
+    "tier": {
+      "enum": [
+        "P0",
+        "P0_RESOLVE",
+        "P1"
+      ]
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "warn",
+        "partial",
+        "fail"
+      ]
+    },
+    "requested": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolve",
+        "otio_smoke",
+        "target_date"
+      ],
+      "properties": {
+        "resolve": {
+          "type": "boolean"
+        },
+        "otio_smoke": {
+          "type": "boolean"
+        },
+        "target_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        }
+      }
+    },
+    "scopes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_harness",
+        "workstation",
+        "resolve_real",
+        "p1_media"
+      ],
+      "properties": {
+        "repository_harness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidence"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "warn",
+                "fail",
+                "partial",
+                "not_run"
+              ]
+            },
+            "evidence": {
+              "type": "object"
+            }
+          }
+        },
+        "workstation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidence"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "warn",
+                "fail",
+                "partial",
+                "not_run"
+              ]
+            },
+            "evidence": {
+              "type": "object"
+            }
+          }
+        },
+        "resolve_real": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidence"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "warn",
+                "fail",
+                "partial",
+                "not_run"
+              ]
+            },
+            "evidence": {
+              "type": "object"
+            }
+          }
+        },
+        "p1_media": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidence"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "warn",
+                "fail",
+                "partial",
+                "not_run"
+              ]
+            },
+            "evidence": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "exit_code",
+        "stdout_tail",
+        "stderr_tail"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_run"
+          ]
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "stdout_tail": {
+          "type": "string"
+        },
+        "stderr_tail": {
+          "type": "string"
+        }
+      }
+    },
+    "environment": {
+      "type": "object"
+    },
+    "toolchain": {
+      "type": "object"
+    },
+    "local_status": {
+      "type": "object"
+    },
+    "evidence_boundaries": {
+      "type": "object",
+      "required": [
+        "ci_proves",
+        "ci_does_not_prove"
+      ],
+      "properties": {
+        "ci_proves": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ci_does_not_prove": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute_paths_persisted",
+        "raw_media_uploaded"
+      ],
+      "properties": {
+        "absolute_paths_persisted": {
+          "const": false
+        },
+        "raw_media_uploaded": {
+          "const": false
+        }
+      }
+    }
+  }
+}

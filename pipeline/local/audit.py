@@ -10,6 +10,7 @@ from pipeline.schema_validation import validate_payload
 
 _REQUIRED_FILES = [
     "pipeline/local/__main__.py",
+    "pipeline/local/acceptance.py",
     "pipeline/local/config.py",
     "pipeline/local/jobs.py",
     "pipeline/local/paths.py",
@@ -20,6 +21,7 @@ _REQUIRED_FILES = [
     "pipeline/local/status.py",
     "pipeline/local/toolchain.py",
     "config/local/local_config.schema.json",
+    "config/local/local_acceptance_report.schema.json",
     "config/local/local_environment.schema.json",
     "config/local/local_capabilities.schema.json",
     "config/local/local_job.schema.json",
@@ -102,6 +104,20 @@ def build_harness_audit(*, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 if _contains(ci, "Parse local PowerShell launchers")
                 else "fail",
                 "detail": "PowerShell syntax guard",
+            },
+            {
+                "id": "security:acceptance_report",
+                "status": "pass"
+                if _contains(
+                    repo_root / "pipeline/local/__main__.py",
+                    '"accept"',
+                )
+                and _contains(
+                    repo_root / "scripts/local/acceptance.ps1",
+                    "pipeline.local",
+                )
+                else "fail",
+                "detail": "single redacted P0/P1 acceptance report available",
             },
             {
                 "id": "security:no_direct_execute",

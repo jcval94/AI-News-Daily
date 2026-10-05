@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from pipeline.local.acceptance import write_acceptance_report
 from pipeline.local.audit import write_harness_audit
 from pipeline.local.config import (
     DEFAULT_PRIVATE_CONFIG,
@@ -62,6 +63,19 @@ def parse_args() -> argparse.Namespace:
         help="Audit the committed local harness contracts and safety guards",
     )
     audit.add_argument("--json-out", default=".local/harness-audit.latest.json")
+
+    accept = sub.add_parser(
+        "accept",
+        help="Build one redacted P0/P1 workstation acceptance report",
+    )
+    accept.add_argument("--config", default=str(DEFAULT_PRIVATE_CONFIG))
+    accept.add_argument("--resolve", action="store_true")
+    accept.add_argument("--otio-smoke", action="store_true")
+    accept.add_argument("--target-date", default="")
+    accept.add_argument(
+        "--json-out",
+        default=".local/acceptance.latest.json",
+    )
 
     toolchain = sub.add_parser(
         "toolchain",
@@ -218,6 +232,23 @@ def main() -> None:
         return
 
     config = load_config(Path(args.config))
+    if args.command == "accept":
+        output = Path(args.json_out)
+        if not output.is_absolute():
+            output = (REPO_ROOT / output).resolve()
+        _, payload = write_acceptance_report(
+            output,
+            config,
+            repo_root=REPO_ROOT,
+            probe_resolve=args.resolve or args.otio_smoke,
+            otio_smoke=args.otio_smoke,
+            target_date=args.target_date or None,
+            run_tests=True,
+        )
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        raise SystemExit(
+            0 if payload["status"] in {"pass", "warn"} else 6
+        )
     if args.command == "toolchain":
         payload = build_toolchain(
             config,
