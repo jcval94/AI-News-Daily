@@ -142,3 +142,16 @@ The synthetic candidate suite includes:
 
 Both stages persist raw attempts and a separate scorecard. A scorecard is a verdict over
 raw evidence; it never replaces or rewrites that evidence.
+
+## Rescued into the current architecture
+
+This lab was recovered from PR #61 without merging its stale branch history.
+
+The original PR also contained a standalone Windows/local media worker. That code is
+retained only as **historical experiment evidence**. It is not an execution authority.
+The current workstation boundary is `pipeline.local`, `local_handoff/` and
+`docs/local/`; any real local execution must go through that allowlisted harness.
+
+The deterministic offline lab is covered by the repository test suite so contract,
+fixture and adversarial-mutation drift is caught even when live model-backed runs are
+not executed.
