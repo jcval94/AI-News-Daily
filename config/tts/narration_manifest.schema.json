@@ -3,6 +3,26 @@
   "$id": "narration_manifest.schema.json",
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {"schema_version": {"const": "1.1"}},
+        "required": ["schema_version"]
+      },
+      "then": {
+        "properties": {
+          "sections": {
+            "items": {
+              "required": ["pause_after_seconds", "timeline_end_seconds"]
+            }
+          },
+          "metrics": {
+            "required": ["spoken_duration_seconds", "pause_duration_seconds"]
+          }
+        }
+      }
+    }
+  ],
   "required": [
     "schema_version",
     "manifest_id",

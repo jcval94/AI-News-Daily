@@ -25,25 +25,28 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def _is_approved_episode(path: Path) -> bool:
+    if not (path / "script_sections.json").is_file():
+        return False
+    try:
+        state = json.loads((path / "run_state.json").read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return False
+    return state.get("status") == "approved"
+
+
 def resolve_episode(script: str, scripts_root: Path = Path("scripts")) -> Path:
     if script != "latest":
         candidate = scripts_root / script
         if not candidate.is_dir():
             raise FileNotFoundError(f"Episode not found: {candidate}")
+        if not _is_approved_episode(candidate):
+            raise ValueError(f"Episode is not approved: {candidate}")
         return candidate
     candidates: list[Path] = []
     for path in scripts_root.iterdir() if scripts_root.exists() else []:
-        if not path.is_dir() or not (path / "script_sections.json").is_file():
-            continue
-        state_path = path / "run_state.json"
-        if state_path.is_file():
-            try:
-                state = json.loads(state_path.read_text(encoding="utf-8"))
-            except json.JSONDecodeError:
-                continue
-            if state.get("status") != "approved":
-                continue
-        candidates.append(path)
+        if path.is_dir() and _is_approved_episode(path):
+            candidates.append(path)
     if not candidates:
         raise FileNotFoundError("No approved episode with script_sections.json was found")
     return sorted(candidates, key=lambda p: p.name)[-1]
@@ -376,6 +379,7 @@ def render_episode(
     qa_warnings: list[str] = []
     master_warnings: list[str] = []
     master_metrics: dict[str, Any] = {}
+    master_ffmpeg_metrics: dict[str, Any] = {}
     used_engine = requested_engine
     used_voice = requested_voice
     master = run_dir / "audio/edit/narration_master.wav"
@@ -418,6 +422,33 @@ def render_episode(
             master_warnings = validate_edit_wav(
                 master_metrics, expected_rate=int(tts["edit_sample_rate_hz"])
             )
+            qa_policy = tts.get("qa", {})
+            master_ffmpeg_metrics = inspect_ffmpeg_audio(
+                master,
+                silence_noise_db=float(qa_policy.get("silence_noise_db", -50.0)),
+                silence_min_duration=float(
+                    qa_policy.get("silence_min_duration_seconds", 1.0)
+                ),
+            )
+            master_warnings.extend(
+                validate_ffmpeg_audio(
+                    master_ffmpeg_metrics,
+                    long_silence_seconds=float(
+                        qa_policy.get("long_silence_seconds", 3.0)
+                    ),
+                    advisory_lufs_min=float(
+                        qa_policy.get("advisory_lufs_min", -28.0)
+                    ),
+                    advisory_lufs_max=float(
+                        qa_policy.get("advisory_lufs_max", -12.0)
+                    ),
+                )
+            )
+            if abs(float(master_metrics["duration_seconds"]) - duration) > 0.01:
+                raise RuntimeError(
+                    "master duration does not match the section timeline: "
+                    f"{master_metrics['duration_seconds']} != {duration}"
+                )
             _web_preview(
                 master,
                 preview,
@@ -493,6 +524,7 @@ def render_episode(
             "status": "warn" if warnings else "pass",
             "warnings": warnings,
             "master": master_metrics,
+            "master_ffmpeg": master_ffmpeg_metrics,
         },
         "errors": errors,
     }

@@ -7,8 +7,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .audio_qa import inspect_wav
-from .benchmark import benchmark_voices
+from .audio_qa import (
+    inspect_ffmpeg_audio,
+    inspect_wav,
+    validate_edit_wav,
+    validate_ffmpeg_audio,
+)
+from .benchmark import benchmark_status, benchmark_voices
 from .config import DEFAULT_CONFIG, load_tts_config
 from .engines import render_native, resolve_tts_python
 from .release_store import promote_benchmark, promote_narration
@@ -136,6 +141,7 @@ def build_tts_doctor(
             result = _probe(
                 [str(runtime), "-c", f"import {module}; print('ok')"],
                 cwd=repo_root,
+                timeout=90,
             )
             add(
                 f"engine_import:{engine}",
@@ -228,6 +234,7 @@ def run_tts_smoke(
         "Esta es una prueba breve de narración en español."
     )
     root = repo_root / ".local" / "tts" / "smoke"
+    qa_policy = tts.get("qa", {})
     results: list[dict[str, Any]] = []
     for candidate in requested:
         voice = str(tts["engines"][candidate]["voice"])
@@ -250,14 +257,55 @@ def run_tts_smoke(
             native_metrics = inspect_wav(native)
             _convert_edit(native, edit, int(tts["edit_sample_rate_hz"]))
             edit_metrics = inspect_wav(edit)
+            ffmpeg_metrics = inspect_ffmpeg_audio(
+                edit,
+                silence_noise_db=float(qa_policy.get("silence_noise_db", -50.0)),
+                silence_min_duration=float(
+                    qa_policy.get("silence_min_duration_seconds", 1.0)
+                ),
+            )
+            qa_warnings = validate_edit_wav(
+                edit_metrics,
+                expected_rate=int(tts["edit_sample_rate_hz"]),
+            )
+            qa_warnings.extend(
+                validate_ffmpeg_audio(
+                    ffmpeg_metrics,
+                    long_silence_seconds=float(
+                        qa_policy.get("long_silence_seconds", 3.0)
+                    ),
+                    advisory_lufs_min=float(
+                        qa_policy.get("advisory_lufs_min", -28.0)
+                    ),
+                    advisory_lufs_max=float(
+                        qa_policy.get("advisory_lufs_max", -12.0)
+                    ),
+                )
+            )
+            blocking = {
+                "zero_duration",
+                "sample_rate_mismatch",
+                "unexpected_channels",
+                "silence_suspected",
+                "ffmpeg_qa_unavailable",
+            }
+            candidate_status = (
+                "fail"
+                if any(item in blocking for item in qa_warnings)
+                else ("warn" if qa_warnings else "pass")
+            )
+            if candidate == "edge" and candidate_status == "fail":
+                candidate_status = "warn"
             results.append(
                 {
                     "engine": candidate,
                     "voice": voice,
-                    "status": "pass",
+                    "status": candidate_status,
                     "generation_seconds": meta.get("generation_seconds"),
                     "native": native_metrics,
                     "edit": edit_metrics,
+                    "ffmpeg": ffmpeg_metrics,
+                    "qa": {"warnings": qa_warnings},
                 }
             )
         except Exception as exc:
@@ -323,6 +371,7 @@ def run_tts_acceptance(
     include_edge: bool = False,
 ) -> dict[str, Any]:
     repo_root = repo_root.resolve()
+    report_path = repo_root / ".local/tts/acceptance.latest.json"
     report: dict[str, Any] = {
         "schema_version": 1,
         "generated_at_utc": _utc_now(),
@@ -337,10 +386,7 @@ def run_tts_acceptance(
     if doctor["status"] == "fail":
         report["status"] = "fail"
         report["stopped_after"] = "doctor"
-        _write_report(
-            repo_root / ".local/tts/acceptance.latest.json",
-            report,
-        )
+        _write_report(report_path, report)
         return report
 
     smoke = run_tts_smoke(
@@ -352,18 +398,24 @@ def run_tts_acceptance(
     if smoke["status"] == "fail":
         report["status"] = "fail"
         report["stopped_after"] = "smoke"
-        _write_report(
-            repo_root / ".local/tts/acceptance.latest.json",
-            report,
-        )
+        _write_report(report_path, report)
         return report
 
-    episode = resolve_episode(script, repo_root / "scripts")
-    manifest_path, manifest = render_episode(
-        episode_dir=episode,
-        config_path=config_path,
-        repo_root=repo_root,
-    )
+    try:
+        episode = resolve_episode(script, repo_root / "scripts")
+        manifest_path, manifest = render_episode(
+            episode_dir=episode,
+            config_path=config_path,
+            repo_root=repo_root,
+        )
+    except Exception as exc:
+        report.update(
+            status="fail",
+            stopped_after="render",
+            error=f"{type(exc).__name__}: {exc}",
+        )
+        _write_report(report_path, report)
+        return report
     report["render"] = {
         "status": manifest["status"],
         "manifest": manifest_path.relative_to(repo_root).as_posix(),
@@ -372,25 +424,33 @@ def run_tts_acceptance(
         "qa": manifest["qa"]["status"],
     }
 
-    benchmark_path = benchmark_voices(
-        fixture=repo_root / "evals/tts/voice_bakeoff_es.txt",
-        output_dir=repo_root / ".local/tts/benchmarks/latest",
-        config_path=config_path,
-        repo_root=repo_root,
-    )
-    benchmark_payload = json.loads(
-        benchmark_path.read_text(encoding="utf-8")
-    )
+    try:
+        benchmark_path = benchmark_voices(
+            fixture=repo_root / "evals/tts/voice_bakeoff_es.txt",
+            output_dir=repo_root / ".local/tts/benchmarks/latest",
+            config_path=config_path,
+            repo_root=repo_root,
+            include_edge=include_edge,
+        )
+        benchmark_payload = json.loads(
+            benchmark_path.read_text(encoding="utf-8")
+        )
+    except Exception as exc:
+        report.update(
+            status="fail",
+            stopped_after="benchmark",
+            error=f"{type(exc).__name__}: {exc}",
+        )
+        _write_report(report_path, report)
+        return report
     report["benchmark"] = {
-        "status": (
-            "pass"
-            if any(
-                item.get("status") == "ok"
-                for item in benchmark_payload.get("results", [])
-            )
-            else "fail"
-        ),
+        "status": benchmark_status(benchmark_payload.get("results", [])),
         "path": benchmark_path.relative_to(repo_root).as_posix(),
+        "listening_report": (
+            benchmark_path.parent / str(
+                benchmark_payload.get("listening_report") or "index.html"
+            )
+        ).relative_to(repo_root).as_posix(),
         "candidates": benchmark_payload.get("results", []),
     }
     report["status"] = (
@@ -401,14 +461,13 @@ def run_tts_acceptance(
             if (
                 smoke["status"] == "warn"
                 or manifest["qa"]["status"] == "warn"
+                or doctor["status"] == "warn"
+                or report["benchmark"]["status"] == "warn"
             )
             else "pass"
         )
     )
-    _write_report(
-        repo_root / ".local/tts/acceptance.latest.json",
-        report,
-    )
+    _write_report(report_path, report)
     return report
 
 
@@ -461,10 +520,15 @@ def run_local_tts_action(
             output_dir=repo_root / ".local/tts/benchmarks/latest",
             config_path=config_path,
             repo_root=repo_root,
+            include_edge=include_edge,
         )
+        payload = json.loads(path.read_text(encoding="utf-8"))
         return {
-            "status": "pass",
+            "status": benchmark_status(payload.get("results", [])),
             "benchmark": path.relative_to(repo_root).as_posix(),
+            "listening_report": (
+                path.parent / str(payload.get("listening_report") or "index.html")
+            ).relative_to(repo_root).as_posix(),
         }
     if action == "accept":
         return run_tts_acceptance(

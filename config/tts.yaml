@@ -33,7 +33,7 @@ tts:
       engine_license: GPL-3.0-or-later
       voice_dataset_license: Apache-2.0
     edge:
-      voice: es-MX-DaliaMultilingualNeural
+      voice: es-MX-DaliaNeural
       local: false
       network_required: true
       package_license: LGPL-3.0
@@ -69,5 +69,5 @@ tts:
       - {engine: kokoro, voice: em_santa}
       - {engine: piper, voice: es_MX-claude-high}
       - {engine: piper, voice: es_MX-ald-medium}
-      - {engine: edge, voice: es-MX-DaliaMultilingualNeural}
+      - {engine: edge, voice: es-MX-DaliaNeural}
       - {engine: edge, voice: es-MX-JorgeNeural}

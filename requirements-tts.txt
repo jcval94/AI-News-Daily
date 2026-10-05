@@ -1,0 +1,6 @@
+# Isolated workstation runtime; never merge these packages into requirements.lock.
+# Kokoro 0.9.4 requires Python >=3.10,<3.13. Python 3.12 is the tested target.
+kokoro==0.9.4
+piper-tts==1.8.0
+soundfile==0.14.0
+edge-tts==7.2.8

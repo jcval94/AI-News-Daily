@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -19,6 +20,7 @@ def _run(command: list[str], *, timeout: int) -> tuple[float, str]:
         text=True,
         encoding="utf-8",
         errors="replace",
+        env={**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"},
         shell=False,
         timeout=timeout,
         check=False,

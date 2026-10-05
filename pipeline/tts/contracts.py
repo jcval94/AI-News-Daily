@@ -51,6 +51,12 @@ def validate_manifest(payload: dict[str, Any]) -> None:
     if not isinstance(sections, list) or not sections:
         raise ValueError("Narration manifest requires at least one section")
     _validate_section_timestamps(sections)
+    if payload.get("schema_version") == "1.1":
+        for section in sections:
+            if not {"pause_after_seconds", "timeline_end_seconds"} <= section.keys():
+                raise ValueError(
+                    "Narration manifest 1.1 requires explicit pause and timeline fields"
+                )
     expected_count = int(payload["metrics"]["section_count"])
     if expected_count != len(sections):
         raise ValueError(
@@ -63,6 +69,19 @@ def validate_manifest(payload: dict[str, Any]) -> None:
         raise ValueError(
             f"Narration total duration mismatch: {expected_duration} != {actual_duration}"
         )
+    if payload.get("schema_version") == "1.1":
+        spoken = sum(float(item["duration_seconds"]) for item in sections)
+        pauses = sum(float(item["pause_after_seconds"]) for item in sections)
+        expected_spoken = float(payload["metrics"]["spoken_duration_seconds"])
+        expected_pauses = float(payload["metrics"]["pause_duration_seconds"])
+        if abs(spoken - expected_spoken) > _TIMESTAMP_TOLERANCE_SECONDS:
+            raise ValueError(
+                f"Narration spoken duration mismatch: {expected_spoken} != {spoken}"
+            )
+        if abs(pauses - expected_pauses) > _TIMESTAMP_TOLERANCE_SECONDS:
+            raise ValueError(
+                f"Narration pause duration mismatch: {expected_pauses} != {pauses}"
+            )
 
 
 def write_manifest(path: Path, payload: dict[str, Any]) -> Path:
