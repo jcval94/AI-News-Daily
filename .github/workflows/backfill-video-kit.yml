@@ -98,6 +98,12 @@ jobs:
 
           while IFS='|' read -r SOURCE_RUN_ID ARTIFACT_NAME; do
             [ -n "$SOURCE_RUN_ID" ] || continue
+            SOURCE_WORKFLOW="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" --jq '.name // ""' 2>/dev/null || true)"
+            SOURCE_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" --jq '.head_branch // ""' 2>/dev/null || true)"
+            if [ "$SOURCE_WORKFLOW" != "Backfill AI News Video Kit" ] || [ "$SOURCE_BRANCH" != "main" ]; then
+              continue
+            fi
+
             CANDIDATE=".backfill-reuse/$SOURCE_RUN_ID"
             rm -rf "$CANDIDATE"
             mkdir -p "$CANDIDATE"
