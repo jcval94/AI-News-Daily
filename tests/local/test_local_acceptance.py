@@ -143,6 +143,85 @@ class LocalAcceptanceTests(unittest.TestCase):
     @patch("pipeline.local.acceptance.build_preflight")
     @patch("pipeline.local.acceptance.build_harness_audit")
     @patch("pipeline.local.acceptance._run_local_tests")
+    def test_preflight_blocker_is_actionable(
+        self,
+        tests_mock,
+        audit_mock,
+        preflight_mock,
+        toolchain_mock,
+        status_mock,
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            cfg = config_for(root)
+            tests_mock.return_value = {
+                "status": "pass",
+                "exit_code": 0,
+                "stdout_tail": "",
+                "stderr_tail": "",
+            }
+            audit_mock.return_value = {
+                "status": "pass",
+                "summary": {"check_count": 1, "passed": 1, "failed": 0},
+                "failed_checks": [],
+                "acceptance_boundaries": {
+                    "ci_proves": ["contracts"],
+                    "ci_does_not_prove": ["real Resolve"],
+                },
+            }
+            preflight_mock.return_value = {
+                "status": "fail",
+                "checks": [
+                    {
+                        "name": "ffmpeg",
+                        "status": "block",
+                        "message": "ffmpeg executable not found",
+                    }
+                ],
+                "environment": {
+                    "schema_version": 1,
+                    "os": {"system": "Windows", "release": "11", "machine": "x64"},
+                    "python": {
+                        "version": "3.12.0",
+                        "minimum_repo_version": "3.12",
+                    },
+                    "gpu": {
+                        "nvidia_smi": False,
+                        "cuda_hint": None,
+                        "gpu_names": [],
+                    },
+                    "resolve": {
+                        "sdk_discovered": False,
+                        "readme_discovered": False,
+                        "connected": False,
+                        "version": None,
+                        "native_otio_smoke": None,
+                    },
+                    "privacy": {"absolute_paths_persisted": False},
+                },
+            }
+            toolchain_mock.return_value = {
+                "privacy": {"absolute_paths_persisted": False}
+            }
+            status_mock.return_value = {"preflight_status": "fail"}
+            payload = build_acceptance_report(
+                cfg,
+                repo_root=root,
+                run_tests=True,
+            )
+            self.assertEqual(payload["status"], "fail")
+            self.assertTrue(
+                any(
+                    item.startswith("preflight:ffmpeg:")
+                    for item in payload["blockers"]
+                )
+            )
+
+    @patch("pipeline.local.acceptance.build_status")
+    @patch("pipeline.local.acceptance.build_toolchain")
+    @patch("pipeline.local.acceptance.build_preflight")
+    @patch("pipeline.local.acceptance.build_harness_audit")
+    @patch("pipeline.local.acceptance._run_local_tests")
     def test_p0_keeps_resolve_not_run_separate(
         self,
         tests_mock,
@@ -208,6 +287,7 @@ class LocalAcceptanceTests(unittest.TestCase):
                 "local/local_acceptance_report.schema.json",
             )
             self.assertEqual(payload["status"], "pass")
+            self.assertIn("preflight", payload)
             self.assertEqual(
                 payload["scopes"]["resolve_real"]["status"],
                 "not_run",
