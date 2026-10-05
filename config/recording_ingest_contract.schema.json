@@ -177,6 +177,43 @@
           }
         }
       }
+    },
+    "session_naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grammar",
+        "default_first_session",
+        "recommended_folder",
+        "session_id_is_provenance_not_take_identity",
+        "retake_scope",
+        "retake_must_not_restart_in_new_session",
+        "legacy_flat_layout_label"
+      ],
+      "properties": {
+        "grammar": {
+          "const": "s<NN>"
+        },
+        "default_first_session": {
+          "pattern": "^s\\d{2,3}$"
+        },
+        "recommended_folder": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session_id_is_provenance_not_take_identity": {
+          "const": true
+        },
+        "retake_scope": {
+          "const": "episode_global_per_take"
+        },
+        "retake_must_not_restart_in_new_session": {
+          "const": true
+        },
+        "legacy_flat_layout_label": {
+          "const": "legacy"
+        }
+      }
     }
   },
   "additionalProperties": true
