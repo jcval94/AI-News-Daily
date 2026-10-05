@@ -139,6 +139,10 @@
           },
           "inspection": {
             "type": "object"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^(?:s\\d{2,3}|legacy)$"
           }
         }
       }
@@ -183,6 +187,60 @@
           },
           "candidates": {
             "type": "array"
+          }
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "media_discovered",
+        "technical_validation_passed",
+        "ready_for_transcription",
+        "transcription_complete",
+        "alignment_complete",
+        "final_take_selection_complete"
+      ],
+      "properties": {
+        "media_discovered": {
+          "type": "boolean"
+        },
+        "technical_validation_passed": {
+          "type": "boolean"
+        },
+        "ready_for_transcription": {
+          "type": "boolean"
+        },
+        "transcription_complete": {
+          "const": false
+        },
+        "alignment_complete": {
+          "const": false
+        },
+        "final_take_selection_complete": {
+          "const": false
+        }
+      }
+    },
+    "orphans": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unknown_take_files",
+        "unmatched_files"
+      ],
+      "properties": {
+        "unknown_take_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unmatched_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
