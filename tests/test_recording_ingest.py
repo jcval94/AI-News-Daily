@@ -294,7 +294,9 @@ class RecordingIngestScannerDeterministicTests(unittest.TestCase):
             inbox = root / "inbox"
             inbox.mkdir()
             for take_id in ("opening_t01", "opening_t02"):
-                (inbox / f"{take_id}__r01__camA.mp4").write_bytes(b"video")
+                (inbox / f"{take_id}__r01__camA.mp4").write_bytes(
+                    f"video-{take_id}".encode("utf-8")
+                )
             (inbox / "opening_t01__r01__audio.wav").write_bytes(b"audio")
             inspect_video_mock.return_value = {
                 "ok": True,
