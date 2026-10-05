@@ -129,7 +129,15 @@ El comando recomendado ahora genera un reporte único y redactado:
 .\scripts\local\acceptance.ps1 -Tier P0 -Resolve
 ```
 
-Para P1, exige una fecha de episodio y receipts locales reales:
+Para P1, prepara primero el juego completo de requests versionables:
+
+```powershell
+.\scripts\local\prepare_p1_requests.ps1 -TargetDate YYYY-MM-DD
+```
+
+Este comando genera seis requests en orden —ingest, transcribe, align, Resolve sync, timeline validate e import— pero **no hace git add/commit, staging ni ejecución**. Revisa el diff y commitéalos antes de usar `stage_request.ps1`.
+
+Después, el acceptance P1 exige la fecha del episodio y receipts locales reales:
 
 ```powershell
 .\scripts\local\acceptance.ps1 -Tier P1 -Resolve -TargetDate YYYY-MM-DD

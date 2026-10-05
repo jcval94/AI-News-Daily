@@ -23,3 +23,23 @@ repo request
 ~~~
 
 Never place passwords, tokens, absolute machine paths, or raw media here.
+
+
+## P1 request kit
+
+Para un episodio real no copies templates manualmente uno por uno. Genera el set completo:
+
+~~~powershell
+.\scripts\local\prepare_p1_requests.ps1 -TargetDate YYYY-MM-DD
+~~~
+
+Se crean seis requests ordenados bajo `local_handoff/requests/`:
+
+1. recording.ingest
+2. recording.transcribe
+3. recording.align
+4. resolve.sync_audio
+5. timeline.validate
+6. resolve.import_timeline
+
+El generador valida schemas, pero no hace commit, staging ni ejecución. Esa separación es deliberada: primero revisa el diff y crea un commit Git; sólo entonces `stage_request.ps1` puede aceptar cada request.

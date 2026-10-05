@@ -96,26 +96,32 @@ Usa un episodio aprobado con Recording Pack. El cierre de P1 requiere receipts v
 
 
 1. Copia media a un root privado configurado en recordings.
-2. Crea y commitea un request en local_handoff/requests/.
-3. Stage:
+2. Genera el kit P1 para la fecha:
+
+~~~powershell
+.\scripts\local\prepare_p1_requests.ps1 -TargetDate YYYY-MM-DD
+~~~
+
+3. Revisa `git diff -- local_handoff/requests` y commitea los seis requests. El generador no hace commit ni staging automáticamente.
+4. Stage cada request en orden:
 
 ~~~powershell
 .\scripts\local\stage_request.ps1 -Request local_handoff\requests\<request>.json
 ~~~
 
-4. Inspecciona:
+5. Inspecciona:
 
 ~~~powershell
 .\scripts\local\status.ps1
 ~~~
 
-5. Dry-run:
+6. Dry-run:
 
 ~~~powershell
 .\scripts\local\run_staged.ps1 -JobId <job_id>
 ~~~
 
-6. Ejecuta explícitamente:
+7. Ejecuta explícitamente:
 
 ~~~powershell
 .\scripts\local\run_staged.ps1 -JobId <job_id> -Execute
