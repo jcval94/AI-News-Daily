@@ -17,6 +17,7 @@ AUDIO_EXTENSIONS = {".wav", ".m4a", ".aac", ".flac", ".mp3"}
 _FILENAME_RE = re.compile(
     r"^(?P<take_id>[A-Za-z0-9][A-Za-z0-9_-]*?)__r(?P<retake>\d{2})(?:__(?P<label>[A-Za-z][A-Za-z0-9_-]*))?$"
 )
+_SESSION_ID_RE = re.compile(r"^s\d{2,3}$")
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -94,11 +95,21 @@ def build_recording_ingest_contract(recording_pack: dict[str, Any]) -> dict[str,
         },
         "storage": {
             "recommended_local_root": f"recordings/{episode_date}",
-            "recommended_inbox": f"recordings/{episode_date}/inbox",
+            "recommended_session_root": f"recordings/{episode_date}/sessions/s01",
+            "recommended_inbox": f"recordings/{episode_date}/sessions/s01/inbox",
             "media_is_local_only": True,
             "never_commit_raw_recordings": True,
             "manifest_stores_relative_paths_only": True,
             "scanner_never_deletes_or_moves_source_files": True,
+        },
+        "session_naming": {
+            "grammar": "s<NN>",
+            "default_first_session": "s01",
+            "recommended_folder": "sessions/<session_id>/inbox",
+            "session_id_is_provenance_not_take_identity": True,
+            "retake_scope": "episode_global_per_take",
+            "retake_must_not_restart_in_new_session": True,
+            "legacy_flat_layout_label": "legacy",
         },
         "naming": {
             "grammar": "<take_id>__r<NN>__<label>.<ext>",
@@ -176,6 +187,13 @@ def render_ingest_instructions(contract: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
+            "## Sesiones",
+            "",
+            "- Usa sessions/s01/inbox para la primera sesión, sessions/s02/inbox para la segunda, etc.",
+            "- session_id sólo registra procedencia; take_id sigue siendo la identidad canónica.",
+            "- El número de retake es global por take dentro del episodio: si terminas s01 en r03, s02 continúa en r04.",
+            "- El layout plano anterior sigue siendo legible y se etiqueta como legacy, pero no es el recomendado para nuevas grabaciones.",
+            "",
             "## Retakes",
             "",
             "- Empieza en r01.",
@@ -218,6 +236,17 @@ def write_ingest_contract(*, episode_dir: Path) -> tuple[Path, Path, dict[str, A
     json_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_path.write_text(render_ingest_instructions(contract), encoding="utf-8")
     return json_path, md_path, contract
+
+
+def session_id_from_relative_path(relative_path: str) -> str:
+    parts = Path(relative_path).parts
+    for index, part in enumerate(parts[:-1]):
+        if part != "sessions" or index + 1 >= len(parts):
+            continue
+        candidate = str(parts[index + 1])
+        if _SESSION_ID_RE.fullmatch(candidate):
+            return candidate
+    return "legacy"
 
 
 def parse_capture_filename(path: Path) -> dict[str, Any] | None:
@@ -335,6 +364,7 @@ def scan_recordings(
 
     files: list[dict[str, Any]] = []
     unmatched: list[str] = []
+    unknown_take_files: list[str] = []
     blockers: list[str] = []
     duplicate_keys: set[tuple[str, int, str, str]] = set()
     seen_keys: set[tuple[str, int, str, str]] = set()
@@ -344,6 +374,7 @@ def scan_recordings(
         if parsed is None:
             continue
         relative = path.relative_to(input_dir).as_posix()
+        session_id = session_id_from_relative_path(relative)
         if not parsed.get("matched"):
             unmatched.append(relative)
             continue
@@ -360,6 +391,7 @@ def scan_recordings(
         seen_keys.add(key)
         if take_id not in expected:
             blockers.append(f"unknown_take_id:{take_id}")
+            unknown_take_files.append(relative)
         inspection = (
             inspect_media(path)
             if parsed["media_type"] == "video"
@@ -368,6 +400,7 @@ def scan_recordings(
         files.append(
             {
                 **parsed,
+                "session_id": session_id,
                 "relative_path": relative,
                 "bytes": path.stat().st_size,
                 "sha256": _sha256(path),
@@ -379,6 +412,14 @@ def scan_recordings(
         blockers.append(
             f"duplicate_capture_identity:{take_id}:r{retake:02d}:{media_type}:{label}"
         )
+
+    files_by_hash: dict[str, list[dict[str, Any]]] = {}
+    for item in files:
+        files_by_hash.setdefault(str(item["sha256"]), []).append(item)
+    for sha256, matches in sorted(files_by_hash.items()):
+        distinct_paths = sorted({str(item["relative_path"]) for item in matches})
+        if len(distinct_paths) > 1:
+            blockers.append(f"duplicate_file_content:{sha256[:12]}")
 
     groups: dict[str, dict[int, dict[str, list[dict[str, Any]]]]] = {}
     for item in files:
@@ -397,6 +438,12 @@ def scan_recordings(
         expected_seconds = float(take.get("expected_capture_seconds", 0) or 0)
         candidates: list[dict[str, Any]] = []
         for retake, media in sorted(groups.get(take_id, {}).items()):
+            session_ids = sorted(
+                {
+                    str(item.get("session_id", "legacy") or "legacy")
+                    for item in media["video"] + media["audio"]
+                }
+            )
             video = _select_video(
                 media["video"],
                 expected_seconds=expected_seconds,
@@ -407,6 +454,10 @@ def scan_recordings(
             )
             issues: list[str] = []
             usable = True
+            if len(session_ids) > 1:
+                usable = False
+                issues.append("retake_spans_sessions")
+                blockers.append(f"retake_spans_sessions:{take_id}:r{retake:02d}")
             if video is None:
                 usable = False
                 issues.append("no_healthy_video")
@@ -490,6 +541,8 @@ def scan_recordings(
             candidates.append(
                 {
                     "retake_number": retake,
+                    "session_id": session_ids[0] if len(session_ids) == 1 else None,
+                    "session_ids": session_ids,
                     "status": (
                         "usable_technical" if usable else "unusable_technical"
                     ),
@@ -560,6 +613,7 @@ def scan_recordings(
 
     unique_blockers = sorted(set(blockers))
     complete = [item for item in take_results if item["technical_preferred"]]
+    sessions = sorted({str(item.get("session_id", "legacy")) for item in files})
     return {
         "schema_version": SCHEMA_VERSION,
         "episode_date": contract["episode_date"],
@@ -572,6 +626,14 @@ def scan_recordings(
             "absolute_input_path_persisted": False,
         },
         "selection_policy": dict(contract.get("selection_policy", {})),
+        "state": {
+            "media_discovered": bool(files),
+            "technical_validation_passed": not unique_blockers,
+            "ready_for_transcription": not unique_blockers,
+            "transcription_complete": False,
+            "alignment_complete": False,
+            "final_take_selection_complete": False,
+        },
         "readiness": {
             "ready_for_alignment": not unique_blockers,
             "blockers": unique_blockers,
@@ -586,9 +648,16 @@ def scan_recordings(
             "missing_or_unusable_take_count": len(expected) - len(complete),
             "discovered_media_file_count": len(files),
             "unmatched_media_file_count": len(unmatched),
+            "unknown_take_file_count": len(unknown_take_files),
+            "session_count": len(sessions),
+            "sessions": sessions,
             "take_count_with_multiple_retakes": sum(
                 1 for item in take_results if int(item["retake_count"]) > 1
             ),
+        },
+        "orphans": {
+            "unknown_take_files": sorted(unknown_take_files),
+            "unmatched_files": unmatched,
         },
         "unmatched_files": unmatched,
         "files": files,
