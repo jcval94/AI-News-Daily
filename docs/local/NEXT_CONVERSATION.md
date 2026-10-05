@@ -22,17 +22,17 @@ Mi máquina real es una ASUS Zenbook S16 con Windows 11 y DaVinci Resolve instal
 Objetivo de esta conversación:
 
 1. Audita primero `docs/local/README.md`, `docs/local/contracts.md` y `docs/local/acceptance.md`.
-2. Ejecuta el acceptance P0 real de la workstation:
-   - bootstrap;
-   - doctor -Deep;
-   - toolchain;
-   - tests/local;
-   - doctor -Resolve -Deep -OtioSmoke con Resolve abierto.
+2. Ejecuta el acceptance P0 real de la workstation con el launcher unificado:
+   - bootstrap si hace falta;
+   - `acceptance.ps1 -Tier P0`;
+   - con Resolve abierto, `acceptance.ps1 -Tier P0 -Resolve`;
+   - revisa `.local/acceptance.latest.json`, que ya incorpora doctor profundo, toolchain, self-audit y tests/local.
 3. Reporta el hardware/toolchain detectado: Windows, Python, FFmpeg/ffprobe, GPU/CUDA si existe, Resolve/API, OTIO y espacio de disco.
 4. Decide **con evidencia del equipo real** si WhisperX conviene con GPU, CPU o un entorno Python separado. No instales un stack CUDA pesado si el hardware no lo justifica.
 5. Corrige únicamente problemas reales encontrados por el acceptance; no reescribas el harness por gusto.
 6. Después ejecuta un P1 controlado usando un episodio aprobado y media de prueba/real si está disponible:
    `recording.ingest → recording.transcribe → recording.align → resolve.sync_audio → timeline.validate/import`.
+   Cierra con `acceptance.ps1 -Tier P1 -Resolve -TargetDate YYYY-MM-DD`; no aceptes `partial` como verde.
 7. Mantén todo fail-closed:
    - no borrar raw media;
    - no sobreescribir proyectos/timelines existentes;

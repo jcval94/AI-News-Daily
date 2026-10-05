@@ -472,10 +472,10 @@ For Windows 11 + DaVinci Resolve, use the committed local harness instead of ad-
 
 ```powershell
 .\scripts\local\bootstrap.ps1
-.\scripts\local\doctor.ps1 -Resolve -Deep
+.\scripts\local\acceptance.ps1 -Tier P0 -Resolve
 ```
 
-It provides root-mapped paths, environment/capability probes, declarative allowlisted jobs, idempotent receipts, Resolve OTIO acceptance tests, and privacy guards. Raw media and machine-private state remain outside Git.
+It provides root-mapped paths, environment/capability probes, declarative allowlisted jobs, staged provenance, idempotent receipts, Resolve OTIO acceptance tests, and privacy guards. The unified acceptance writes `.local/acceptance.latest.json` and keeps repo, workstation, real Resolve, and P1-media evidence separate. Raw media and machine-private state remain outside Git.
 
 See [docs/local/README.md](docs/local/README.md) and [docs/local/contracts.md](docs/local/contracts.md).
 

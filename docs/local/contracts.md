@@ -65,3 +65,24 @@ Git nunca es una cola autoejecutable.
 `expires_at` es opcional en `local_job`. Si existe y ya venció, staging falla cerrado.
 
 Las operaciones con efectos laterales —especialmente Resolve— no tienen retry automático. Para reintentar después de revisar el fallo, crea un nuevo `job_id`; el receipt del intento anterior permanece como evidencia.
+
+
+## local_acceptance_report
+
+`config/local/local_acceptance_report.schema.json` valida `.local/acceptance.latest.json`.
+
+El reporte no sustituye receipts ni preflight: los agrega sin borrar su granularidad. Mantiene cuatro ámbitos separados:
+
+- `repository_harness`;
+- `workstation`;
+- `resolve_real`;
+- `p1_media`.
+
+P1 sólo pasa cuando existen receipts v2 válidos para toda la secuencia requerida y cada receipt conserva commit Git + SHA-256 del request stageado. Un ámbito no probado queda `not_run`; una secuencia P1 incompleta queda `partial`.
+
+El reporte aplica redacción recursiva de roots antes de persistir y declara:
+
+```text
+absolute_paths_persisted = false
+raw_media_uploaded = false
+```

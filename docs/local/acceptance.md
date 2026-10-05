@@ -1,5 +1,28 @@
 # Local Harness Acceptance Checklist
 
+## Comando recomendado
+
+P0 de workstation:
+
+~~~powershell
+.\scripts\local\acceptance.ps1 -Tier P0
+~~~
+
+P0 incluyendo DaVinci Resolve real + OTIO nativo:
+
+~~~powershell
+.\scripts\local\acceptance.ps1 -Tier P0 -Resolve
+~~~
+
+P1 de un episodio real:
+
+~~~powershell
+.\scripts\local\acceptance.ps1 -Tier P1 -Resolve -TargetDate YYYY-MM-DD
+~~~
+
+Cada ejecución escribe `.local/acceptance.latest.json`. Ese archivo es la evidencia local durable y separa repo, workstation, Resolve y media P1. `not_run` nunca cuenta como `pass`; P1 con operaciones faltantes queda `partial`.
+
+
 Esta checklist valida la workstation real sin confundir CI con aceptación local.
 
 ## P0 — Toolchain y frontera de confianza
@@ -62,7 +85,15 @@ No uses un proyecto de episodio para esta prueba.
 
 ## P1 — Episodio real
 
-Usa un episodio aprobado con Recording Pack.
+Usa un episodio aprobado con Recording Pack. El cierre de P1 requiere receipts v2 exitosos y con provenance válida para:
+
+- recording.ingest;
+- recording.transcribe;
+- recording.align;
+- resolve.sync_audio;
+- timeline.validate;
+- resolve.import_timeline.
+
 
 1. Copia media a un root privado configurado en recordings.
 2. Crea y commitea un request en local_handoff/requests/.

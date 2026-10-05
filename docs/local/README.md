@@ -122,12 +122,33 @@ No es el runtime principal. Resolve es Windows-native y mezclar filesystems comp
 
 ## Acceptance
 
+El comando recomendado ahora genera un reporte único y redactado:
+
 ```powershell
 .\scripts\local\acceptance.ps1 -Tier P0
 .\scripts\local\acceptance.ps1 -Tier P0 -Resolve
 ```
 
-P1 se usa con media real.
+Para P1, exige una fecha de episodio y receipts locales reales:
+
+```powershell
+.\scripts\local\acceptance.ps1 -Tier P1 -Resolve -TargetDate YYYY-MM-DD
+```
+
+Salida:
+
+```text
+.local/acceptance.latest.json
+```
+
+El reporte separa cuatro scopes que nunca se mezclan:
+
+- `repository_harness`: contratos, guards y self-audit del repo;
+- `workstation`: doctor profundo + toolchain + tests locales;
+- `resolve_real`: conexión y OTIO smoke dentro de Resolve real;
+- `p1_media`: receipts v2 del episodio con provenance stageada.
+
+Un scope no ejecutado queda `not_run`. P1 incompleto queda `partial` y el launcher devuelve código distinto de cero: no existe “casi verde”.
 
 ## Qué sigue
 
@@ -173,7 +194,7 @@ Para registrar versiones sin persistir rutas privadas:
 .\scripts\local\toolchain.ps1 -Resolve
 ~~~
 
-Salida: .local/toolchain.latest.json.
+Salida: .local/toolchain.latest.json. El reporte unificado de acceptance incorpora este snapshot sin persistir rutas absolutas.
 
 ## Estado rápido
 
