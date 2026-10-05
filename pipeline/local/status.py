@@ -28,10 +28,21 @@ def build_status(*, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     receipt_files = sorted(receipts.glob("*.json")) if receipts.is_dir() else []
     preflight = _read_json(local / "preflight.latest.json")
     toolchain = _read_json(local / "toolchain.latest.json")
+    acceptance = _read_json(local / "acceptance.latest.json")
     payload = {
         "schema_version": 1,
         "preflight_status": preflight.get("status") if preflight else "not_run",
         "toolchain_snapshot": bool(toolchain),
+        "acceptance_status": (
+            str(acceptance.get("status"))
+            if acceptance
+            else "not_run"
+        ),
+        "acceptance_tier": (
+            str(acceptance.get("tier"))
+            if acceptance and acceptance.get("tier")
+            else None
+        ),
         "repo_request_count": len(request_files),
         "staged_job_count": len(staged_files),
         "receipt_count": len(receipt_files),
