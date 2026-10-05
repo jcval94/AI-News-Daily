@@ -13,6 +13,7 @@ _REQUIRED_FILES = [
     "pipeline/local/acceptance.py",
     "pipeline/local/config.py",
     "pipeline/local/jobs.py",
+    "pipeline/local/heartbeat.py",
     "pipeline/local/paths.py",
     "pipeline/local/preflight.py",
     "pipeline/local/resolve_api.py",
@@ -25,6 +26,7 @@ _REQUIRED_FILES = [
     "config/local/local_environment.schema.json",
     "config/local/local_capabilities.schema.json",
     "config/local/local_job.schema.json",
+    "config/local/local_heartbeat.schema.json",
     "config/local/local_receipt.schema.json",
     "config/local/local_run_manifest.schema.json",
     "config/local/local_stage.schema.json",
@@ -148,6 +150,20 @@ def build_harness_audit(*, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 )
                 else "fail",
                 "detail": "subprocess shell disabled",
+            },
+            {
+                "id": "observability:heartbeat",
+                "status": "pass"
+                if _contains(
+                    repo_root / "pipeline/local/jobs.py",
+                    "Heartbeat(",
+                )
+                and _contains(
+                    repo_root / "pipeline/local/status.py",
+                    "stale_job_count",
+                )
+                else "fail",
+                "detail": "running jobs emit heartbeats and stale state is visible",
             },
             {
                 "id": "security:git_committed_clean",

@@ -86,3 +86,16 @@ El reporte aplica redacción recursiva de roots antes de persistir y declara:
 absolute_paths_persisted = false
 raw_media_uploaded = false
 ```
+
+
+## local_heartbeat
+
+`config/local/local_heartbeat.schema.json` describe la señal de vida de un job local en ejecución.
+
+Cada job real escribe atómicamente:
+
+` .local/runs/<job_id>/heartbeat.json `
+
+El heartbeat contiene sólo identidad lógica, operación, timestamps, PID del runner y garantías de privacidad; no contiene rutas de media.
+
+`status.ps1` separa heartbeats `running` recientes de jobs `stale`. Un stale **no** dispara retry ni elimina el lock automáticamente: para operaciones con efectos laterales, la incertidumbre se trata fail-closed.

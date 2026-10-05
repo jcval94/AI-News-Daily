@@ -212,6 +212,8 @@ Salida: .local/toolchain.latest.json. El reporte unificado de acceptance incorpo
 
 Muestra preflight, último acceptance P0/P1, requests disponibles, jobs staged y receipts sin abrir Resolve.
 
+Además muestra jobs con heartbeat activo y jobs `stale`. Un stale significa que el último heartbeat superó el umbral de seguridad: el harness **no hace retry ni unlock automático**, porque una operación Resolve/FFmpeg podría haber producido efectos parciales. Revisa logs/Resolve antes de crear un nuevo `job_id`.
+
 ## CI Windows
 
 CI mantiene un job separado `windows-local-harness` que instala el paquete con Python 3.12 en `windows-latest`, ejecuta `tests/local`, prueba el CLI y parsea todos los scripts PowerShell. No intenta abrir Resolve: scripting/OTIO real sigue siendo acceptance local porque GitHub Actions no tiene tu instalación de DaVinci Resolve.

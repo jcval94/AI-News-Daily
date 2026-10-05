@@ -14,11 +14,15 @@
     "receipt_count",
     "repo_requests",
     "staged_jobs",
-    "latest_receipt"
+    "latest_receipt",
+    "active_job_count",
+    "stale_job_count",
+    "active_jobs",
+    "stale_jobs"
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "preflight_status": {
       "enum": [
@@ -30,6 +34,27 @@
     },
     "toolchain_snapshot": {
       "type": "boolean"
+    },
+    "acceptance_status": {
+      "enum": [
+        "pass",
+        "warn",
+        "partial",
+        "fail",
+        "not_run"
+      ]
+    },
+    "acceptance_tier": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "P0",
+        "P0_RESOLVE",
+        "P1",
+        null
+      ]
     },
     "repo_request_count": {
       "type": "integer",
@@ -61,26 +86,55 @@
         "null"
       ]
     },
-    "acceptance_status": {
-      "enum": [
-        "pass",
-        "warn",
-        "partial",
-        "fail",
-        "not_run"
-      ]
+    "active_job_count": {
+      "type": "integer",
+      "minimum": 0
     },
-    "acceptance_tier": {
-      "type": [
-        "string",
-        "null"
+    "stale_job_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "active_jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/heartbeatStatus"
+      }
+    },
+    "stale_jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/heartbeatStatus"
+      }
+    }
+  },
+  "$defs": {
+    "heartbeatStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "operation",
+        "last_heartbeat_at",
+        "age_seconds"
       ],
-      "enum": [
-        "P0",
-        "P0_RESOLVE",
-        "P1",
-        null
-      ]
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "last_heartbeat_at": {
+          "type": "string",
+          "minLength": 10
+        },
+        "age_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
     }
   }
 }

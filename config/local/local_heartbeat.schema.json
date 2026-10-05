@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local_heartbeat.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "operation",
+    "status",
+    "started_at",
+    "last_heartbeat_at",
+    "finished_at",
+    "runner_pid",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "running",
+        "success",
+        "failed",
+        "timeout"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "minLength": 10
+    },
+    "last_heartbeat_at": {
+      "type": "string",
+      "minLength": 10
+    },
+    "finished_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runner_pid": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute_paths_persisted",
+        "raw_media_uploaded"
+      ],
+      "properties": {
+        "absolute_paths_persisted": {
+          "const": false
+        },
+        "raw_media_uploaded": {
+          "const": false
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ from typing import Any
 import opentimelineio as otio
 
 from pipeline.local.config import REPO_ROOT, resolve_executable
+from pipeline.local.heartbeat import Heartbeat
 from pipeline.local.paths import RootMap
 from pipeline.schema_validation import validate_payload
 
@@ -328,9 +329,17 @@ def run_job(
     exit_code = 1
     stdout = ""
     stderr = ""
+    heartbeat = Heartbeat(
+        run_dir / "heartbeat.json",
+        job_id=str(job["job_id"]),
+        operation=str(job["operation"]),
+        started_at=started,
+        now_fn=utc_now,
+    )
     try:
         handle.write(started)
         handle.close()
+        heartbeat.start()
         if metadata["kind"] == "otio_validate":
             stdout = _validate_otio(Path(metadata["path"]))
             exit_code = 0
@@ -359,6 +368,7 @@ def run_job(
         exit_code = 1
         stderr = str(exc)
     finally:
+        heartbeat.finish(status)
         try:
             handle.close()
         except Exception:
