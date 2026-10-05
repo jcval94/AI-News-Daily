@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "description": "Local execution plan derived from the five killer live-web results. Jobs preserve the rights boundary: reference-only sources are probed but not automatically downloaded.",
+  "jobs": [
+    {
+      "schema_version": 1,
+      "job_id": "killer-time-wizard-local",
+      "case_id": "killer_time_wizard",
+      "target": "Time Wizard Yu-Gi-Oh exact card",
+      "source": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=4022&ope=2&request_locale=en",
+        "source_type": "official_record",
+        "rights_status": "reference_only",
+        "expected_identity": "Time Wizard"
+      },
+      "policy": {
+        "allow_download": false,
+        "allow_browser_session": true,
+        "allow_authenticated_session": false,
+        "max_download_mb": 50,
+        "keep_binary": false,
+        "notes": [
+          "Reference/identity verification only; do not auto-export copyrighted artwork."
+        ]
+      },
+      "tasks": [
+        "browser_probe",
+        "metadata_probe",
+        "thumbnail_probe",
+        "ocr",
+        "semantic_rerank"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "job_id": "killer-lake-nyos-local",
+      "case_id": "killer_lake_nyos_1986",
+      "target": "1986 Lake Nyos disaster documentary image",
+      "source": {
+        "url": "https://www.usgs.gov/media/images/exploding-lakes-cameroon-0",
+        "source_type": "web_page",
+        "rights_status": "usable",
+        "expected_identity": "1986 Lake Nyos disaster"
+      },
+      "policy": {
+        "allow_download": true,
+        "allow_browser_session": true,
+        "allow_authenticated_session": false,
+        "max_download_mb": 250,
+        "keep_binary": true,
+        "notes": [
+          "Prefer original public-domain source and preserve USGS provenance."
+        ]
+      },
+      "tasks": [
+        "browser_probe",
+        "metadata_probe",
+        "download_if_allowed",
+        "dedupe",
+        "resolve_manifest"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "job_id": "killer-plato-local",
+      "case_id": "killer_plato_bust",
+      "target": "Plato historical bust or sculpture",
+      "source": {
+        "url": "https://commons.wikimedia.org/wiki/File:Plato-Musei_Capitolini.jpg",
+        "source_type": "web_page",
+        "rights_status": "usable",
+        "expected_identity": "Plato bust"
+      },
+      "policy": {
+        "allow_download": true,
+        "allow_browser_session": true,
+        "allow_authenticated_session": false,
+        "max_download_mb": 250,
+        "keep_binary": true,
+        "notes": [
+          "Preserve author, CC BY-SA attribution and original Commons URL."
+        ]
+      },
+      "tasks": [
+        "browser_probe",
+        "metadata_probe",
+        "download_if_allowed",
+        "dedupe",
+        "ocr",
+        "resolve_manifest"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "job_id": "killer-alphafold-local",
+      "case_id": "killer_alphafold_interface",
+      "target": "AlphaFold Protein Structure Database interface 3D viewer",
+      "source": {
+        "url": "https://www.ebi.ac.uk/training/online/courses/navigating-alphafold-database/understanding-the-structure-prediction-page/summary-and-model-confidence-tab/",
+        "source_type": "web_page",
+        "rights_status": "usable",
+        "expected_identity": "AlphaFold Database structure page interface"
+      },
+      "policy": {
+        "allow_download": true,
+        "allow_browser_session": true,
+        "allow_authenticated_session": false,
+        "max_download_mb": 250,
+        "keep_binary": true,
+        "notes": [
+          "Use page-level CC BY terms unless an embedded asset exposes separate licensing."
+        ]
+      },
+      "tasks": [
+        "browser_probe",
+        "metadata_probe",
+        "download_if_allowed",
+        "ocr",
+        "semantic_rerank",
+        "resolve_manifest"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "job_id": "killer-iphone-2007-local",
+      "case_id": "killer_iphone_2007_keynote",
+      "target": "Steve Jobs demonstrating original iPhone gestures at Macworld 2007",
+      "source": {
+        "url": "https://www.youtube.com/watch?v=VQKMoT-6XSg",
+        "source_type": "video",
+        "rights_status": "reference_only",
+        "expected_identity": "Macworld 2007 original iPhone keynote"
+      },
+      "policy": {
+        "allow_download": false,
+        "allow_browser_session": true,
+        "allow_authenticated_session": false,
+        "max_download_mb": 5000,
+        "keep_binary": false,
+        "notes": [
+          "Metadata/transcript/scene planning only until rights are cleared or a licensed/local source is supplied."
+        ]
+      },
+      "tasks": [
+        "metadata_probe",
+        "thumbnail_probe",
+        "transcript_probe",
+        "semantic_rerank",
+        "clip_plan"
+      ]
+    }
+  ]
+}

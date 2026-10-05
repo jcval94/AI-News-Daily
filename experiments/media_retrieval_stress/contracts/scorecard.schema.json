@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/scorecard.schema.json",
+  "title": "Multimedia Retrieval Stress Scorecard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "run_id",
+    "verdict",
+    "metrics",
+    "hard_failures",
+    "failed_cases"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "verdict": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overall_pass_rate",
+        "minimum_case_pass_rate",
+        "stable_cases",
+        "total_cases",
+        "errors",
+        "hard_fail_count"
+      ],
+      "properties": {
+        "overall_pass_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "minimum_case_pass_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "stable_cases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_cases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hard_fail_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "hard_failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "repetition",
+          "source",
+          "code",
+          "detail"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string"
+          },
+          "repetition": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source": {
+            "enum": [
+              "deterministic",
+              "critic",
+              "runtime"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "failed_cases": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

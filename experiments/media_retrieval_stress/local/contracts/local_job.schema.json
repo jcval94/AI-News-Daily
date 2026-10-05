@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/local-job.schema.json",
+  "title": "Local Media Forensics Job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "case_id",
+    "target",
+    "source",
+    "policy",
+    "tasks"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "job_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{2,119}$"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "source_type",
+        "rights_status"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2000
+        },
+        "source_type": {
+          "enum": [
+            "web_page",
+            "image",
+            "video",
+            "document",
+            "official_record"
+          ]
+        },
+        "rights_status": {
+          "enum": [
+            "usable",
+            "reference_only",
+            "review_required",
+            "blocked"
+          ]
+        },
+        "expected_identity": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allow_download",
+        "allow_browser_session",
+        "allow_authenticated_session",
+        "max_download_mb",
+        "keep_binary"
+      ],
+      "properties": {
+        "allow_download": {
+          "type": "boolean"
+        },
+        "allow_browser_session": {
+          "type": "boolean"
+        },
+        "allow_authenticated_session": {
+          "type": "boolean"
+        },
+        "max_download_mb": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000
+        },
+        "keep_binary": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "browser_probe",
+          "metadata_probe",
+          "thumbnail_probe",
+          "download_if_allowed",
+          "ffprobe",
+          "scene_sample",
+          "ocr",
+          "transcript_probe",
+          "semantic_rerank",
+          "dedupe",
+          "clip_plan",
+          "resolve_manifest"
+        ]
+      }
+    }
+  }
+}

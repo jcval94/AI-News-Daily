@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "candidate_strict",
+  "description": "Strict synthetic candidate-selection gate: exact identity outranks quality, metadata and availability; three repeated selector runs.",
+  "case_ids": [],
+  "repetitions": 3,
+  "critic_enabled": false,
+  "reasoning_effort": "low",
+  "thresholds": {
+    "min_overall_pass_rate": 1,
+    "min_case_pass_rate": 1,
+    "require_identity_stability": true,
+    "max_errors": 0,
+    "hard_fail_checks": [
+      "assessment_coverage",
+      "selection_expected",
+      "required_rejections",
+      "unresolved",
+      "required_warnings",
+      "selected_identity",
+      "selected_rights",
+      "selected_verdict",
+      "duplicate_quality"
+    ],
+    "hard_fail_critic_codes": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/run-config.schema.json",
+  "title": "Stress Run Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model",
+    "repetitions",
+    "reasoning_effort",
+    "timeout_seconds",
+    "max_output_tokens",
+    "critic_enabled"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "repetitions": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "reasoning_effort": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 300
+    },
+    "max_output_tokens": {
+      "type": "integer",
+      "minimum": 200,
+      "maximum": 8000
+    },
+    "critic_enabled": {
+      "type": "boolean"
+    }
+  }
+}
