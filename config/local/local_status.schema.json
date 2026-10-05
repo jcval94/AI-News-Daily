@@ -7,6 +7,8 @@
     "schema_version",
     "preflight_status",
     "toolchain_snapshot",
+    "acceptance_status",
+    "acceptance_tier",
     "repo_request_count",
     "staged_job_count",
     "receipt_count",
@@ -57,6 +59,27 @@
       "type": [
         "string",
         "null"
+      ]
+    },
+    "acceptance_status": {
+      "enum": [
+        "pass",
+        "warn",
+        "partial",
+        "fail",
+        "not_run"
+      ]
+    },
+    "acceptance_tier": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "P0",
+        "P0_RESOLVE",
+        "P1",
+        null
       ]
     }
   }
