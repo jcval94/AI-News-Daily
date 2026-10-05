@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "core_strict",
+  "description": "Primary semantic stress gate: all core cases, three repetitions, independent critic, zero tolerance for identity drift.",
+  "case_ids": [],
+  "repetitions": 3,
+  "critic_enabled": true,
+  "reasoning_effort": "low",
+  "thresholds": {
+    "min_overall_pass_rate": 1,
+    "min_case_pass_rate": 1,
+    "require_identity_stability": true,
+    "max_errors": 0,
+    "hard_fail_checks": [
+      "decision",
+      "ambiguity_refusal",
+      "identity_type",
+      "canonical_terms",
+      "domain_context",
+      "query_term_groups",
+      "media_types",
+      "exactness",
+      "forbidden_terms",
+      "period",
+      "geography"
+    ],
+    "hard_fail_critic_codes": [
+      "wrong_entity",
+      "missing_qualifier",
+      "query_drift",
+      "forbidden_term",
+      "ambiguity_guess",
+      "unsupported_alias",
+      "literalized_metaphor",
+      "negation_violation",
+      "period_loss",
+      "geography_loss",
+      "generic_substitution",
+      "unsearchable_query"
+    ]
+  }
+}

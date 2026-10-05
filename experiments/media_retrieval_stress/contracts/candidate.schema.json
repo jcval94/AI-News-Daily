@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-news-daily.local/media-retrieval-stress/candidate.schema.json",
+  "title": "Future Provider Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "provider",
+    "provider_asset_id",
+    "source_url",
+    "title",
+    "description",
+    "media_type",
+    "rights_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "provider_asset_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 2000
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 5000
+    },
+    "media_type": {
+      "enum": [
+        "image",
+        "video"
+      ]
+    },
+    "rights_status": {
+      "enum": [
+        "unknown",
+        "eligible",
+        "ineligible",
+        "review_required"
+      ]
+    },
+    "width": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "height": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "duration_seconds": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

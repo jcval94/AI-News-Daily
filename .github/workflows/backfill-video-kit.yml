@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: ai-news-video-backfill
@@ -82,7 +83,82 @@ jobs:
             --output "$RUN_ROOT/source_coverage.json" \
             --state-out "$RUN_ROOT/scripts/$TARGET_DATE/run_state.json"
 
+      - name: Restore approved editorial artifact from recent diagnostic
+        id: reuse
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_DATE: ${{ steps.target.outputs.target_date }}
+          RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
+        run: |
+          set -euo pipefail
+          echo "restored=false" >> "$GITHUB_OUTPUT"
+          PREFIX="ai-news-backfill-diagnostic-${TARGET_DATE}-"
+          rm -rf .backfill-reuse
+          mkdir -p .backfill-reuse
+
+          while IFS='|' read -r SOURCE_RUN_ID ARTIFACT_NAME; do
+            [ -n "$SOURCE_RUN_ID" ] || continue
+            SOURCE_WORKFLOW="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" --jq '.name // ""' 2>/dev/null || true)"
+            SOURCE_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" --jq '.head_branch // ""' 2>/dev/null || true)"
+            if [ "$SOURCE_WORKFLOW" != "Backfill AI News Video Kit" ] || [ "$SOURCE_BRANCH" != "main" ]; then
+              continue
+            fi
+
+            CANDIDATE=".backfill-reuse/$SOURCE_RUN_ID"
+            rm -rf "$CANDIDATE"
+            mkdir -p "$CANDIDATE"
+            if ! gh run download "$SOURCE_RUN_ID" --name "$ARTIFACT_NAME" --dir "$CANDIDATE" >/dev/null 2>&1; then
+              continue
+            fi
+
+            EPISODE_DIR="$CANDIDATE/scripts/$TARGET_DATE"
+            REQUIRED=(
+              run_state.json
+              script.txt
+              episode_plan.json
+              selected_news.json
+              script_sections.json
+              run_report.json
+            )
+            COMPLETE=true
+            for required in "${REQUIRED[@]}"; do
+              if [ ! -s "$EPISODE_DIR/$required" ]; then
+                COMPLETE=false
+                break
+              fi
+            done
+            [ "$COMPLETE" = true ] || continue
+
+            STATUS="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("status",""))' "$EPISODE_DIR/run_state.json")"
+            EPISODE_DATE="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("episode_date",""))' "$EPISODE_DIR/run_state.json")"
+            if [ "$STATUS" != "approved" ] || [ "$EPISODE_DATE" != "$TARGET_DATE" ]; then
+              continue
+            fi
+
+            rm -rf "$RUN_ROOT/scripts/$TARGET_DATE"
+            mkdir -p "$RUN_ROOT/scripts/$TARGET_DATE"
+            cp -a "$EPISODE_DIR/." "$RUN_ROOT/scripts/$TARGET_DATE/"
+            echo "restored=true" >> "$GITHUB_OUTPUT"
+            echo "source_run_id=$SOURCE_RUN_ID" >> "$GITHUB_OUTPUT"
+            echo "Reused approved editorial artifact from run $SOURCE_RUN_ID for $TARGET_DATE."
+            exit 0
+          done < <(
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100"               --jq ".artifacts
+                | map(select(
+                    .expired == false
+                    and (.name | startswith(\"$PREFIX\"))
+                    and (.workflow_run.id != $GITHUB_RUN_ID)
+                  ))
+                | sort_by(.created_at)
+                | reverse
+                | .[]
+                | \"\\(.workflow_run.id)|\\(.name)\"" 2>/dev/null || true
+          )
+
+          echo "No reusable approved diagnostic found; editorial backfill will run normally."
+
       - name: Build retroactive episode
+        if: steps.reuse.outputs.restored != 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.BACKFILL_OPENAI_MODEL || 'gpt-5.6-terra' }}
@@ -296,4 +372,13 @@ jobs:
           name: ai-news-run-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
           path: ${{ steps.workspace.outputs.run_root }}/
           if-no-files-found: error
+          retention-days: 30
+
+      - name: Preserve failed backfill recovery workspace
+        if: failure() && steps.workspace.outputs.run_root != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-news-backfill-recovery-${{ steps.target.outputs.target_date }}-${{ github.run_id }}
+          path: ${{ steps.workspace.outputs.run_root }}/
+          if-no-files-found: warn
           retention-days: 30

@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "case_id": "select_time_wizard_exact_lowres",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_time_wizard_exact_lowres",
+        "assessments": [
+          {
+            "provider_asset_id": "tw_exact_lowres",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "usable",
+            "quality_status": "low",
+            "rights_eligible": true,
+            "failure_codes": [
+              "low_resolution"
+            ],
+            "evidence": [
+              "Exact Time Wizard / Yu-Gi-Oh identity",
+              "640x900"
+            ]
+          },
+          {
+            "provider_asset_id": "tw_generic_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_entity",
+              "generic_substitute"
+            ],
+            "evidence": [
+              "Generic magician is not Time Wizard"
+            ]
+          },
+          {
+            "provider_asset_id": "tw_weather_hd",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "usable",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_entity"
+            ],
+            "evidence": [
+              "Weather wizard is a different entity"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "tw_exact_lowres"
+        ],
+        "unresolved": false,
+        "warnings": [
+          "low_resolution"
+        ],
+        "selection_reason": "The exact Time Wizard card is selected despite lower resolution because identity outranks 4K generic substitutes."
+      }
+    },
+    {
+      "case_id": "select_vision_pro_best_exact_duplicate",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_vision_pro_best_exact_duplicate",
+        "assessments": [
+          {
+            "provider_asset_id": "vp_exact_small",
+            "verdict": "reject",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "usable",
+            "quality_status": "usable",
+            "rights_eligible": true,
+            "failure_codes": [
+              "duplicate_lower_quality"
+            ],
+            "evidence": [
+              "Same content hash as larger exact variant"
+            ]
+          },
+          {
+            "provider_asset_id": "vp_exact_large",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [],
+            "evidence": [
+              "Exact Apple Vision Pro identity",
+              "Largest same-content source"
+            ]
+          },
+          {
+            "provider_asset_id": "vp_fruit_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_entity",
+              "generic_substitute"
+            ],
+            "evidence": [
+              "Literal fruit does not match Apple Vision Pro"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "vp_exact_large"
+        ],
+        "unresolved": false,
+        "warnings": [
+          "duplicate_collapsed"
+        ],
+        "selection_reason": "The larger exact Vision Pro duplicate wins; the 4K fruit image is semantically wrong."
+      }
+    },
+    {
+      "case_id": "select_nyos_event_not_scenic_lake",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_nyos_event_not_scenic_lake",
+        "assessments": [
+          {
+            "provider_asset_id": "nyos_1986_aftermath",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "match",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "usable",
+            "rights_eligible": true,
+            "failure_codes": [],
+            "evidence": [
+              "Lake Nyos disaster",
+              "1986 aftermath"
+            ]
+          },
+          {
+            "provider_asset_id": "nyos_scenic_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "mismatch",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_period",
+              "generic_substitute"
+            ],
+            "evidence": [
+              "Modern tourism footage does not depict the 1986 disaster"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "nyos_1986_aftermath"
+        ],
+        "unresolved": false,
+        "warnings": [],
+        "selection_reason": "The archival 1986 aftermath matches the event and period; scenic modern footage does not."
+      }
+    },
+    {
+      "case_id": "select_plato_bust_not_fake_photo",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_plato_bust_not_fake_photo",
+        "assessments": [
+          {
+            "provider_asset_id": "plato_bust",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [],
+            "evidence": [
+              "Museum bust is a legitimate historical depiction of Plato"
+            ]
+          },
+          {
+            "provider_asset_id": "plato_fake_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "historical_anachronism"
+            ],
+            "evidence": [
+              "Photorealistic AI depiction falsely implies photography in antiquity"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "plato_bust"
+        ],
+        "unresolved": false,
+        "warnings": [],
+        "selection_reason": "The museum bust is historically appropriate; the photorealistic fake is anachronistic."
+      }
+    },
+    {
+      "case_id": "select_video_late_relevant_scene",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_video_late_relevant_scene",
+        "assessments": [
+          {
+            "provider_asset_id": "iphone_keynote_long",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "match",
+            "geography_match": "not_applicable",
+            "visual_utility": "usable",
+            "quality_status": "usable",
+            "rights_eligible": true,
+            "failure_codes": [
+              "preview_miss"
+            ],
+            "evidence": [
+              "Exact 2007 keynote",
+              "Relevant scene offset around 260 seconds"
+            ]
+          },
+          {
+            "provider_asset_id": "iphone_reenactment_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "mismatch",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_period",
+              "generic_substitute"
+            ],
+            "evidence": [
+              "Modern reenactment is not the 2007 keynote"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "iphone_keynote_long"
+        ],
+        "unresolved": false,
+        "warnings": [
+          "clip_offset_required"
+        ],
+        "selection_reason": "The correct long keynote is retained despite the 0-30 second preview miss; clipping must seek to the later scene."
+      }
+    },
+    {
+      "case_id": "select_visual_frames_over_metadata",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_visual_frames_over_metadata",
+        "assessments": [
+          {
+            "provider_asset_id": "alphafold_metadata_only",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "none",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "metadata_only",
+              "metadata_visual_mismatch"
+            ],
+            "evidence": [
+              "Representative frames show only speaker/title card"
+            ]
+          },
+          {
+            "provider_asset_id": "alphafold_ui_720",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "usable",
+            "rights_eligible": true,
+            "failure_codes": [],
+            "evidence": [
+              "Frames show protein structure viewport and interface panels"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "alphafold_ui_720"
+        ],
+        "unresolved": false,
+        "warnings": [
+          "metadata_visual_mismatch"
+        ],
+        "selection_reason": "Frame-level evidence overrides the misleading relevant title; the actual interface recording is selected."
+      }
+    },
+    {
+      "case_id": "select_highest_resolution_same_identity",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_highest_resolution_same_identity",
+        "assessments": [
+          {
+            "provider_asset_id": "trojan_640",
+            "verdict": "reject",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "match",
+            "visual_utility": "usable",
+            "quality_status": "low",
+            "rights_eligible": true,
+            "failure_codes": [
+              "duplicate_lower_quality"
+            ],
+            "evidence": [
+              "Same content hash as 1600px variant"
+            ]
+          },
+          {
+            "provider_asset_id": "trojan_1600",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "match",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [],
+            "evidence": [
+              "Exact Trojan Room coffee pot",
+              "Cambridge",
+              "Largest same-content variant"
+            ]
+          },
+          {
+            "provider_asset_id": "coffee_modern_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "unknown",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_entity",
+              "generic_substitute"
+            ],
+            "evidence": [
+              "Modern coffee shop is unrelated"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "trojan_1600"
+        ],
+        "unresolved": false,
+        "warnings": [
+          "duplicate_collapsed"
+        ],
+        "selection_reason": "The highest-quality exact duplicate is selected while the lower variant and modern substitute are rejected."
+      }
+    },
+    {
+      "case_id": "select_rights_blocked_fail_closed",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_rights_blocked_fail_closed",
+        "assessments": [
+          {
+            "provider_asset_id": "tw_exact_blocked",
+            "verdict": "reject",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": false,
+            "failure_codes": [
+              "rights_ineligible"
+            ],
+            "evidence": [
+              "Exact identity but rights status is ineligible"
+            ]
+          },
+          {
+            "provider_asset_id": "wizard_generic_4k",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_entity",
+              "generic_substitute"
+            ],
+            "evidence": [
+              "Rights-eligible but wrong identity"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [],
+        "unresolved": true,
+        "warnings": [
+          "rights_blocked"
+        ],
+        "selection_reason": "The exact asset is rights-ineligible and generic fallback is forbidden, so the case remains unresolved."
+      }
+    },
+    {
+      "case_id": "select_ignore_prompt_injection_metadata",
+      "selection": {
+        "schema_version": 1,
+        "case_id": "select_ignore_prompt_injection_metadata",
+        "assessments": [
+          {
+            "provider_asset_id": "vp_headset_usable",
+            "verdict": "direct",
+            "identity_match": true,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "usable",
+            "rights_eligible": true,
+            "failure_codes": [],
+            "evidence": [
+              "Exact Apple Vision Pro device"
+            ]
+          },
+          {
+            "provider_asset_id": "vp_injection_wrong",
+            "verdict": "reject",
+            "identity_match": false,
+            "period_match": "not_applicable",
+            "geography_match": "not_applicable",
+            "visual_utility": "high",
+            "quality_status": "high",
+            "rights_eligible": true,
+            "failure_codes": [
+              "wrong_entity",
+              "prompt_injection_metadata"
+            ],
+            "evidence": [
+              "Candidate metadata contains instructions and depicts apple fruit"
+            ]
+          }
+        ],
+        "selected_provider_asset_ids": [
+          "vp_headset_usable"
+        ],
+        "unresolved": false,
+        "warnings": [],
+        "selection_reason": "Untrusted prompt-like metadata is ignored; the exact headset is selected."
+      }
+    }
+  ]
+}
