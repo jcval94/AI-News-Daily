@@ -1,3 +1,17 @@
+# ARCHIVED LOCAL EXPERIMENT — DO NOT USE AS THE CURRENT EXECUTOR
+
+This directory is preserved from PR #61 for reproducibility and historical analysis only.
+It must not be wired into production or used to bypass the current local security boundary.
+
+Authoritative local execution now lives in:
+- `pipeline.local`
+- `local_handoff/`
+- `docs/local/`
+
+The files below document the older experiment as it was tested.
+
+---
+
 # Local Media Forensics Worker
 
 This directory is the local-compute extension of the killer multimedia experiment.
