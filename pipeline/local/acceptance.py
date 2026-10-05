@@ -348,6 +348,9 @@ def build_acceptance_report(
         if target_date
         else ("P0_RESOLVE" if probe_resolve or otio_smoke else "P0")
     )
+    local_status["acceptance_status"] = overall
+    local_status["acceptance_tier"] = tier
+
     payload = {
         "schema_version": 1,
         "generated_at": _utc_now(),
