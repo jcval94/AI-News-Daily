@@ -31,6 +31,7 @@ def parse_args() -> argparse.Namespace:
     benchmark.add_argument("--fixture", default="evals/tts/voice_bakeoff_es.txt")
     benchmark.add_argument("--output-dir", default=".local/tts/benchmarks/latest")
     benchmark.add_argument("--config", default=str(DEFAULT_CONFIG))
+    benchmark.add_argument("--include-edge", action="store_true")
 
     validate = sub.add_parser("validate", help="Validate a narration manifest contract")
     validate.add_argument("manifest")
@@ -73,6 +74,7 @@ def main() -> None:
             output_dir=repo_root / args.output_dir,
             config_path=repo_root / args.config,
             repo_root=repo_root,
+            include_edge=args.include_edge,
         )
         print(json.dumps({"benchmark": str(path.relative_to(repo_root))}, indent=2))
         return

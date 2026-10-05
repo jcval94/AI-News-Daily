@@ -28,7 +28,7 @@ Status is intentionally conservative: code existing is not the same as a model b
 
 ## Phase 2 — local scaffold
 
-**Status:** code complete; workstation acceptance pending.
+**Status:** accepted on the Windows workstation (2026-10-04).
 
 **DoD**
 - TTS code isolated under `pipeline/tts/`;
@@ -37,11 +37,13 @@ Status is intentionally conservative: code existing is not the same as a model b
 - `tts.render` is allowlisted in the existing local harness;
 - no raw audio enters Git.
 
-Acceptance pending: run the setup and render on the ASUS Zenbook S16.
+Physical acceptance is recorded locally in `.local/tts/acceptance.latest.json`.
+The missing standalone `espeak-ng` executable is non-blocking because Kokoro's
+packaged loader passed Spanish smoke and full-episode synthesis.
 
 ## Phase 3 — first engine functional
 
-**Status:** adapter implemented; real-machine acceptance pending.
+**Status:** accepted on the real workstation.
 
 **DoD**
 - Kokoro renders a real approved episode by semantic section;
@@ -53,7 +55,7 @@ Acceptance pending: run the setup and render on the ASUS Zenbook S16.
 
 ## Phase 4 — Voice Bake-off
 
-**Status:** experiment harness and fixture implemented; listening run pending.
+**Status:** technical bake-off complete; human listening/selection pending.
 
 **DoD**
 - same representative fixture rendered by all configured candidates;
@@ -64,7 +66,7 @@ Acceptance pending: run the setup and render on the ASUS Zenbook S16.
 
 ## Phase 5 — audio QA
 
-**Status:** code complete; threshold calibration pending.
+**Status:** physical QA accepted; Piper peak warning remains under review.
 
 **DoD**
 - file/existence, duration, sample rate, channels and PCM width checked;
@@ -75,7 +77,7 @@ Acceptance pending: run the setup and render on the ASUS Zenbook S16.
 
 ## Phase 6 — real script integration
 
-**Status:** contract integration complete; real model run pending.
+**Status:** accepted with approved episode `2026-09-25`.
 
 **DoD**
 - a real approved `scripts/YYYY-MM-DD/script_sections.json` renders end-to-end;

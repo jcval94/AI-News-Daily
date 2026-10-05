@@ -103,10 +103,33 @@ class NarrationContractTests(unittest.TestCase):
         payload["schema_version"] = "1.1"
         payload["sections"][0]["pause_after_seconds"] = 0.35
         payload["sections"][0]["timeline_end_seconds"] = 1.50
+        payload["sections"][1]["pause_after_seconds"] = 0.0
+        payload["sections"][1]["timeline_end_seconds"] = 3.0
+        payload["metrics"]["spoken_duration_seconds"] = 3.0
+        payload["metrics"]["pause_duration_seconds"] = 0.35
         with self.assertRaisesRegex(
             ValueError,
             "pause mismatch",
         ):
+            validate_manifest(payload)
+
+    def test_manifest_1_1_requires_explicit_pause_fields(self):
+        payload = manifest()
+        payload["schema_version"] = "1.1"
+        payload["metrics"]["spoken_duration_seconds"] = 3.0
+        payload["metrics"]["pause_duration_seconds"] = 0.0
+        with self.assertRaisesRegex(Exception, "pause_after_seconds"):
+            validate_manifest(payload)
+
+    def test_manifest_1_1_rejects_pause_metric_mismatch(self):
+        payload = manifest()
+        payload["schema_version"] = "1.1"
+        for section in payload["sections"]:
+            section["pause_after_seconds"] = 0.0
+            section["timeline_end_seconds"] = section["end_seconds"]
+        payload["metrics"]["spoken_duration_seconds"] = 3.0
+        payload["metrics"]["pause_duration_seconds"] = 0.5
+        with self.assertRaisesRegex(ValueError, "pause duration mismatch"):
             validate_manifest(payload)
 
     def test_timestamp_gap_is_rejected(self):
