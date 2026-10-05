@@ -313,6 +313,36 @@ def build_acceptance_report(
         elif scope["status"] == "warn":
             warnings.append(f"{scope_name}:warning")
 
+    blockers.extend(
+        f"preflight:{check.get('name', 'unknown')}:{check.get('message', '')}"
+        for check in preflight.get("checks", [])
+        if check.get("status") == "block"
+    )
+    warnings.extend(
+        f"preflight:{check.get('name', 'unknown')}:{check.get('message', '')}"
+        for check in preflight.get("checks", [])
+        if check.get("status") == "warn"
+    )
+    blockers.extend(
+        f"harness_audit:{check_id}"
+        for check_id in harness.get("failed_checks", [])
+    )
+    if tests["status"] == "fail":
+        blockers.append("local_tests:failed")
+    if target_date:
+        blockers.extend(
+            f"p1:missing:{operation}"
+            for operation in p1_scope.get("missing_operations", [])
+        )
+        blockers.extend(
+            f"p1:failed:{operation}"
+            for operation in p1_scope.get("failed_operations", [])
+        )
+        blockers.extend(
+            f"p1:invalid_receipt:{name}"
+            for name in p1_scope.get("invalid_receipts", [])
+        )
+
     tier = (
         "P1"
         if target_date
@@ -330,12 +360,13 @@ def build_acceptance_report(
         },
         "scopes": scopes,
         "tests": tests,
+        "preflight": preflight,
         "environment": preflight["environment"],
         "toolchain": toolchain,
         "local_status": local_status,
         "evidence_boundaries": harness["acceptance_boundaries"],
-        "blockers": blockers,
-        "warnings": warnings,
+        "blockers": sorted(set(blockers)),
+        "warnings": sorted(set(warnings)),
         "privacy": {
             "absolute_paths_persisted": False,
             "raw_media_uploaded": False,
