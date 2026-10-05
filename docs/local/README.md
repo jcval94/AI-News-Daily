@@ -202,7 +202,7 @@ Salida: .local/toolchain.latest.json. El reporte unificado de acceptance incorpo
 .\scripts\local\status.ps1
 ~~~
 
-Muestra preflight, requests disponibles, jobs staged y receipts sin abrir Resolve.
+Muestra preflight, último acceptance P0/P1, requests disponibles, jobs staged y receipts sin abrir Resolve.
 
 ## CI Windows
 
