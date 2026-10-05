@@ -62,11 +62,11 @@ try {
             [System.Text.UTF8Encoding]::new($false)
         )
 
+        $Created += $Destination
         & $Python -m pipeline.local validate-job $Destination | Out-Null
         if ($LASTEXITCODE -ne 0) {
             throw "El request generado no pasó schema: $Destination"
         }
-        $Created += $Destination
     }
 }
 catch {
