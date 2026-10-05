@@ -168,6 +168,28 @@ The scanner blocks `ready_for_alignment` when:
 
 Unmatched camera dumps are reported as warnings instead of being silently assigned.
 
+## Evidence boundary: CI vs laptop
+
+CI is expected to prove:
+
+- contract and JSON Schema generation;
+- stable take/retake parsing and session provenance;
+- missing, duplicate-identity, duplicate-content and orphan detection;
+- synthetic MP4/WAV probing and decode smoke tests with FFmpeg/ffprobe;
+- technical-preference behavior and false-green state flags;
+- full deterministic test suite on Linux;
+- the Windows local harness contract and PowerShell launchers on `windows-latest`.
+
+CI does **not** prove the real workstation/media boundary. Acceptance on JC's Windows 11 laptop still requires at least one representative camera session with:
+
+1. real camera footage plus scratch audio under `sessions/s01/inbox`;
+2. a retake in `sessions/s02/inbox` continuing the retake number;
+3. real FFmpeg/ffprobe inspection of the camera codec, frame rate and audio streams;
+4. local WhisperX transcription/alignment;
+5. DaVinci Resolve waveform sync/read-back through the existing Resolve Alignment Bridge.
+
+Passing ingest alone is never sufficient evidence for transcription, alignment, Resolve sync or an automatic rough cut.
+
 ## Future WhisperX handoff
 
 The next layer will consume:
