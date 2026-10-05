@@ -41,6 +41,29 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
             self.assertIn("pipeline.media_density_gate", workflow)
             self.assertNotIn("expected >=45 assets", workflow)
 
+    def test_backfill_reuses_only_complete_approved_editorial_diagnostics(self) -> None:
+        workflow = Path(".github/workflows/backfill-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn("actions: read", workflow)
+        self.assertIn("Restore approved editorial artifact from recent diagnostic", workflow)
+        self.assertIn("if: steps.reuse.outputs.restored != 'true'", workflow)
+        for required in (
+            "run_state.json",
+            "script.txt",
+            "episode_plan.json",
+            "selected_news.json",
+            "script_sections.json",
+            "run_report.json",
+        ):
+            self.assertIn(required, workflow)
+        self.assertIn('STATUS" != "approved"', workflow)
+        self.assertIn('EPISODE_DATE" != "$TARGET_DATE"', workflow)
+
+    def test_failed_backfill_preserves_latest_isolated_workspace(self) -> None:
+        workflow = Path(".github/workflows/backfill-video-kit.yml").read_text(encoding="utf-8")
+        self.assertIn("Preserve failed backfill recovery workspace", workflow)
+        self.assertIn("ai-news-backfill-recovery-", workflow)
+        self.assertIn("if: failure() && steps.workspace.outputs.run_root != ''", workflow)
+
     def test_otio_is_built_before_resolve_bridge_in_main_and_backfill(self) -> None:
         for path in (
             ".github/workflows/build-video-kit.yml",
