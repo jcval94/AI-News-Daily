@@ -77,7 +77,7 @@ catch {
 }
 
 Write-Host ""
-Write-Host "P1 request kit generado para $TargetDate:"
+Write-Host "P1 request kit generado para ${TargetDate}:"
 foreach ($Path in $Created) {
     Write-Host ("  " + (Resolve-Path -Relative $Path))
 }
