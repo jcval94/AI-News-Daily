@@ -480,6 +480,7 @@ class RecordingIngestScannerDeterministicTests(unittest.TestCase):
             manifest = scan_recordings(contract=self._contract(), input_dir=root)
 
             self.assertTrue(manifest["readiness"]["ready_for_alignment"])
+            self.assertEqual(manifest["schema_version"], 2)
             self.assertEqual(manifest["summary"]["sessions"], ["s01", "s02"])
             self.assertEqual(manifest["summary"]["session_count"], 2)
             first = next(
