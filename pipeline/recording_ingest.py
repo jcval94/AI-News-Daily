@@ -12,6 +12,7 @@ from pipeline.schema_validation import validate_payload
 
 
 SCHEMA_VERSION = 1
+INGEST_MANIFEST_SCHEMA_VERSION = 2
 VIDEO_EXTENSIONS = {".mov", ".mp4", ".mxf", ".mkv", ".avi"}
 AUDIO_EXTENSIONS = {".wav", ".m4a", ".aac", ".flac", ".mp3"}
 _FILENAME_RE = re.compile(
@@ -615,7 +616,7 @@ def scan_recordings(
     complete = [item for item in take_results if item["technical_preferred"]]
     sessions = sorted({str(item.get("session_id", "legacy")) for item in files})
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": INGEST_MANIFEST_SCHEMA_VERSION,
         "episode_date": contract["episode_date"],
         "status": "ready_for_alignment" if not unique_blockers else "ingest_incomplete",
         "source": {
