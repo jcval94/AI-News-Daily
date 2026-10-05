@@ -10,6 +10,7 @@ from pipeline.recording_ingest import (
     build_recording_ingest_contract,
     parse_capture_filename,
     scan_recordings,
+    session_id_from_relative_path,
     write_ingest_contract,
     write_ingest_manifest,
 )
@@ -104,6 +105,17 @@ class RecordingIngestContractTests(unittest.TestCase):
         self.assertTrue(contract["storage"]["never_commit_raw_recordings"])
         self.assertTrue(contract["selection_policy"]["retain_all_retakes"])
         self.assertEqual(
+            contract["storage"]["recommended_inbox"],
+            "recordings/2026-09-24/sessions/s01/inbox",
+        )
+        self.assertEqual(
+            contract["session_naming"]["retake_scope"],
+            "episode_global_per_take",
+        )
+        self.assertTrue(
+            contract["session_naming"]["session_id_is_provenance_not_take_identity"]
+        )
+        self.assertEqual(
             contract["selection_policy"]["authority"],
             "technical_only_not_performance_or_script_accuracy",
         )
@@ -112,6 +124,18 @@ class RecordingIngestContractTests(unittest.TestCase):
         self.assertEqual(
             contract["expected_takes"][0]["examples"]["video_retake"],
             "opening_t01__r02__camA.mov",
+        )
+
+    def test_session_id_is_folder_provenance_not_take_identity(self):
+        self.assertEqual(
+            session_id_from_relative_path(
+                "sessions/s02/inbox/opening_t01__r04__camA.mov"
+            ),
+            "s02",
+        )
+        self.assertEqual(
+            session_id_from_relative_path("inbox/opening_t01__r04__camA.mov"),
+            "legacy",
         )
 
     def test_filename_parser_preserves_take_and_retake_identity(self):
@@ -270,7 +294,9 @@ class RecordingIngestScannerDeterministicTests(unittest.TestCase):
             inbox = root / "inbox"
             inbox.mkdir()
             for take_id in ("opening_t01", "opening_t02"):
-                (inbox / f"{take_id}__r01__camA.mp4").write_bytes(b"video")
+                (inbox / f"{take_id}__r01__camA.mp4").write_bytes(
+                    f"video-{take_id}".encode("utf-8")
+                )
             (inbox / "opening_t01__r01__audio.wav").write_bytes(b"audio")
             inspect_video_mock.return_value = {
                 "ok": True,
@@ -424,6 +450,138 @@ class RecordingIngestScannerDeterministicTests(unittest.TestCase):
                     for take in manifest["takes"]
                 )
             )
+
+
+    @patch("pipeline.recording_ingest.inspect_audio")
+    @patch("pipeline.recording_ingest.inspect_media")
+    def test_multiple_sessions_preserve_take_identity_and_continue_retakes(
+        self, inspect_video_mock, inspect_audio_mock
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            s01 = root / "sessions" / "s01" / "inbox"
+            s02 = root / "sessions" / "s02" / "inbox"
+            s01.mkdir(parents=True)
+            s02.mkdir(parents=True)
+            (s01 / "opening_t01__r01__camA.mp4").write_bytes(b"s01-t01-r01")
+            (s02 / "opening_t01__r02__camA.mp4").write_bytes(b"s02-t01-r02-video")
+            (s02 / "opening_t01__r02__audio.wav").write_bytes(b"s02-t01-r02-audio")
+            (s01 / "opening_t02__r01__camA.mp4").write_bytes(b"s01-t02-r01")
+            inspect_video_mock.side_effect = self._video_inspection
+            inspect_audio_mock.return_value = {
+                "ok": True,
+                "kind": "audio",
+                "duration_seconds": 10.0,
+                "codec": "pcm_s16le",
+                "sample_rate_hz": 48000,
+                "channels": 2,
+            }
+
+            manifest = scan_recordings(contract=self._contract(), input_dir=root)
+
+            self.assertTrue(manifest["readiness"]["ready_for_alignment"])
+            self.assertEqual(manifest["schema_version"], 2)
+            self.assertEqual(manifest["summary"]["sessions"], ["s01", "s02"])
+            self.assertEqual(manifest["summary"]["session_count"], 2)
+            first = next(
+                item for item in manifest["takes"] if item["take_id"] == "opening_t01"
+            )
+            self.assertEqual(
+                [item["session_id"] for item in first["candidates"]],
+                ["s01", "s02"],
+            )
+            self.assertEqual(first["technical_preferred_retake"], 2)
+            self.assertTrue(manifest["state"]["technical_validation_passed"])
+            self.assertTrue(manifest["state"]["ready_for_transcription"])
+            self.assertFalse(manifest["state"]["transcription_complete"])
+            self.assertFalse(manifest["state"]["alignment_complete"])
+            self.assertFalse(manifest["state"]["final_take_selection_complete"])
+
+    @patch("pipeline.recording_ingest.inspect_audio")
+    @patch("pipeline.recording_ingest.inspect_media")
+    def test_one_retake_must_not_span_recording_sessions(
+        self, inspect_video_mock, inspect_audio_mock
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            s01 = root / "sessions" / "s01" / "inbox"
+            s02 = root / "sessions" / "s02" / "inbox"
+            s01.mkdir(parents=True)
+            s02.mkdir(parents=True)
+            (s01 / "opening_t01__r01__camA.mp4").write_bytes(b"camera")
+            (s02 / "opening_t01__r01__audio.wav").write_bytes(b"lav")
+            (s01 / "opening_t02__r01__camA.mp4").write_bytes(b"other-camera")
+            inspect_video_mock.side_effect = self._video_inspection
+            inspect_audio_mock.return_value = {
+                "ok": True,
+                "kind": "audio",
+                "duration_seconds": 10.0,
+                "codec": "pcm_s16le",
+                "sample_rate_hz": 48000,
+                "channels": 2,
+            }
+
+            manifest = scan_recordings(contract=self._contract(), input_dir=root)
+
+            self.assertFalse(manifest["readiness"]["ready_for_alignment"])
+            self.assertIn(
+                "retake_spans_sessions:opening_t01:r01",
+                manifest["readiness"]["blockers"],
+            )
+            first = next(
+                item for item in manifest["takes"] if item["take_id"] == "opening_t01"
+            )
+            self.assertEqual(first["candidates"][0]["session_ids"], ["s01", "s02"])
+            self.assertEqual(
+                first["candidates"][0]["status"],
+                "unusable_technical",
+            )
+
+    @patch("pipeline.recording_ingest.inspect_media")
+    def test_duplicate_binary_content_is_a_blocker_and_orphans_are_structured(
+        self, inspect_video_mock
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inbox = root / "sessions" / "s01" / "inbox"
+            inbox.mkdir(parents=True)
+            duplicate = b"same-camera-payload"
+            (inbox / "opening_t01__r01__camA.mp4").write_bytes(duplicate)
+            (inbox / "opening_t02__r01__camA.mp4").write_bytes(duplicate)
+            (inbox / "unknown_t99__r01__camA.mp4").write_bytes(b"orphan")
+            (inbox / "camera dump.mp4").write_bytes(b"unmatched")
+            inspect_video_mock.return_value = {
+                "ok": True,
+                "kind": "video",
+                "width": 1920,
+                "height": 1080,
+                "duration_seconds": 10.0,
+                "codec": "h264",
+                "r_frame_rate": "30/1",
+                "has_audio_stream": True,
+                "audio_codec": "aac",
+                "audio_sample_rate_hz": 48000,
+                "audio_channels": 2,
+            }
+
+            manifest = scan_recordings(contract=self._contract(), input_dir=root)
+
+            self.assertFalse(manifest["readiness"]["ready_for_alignment"])
+            self.assertTrue(
+                any(
+                    blocker.startswith("duplicate_file_content:")
+                    for blocker in manifest["readiness"]["blockers"]
+                )
+            )
+            self.assertEqual(
+                manifest["orphans"]["unknown_take_files"],
+                ["sessions/s01/inbox/unknown_t99__r01__camA.mp4"],
+            )
+            self.assertEqual(
+                manifest["orphans"]["unmatched_files"],
+                ["sessions/s01/inbox/camera dump.mp4"],
+            )
+
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg unavailable")

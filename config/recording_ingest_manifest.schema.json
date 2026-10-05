@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/recording-ingest-manifest-v1.json",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/recording-ingest-manifest-v2.json",
   "title": "AI News Daily Recording Ingest Manifest",
   "type": "object",
   "required": [
@@ -13,11 +13,13 @@
     "summary",
     "unmatched_files",
     "files",
-    "takes"
+    "takes",
+    "state",
+    "orphans"
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "episode_date": {
       "type": "string",
@@ -78,8 +80,29 @@
         "missing_or_unusable_take_count",
         "discovered_media_file_count",
         "unmatched_media_file_count",
-        "take_count_with_multiple_retakes"
-      ]
+        "take_count_with_multiple_retakes",
+        "unknown_take_file_count",
+        "session_count",
+        "sessions"
+      ],
+      "properties": {
+        "unknown_take_file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "session_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sessions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(?:s\\d{2,3}|legacy)$"
+          }
+        }
+      }
     },
     "unmatched_files": {
       "type": "array",
@@ -101,7 +124,8 @@
           "relative_path",
           "bytes",
           "sha256",
-          "inspection"
+          "inspection",
+          "session_id"
         ],
         "properties": {
           "matched": {
@@ -139,6 +163,10 @@
           },
           "inspection": {
             "type": "object"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^(?:s\\d{2,3}|legacy)$"
           }
         }
       }
@@ -183,6 +211,60 @@
           },
           "candidates": {
             "type": "array"
+          }
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "media_discovered",
+        "technical_validation_passed",
+        "ready_for_transcription",
+        "transcription_complete",
+        "alignment_complete",
+        "final_take_selection_complete"
+      ],
+      "properties": {
+        "media_discovered": {
+          "type": "boolean"
+        },
+        "technical_validation_passed": {
+          "type": "boolean"
+        },
+        "ready_for_transcription": {
+          "type": "boolean"
+        },
+        "transcription_complete": {
+          "const": false
+        },
+        "alignment_complete": {
+          "const": false
+        },
+        "final_take_selection_complete": {
+          "const": false
+        }
+      }
+    },
+    "orphans": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unknown_take_files",
+        "unmatched_files"
+      ],
+      "properties": {
+        "unknown_take_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unmatched_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
