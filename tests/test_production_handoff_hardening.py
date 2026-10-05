@@ -46,6 +46,8 @@ class ProductionHandoffHardeningTests(unittest.TestCase):
         self.assertIn("actions: read", workflow)
         self.assertIn("Restore approved editorial artifact from recent diagnostic", workflow)
         self.assertIn("if: steps.reuse.outputs.restored != 'true'", workflow)
+        self.assertIn('SOURCE_WORKFLOW" != "Backfill AI News Video Kit"', workflow)
+        self.assertIn('SOURCE_BRANCH" != "main"', workflow)
         for required in (
             "run_state.json",
             "script.txt",
