@@ -140,7 +140,7 @@ This ordering is intentional. Choosing a final “best take” before transcript
 
 ## Privacy and portability
 
-`recording_ingest_manifest.json` stores:
+`recording_ingest_manifest.json` is emitted as schema v2 and stores:
 
 - relative file paths;
 - sizes;
