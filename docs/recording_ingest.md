@@ -19,11 +19,21 @@ scripts/<date>/
 
 These files are small and safe to keep in Git.
 
-Raw recordings live outside canonical history under a local folder such as:
+Raw recordings live outside canonical history. New recordings should use explicit session folders:
 
 ```
-recordings/<date>/inbox/
+recordings/<date>/
+└── sessions/
+    ├── s01/
+    │   └── inbox/
+    │       ├── opening_t01__r01__camA.mov
+    │       └── opening_t01__r01__lav.wav
+    └── s02/
+        └── inbox/
+            └── opening_t01__r02__camA.mov
 ```
+
+`session_id` is provenance only; it does not replace or modify `take_id`. Retake numbers are episode-global per take, so a second session continues the sequence instead of restarting at `r01`. The old flat layout remains readable as `legacy` for backwards compatibility.
 
 The repository ignores `recordings/` entirely.
 
@@ -74,12 +84,12 @@ External audio must use the same `take_id` and retake number as the camera file.
 
 ## Scanner
 
-Later, when real files exist:
+Later, when real files exist, scan the episode root so all sessions are inventoried together:
 
 ```bash
 python -m pipeline.recording_ingest \
   --target-date YYYY-MM-DD \
-  --input-dir "/path/to/recordings/YYYY-MM-DD/inbox" \
+  --input-dir "/path/to/recordings/YYYY-MM-DD" \
   --enforce
 ```
 
@@ -90,8 +100,11 @@ The scanner:
 - probes/decode-checks media with FFmpeg/ffprobe;
 - verifies video duration, resolution and frame-rate recommendations;
 - verifies audio decode and sample rate;
-- groups camera/audio by take + retake;
+- records the source session for every file and candidate;
+- groups camera/audio by take + retake while rejecting one retake spread across sessions;
 - preserves every retake;
+- detects duplicate capture identities and duplicate binary content by SHA-256;
+- exposes unmatched and unknown-take files as structured orphan inventory;
 - marks one `technical_preferred` candidate per take when possible;
 - writes `recording_ingest_manifest.json`.
 
@@ -123,6 +136,8 @@ Therefore:
 technical_preferred != final_selected_take
 ```
 
+This ordering is intentional. Choosing a final “best take” before transcript fidelity is known can create a false green. Ingest may express a technical preference, but `recording_alignment.json` is the first artifact allowed to set `final_selected_retake`; ambiguous clean retakes still require human review and all alternatives remain preserved.
+
 ## Privacy and portability
 
 `recording_ingest_manifest.json` stores:
@@ -135,6 +150,8 @@ technical_preferred != final_selected_take
 
 It does not persist the absolute path of the user's machine.
 
+The manifest also carries explicit state flags. A successful scan may set `technical_validation_passed=true` and `ready_for_transcription=true`, but it always keeps `transcription_complete=false`, `alignment_complete=false`, and `final_take_selection_complete=false`. “Ingested” is therefore never equivalent to “aligned”.
+
 ## Fail-closed cases
 
 The scanner blocks `ready_for_alignment` when:
@@ -143,6 +160,8 @@ The scanner blocks `ready_for_alignment` when:
 - no technically usable candidate exists;
 - a compliant filename references an unknown take ID;
 - duplicate capture identities exist;
+- the same binary media content appears under more than one path;
+- one take/retake is accidentally split across multiple recording sessions;
 - a take has no healthy video;
 - a take has neither embedded nor paired external audio;
 - the selected candidate is implausibly short.
