@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/recording-ingest-manifest-v1.json",
+  "$id": "https://jcval94.github.io/AI-News-Daily/schemas/recording-ingest-manifest-v2.json",
   "title": "AI News Daily Recording Ingest Manifest",
   "type": "object",
   "required": [
@@ -19,7 +19,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "episode_date": {
       "type": "string",
