@@ -1,15 +1,33 @@
 # Windows 11 setup
 
-Keep the repo's core `.venv` unchanged. Create an isolated TTS runtime:
+Keep the repo's core `.venv` unchanged. Kokoro 0.9.4 requires Python
+`>=3.10,<3.13`; Python 3.12 is the tested target. Create an isolated TTS runtime:
 
 ```powershell
 py -3.12 -m venv .venv-tts
 .\.venv-tts\Scripts\python.exe -m pip install --upgrade pip
-.\.venv-tts\Scripts\python.exe -m pip install kokoro==0.9.4 soundfile
-.\.venv-tts\Scripts\python.exe -m pip install piper-tts edge-tts
+.\.venv-tts\Scripts\python.exe -m pip install -r requirements-tts.txt
 ```
 
-Install/verify FFmpeg with `ffmpeg -version`. Kokoro uses espeak-ng for Spanish G2P; verify the current Kokoro Windows installation on the Zenbook before calling it production-ready.
+If the Windows Python launcher has no registered 3.12 interpreter but Conda is
+already installed, keep a small base interpreter and create the standard venv
+from it:
+
+```powershell
+conda create -n ai-news-tts-py312 python=3.12 pip -y
+conda run -n ai-news-tts-py312 python -m venv .venv-tts
+.\.venv-tts\Scripts\python.exe -m pip install -r requirements-tts.txt
+```
+
+Keep the Conda base environment: the Windows venv records it as its base
+interpreter. Do not point `config/tts.yaml` at a Conda prefix, because Conda
+places `python.exe` at the prefix root while the committed runtime contract is
+`.venv-tts/Scripts/python.exe`.
+
+Install/verify FFmpeg with `ffmpeg -version`. Kokoro uses espeak-ng for Spanish
+G2P. On the accepted Windows setup, `espeakng-loader` is installed inside the
+TTS venv even though no standalone `espeak-ng.exe` is on PATH. Treat that doctor
+warning as non-blocking only after the Kokoro smoke produces valid Spanish WAV.
 
 Piper voice download:
 

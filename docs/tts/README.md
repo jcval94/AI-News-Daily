@@ -4,7 +4,7 @@ TTS convierte el `script_sections.json` canónico en narración por sección sin
 
 ```powershell
 py -3.12 -m venv .venv-tts
-.\.venv-tts\Scripts\python.exe -m pip install kokoro==0.9.4 soundfile piper-tts edge-tts
+.\.venv-tts\Scripts\python.exe -m pip install -r requirements-tts.txt
 .\.venv\Scripts\python.exe -m pipeline.tts render --script latest
 .\.venv\Scripts\python.exe -m pipeline.tts benchmark
 .\.venv\Scripts\python.exe -m pipeline.tts validate .local\tts\<episode>\<run>\narration_manifest.json
