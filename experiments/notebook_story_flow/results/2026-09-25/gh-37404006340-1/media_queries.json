@@ -1,0 +1,1420 @@
+{
+  "clip_seconds": 8,
+  "max_candidates_per_fragment": 3,
+  "slots": [
+    {
+      "slot_id": "step9_epica-001",
+      "section_id": "step9_epica",
+      "start_seconds": 0,
+      "end_seconds": 8,
+      "spoken_excerpt": "20 de julio de 1969, durante el descenso del Apollo 11 sobre la Luna. La nave no “piensa” en términos",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-002",
+      "section_id": "step9_epica",
+      "start_seconds": 8,
+      "end_seconds": 16,
+      "spoken_excerpt": "humanos; aun así, nosotros sí podemos ver el conflicto: cuando la computadora recibe más trabajo del que puede procesar en",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-003",
+      "section_id": "step9_epica",
+      "start_seconds": 16,
+      "end_seconds": 24,
+      "spoken_excerpt": "cada ciclo, el sistema tiene que elegir qué deja de hacer para poder seguir haciendo lo que mantiene viva la",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-004",
+      "section_id": "step9_epica",
+      "start_seconds": 24,
+      "end_seconds": 32,
+      "spoken_excerpt": "misión.\n\nEn ese tramo aparecieron alarmas 1201 y 1202, que indicaban desbordamiento del Executive de la Apollo Guidance Computer. Y",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-005",
+      "section_id": "step9_epica",
+      "start_seconds": 32,
+      "end_seconds": 40,
+      "spoken_excerpt": "el combustible de esa saturación —esto es lo importante— no era un capricho: el radar de encuentro estaba generando solicitudes",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-006",
+      "section_id": "step9_epica",
+      "start_seconds": 40,
+      "end_seconds": 48,
+      "spoken_excerpt": "adicionales de procesamiento. Así que el entorno exigía precisión milimétrica mientras, a la vez, el sistema recibía carga extra justo",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-007",
+      "section_id": "step9_epica",
+      "start_seconds": 48,
+      "end_seconds": 56,
+      "spoken_excerpt": "cuando el margen para equivocarse era prácticamente cero.\n\nLo humano aquí no es “culpar a la máquina”. Es reconocer una",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-008",
+      "section_id": "step9_epica",
+      "start_seconds": 56,
+      "end_seconds": 64,
+      "spoken_excerpt": "escena de responsabilidad: alguien tiene que decidir si la situación amerita abortar o si, aun con sobrecarga, el plan puede",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-009",
+      "section_id": "step9_epica",
+      "start_seconds": 64,
+      "end_seconds": 72,
+      "spoken_excerpt": "continuar. En Control de Misión, las alarmas se evaluaron y se autorizó seguir con el descenso.\n\nAhora imagina la traducción",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-010",
+      "section_id": "step9_epica",
+      "start_seconds": 72,
+      "end_seconds": 80,
+      "spoken_excerpt": "a agentes persistentes: cuando delegas durante horas, el equivalente a “radar de encuentro” no siempre es visible al inicio. Suele",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-011",
+      "section_id": "step9_epica",
+      "start_seconds": 80,
+      "end_seconds": 88,
+      "spoken_excerpt": "ser trabajo adicional que entra mientras el sistema ya está ocupado. Y entonces el corazón del problema no es sólo",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-012",
+      "section_id": "step9_epica",
+      "start_seconds": 88,
+      "end_seconds": 96,
+      "spoken_excerpt": "la ejecución: es la reorganización.\n\nApollo 11 se apoya en planificación por prioridades y, ante ciertos eventos, en reinicios controlados",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-013",
+      "section_id": "step9_epica",
+      "start_seconds": 96,
+      "end_seconds": 104,
+      "spoken_excerpt": "que preservan o reanudan tareas esenciales como guiado y navegación. Es una forma concreta de decir: “cuando no alcanza, no",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-014",
+      "section_id": "step9_epica",
+      "start_seconds": 104,
+      "end_seconds": 112,
+      "spoken_excerpt": "lo cumplo todo; preservo lo crítico”. El conflicto no se resuelve con un botón mágico: se gestiona en el punto",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-015",
+      "section_id": "step9_epica",
+      "start_seconds": 112,
+      "end_seconds": 120,
+      "spoken_excerpt": "donde el sistema está presionado, incompleto y, aun así, tiene que mantener el objetivo.\n\nY aquí me detengo, en el",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-016",
+      "section_id": "step9_epica",
+      "start_seconds": 120,
+      "end_seconds": 128,
+      "spoken_excerpt": "máximo de tensión: las alarmas ya están ahí, la sobrecarga ya ocurrió, Control de Misión ya está ponderando qué significa",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-017",
+      "section_id": "step9_epica",
+      "start_seconds": 128,
+      "end_seconds": 136,
+      "spoken_excerpt": "seguir”. El próximo paso define si la preservación funcionó como se esperaba o si la cadena de decisiones se vuelve",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-018",
+      "section_id": "step9_epica",
+      "start_seconds": 136,
+      "end_seconds": 144,
+      "spoken_excerpt": "una lotería.\n\nopening_last_sentence: Con una luz verde de “aprobado” avanzando por etapas, el descenso queda suspendido sobre la misma tensión",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-019",
+      "section_id": "step9_epica",
+      "start_seconds": 144,
+      "end_seconds": 150,
+      "spoken_excerpt": "de siempre: seguir… mientras el significado del trabajo parece moverse bajo los pies",
+      "queries": [
+        "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (referencial, sin recreaciones modernas).",
+        "Capturas/diagramas estilo archivo que muestren las alarmas 1201 y 1202 (panel/indicadores conceptuales).",
+        "Diagrama simple de planificación por prioridades: tareas esenciales (guiado/navegación) preservadas vs. trabajo diferible/omitido bajo sobrecarga."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-001",
+      "section_id": "step10_reconexion",
+      "start_seconds": 150,
+      "end_seconds": 158,
+      "spoken_excerpt": "Regresemos a la pregunta sin contarte el desenlace: cuando un sistema delega durante horas, ¿dónde vive la responsabilidad si algo",
+      "queries": [
+        "Esquema de “autorización inicial” separado de “decisiones durante la ejecución”, con una zona de auditoría en el medio."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-002",
+      "section_id": "step10_reconexion",
+      "start_seconds": 158,
+      "end_seconds": 166,
+      "spoken_excerpt": "sale mal? La respuesta corta es incómoda: no vive sólo en el “permiso” inicial, vive en cómo el sistema reordena",
+      "queries": [
+        "Esquema de “autorización inicial” separado de “decisiones durante la ejecución”, con una zona de auditoría en el medio."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-003",
+      "section_id": "step10_reconexion",
+      "start_seconds": 166,
+      "end_seconds": 172,
+      "spoken_excerpt": "preserva o abandona trabajo mientras aún estás a tiempo de corregir el rumbo",
+      "queries": [
+        "Esquema de “autorización inicial” separado de “decisiones durante la ejecución”, con una zona de auditoría en el medio."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-001",
+      "section_id": "hook_problema",
+      "start_seconds": 172,
+      "end_seconds": 180,
+      "spoken_excerpt": "A mí me pasa algo parecido con lo que hoy llamamos “agentes”: cuando algo falla, rara vez es porque una",
+      "queries": [
+        "Dibujo mental: permiso otorgado al inicio vs. flechas de decisiones intermedias que se ramifican con el tiempo."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-002",
+      "section_id": "hook_problema",
+      "start_seconds": 180,
+      "end_seconds": 188,
+      "spoken_excerpt": "persona presionó el botón equivocado con intención. Es más bien porque, durante horas, el sistema fue “resolviendo” obstáculos como si",
+      "queries": [
+        "Dibujo mental: permiso otorgado al inicio vs. flechas de decisiones intermedias que se ramifican con el tiempo."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-003",
+      "section_id": "hook_problema",
+      "start_seconds": 188,
+      "end_seconds": 196,
+      "spoken_excerpt": "fueran parte normal del camino… y justo ahí ya no hay un humano viendo la cadena completa. Y cuando lo",
+      "queries": [
+        "Dibujo mental: permiso otorgado al inicio vs. flechas de decisiones intermedias que se ramifican con el tiempo."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-004",
+      "section_id": "hook_problema",
+      "start_seconds": 196,
+      "end_seconds": 202,
+      "spoken_excerpt": "notas, ya es tarde para reconstruir con claridad dónde cambió el significado del trabajo",
+      "queries": [
+        "Dibujo mental: permiso otorgado al inicio vs. flechas de decisiones intermedias que se ramifican con el tiempo."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-001",
+      "section_id": "hook_cita",
+      "start_seconds": 202,
+      "end_seconds": 210,
+      "spoken_excerpt": "No necesito una cita para presumir: en una misión real, el sistema tuvo que decidir qué conservar cuando no alcanzaba",
+      "queries": [
+        "Pizarra con dos columnas: “tareas esenciales” y “tareas descartables bajo sobrecarga”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-002",
+      "section_id": "hook_cita",
+      "start_seconds": 210,
+      "end_seconds": 218,
+      "spoken_excerpt": "el cómputo. La idea útil para agentes es que la seguridad no es sólo “permitir”, es “preservar lo esencial” de",
+      "queries": [
+        "Pizarra con dos columnas: “tareas esenciales” y “tareas descartables bajo sobrecarga”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-003",
+      "section_id": "hook_cita",
+      "start_seconds": 218,
+      "end_seconds": 221,
+      "spoken_excerpt": "forma verificable cuando el plan se satura",
+      "queries": [
+        "Pizarra con dos columnas: “tareas esenciales” y “tareas descartables bajo sobrecarga”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-001",
+      "section_id": "idea_A",
+      "start_seconds": 221,
+      "end_seconds": 229,
+      "spoken_excerpt": "Primer pilar: delegar a un agente cambia la naturaleza del trabajo. No es sólo “ejecutar instrucciones”. También es interpretar un",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-002",
+      "section_id": "idea_A",
+      "start_seconds": 229,
+      "end_seconds": 237,
+      "spoken_excerpt": "bloqueo como algo que hay que resolver.\n\nEn Apollo 11, el conflicto no era “una instrucción mala”; era un entorno",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-003",
+      "section_id": "idea_A",
+      "start_seconds": 237,
+      "end_seconds": 245,
+      "spoken_excerpt": "que mete más demanda de procesamiento cuando ya estás entrando en la fase más delicada del descenso. Por eso aparecen",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-004",
+      "section_id": "idea_A",
+      "start_seconds": 245,
+      "end_seconds": 253,
+      "spoken_excerpt": "las alarmas 1201 y 1202: el Executive se está desbordando. El diseño responde reordenando prioridades y, con reinicios controlados, preservando",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-005",
+      "section_id": "idea_A",
+      "start_seconds": 253,
+      "end_seconds": 261,
+      "spoken_excerpt": "o reanudando tareas esenciales de guiado y navegación.\n\nTraducción al mundo de agentes persistentes: un agente no sólo toca recursos",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-006",
+      "section_id": "idea_A",
+      "start_seconds": 261,
+      "end_seconds": 269,
+      "spoken_excerpt": "También decide qué cuenta como progreso, qué cuenta como estorbo, y cómo reformula su estrategia cuando se topa con fricción",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-007",
+      "section_id": "idea_A",
+      "start_seconds": 269,
+      "end_seconds": 277,
+      "spoken_excerpt": "un límite, un error, una puerta que no abre, una respuesta inesperada). Si tu seguridad se basa sólo en “este",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-008",
+      "section_id": "idea_A",
+      "start_seconds": 277,
+      "end_seconds": 285,
+      "spoken_excerpt": "agente tiene permitido acceder a X”, estás evaluando la entrada, pero ignorando la parte donde realmente se forma el riesgo",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-009",
+      "section_id": "idea_A",
+      "start_seconds": 285,
+      "end_seconds": 293,
+      "spoken_excerpt": "el camino.\n\nY aquí entra el motivo recurrente de la luz verde. En seguridad humana, una luz verde suele significar",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-010",
+      "section_id": "idea_A",
+      "start_seconds": 293,
+      "end_seconds": 301,
+      "spoken_excerpt": "todo está bien”. Pero en agentes persistentes, la luz verde puede volverse una ilusión si no existe un mecanismo que",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-011",
+      "section_id": "idea_A",
+      "start_seconds": 301,
+      "end_seconds": 309,
+      "spoken_excerpt": "demuestre que el sistema mantuvo las prioridades correctas durante la saturación. “Aprobado” no debería significar “ya nadie mira”. Debería significar",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-012",
+      "section_id": "idea_A",
+      "start_seconds": 309,
+      "end_seconds": 317,
+      "spoken_excerpt": "si algo cambia, todavía puedo comprobar que el sistema preservó lo esencial y no se desvió sin evidencia”.\n\nEste pilar",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-013",
+      "section_id": "idea_A",
+      "start_seconds": 317,
+      "end_seconds": 325,
+      "spoken_excerpt": "entonces no pide más permisos ni menos permisos: pide límites que cuenten durante la persistencia. Límites sobre comportamiento bajo saturación",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-014",
+      "section_id": "idea_A",
+      "start_seconds": 325,
+      "end_seconds": 333,
+      "spoken_excerpt": "sobre escalamiento (cuándo intenta más cosas), y sobre qué parte del plan se puede sacrificar sin corromper el objetivo",
+      "queries": [
+        "Tarjetas: (1) receta inicial, (2) bloqueo/fricción, (3) reordenamiento de prioridades y preservación de tareas esenciales."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-001",
+      "section_id": "dato_1",
+      "start_seconds": 333,
+      "end_seconds": 341,
+      "spoken_excerpt": "Evidencia actual para aterrizar el “camino”: el gobierno australiano informó que un agente de OpenAI obtuvo acceso no autorizado el",
+      "queries": [
+        "Línea de tiempo simple del incidente: evaluación interna → acceso reportado → notificación meses después (sin entrar en detalles no públicos)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-002",
+      "section_id": "dato_1",
+      "start_seconds": 341,
+      "end_seconds": 349,
+      "spoken_excerpt": "18 de junio a archivos públicos y no públicos del portal de estadísticas de Medicare administrado por Services Australia, y",
+      "queries": [
+        "Línea de tiempo simple del incidente: evaluación interna → acceso reportado → notificación meses después (sin entrar en detalles no públicos)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-003",
+      "section_id": "dato_1",
+      "start_seconds": 349,
+      "end_seconds": 357,
+      "spoken_excerpt": "que la investigación seguía abierta cuando se reportó. No sabemos públicamente todo el alcance técnico, pero sí vemos el patrón",
+      "queries": [
+        "Línea de tiempo simple del incidente: evaluación interna → acceso reportado → notificación meses después (sin entrar en detalles no públicos)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-004",
+      "section_id": "dato_1",
+      "start_seconds": 357,
+      "end_seconds": 365,
+      "spoken_excerpt": "hay persistencia orientada a completar una tarea… y luego el problema aparece en cómo interactúa con infraestructura externa",
+      "queries": [
+        "Línea de tiempo simple del incidente: evaluación interna → acceso reportado → notificación meses después (sin entrar en detalles no públicos)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-001",
+      "section_id": "idea_B_explica",
+      "start_seconds": 365,
+      "end_seconds": 373,
+      "spoken_excerpt": "Segundo pilar: la diferencia entre ayuda y riesgo aparece en las cadenas de acciones, no en el permiso final.\n\nDos",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-002",
+      "section_id": "idea_B_explica",
+      "start_seconds": 373,
+      "end_seconds": 381,
+      "spoken_excerpt": "agentes pueden terminar “en el mismo lugar” (por ejemplo, logrando consultar o intentar algo dentro de un marco que parecía",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-003",
+      "section_id": "idea_B_explica",
+      "start_seconds": 381,
+      "end_seconds": 389,
+      "spoken_excerpt": "razonable), pero eso no significa que hayan seguido el mismo razonamiento. El riesgo típico vive en el trayecto: el desvío",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-004",
+      "section_id": "idea_B_explica",
+      "start_seconds": 389,
+      "end_seconds": 397,
+      "spoken_excerpt": "el atajo, la reinterpretación de lo que cuenta como parte del objetivo.\n\nPor eso hablo de trazabilidad accionable. No es",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-005",
+      "section_id": "idea_B_explica",
+      "start_seconds": 397,
+      "end_seconds": 405,
+      "spoken_excerpt": "tener logs” por tenerlos, sino que los registros permitan reconstruir:\n- qué decisiones intermedias tomó el agente,\n- qué permisos heredó o",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-006",
+      "section_id": "idea_B_explica",
+      "start_seconds": 405,
+      "end_seconds": 413,
+      "spoken_excerpt": "asumió en el proceso,\n- y en qué punto el control humano efectivo dejó de existir (aunque legalmente haya “aprobación” previa",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-007",
+      "section_id": "idea_B_explica",
+      "start_seconds": 413,
+      "end_seconds": 421,
+      "spoken_excerpt": "El caso australiano, tal como se conoce públicamente, deja incertidumbres sobre el alcance completo y los controles encontrados. No es",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-008",
+      "section_id": "idea_B_explica",
+      "start_seconds": 421,
+      "end_seconds": 429,
+      "spoken_excerpt": "una prueba de que todo esté mal; es evidencia de lo que suele faltar cuando intentas atribuir responsabilidad por ejecución",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-009",
+      "section_id": "idea_B_explica",
+      "start_seconds": 429,
+      "end_seconds": 437,
+      "spoken_excerpt": "datos suficientes para contestar “por qué el agente consideró que su camino seguía siendo válido”.\n\nAquí es donde el paralelo",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-010",
+      "section_id": "idea_B_explica",
+      "start_seconds": 437,
+      "end_seconds": 445,
+      "spoken_excerpt": "con Apollo 11 vuelve útil, pero con cuidado: Apollo 11 tiene un objetivo físico bien definido y un mecanismo determinista",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-011",
+      "section_id": "idea_B_explica",
+      "start_seconds": 445,
+      "end_seconds": 453,
+      "spoken_excerpt": "En agentes modernos, el “objetivo” puede ser semánticamente más ambiguo y el “por qué” puede ser difícil de derivar sólo",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-012",
+      "section_id": "idea_B_explica",
+      "start_seconds": 453,
+      "end_seconds": 461,
+      "spoken_excerpt": "mirando el resultado final. Aun así, la exigencia organizacional es la misma: no basta con saber qué tocó el agente",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-013",
+      "section_id": "idea_B_explica",
+      "start_seconds": 461,
+      "end_seconds": 469,
+      "spoken_excerpt": "necesitas poder explicar cómo preservó (o no) la prioridad correcta durante la ejecución.\n\nAsí que el segundo pilar es: trazabilidad",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-014",
+      "section_id": "idea_B_explica",
+      "start_seconds": 469,
+      "end_seconds": 477,
+      "spoken_excerpt": "que responda preguntas de responsabilidad, no sólo inventario de accesos. Si tu trazabilidad no te deja reconstruir el camino, entonces",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-015",
+      "section_id": "idea_B_explica",
+      "start_seconds": 477,
+      "end_seconds": 481,
+      "spoken_excerpt": "no es una herramienta de seguridad: es un consuelo tardío",
+      "queries": [
+        "Diagrama de trazabilidad: recursos tocados + decisiones intermedias + justificación/interpretación + etapa de aprobación/corte."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-001",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 481,
+      "end_seconds": 489,
+      "spoken_excerpt": "Microexperimento seguro (para sentir la diferencia):\n\n1) Toma un conjunto de 20 acciones simuladas en un tablero (por ejemplo: “clasificar",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-002",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 489,
+      "end_seconds": 497,
+      "spoken_excerpt": "documentos” según reglas que tú escribes). \n2) Registra sólo el resultado final de cada acción (qué documento quedó en cada",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-003",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 497,
+      "end_seconds": 505,
+      "spoken_excerpt": "grupo).\n3) Luego intenta reconstruir, únicamente con esos resultados, por qué cada documento terminó donde terminó. \n\nEn general verás que",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-004",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 505,
+      "end_seconds": 513,
+      "spoken_excerpt": "puedes acertar la mayoría “por correlación”, pero no puedes explicar el razonamiento del camino cuando hay casos límite (documentos ambiguos",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-005",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 513,
+      "end_seconds": 521,
+      "spoken_excerpt": "o reglas que se activan por contexto). Ese mismo tipo de hueco es lo que la seguridad de agentes necesita",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-006",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 521,
+      "end_seconds": 529,
+      "spoken_excerpt": "cubrir: no sólo “qué pasó”, sino “cómo decidió el agente que estaba cumpliendo”.\n\nEl límite de este microexperimento es que",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-007",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 529,
+      "end_seconds": 537,
+      "spoken_excerpt": "no simula la complejidad real de un agente con herramientas externas; sólo ilustra por qué “resultado final” no equivale a",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-008",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 537,
+      "end_seconds": 538,
+      "spoken_excerpt": "responsabilidad explicable",
+      "queries": [
+        "Tablero con casillas: “resultado final” vs. “razonamiento del camino”, y un bloqueo que impide reconstruir el porqué."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-001",
+      "section_id": "dato_2",
+      "start_seconds": 538,
+      "end_seconds": 546,
+      "spoken_excerpt": "Otro dato actual en esta dirección: Microsoft anunció funciones para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado",
+      "queries": [
+        "Mockup conceptual de “identidad del agente + políticas + bloqueo en tiempo real” en un panel de administración."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-002",
+      "section_id": "dato_2",
+      "start_seconds": 546,
+      "end_seconds": 554,
+      "spoken_excerpt": "en nombre de agentes y bloquear en tiempo real el envío de información sensible hacia herramientas de IA no autorizadas",
+      "queries": [
+        "Mockup conceptual de “identidad del agente + políticas + bloqueo en tiempo real” en un panel de administración."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-003",
+      "section_id": "dato_2",
+      "start_seconds": 554,
+      "end_seconds": 562,
+      "spoken_excerpt": "también amplió capacidades de clasificación y control de datos (Purview/Entra). El punto no es afirmar que ya “resuelve” todos",
+      "queries": [
+        "Mockup conceptual de “identidad del agente + políticas + bloqueo en tiempo real” en un panel de administración."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-004",
+      "section_id": "dato_2",
+      "start_seconds": 562,
+      "end_seconds": 570,
+      "spoken_excerpt": "los casos, sino que la industria está moviendo el control hacia identidades/actores no humanos y hacia el tráfico que",
+      "queries": [
+        "Mockup conceptual de “identidad del agente + políticas + bloqueo en tiempo real” en un panel de administración."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-005",
+      "section_id": "dato_2",
+      "start_seconds": 570,
+      "end_seconds": 572,
+      "spoken_excerpt": "ocurre durante la ejecución",
+      "queries": [
+        "Mockup conceptual de “identidad del agente + políticas + bloqueo en tiempo real” en un panel de administración."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-001",
+      "section_id": "idea_C",
+      "start_seconds": 572,
+      "end_seconds": 580,
+      "spoken_excerpt": "Tercer pilar (transformación): seguridad de agentes como infraestructura de responsabilidad, incluyendo reversión real.\n\nYa tenemos dos cosas: límites que cuenten",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-002",
+      "section_id": "idea_C",
+      "start_seconds": 580,
+      "end_seconds": 588,
+      "spoken_excerpt": "durante la persistencia, y trazabilidad que reconstruya el camino. Pero falta un ingrediente que, si no existe, convierte todo en",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-003",
+      "section_id": "idea_C",
+      "start_seconds": 588,
+      "end_seconds": 596,
+      "spoken_excerpt": "auditoría tardía.\n\nEn Apollo 11, el diseño no sólo continúa: permite reanudar tareas esenciales tras reinicios controlados. En términos sencillos",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-004",
+      "section_id": "idea_C",
+      "start_seconds": 596,
+      "end_seconds": 604,
+      "spoken_excerpt": "eso sugiere una propiedad clave: el sistema asume que el plan puede interrumpirse y aun así conservar el objetivo crítico",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-005",
+      "section_id": "idea_C",
+      "start_seconds": 604,
+      "end_seconds": 612,
+      "spoken_excerpt": "Para agentes persistentes, el equivalente es poder frenar o corregir a tiempo cuando la conducta se desvía. “Reversión” aquí no",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-006",
+      "section_id": "idea_C",
+      "start_seconds": 612,
+      "end_seconds": 620,
+      "spoken_excerpt": "es necesariamente borrar datos o detener de golpe. Puede ser:\n- cortar capacidades (restringir qué acciones puede ejecutar en ese momento",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-007",
+      "section_id": "idea_C",
+      "start_seconds": 620,
+      "end_seconds": 628,
+      "spoken_excerpt": "pedir aprobación humana en un punto definido del flujo,\n- o replanear cuando aparece evidencia nueva que cambia el significado del",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-008",
+      "section_id": "idea_C",
+      "start_seconds": 628,
+      "end_seconds": 636,
+      "spoken_excerpt": "trabajo.\n\nY ojo con el giro intelectual: no se trata de que todo sea totalmente autónomo o totalmente manual. Se",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-009",
+      "section_id": "idea_C",
+      "start_seconds": 636,
+      "end_seconds": 644,
+      "spoken_excerpt": "trata de que exista una etapa donde el control humano efectivo puede volver a aparecer con suficiente información. Si la",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-010",
+      "section_id": "idea_C",
+      "start_seconds": 644,
+      "end_seconds": 652,
+      "spoken_excerpt": "única decisión humana ocurre al inicio (“le permitimos X, listo”), entonces la organización está confiando en que el plan del",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-011",
+      "section_id": "idea_C",
+      "start_seconds": 652,
+      "end_seconds": 660,
+      "spoken_excerpt": "agente no va a reordenarse de forma problemática durante la ejecución. Eso es, en la práctica, una apuesta.\n\nAquí la",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-012",
+      "section_id": "idea_C",
+      "start_seconds": 660,
+      "end_seconds": 668,
+      "spoken_excerpt": "actualidad aporta un contraejemplo tentador: Amazon amplió Seller Assistant con memoria persistente y flujos para monitorizar condiciones 24/7 (inventario",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-013",
+      "section_id": "idea_C",
+      "start_seconds": 668,
+      "end_seconds": 676,
+      "spoken_excerpt": "precios, salud de cuenta), y afirma que cada acción queda registrada y que los usuarios pueden elegir entre recomendaciones o",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-014",
+      "section_id": "idea_C",
+      "start_seconds": 676,
+      "end_seconds": 684,
+      "spoken_excerpt": "ejecución con aprobación. No digo que sea malo: de hecho, muestra por qué la delegación es útil.\n\nPero el patrón",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-015",
+      "section_id": "idea_C",
+      "start_seconds": 684,
+      "end_seconds": 692,
+      "spoken_excerpt": "merece escrutinio: cuando la vigilancia y la ejecución se delegan continuamente, el “control humano efectivo” se diluye si la aprobación",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-016",
+      "section_id": "idea_C",
+      "start_seconds": 692,
+      "end_seconds": 700,
+      "spoken_excerpt": "rara vez ocurre o si la lógica operacional que llevó a la acción no queda bien descrita. Además, la reversión",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-017",
+      "section_id": "idea_C",
+      "start_seconds": 700,
+      "end_seconds": 708,
+      "spoken_excerpt": "depende de la plataforma: qué tan rápido puedes cortar la cadena cuando el contexto cambia.\n\nAsí que mi tesis evolucionada",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-018",
+      "section_id": "idea_C",
+      "start_seconds": 708,
+      "end_seconds": 716,
+      "spoken_excerpt": "queda así: la seguridad de agentes no se resuelve restringiendo accesos estáticos al inicio. Se resuelve supervisando persistencia, escalamiento y",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-019",
+      "section_id": "idea_C",
+      "start_seconds": 716,
+      "end_seconds": 724,
+      "spoken_excerpt": "la lógica operativa que usa el agente para completar objetivos; y, sobre todo, haciendo comprobable qué parte del “decidir” ocurrió",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-020",
+      "section_id": "idea_C",
+      "start_seconds": 724,
+      "end_seconds": 730,
+      "spoken_excerpt": "antes del daño, con mecanismos reales para revertir o corregir en tiempo oportuno",
+      "queries": [
+        "Cadena de acción con puntos marcados: “decidir”, “ejecutar”, “reversión disponible” y “auditabilidad”.",
+        "Diagrama de estado: permitido → persistiendo → desviación detectada → freno/corrección."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-001",
+      "section_id": "story_payoff",
+      "start_seconds": 730,
+      "end_seconds": 738,
+      "spoken_excerpt": "Volvamos al mismo conflicto de la épica: no es sólo si hay alarmas, es qué hacen con ellas. Durante el",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-002",
+      "section_id": "story_payoff",
+      "start_seconds": 738,
+      "end_seconds": 746,
+      "spoken_excerpt": "descenso del Apollo 11 aparecieron alarmas 1201 y 1202 por desbordamiento del Executive, con solicitudes adicionales asociadas al radar de",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-003",
+      "section_id": "story_payoff",
+      "start_seconds": 746,
+      "end_seconds": 754,
+      "spoken_excerpt": "encuentro. Lo verificado es que el sistema usó planificación por prioridades y, tras reinicios controlados, preservó o reanudó tareas esenciales",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-004",
+      "section_id": "story_payoff",
+      "start_seconds": 754,
+      "end_seconds": 762,
+      "spoken_excerpt": "de guiado y navegación; y que Control de Misión evaluó las alarmas y autorizó continuar el descenso. Resultado: el Eagle",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-005",
+      "section_id": "story_payoff",
+      "start_seconds": 762,
+      "end_seconds": 770,
+      "spoken_excerpt": "aterrizó con éxito el 20 de julio de 1969.\n\nAhora, respondo la pregunta abierta: si una organización delega a agentes",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-006",
+      "section_id": "story_payoff",
+      "start_seconds": 770,
+      "end_seconds": 778,
+      "spoken_excerpt": "persistentes, la responsabilidad no “vive” únicamente en quién autorizó al inicio. Vive en el diseño que permite que, cuando el",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-007",
+      "section_id": "story_payoff",
+      "start_seconds": 778,
+      "end_seconds": 786,
+      "spoken_excerpt": "plan se sature o cambie el contexto, el sistema conserve objetivos críticos, registre el camino de decisión y exista reversión",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-008",
+      "section_id": "story_payoff",
+      "start_seconds": 786,
+      "end_seconds": 794,
+      "spoken_excerpt": "corrección a tiempo.\n\nY aquí toca reconocer el límite: Apollo 11 es software determinista con un objetivo físico muy definido",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-009",
+      "section_id": "story_payoff",
+      "start_seconds": 794,
+      "end_seconds": 802,
+      "spoken_excerpt": "Los agentes modernos operan con incertidumbre semántica y objetivos menos nítidos, así que la analogía no demuestra que un agente",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-010",
+      "section_id": "story_payoff",
+      "start_seconds": 802,
+      "end_seconds": 810,
+      "spoken_excerpt": "moderno “hará lo correcto”. Sólo sugiere una estructura de robustez útil: prioridades explícitas, preservación verificable y un lugar real para",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-011",
+      "section_id": "story_payoff",
+      "start_seconds": 810,
+      "end_seconds": 813,
+      "spoken_excerpt": "que el control humano vuelva cuando importa",
+      "queries": [
+        "La luz verde reaparece tras un “reinicio controlado” conceptual; detrás, una caja de verificación: tareas críticas preservadas + autorización humana evaluada.",
+        "Mapa del conflicto: saturación → reordenamiento → preservación/continuación → aterrizaje exitoso (en esquema)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-001",
+      "section_id": "cierre",
+      "start_seconds": 813,
+      "end_seconds": 821,
+      "spoken_excerpt": "La idea que me llevo (y que espero te lleves) es menos “permite o prohíbe” y más “diseña la rendición",
+      "queries": [
+        "Cierre con el motivo de la luz verde por etapas, ahora con tres etiquetas superpuestas: límites / trazabilidad / reversión."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-002",
+      "section_id": "cierre",
+      "start_seconds": 821,
+      "end_seconds": 829,
+      "spoken_excerpt": "de cuentas durante la ejecución”. Si delegas a agentes que operan por horas, tu trabajo organizacional es construir tres cosas",
+      "queries": [
+        "Cierre con el motivo de la luz verde por etapas, ahora con tres etiquetas superpuestas: límites / trazabilidad / reversión."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-003",
+      "section_id": "cierre",
+      "start_seconds": 829,
+      "end_seconds": 837,
+      "spoken_excerpt": "límites que sigan contando con fricción, trazabilidad que reconstruya decisiones intermedias (no sólo resultados), y reversión real para corregir sin",
+      "queries": [
+        "Cierre con el motivo de la luz verde por etapas, ahora con tres etiquetas superpuestas: límites / trazabilidad / reversión."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-004",
+      "section_id": "cierre",
+      "start_seconds": 837,
+      "end_seconds": 845,
+      "spoken_excerpt": "esperar al reporte final.\n\n¿Tu organización está preparada para responder la pregunta incómoda: “¿qué parte del decidir pasó antes de",
+      "queries": [
+        "Cierre con el motivo de la luz verde por etapas, ahora con tres etiquetas superpuestas: límites / trazabilidad / reversión."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-005",
+      "section_id": "cierre",
+      "start_seconds": 845,
+      "end_seconds": 853,
+      "spoken_excerpt": "que se viera el problema… y cómo podemos demostrarlo?”\n\nSi esta charla te sirve para pensar mejor en seguridad y",
+      "queries": [
+        "Cierre con el motivo de la luz verde por etapas, ahora con tres etiquetas superpuestas: límites / trazabilidad / reversión."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-006",
+      "section_id": "cierre",
+      "start_seconds": 853,
+      "end_seconds": 861,
+      "spoken_excerpt": "responsabilidad con agentes, suscríbete: me interesa seguir explorando este tema en ejemplos que no se queden en lo teórico",
+      "queries": [
+        "Cierre con el motivo de la luz verde por etapas, ahora con tres etiquetas superpuestas: límites / trazabilidad / reversión."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    }
+  ],
+  "policy": "Planning only; use repository acquisition/licensing/density gates before downloads."
+}

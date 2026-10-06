@@ -1,0 +1,48 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "La parte que faltaba era el “después”: ¿el sistema se limita a avisar o de verdad preserva lo esencial? En el descenso del Apollo 11, las alarmas 1201 y 1202 mostraron desbordamiento del Executive, alimentado por solicitudes extra asociadas al radar de encuentro. Pero el punto verificado es que el sistema usó planificación por prioridades y, tras reinicios controlados, preservó o reanudó tareas esenciales de guiado y navegación. Además, Control de Misión evaluó las alarmas y autorizó continuar el descenso. Resultado: el Eagle aterrizó con éxito el 20 de julio de 1969. \n\nAhora bien, ojo con la analogía: Apollo 11 es software determinista y una misión física con objetivos muy definidos; en agentes modernos, el “significado” del trabajo puede ser más semántico e incierto. La analogía sugiere un requisito: degradación elegante y verificable cuando hay saturación, no que un agente moderno hará lo correcto por sí solo.",
+      "evidence_ids": [
+        "medicare-access-boundary",
+        "agent-identity-controls",
+        "continuous-seller-delegation"
+      ],
+      "memory_claim_indices": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "visual_queries": [
+        "Una luz verde vuelve a encenderse tras un “reinicio controlado”; detrás, una columna dice “tareas críticas preservadas”"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "La moraleja evolucionada es menos “permite o prohíbe” y más “diseña la rendición de cuentas durante la ejecución”. Si un agente puede operar horas, la organización necesita: límites que sigan contando cuando hay fricción, trazabilidad que permita reconstruir decisiones intermedias y reversión real—como la idea de que el sistema no sólo sobrevive la saturación, sino que mantiene el objetivo crítico. En los casos recientes, el debate se desplaza hacia qué información falta cuando intentas atribuir responsabilidad: no sólo el resultado, también el camino.\n\n¿Tu seguridad de agentes está pensada para auditoría después del incidente, o para corregir a tiempo mientras todavía “está en camino”? Si te gustó esta conversación, suscríbete y nos vemos en el siguiente episodio.",
+      "evidence_ids": [
+        "medicare-access-boundary",
+        "agent-identity-controls",
+        "continuous-seller-delegation"
+      ],
+      "memory_claim_indices": [
+        1,
+        2,
+        3
+      ],
+      "visual_queries": [
+        "Un diagrama final: autorización inicial → ejecución persistente → etapa de reversión/checqueo"
+      ]
+    }
+  ],
+  "seo_title": "Responsabilidad en agentes: por qué no basta con permisos (y",
+  "seo_description": "Exploramos la idea de responsabilidad en agentes persistentes usando el caso Apollo 11: planificación por prioridades, preservación de tareas críticas y la leyd",
+  "seo_keywords": [
+    "agentes de IA",
+    "seguridad de agentes",
+    "responsabilidad",
+    "trazabilidad accionable"
+  ]
+}

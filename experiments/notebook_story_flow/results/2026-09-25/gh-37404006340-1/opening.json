@@ -1,0 +1,13 @@
+{
+  "text": "20 de julio de 1969: sobre la superficie de la Luna, el Apollo 11 entra en su descenso. Y, en ese tramo donde cada segundo cuenta, no siempre manda la calma: también manda el “no alcanza”.\n\nPorque durante el descenso aparecieron alarmas 1201 y 1202, señales de que el Executive de la Apollo Guidance Computer estaba desbordándose: el sistema no podía completar todo el trabajo que tenía a la vista en cada ciclo. Lo fascinante —y aquí empieza el vértigo— es que la máquina no se queda congelada esperando instrucciones perfectas. En vez de eso, el propio diseño la empuja a reordenar prioridades, a soltar lo que momentáneamente estorba y a conservar lo esencial para seguir guiando y navegando.\n\nPero esa decisión no ocurre en el vacío. El radar de encuentro estaba generando solicitudes adicionales de procesamiento justo cuando el descenso exigía máxima atención. Así que el conflicto es doble: hay más “tareas” entrando mientras el tiempo de cómputo disponible ya estaba al límite. No es una falla dramática; es una saturación silenciosa.\n\nMi lectura de lo que importa aquí no es solo que “hubo alarmas”, sino que existe una forma de sobrevivir al caos: planificar por prioridades y, ante reinicios controlados, preservar o reanudar las tareas críticas. En términos simples, el sistema está hecho para seguir vivo incluso cuando el mundo —o el propio plan— demanda más de lo que el reloj permite.\n\nY ahora viene la pregunta incómoda para cualquier sistema que delega trabajo a un agente persistente: si el orden de las cosas cambia, ¿cómo diseñamos un planificador de prioridades análogo para que realmente conserve objetivos críticos… y decida soltar sin que nadie se entere a tiempo? No basta con que funcione: hay que poder explicar qué hizo, por qué lo hizo y, sobre todo, cómo verificar que ocurrió antes del daño.\n\nCon una luz verde de “aprobado” avanzando por etapas, el descenso queda suspendido sobre la misma tensión de siempre: seguir… mientras el significado del trabajo parece moverse bajo los pies.",
+  "memory_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "visual_queries": [
+    "Plano documental del módulo de descenso del Apollo 11 sobre la Luna durante el descenso (sin incluir recreaciones contemporáneas).",
+    "Capturas/representación gráfica de alarmas 1201 y 1202 en el panel o en pantallas del sistema de guiado (estilo archivo/diagrama).",
+    "Diagrama conceptual del Apollo Guidance Computer reordenando prioridades: flechas que indican tareas omitidas o diferidas frente a tareas esenciales de guiado y navegación."
+  ]
+}
