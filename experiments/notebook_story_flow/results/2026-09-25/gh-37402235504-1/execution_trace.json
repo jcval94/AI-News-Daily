@@ -1,0 +1,28 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 19.872,
+    "usage": {
+      "prompt_tokens": 25746,
+      "output_tokens": 2344,
+      "total_tokens": 28090
+    }
+  },
+  {
+    "step": "plan_repair",
+    "agent": "notebook_plan_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 15.916,
+    "usage": {
+      "prompt_tokens": 28252,
+      "output_tokens": 2361,
+      "total_tokens": 30613
+    }
+  }
+]
