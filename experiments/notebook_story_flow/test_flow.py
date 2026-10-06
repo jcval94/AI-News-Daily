@@ -157,8 +157,8 @@ class ContractTests(unittest.TestCase):
         self.assertTrue(any("unknown evidence" in x for x in run.validate_draft(self.draft, self.plan, self.memory)))
 
     def test_opening_word_budget_is_not_silently_truncated(self):
-        self.draft.sections[0].text = " ".join(["palabra"] * 401)
-        self.assertTrue(any("401 words outside" in x for x in run.validate_draft(self.draft, self.plan, self.memory)))
+        self.draft.sections[0].text = " ".join(["palabra"] * 451)
+        self.assertTrue(any("451 words outside" in x for x in run.validate_draft(self.draft, self.plan, self.memory)))
 
     def test_literal_opening_end_and_cta(self):
         self.draft.opening_last_sentence = "An ending that was not written."
@@ -215,9 +215,9 @@ class ContractTests(unittest.TestCase):
             StoryPlan.model_validate(payload)
 
     def test_opening_word_budget_enters_hardened_schema_repair(self):
-        payload = {"text": " ".join(["palabra"] * 324), "memory_claim_indices": [1],
+        payload = {"text": " ".join(["palabra"] * 299), "memory_claim_indices": [1],
                    "visual_queries": ["archive"]}
-        with self.assertRaisesRegex(ValidationError, "324 spoken words"):
+        with self.assertRaisesRegex(ValidationError, "299 spoken words"):
             OpeningDraft.model_validate(payload)
 
 

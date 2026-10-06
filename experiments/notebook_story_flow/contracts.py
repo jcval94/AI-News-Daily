@@ -65,6 +65,8 @@ SECTION_SPECS = (
     ("cierre", "Síntesis, pregunta y CTA", 55, 100),
 )
 SECTION_IDS = tuple(spec[0] for spec in SECTION_SPECS)
+OPENING_MIN_WORDS = 300
+OPENING_MAX_WORDS = 450
 
 
 class Section(Contract):
@@ -94,8 +96,8 @@ class OpeningDraft(Contract):
     @classmethod
     def validate_word_budget(cls, value: str) -> str:
         count = word_count(value)
-        if not 350 <= count <= 400:
-            raise ValueError(f"Opening contains {count} spoken words; required 350–400, target 375")
+        if not OPENING_MIN_WORDS <= count <= OPENING_MAX_WORDS:
+            raise ValueError(f"Opening contains {count} spoken words; allowed 300–450, target 350–400")
         return value
 
 

@@ -130,6 +130,7 @@ Contexto: {context}
 
 OPENING = SAFETY + """
 Escribe SOLO la epopeya inicial, en 350–400 palabras (apunta a 375), como OpeningDraft.
+El gate experimental admite 300–450: busca el objetivo sin rellenar ni inventar.
 No escribas desarrollo, resultado, SEO ni etiquetas internas dentro de text.
 Esta es la historia del EVENTO HISTÓRICO, no una escena moderna de oficina.
 La primera frase usa únicamente periodo/lugar documentados. El narrador acompaña

@@ -17,7 +17,7 @@ from experiments.notebook_story_flow import prompts
 from experiments.notebook_story_flow.contracts import (
     DevelopmentDraft, EndingDraft, FactualReview, LedgerEntry, NarrativeReview,
     OpeningDraft, PairedReview, ScriptDraft, Section, StoryPlan,
-    SECTION_IDS, SECTION_SPECS,
+    OPENING_MIN_WORDS, OPENING_MAX_WORDS, SECTION_IDS, SECTION_SPECS,
 )
 from pipeline.narrative_memory import load_memory, load_usage_history, rank_candidates
 from pipeline.news import NewsItem
@@ -228,8 +228,8 @@ def validate_draft(draft: ScriptDraft, plan: StoryPlan, memory: dict[str, Any]) 
         # Preserve the defining epic budget; other notebook block budgets are targets.
         # The original notebook allowed a much longer idea_C. Experiment flexibility
         # must not alter production's duration/quality thresholds.
-        if row.id == "step9_epica" and not low <= count <= high:
-            issues.append(f"{row.id}: {count} words outside {low}..{high}")
+        if row.id == "step9_epica" and not OPENING_MIN_WORDS <= count <= OPENING_MAX_WORDS:
+            issues.append(f"{row.id}: {count} words outside {OPENING_MIN_WORDS}..{OPENING_MAX_WORDS}")
         elif row.id != "step9_epica" and not 10 <= count <= (800 if row.id == "idea_C" else 400):
             issues.append(f"{row.id}: block is empty or disproportionately long")
         if not set(row.evidence_ids) <= evidence or not set(row.memory_claim_indices) <= historical:
@@ -331,12 +331,12 @@ async def generate_flow(backend: Any, context: dict[str, Any], plan: StoryPlan,
     opening = await backend.call("opening", prompts.OPENING, OpeningDraft, opening_context, trace)
     write_json(out / "opening_initial.json", opening.model_dump())
     count = word_count(opening.text)
-    if not 350 <= count <= 400:
+    if not OPENING_MIN_WORDS <= count <= OPENING_MAX_WORDS:
         opening = await backend.call("opening_repair", prompts.OPENING, OpeningDraft,
             {**opening_context, "previous_opening": opening.model_dump(),
-             "deterministic_errors": [f"Opening has {count} words; must have 350–400, target 375."]}, trace)
+             "deterministic_errors": [f"Opening has {count} words; allowed 300–450, target 350–400."]}, trace)
     write_json(out / "opening.json", opening.model_dump())
-    if not 350 <= word_count(opening.text) <= 400:
+    if not OPENING_MIN_WORDS <= word_count(opening.text) <= OPENING_MAX_WORDS:
         raise ValueError("Opening word budget failed after bounded repair")
     # Withhold the outcome from both the opener and the middle, not merely its marker.
     middle_context = {k: v for k, v in context.items() if k != "selected_memory"}

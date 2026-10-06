@@ -26,7 +26,7 @@ sin usar modelos. El replay inicial usa explícitamente el último episodio apro
 | Notebook | Adaptación |
 | --- | --- |
 | Celda 20: `PromptFactoryEpic` y `PromptFactoryHero` | Ideas núcleo, motivo, ranking de epicidad/conexión, conflicto, tres pilares y pregunta central |
-| Celdas 20/22: `step9_epica` | Historia de **350–400 palabras**, terminada antes del desenlace |
+| Celdas 20/22: `step9_epica` | Historia con objetivo **350–400 palabras** (margen experimental 300–450), terminada antes del desenlace |
 | `step10_reconexion` | Puente histórico → problema actual, sin spoiler |
 | `hook_problema`, `hook_cita` | Problema humano y reflexión; cita solo si existe texto verificable |
 | `idea_A`, `dato_1`, `idea_B_explica`, `idea_B_desafio`, `dato_2`, `idea_C` | Desarrollo continuo con datos atribuidos, límites y microexperimento |
@@ -58,7 +58,8 @@ hechos reservados del desenlace. El resultado llega únicamente al escritor del 
    de apertura/memoria para evitar anclar la nueva historia al paralelo anterior.
 4. El desenlace se reserva para `story_payoff`; se rechaza su uso en otros bloques.
    Los IDs no prueban veracidad: el auditor revisa también la prosa.
-5. Orden, apertura de 350–400 palabras, tamaños razonables de bloques, referencias,
+5. Orden, apertura extensa (objetivo 350–400; tolerancia 300–450 palabras), tamaños
+   razonables de bloques, referencias,
    final literal de apertura, primera evidencia actual, CTA y duración se validan
    con Python. Los demás presupuestos por bloque son orientativos en este
    experimento; `idea_C` conserva la flexibilidad extensa del notebook. Los IDs
