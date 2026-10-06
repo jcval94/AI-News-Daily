@@ -156,6 +156,14 @@ class ContractTests(unittest.TestCase):
         self.draft.sections[4].evidence_ids = ["fabricated-evidence"]
         self.assertTrue(any("unknown evidence" in x for x in run.validate_draft(self.draft, self.plan, self.memory)))
 
+    def test_first_evidence_at_dato_one_is_allowed_before_second_pillar(self):
+        self.draft.sections[4].evidence_ids = []
+        self.draft.sections[5].evidence_ids = ["e-one"]
+        self.assertEqual(run.validate_draft(self.draft, self.plan, self.memory), [])
+        self.draft.sections[5].evidence_ids = []
+        self.draft.sections[6].evidence_ids = ["e-one"]
+        self.assertTrue(any("delayed beyond dato_1" in x for x in run.validate_draft(self.draft, self.plan, self.memory)))
+
     def test_opening_word_budget_is_not_silently_truncated(self):
         self.draft.sections[0].text = " ".join(["palabra"] * 451)
         self.assertTrue(any("451 words outside" in x for x in run.validate_draft(self.draft, self.plan, self.memory)))
@@ -213,6 +221,14 @@ class ContractTests(unittest.TestCase):
         payload["payoff_claim_indices"] = [0]
         with self.assertRaises(ValidationError):
             StoryPlan.model_validate(payload)
+
+    def test_full_repairs_cannot_invent_new_reference_ids(self):
+        schema = run.scoped_schema(ScriptDraft, {"plan": self.plan.model_dump(), "selected_memory": self.memory})
+        payload = self.draft.model_dump()
+        schema.model_validate(payload)
+        payload["sections"][0]["evidence_ids"] = ["documented-event"]
+        with self.assertRaises(ValidationError):
+            schema.model_validate(payload)
 
     def test_opening_word_budget_enters_hardened_schema_repair(self):
         payload = {"text": " ".join(["palabra"] * 299), "memory_claim_indices": [1],

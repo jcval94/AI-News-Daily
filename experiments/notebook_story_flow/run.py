@@ -248,8 +248,8 @@ def validate_draft(draft: ScriptDraft, plan: StoryPlan, memory: dict[str, Any]) 
     used_evidence = {identifier for row in draft.sections for identifier in row.evidence_ids}
     if used_evidence != evidence:
         issues.append("script omits planned current evidence")
-    if not any(row.evidence_ids for row in draft.sections[:5]):
-        issues.append("first current evidence delayed beyond first pillar")
+    if not any(row.evidence_ids for row in draft.sections[:6]):
+        issues.append("first current evidence delayed beyond dato_1 / before second pillar")
     closing = draft.sections[-1].text.casefold()
     if "suscr" not in closing:
         issues.append("closing lacks subscription CTA")
@@ -303,17 +303,19 @@ class RepoAgentBackend:
 
 def scoped_schema(schema: Any, context: dict[str, Any]) -> Any:
     """Give the provider enums for references instead of asking it to copy IDs."""
-    if schema not in {OpeningDraft, DevelopmentDraft, EndingDraft}:
+    if schema not in {OpeningDraft, DevelopmentDraft, EndingDraft, ScriptDraft}:
         return schema
-    historical = tuple(context["allowed_memory_indices"])
+    historical = tuple(context.get("allowed_memory_indices") or
+                       range(1, len(context["selected_memory"]["verified_claims"]) + 1))
     if schema is OpeningDraft:
         return create_model("ScopedOpening", __base__=OpeningDraft,
                             memory_claim_indices=(list[Literal[historical]], Field(min_length=1)))
-    evidence = tuple(context["allowed_evidence_ids"])
+    evidence = tuple(context.get("allowed_evidence_ids") or
+                     [row["evidence_id"] for row in context["plan"]["ledger"]])
     section = create_model("ScopedSection", __base__=Section,
         evidence_ids=(list[Literal[evidence]], Field(default_factory=list, max_length=3)),
         memory_claim_indices=(list[Literal[historical]], Field(default_factory=list)))
-    count = 9 if schema is DevelopmentDraft else 2
+    count = 9 if schema is DevelopmentDraft else 12 if schema is ScriptDraft else 2
     return create_model(f"Scoped{schema.__name__}", __base__=schema,
                         sections=(list[section], Field(min_length=count, max_length=count)))
 
@@ -467,6 +469,7 @@ async def execute(inputs: dict[str, Any], out: Path, backend: Any, *, dry_run: b
         draft = await generate_flow(backend, context, plan, memory, trace, out)
         write_json(out / "draft_initial.json", draft.model_dump())
         issues = validate_draft(draft, plan, memory)
+        write_json(out / "deterministic_gate_initial.json", {"passed": not issues, "issues": issues})
         if issues:
             # One deterministic structural repair, before quality judgment. No relaxed constraints.
             draft = await backend.call("structure_repair", prompts.WRITE, ScriptDraft,
