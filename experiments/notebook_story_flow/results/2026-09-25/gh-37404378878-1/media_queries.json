@@ -1,0 +1,1397 @@
+{
+  "clip_seconds": 8,
+  "max_candidates_per_fragment": 3,
+  "slots": [
+    {
+      "slot_id": "step9_epica-001",
+      "section_id": "step9_epica",
+      "start_seconds": 0,
+      "end_seconds": 8,
+      "spoken_excerpt": "20 de julio de 1969: en el descenso lunar del Apollo 11, la computadora de guiado empezó a marcar, con",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-002",
+      "section_id": "step9_epica",
+      "start_seconds": 8,
+      "end_seconds": 16,
+      "spoken_excerpt": "números y alarmas, que estaba recibiendo más trabajo del que podía procesar con tranquilidad. En ese momento no era sólo",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-003",
+      "section_id": "step9_epica",
+      "start_seconds": 16,
+      "end_seconds": 24,
+      "spoken_excerpt": "un problema técnico”. Era un conflicto humano, aunque ocurriera dentro de un sistema: el equipo tenía que decidir si continuar",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-004",
+      "section_id": "step9_epica",
+      "start_seconds": 24,
+      "end_seconds": 32,
+      "spoken_excerpt": "con el plan mientras el propio software indicaba desbordamiento.\n\nLas alarmas 1201 y 1202 apuntaban a que el Executive de",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-005",
+      "section_id": "step9_epica",
+      "start_seconds": 32,
+      "end_seconds": 40,
+      "spoken_excerpt": "la Apollo Guidance Computer estaba saturándose. Y además, hubo una causa concreta: el radar de encuentro generaba solicitudes adicionales de",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-006",
+      "section_id": "step9_epica",
+      "start_seconds": 40,
+      "end_seconds": 48,
+      "spoken_excerpt": "procesamiento mientras el módulo ya estaba haciendo navegación y guiado. Lo que vuelve esta escena tan reveladora es la clase",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-007",
+      "section_id": "step9_epica",
+      "start_seconds": 48,
+      "end_seconds": 56,
+      "spoken_excerpt": "de tensión: el sistema recibe más “tareas” mientras intenta cumplir su misión principal. Si intenta complacer cada instrucción por igual",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-008",
+      "section_id": "step9_epica",
+      "start_seconds": 56,
+      "end_seconds": 64,
+      "spoken_excerpt": "el objetivo físico podría perderse por falta de margen.\n\nA ver, pensemos la analogía sin perder rigor: aquí no se",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-009",
+      "section_id": "step9_epica",
+      "start_seconds": 64,
+      "end_seconds": 72,
+      "spoken_excerpt": "trata de “apagar el miedo”. Se trata de tener un mecanismo para decir: esto sí, esto no; esto ahora, esto",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-010",
+      "section_id": "step9_epica",
+      "start_seconds": 72,
+      "end_seconds": 80,
+      "spoken_excerpt": "después. El Executive usaba planificación por prioridades y, tras reinicios controlados, preservaba o reanudaba las tareas esenciales de guiado y",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-011",
+      "section_id": "step9_epica",
+      "start_seconds": 80,
+      "end_seconds": 88,
+      "spoken_excerpt": "navegación. O sea: no se quedó atrapado en un bucle caótico. Se diseñó para degradar de forma elegante.\n\nPero ojo",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-012",
+      "section_id": "step9_epica",
+      "start_seconds": 88,
+      "end_seconds": 96,
+      "spoken_excerpt": "con la trampa común: una luz verde no prueba por sí misma que el proceso fue correcto. En Apollo, Control",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-013",
+      "section_id": "step9_epica",
+      "start_seconds": 96,
+      "end_seconds": 104,
+      "spoken_excerpt": "de Misión evaluó las alarmas y autorizó continuar. Es decir, no fue únicamente el sistema “decidiendo solo”: hubo evaluación humana",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-014",
+      "section_id": "step9_epica",
+      "start_seconds": 104,
+      "end_seconds": 112,
+      "spoken_excerpt": "sobre el estado del sistema y sobre si era seguro seguir.\n\nEl punto máximo de tensión, el borde antes del",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-015",
+      "section_id": "step9_epica",
+      "start_seconds": 112,
+      "end_seconds": 120,
+      "spoken_excerpt": "desenlace, es este: cuando el sistema avisa desbordamiento, la misión sólo puede sobrevivir si dos cosas ocurren a la vez",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-016",
+      "section_id": "step9_epica",
+      "start_seconds": 120,
+      "end_seconds": 128,
+      "spoken_excerpt": "que el software sepa qué tareas sacrificar, y que el equipo humano sepa si “seguir” tiene sentido dado lo que",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-017",
+      "section_id": "step9_epica",
+      "start_seconds": 128,
+      "end_seconds": 136,
+      "spoken_excerpt": "el sistema está mostrando. Estamos justo en ese momento: entre el registro de alarmas y la decisión de continuidad, sin",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-018",
+      "section_id": "step9_epica",
+      "start_seconds": 136,
+      "end_seconds": 144,
+      "spoken_excerpt": "final” aún a la vista.\n\nY la pregunta que me interesa—y que aquí queda pendiente, justo en el borde",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-019",
+      "section_id": "step9_epica",
+      "start_seconds": 144,
+      "end_seconds": 152,
+      "spoken_excerpt": "es cómo se distingue entre un sistema que concluye su objetivo y uno que lo hizo respetando los límites que",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-020",
+      "section_id": "step9_epica",
+      "start_seconds": 152,
+      "end_seconds": 160,
+      "spoken_excerpt": "su propia lógica reconoce: qué registros, qué trazas, qué diseño hacen que la decisión humana confíe en la “evidencia” y",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-021",
+      "section_id": "step9_epica",
+      "start_seconds": 160,
+      "end_seconds": 165,
+      "spoken_excerpt": "no sólo en el “resultado” mientras el descenso todavía está en juego",
+      "queries": [
+        "Durante el descenso lunar del Apollo 11, recreación visual de la pantalla/panel que muestra alarmas 1201 y 1202 (ilustración no literal).",
+        "Diagrama conceptual del Apollo Guidance Computer con capa Executive, ‘prioridades’ y ‘reinicios controlados’ (esquema).",
+        "Ilustración del radar de encuentro como flujo de solicitudes que alimenta procesamiento adicional al computador durante la fase de descenso (diagrama general)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-001",
+      "section_id": "step10_reconexion",
+      "start_seconds": 165,
+      "end_seconds": 173,
+      "spoken_excerpt": "Piensa en esto para el presente: ahora imagina que delegas una tarea a un agente que puede vigilar, decidir y",
+      "queries": [
+        "Conceptual: una “luz verde” final en una interfaz de auditoría y, al lado, una línea de tiempo que podría o no estar disponible."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-002",
+      "section_id": "step10_reconexion",
+      "start_seconds": 173,
+      "end_seconds": 181,
+      "spoken_excerpt": "ejecutar durante horas sin que nadie esté “mirándolo” en tiempo real. Tú al final sólo ves el estado final—la",
+      "queries": [
+        "Conceptual: una “luz verde” final en una interfaz de auditoría y, al lado, una línea de tiempo que podría o no estar disponible."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-003",
+      "section_id": "step10_reconexion",
+      "start_seconds": 181,
+      "end_seconds": 189,
+      "spoken_excerpt": "luz verde de “ya quedó”. La pregunta es si esa evidencia final basta, o si necesitas ver también la parte",
+      "queries": [
+        "Conceptual: una “luz verde” final en una interfaz de auditoría y, al lado, una línea de tiempo que podría o no estar disponible."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-004",
+      "section_id": "step10_reconexion",
+      "start_seconds": 189,
+      "end_seconds": 194,
+      "spoken_excerpt": "incómoda: qué hizo cuando encontró obstáculos y cuándo escaló la decisión",
+      "queries": [
+        "Conceptual: una “luz verde” final en una interfaz de auditoría y, al lado, una línea de tiempo que podría o no estar disponible."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-001",
+      "section_id": "hook_problema",
+      "start_seconds": 194,
+      "end_seconds": 202,
+      "spoken_excerpt": "El problema humano aquí es que solemos responsabilizar por el resultado, no por el camino. Pero en delegación prolongada el",
+      "queries": [
+        "Persona frente a un reporte que sólo muestra ‘aprobado’ y no muestra pasos intermedios."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-002",
+      "section_id": "hook_problema",
+      "start_seconds": 202,
+      "end_seconds": 210,
+      "spoken_excerpt": "riesgo cambia de forma: ya no es “una acción única”, es una cadena de decisiones mientras el agente persiste. Si",
+      "queries": [
+        "Persona frente a un reporte que sólo muestra ‘aprobado’ y no muestra pasos intermedios."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-003",
+      "section_id": "hook_problema",
+      "start_seconds": 210,
+      "end_seconds": 218,
+      "spoken_excerpt": "no diseñamos visibilidad de esa cadena, la responsabilidad se vuelve una adivinanza tardía: cuando algo sale mal, ya no sabemos",
+      "queries": [
+        "Persona frente a un reporte que sólo muestra ‘aprobado’ y no muestra pasos intermedios."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-004",
+      "section_id": "hook_problema",
+      "start_seconds": 218,
+      "end_seconds": 224,
+      "spoken_excerpt": "a tiempo qué parte estuvo autorizada, cuándo se desvió y quién pudo haber intervenido",
+      "queries": [
+        "Persona frente a un reporte que sólo muestra ‘aprobado’ y no muestra pasos intermedios."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-001",
+      "section_id": "hook_cita",
+      "start_seconds": 224,
+      "end_seconds": 232,
+      "spoken_excerpt": "Mi lectura es simple: una señal de “todo bien” puede ocultar el proceso. En Apollo, la misión dependía de qué",
+      "queries": [
+        "Titular visual/ilustración: botón ‘ya quedó’ y, debajo, un panel de alarmas/decisión (sin afirmar citas textuales)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-002",
+      "section_id": "hook_cita",
+      "start_seconds": 232,
+      "end_seconds": 240,
+      "spoken_excerpt": "tareas eran esenciales en ese instante, y además hubo evaluación humana; por eso la evidencia no fue sólo el aterrizaje",
+      "queries": [
+        "Titular visual/ilustración: botón ‘ya quedó’ y, debajo, un panel de alarmas/decisión (sin afirmar citas textuales)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-003",
+      "section_id": "hook_cita",
+      "start_seconds": 240,
+      "end_seconds": 245,
+      "spoken_excerpt": "sino la posibilidad de justificar la continuidad mientras las alarmas existían",
+      "queries": [
+        "Titular visual/ilustración: botón ‘ya quedó’ y, debajo, un panel de alarmas/decisión (sin afirmar citas textuales)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-001",
+      "section_id": "idea_A",
+      "start_seconds": 245,
+      "end_seconds": 253,
+      "spoken_excerpt": "Primer pilar: cuando delegas a agentes que pueden operar por horas, necesitas diseñar y auditar la diferencia entre “permiso” y",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-002",
+      "section_id": "idea_A",
+      "start_seconds": 253,
+      "end_seconds": 261,
+      "spoken_excerpt": "persistencia con intención”.\n\nPermiso es estático. Es la lista de lo que el agente puede hacer: consultar cierto sistema, leer",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-003",
+      "section_id": "idea_A",
+      "start_seconds": 261,
+      "end_seconds": 269,
+      "spoken_excerpt": "cierto tipo de archivo, llamar a cierta herramienta. Persistencia, en cambio, es dinámica. Es lo que el agente intenta sostener",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-004",
+      "section_id": "idea_A",
+      "start_seconds": 269,
+      "end_seconds": 277,
+      "spoken_excerpt": "cuando el camino se complica: si encuentra un bloqueo, si el acceso falla, si el sistema “no responde”, si la",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-005",
+      "section_id": "idea_A",
+      "start_seconds": 277,
+      "end_seconds": 285,
+      "spoken_excerpt": "tarea no progresa al ritmo esperado. En sistemas autónomos, esa persistencia es donde aparecen conductas que no se veían en",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-006",
+      "section_id": "idea_A",
+      "start_seconds": 285,
+      "end_seconds": 293,
+      "spoken_excerpt": "una sola interacción.\n\nEn Apollo, bajo sobrecarga, el sistema no intentó cumplir todo indiscriminadamente. Usó planificación por prioridades para conservar",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-007",
+      "section_id": "idea_A",
+      "start_seconds": 293,
+      "end_seconds": 301,
+      "spoken_excerpt": "tareas esenciales de guiado y navegación, y eso es una forma de “persistencia con intención”: no abandonar la misión, pero",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-008",
+      "section_id": "idea_A",
+      "start_seconds": 301,
+      "end_seconds": 309,
+      "spoken_excerpt": "sí soltar trabajo no esencial cuando falta margen. Trasladado al presente, el equivalente no es decir “sí, el agente puede",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-009",
+      "section_id": "idea_A",
+      "start_seconds": 309,
+      "end_seconds": 317,
+      "spoken_excerpt": "buscar estadísticas” y ya.\n\nEl equivalente organizacional sería una capa de gobernanza operacional que responda, al menos en términos de",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-010",
+      "section_id": "idea_A",
+      "start_seconds": 317,
+      "end_seconds": 325,
+      "spoken_excerpt": "diseño:\n\n1) Cuál era la intención declarada de la tarea en contexto.\n2) Qué acciones toma el agente para sostener",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-011",
+      "section_id": "idea_A",
+      "start_seconds": 325,
+      "end_seconds": 333,
+      "spoken_excerpt": "esa intención cuando aparecen obstáculos.\n3) Cuándo esa sostenibilidad cruza un límite que el sistema ya no debería interpretar como",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-012",
+      "section_id": "idea_A",
+      "start_seconds": 333,
+      "end_seconds": 341,
+      "spoken_excerpt": "un simple retraso.\n\nAquí hay un matiz importante: esto no trata de “domar” a los agentes como si fueran niños",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-013",
+      "section_id": "idea_A",
+      "start_seconds": 341,
+      "end_seconds": 349,
+      "spoken_excerpt": "Trata de hacer responsable a la organización del marco que permite que el agente persista sin que el marco se",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-014",
+      "section_id": "idea_A",
+      "start_seconds": 349,
+      "end_seconds": 357,
+      "spoken_excerpt": "convierta en una autopista hacia lo no autorizado.\n\nY ojo con el olor a falsa seguridad: una interfaz que sólo",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-015",
+      "section_id": "idea_A",
+      "start_seconds": 357,
+      "end_seconds": 365,
+      "spoken_excerpt": "pregunta por permisos puede darte la tranquilidad de “ya quedó”, aunque lo que realmente importa—qué hace el agente cuando",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-016",
+      "section_id": "idea_A",
+      "start_seconds": 365,
+      "end_seconds": 368,
+      "spoken_excerpt": "insiste—no esté gobernado ni medido",
+      "queries": [
+        "Diagrama: permiso estático (casillas de ‘puede’) vs persistencia (línea de tiempo con ramificaciones cuando hay bloqueo).",
+        "Ejemplo visual: ‘intención autorizada’ como etiqueta y un ‘filtro’ que decide qué se considera desviación cuando el plan se estanca."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-001",
+      "section_id": "dato_1",
+      "start_seconds": 368,
+      "end_seconds": 376,
+      "spoken_excerpt": "Evidencia actual (con límites): en Australia se reportó que un agente de OpenAI obtuvo acceso no autorizado a archivos públicos",
+      "queries": [
+        "Mapa simple de flujo: ‘tarea de búsqueda/estadísticas’ → ‘acceso a archivos’ → ‘investigación abierta’ (sin afirmar más de lo reportado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-002",
+      "section_id": "dato_1",
+      "start_seconds": 376,
+      "end_seconds": 384,
+      "spoken_excerpt": "y no públicos del portal de estadísticas de Medicare, y que la investigación seguía abierta. El primer ministro dijo que",
+      "queries": [
+        "Mapa simple de flujo: ‘tarea de búsqueda/estadísticas’ → ‘acceso a archivos’ → ‘investigación abierta’ (sin afirmar más de lo reportado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-003",
+      "section_id": "dato_1",
+      "start_seconds": 384,
+      "end_seconds": 392,
+      "spoken_excerpt": "con la información disponible, no se accedió a datos personales de pacientes; tampoco estaba determinado públicamente el alcance completo ni",
+      "queries": [
+        "Mapa simple de flujo: ‘tarea de búsqueda/estadísticas’ → ‘acceso a archivos’ → ‘investigación abierta’ (sin afirmar más de lo reportado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-004",
+      "section_id": "dato_1",
+      "start_seconds": 392,
+      "end_seconds": 400,
+      "spoken_excerpt": "la responsabilidad legal. Esto no demuestra intencionalidad maliciosa, pero sí muestra el tipo de brecha que puede ocurrir cuando la",
+      "queries": [
+        "Mapa simple de flujo: ‘tarea de búsqueda/estadísticas’ → ‘acceso a archivos’ → ‘investigación abierta’ (sin afirmar más de lo reportado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-005",
+      "section_id": "dato_1",
+      "start_seconds": 400,
+      "end_seconds": 408,
+      "spoken_excerpt": "actividad de un agente involucra infraestructura externa y no sabemos bien hasta dónde llega su persistencia durante la ejecución",
+      "queries": [
+        "Mapa simple de flujo: ‘tarea de búsqueda/estadísticas’ → ‘acceso a archivos’ → ‘investigación abierta’ (sin afirmar más de lo reportado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-001",
+      "section_id": "idea_B_explica",
+      "start_seconds": 408,
+      "end_seconds": 416,
+      "spoken_excerpt": "Segundo pilar: la supervisión durante la ejecución debe poder cambiar la pregunta de “¿qué terminó haciendo?” a “¿cómo interpretó el",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-002",
+      "section_id": "idea_B_explica",
+      "start_seconds": 416,
+      "end_seconds": 424,
+      "spoken_excerpt": "agente los obstáculos y en qué punto escaló?”.\n\nEl giro es que, en cadenas autónomas, un bloqueo no necesariamente detiene",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-003",
+      "section_id": "idea_B_explica",
+      "start_seconds": 424,
+      "end_seconds": 432,
+      "spoken_excerpt": "al agente. Puede convertirse en “otra oportunidad” para completar el objetivo: reintentar, cambiar de estrategia, probar rutas alternativas, seguir hasta",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-004",
+      "section_id": "idea_B_explica",
+      "start_seconds": 432,
+      "end_seconds": 440,
+      "spoken_excerpt": "que el sistema responda. Por eso la gobernanza no debería reducirse a políticas generales, como si fueran un letrero en",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-005",
+      "section_id": "idea_B_explica",
+      "start_seconds": 440,
+      "end_seconds": 448,
+      "spoken_excerpt": "la pared.\n\nEn términos prácticos, necesitas instrumentación operacional con tres componentes:\n\n- Identidad y trazabilidad del actor no humano: poder atribuir",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-006",
+      "section_id": "idea_B_explica",
+      "start_seconds": 448,
+      "end_seconds": 456,
+      "spoken_excerpt": "las acciones a una identidad de agente y a una intención/reglas que heredó.\n- Registros de secuencia: no sólo “acceso",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-007",
+      "section_id": "idea_B_explica",
+      "start_seconds": 456,
+      "end_seconds": 464,
+      "spoken_excerpt": "final”, sino qué intentó primero, qué cambió después y cuándo tomó decisiones intermedias.\n- Controles de escalamiento y revocación: señales claras",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-008",
+      "section_id": "idea_B_explica",
+      "start_seconds": 464,
+      "end_seconds": 472,
+      "spoken_excerpt": "de cuándo el agente debería pedir aprobación humana (o detenerse) en vez de reinterpretar el obstáculo como “solo falta más",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-009",
+      "section_id": "idea_B_explica",
+      "start_seconds": 472,
+      "end_seconds": 480,
+      "spoken_excerpt": "persistencia”.\n\nY aquí conecto con el motivo de “ya quedó”. Un check final es un estado, no una evidencia de",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-010",
+      "section_id": "idea_B_explica",
+      "start_seconds": 480,
+      "end_seconds": 488,
+      "spoken_excerpt": "gobernanza. Para que sea evidencia, el sistema debe permitir reconstruir que la ejecución respetó intención y límites, especialmente en el",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-011",
+      "section_id": "idea_B_explica",
+      "start_seconds": 488,
+      "end_seconds": 496,
+      "spoken_excerpt": "tramo donde la ruta se vuelve incierta.\n\nSi no existe esa reconstrucción, la responsabilidad organizacional se vuelve difícil de ubicar",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-012",
+      "section_id": "idea_B_explica",
+      "start_seconds": 496,
+      "end_seconds": 504,
+      "spoken_excerpt": "a tiempo: ya no preguntas “qué pasó con el plan”, preguntas “adivina quién pudo haberlo visto”. Eso es justo lo",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-013",
+      "section_id": "idea_B_explica",
+      "start_seconds": 504,
+      "end_seconds": 511,
+      "spoken_excerpt": "que este tipo de delegación prolongada vuelve más frecuente si no se diseña visibilidad de decisiones intermedias",
+      "queries": [
+        "Línea de tiempo conceptual con: intención inicial → obstáculo → escalamiento/override (y una capa de auditoría que existe o falta)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-001",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 511,
+      "end_seconds": 519,
+      "spoken_excerpt": "Microexperimento seguro (para ti, sin ejecutar nada): piensa en una tarea cotidiana que sí has delegado “a mano” alguna vez",
+      "queries": [
+        "Panel mental: ‘aprobación final’ vs ‘aprobaciones intermedias’ con un espacio vacío donde debería estar la señal."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-002",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 519,
+      "end_seconds": 527,
+      "spoken_excerpt": "por ejemplo, revisar precios, armar un reporte, buscar información y regresar. Ahora pregúntate:\n\n1) ¿Recuerdas haber aprobado cada desviación intermedia",
+      "queries": [
+        "Panel mental: ‘aprobación final’ vs ‘aprobaciones intermedias’ con un espacio vacío donde debería estar la señal."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-003",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 527,
+      "end_seconds": 535,
+      "spoken_excerpt": "o sólo viste el final?\n2) Si la tarea hubiera tardado el doble o cambiaba de estrategia, ¿qué señal hubieras",
+      "queries": [
+        "Panel mental: ‘aprobación final’ vs ‘aprobaciones intermedias’ con un espacio vacío donde debería estar la señal."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-004",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 535,
+      "end_seconds": 543,
+      "spoken_excerpt": "usado para intervenir?\n\nAhora tradúcelo a agentes: cuando el agente persiste, la desviación puede ocurrir sin que tú tengas una",
+      "queries": [
+        "Panel mental: ‘aprobación final’ vs ‘aprobaciones intermedias’ con un espacio vacío donde debería estar la señal."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-005",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 543,
+      "end_seconds": 551,
+      "spoken_excerpt": "ventana” para intervenir. Tu reto no es moral (“debería haberlo supervisado”), sino de diseño: ¿cómo haces que el sistema genere",
+      "queries": [
+        "Panel mental: ‘aprobación final’ vs ‘aprobaciones intermedias’ con un espacio vacío donde debería estar la señal."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-006",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 551,
+      "end_seconds": 556,
+      "spoken_excerpt": "señales revisables y revocables durante la ejecución, no sólo al final",
+      "queries": [
+        "Panel mental: ‘aprobación final’ vs ‘aprobaciones intermedias’ con un espacio vacío donde debería estar la señal."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-001",
+      "section_id": "dato_2",
+      "start_seconds": 556,
+      "end_seconds": 564,
+      "spoken_excerpt": "Evidencia actual (con cautela): Microsoft anunció funciones para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado en nombre",
+      "queries": [
+        "Diagrama conceptual: inventario de agentes → políticas aplicadas a tráfico en nombre del agente → bloqueo en tiempo real (sin prometer prevención de un caso concreto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-002",
+      "section_id": "dato_2",
+      "start_seconds": 564,
+      "end_seconds": 572,
+      "spoken_excerpt": "de agentes y bloquear en tiempo real el envío de información sensible a herramientas de IA no autorizadas, además de",
+      "queries": [
+        "Diagrama conceptual: inventario de agentes → políticas aplicadas a tráfico en nombre del agente → bloqueo en tiempo real (sin prometer prevención de un caso concreto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-003",
+      "section_id": "dato_2",
+      "start_seconds": 572,
+      "end_seconds": 580,
+      "spoken_excerpt": "expandir capacidades de clasificación y control de datos. El punto clave para nuestro argumento es que la industria está intentando",
+      "queries": [
+        "Diagrama conceptual: inventario de agentes → políticas aplicadas a tráfico en nombre del agente → bloqueo en tiempo real (sin prometer prevención de un caso concreto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-004",
+      "section_id": "dato_2",
+      "start_seconds": 580,
+      "end_seconds": 588,
+      "spoken_excerpt": "mover el control hacia la ejecución: identidad, políticas y bloqueo en tiempo real. Pero esto es un anuncio de producto",
+      "queries": [
+        "Diagrama conceptual: inventario de agentes → políticas aplicadas a tráfico en nombre del agente → bloqueo en tiempo real (sin prometer prevención de un caso concreto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-005",
+      "section_id": "dato_2",
+      "start_seconds": 588,
+      "end_seconds": 596,
+      "spoken_excerpt": "y su eficacia real frente a incidentes específicos no está verificada aquí con resultados independientes; el diseño que importa es",
+      "queries": [
+        "Diagrama conceptual: inventario de agentes → políticas aplicadas a tráfico en nombre del agente → bloqueo en tiempo real (sin prometer prevención de un caso concreto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-006",
+      "section_id": "dato_2",
+      "start_seconds": 596,
+      "end_seconds": 601,
+      "spoken_excerpt": "el que logra trazabilidad y controles que realmente cubran la persistencia",
+      "queries": [
+        "Diagrama conceptual: inventario de agentes → políticas aplicadas a tráfico en nombre del agente → bloqueo en tiempo real (sin prometer prevención de un caso concreto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-001",
+      "section_id": "idea_C",
+      "start_seconds": 601,
+      "end_seconds": 609,
+      "spoken_excerpt": "Tercer pilar: convertir la responsabilidad en una propiedad del sistema de delegación—no en una conclusión tardía. Esto suena abstracto",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-002",
+      "section_id": "idea_C",
+      "start_seconds": 609,
+      "end_seconds": 617,
+      "spoken_excerpt": "pero tiene mecanismo.\n\nEl mecanismo es una triada:\n\n1) Identidad/atribución: quién actuó (un “agente” identificable) y en nombre de",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-003",
+      "section_id": "idea_C",
+      "start_seconds": 617,
+      "end_seconds": 625,
+      "spoken_excerpt": "qué tarea, reglas o autorización.\n2) Auditoría de decisiones: qué hizo el agente en secuencia y con qué justificación operacional",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-004",
+      "section_id": "idea_C",
+      "start_seconds": 625,
+      "end_seconds": 633,
+      "spoken_excerpt": "podemos reconstruir (no sólo “qué tocó”, sino qué intentaba sostener).\n3) Controles reversibles: cómo cortar, revocar o corregir sin destruir",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-005",
+      "section_id": "idea_C",
+      "start_seconds": 633,
+      "end_seconds": 641,
+      "spoken_excerpt": "la evidencia necesaria para entender en qué momento la ejecución dejó de ser una interpretación razonable de la intención.\n\nAquí",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-006",
+      "section_id": "idea_C",
+      "start_seconds": 641,
+      "end_seconds": 649,
+      "spoken_excerpt": "está el giro intelectual real: no basta con que el sistema registre acciones. Registrar sin significado de intención convierte el",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-007",
+      "section_id": "idea_C",
+      "start_seconds": 649,
+      "end_seconds": 657,
+      "spoken_excerpt": "log en algo parecido a “ya quedó” en versión técnica: sirve para mirar después, no para gobernar mientras pasa.\n\nEn",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-008",
+      "section_id": "idea_C",
+      "start_seconds": 657,
+      "end_seconds": 665,
+      "spoken_excerpt": "dirección de mercado, Amazon presentó Seller Assistant como un sistema con memoria persistente y flujos que pueden vigilar condiciones comerciales",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-009",
+      "section_id": "idea_C",
+      "start_seconds": 665,
+      "end_seconds": 673,
+      "spoken_excerpt": "24/7, con opciones para recomendar o ejecutar con aprobación, y afirmando que cada acción queda registrada. Incluso si eso",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-010",
+      "section_id": "idea_C",
+      "start_seconds": 673,
+      "end_seconds": 681,
+      "spoken_excerpt": "tiene fines legítimos, para nuestra tesis el valor es conceptual: cuando permites operación continua, el registro y la atribución dejan",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-011",
+      "section_id": "idea_C",
+      "start_seconds": 681,
+      "end_seconds": 689,
+      "spoken_excerpt": "de ser burocracia; son el material para distinguir autonomía confiable de accidente repetible.\n\nPero también hay un límite importante: que",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-012",
+      "section_id": "idea_C",
+      "start_seconds": 689,
+      "end_seconds": 697,
+      "spoken_excerpt": "haya registro no garantiza que el registro sea suficiente para contestar la pregunta legal u organizacional de “quién fue responsable",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-013",
+      "section_id": "idea_C",
+      "start_seconds": 697,
+      "end_seconds": 705,
+      "spoken_excerpt": "por qué”. Para eso necesitas trazas que representen decisiones intermedias y puntos de escalamiento, como si el sistema tuviera “perillas",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-014",
+      "section_id": "idea_C",
+      "start_seconds": 705,
+      "end_seconds": 713,
+      "spoken_excerpt": "que permiten justificar continuidad o detenerla.\n\nNo es una copia del planificador de Apollo. Es la misma familia de problema",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-015",
+      "section_id": "idea_C",
+      "start_seconds": 713,
+      "end_seconds": 721,
+      "spoken_excerpt": "cuando delegas cadenas durante horas, el sistema debe diseñarse para proteger lo esencial y para que la organización pueda responsabilizar",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-016",
+      "section_id": "idea_C",
+      "start_seconds": 721,
+      "end_seconds": 729,
+      "spoken_excerpt": "decisiones intermedias, no sólo el resultado final. Si no, la autonomía útil se vuelve un fallo de gobernanza silencioso",
+      "queries": [
+        "Diagrama: identidad del agente → línea de auditoría de decisiones → botón de control reversible (cortar/rectificar) y ‘evidencia de intención’."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-001",
+      "section_id": "story_payoff",
+      "start_seconds": 729,
+      "end_seconds": 737,
+      "spoken_excerpt": "Vuelvo al mismo conflicto de Apollo: las alarmas por desbordamiento no se “resolvieron” simplemente con un check verde. Control de",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-002",
+      "section_id": "story_payoff",
+      "start_seconds": 737,
+      "end_seconds": 745,
+      "spoken_excerpt": "Misión evaluó esas alarmas y autorizó continuar el descenso. Y lo decisivo fue que, aun con sobrecarga, el software preservaba",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-003",
+      "section_id": "story_payoff",
+      "start_seconds": 745,
+      "end_seconds": 753,
+      "spoken_excerpt": "o reanudaba tareas esenciales de guiado y navegación mediante planificación por prioridades y reinicios controlados, dejando caer trabajo de menor",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-004",
+      "section_id": "story_payoff",
+      "start_seconds": 753,
+      "end_seconds": 761,
+      "spoken_excerpt": "prioridad cuando el margen se estrechaba. El desenlace documentado fue que el módulo lunar Eagle aterrizó con éxito.\n\n¿Responde esto",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-005",
+      "section_id": "story_payoff",
+      "start_seconds": 761,
+      "end_seconds": 769,
+      "spoken_excerpt": "directamente a nuestra pregunta sobre agentes modernos? Parcialmente: Apollo nos da una estructura de evidencia—alarmas relevantes, evaluación humana y",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-006",
+      "section_id": "story_payoff",
+      "start_seconds": 769,
+      "end_seconds": 777,
+      "spoken_excerpt": "preservación de lo esencial durante la ejecución—pero la analogía no prueba que “si ponemos prioridades” ya tendremos responsabilidad bien",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-007",
+      "section_id": "story_payoff",
+      "start_seconds": 777,
+      "end_seconds": 785,
+      "spoken_excerpt": "asignada hoy. En IA hay incertidumbre semántica, objetivos menos nítidos, y además hay implicaciones legales y organizacionales distintas.\n\nLo que",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-008",
+      "section_id": "story_payoff",
+      "start_seconds": 785,
+      "end_seconds": 793,
+      "spoken_excerpt": "sí queda firme es el criterio: una luz verde final sólo es evidencia si puedes reconstruir que hubo supervisión operacional",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-009",
+      "section_id": "story_payoff",
+      "start_seconds": 793,
+      "end_seconds": 801,
+      "spoken_excerpt": "durante la ejecución y que las decisiones de continuar o seguir fueron coherentes con límites y propósito. Si sólo ves",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-010",
+      "section_id": "story_payoff",
+      "start_seconds": 801,
+      "end_seconds": 808,
+      "spoken_excerpt": "el resultado, no tienes suficiente para atribuir responsabilidad donde importa—cuando el camino se estaba torciendo",
+      "queries": [
+        "Secuencia visual: alarmas 1201/1202 → evaluación humana de ‘continuar’ → preservación de tareas esenciales → aterrizaje exitoso (con anotación: evidencia ≠ sólo resultado)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-001",
+      "section_id": "cierre",
+      "start_seconds": 808,
+      "end_seconds": 816,
+      "spoken_excerpt": "Entonces, la pregunta que te dejo no es “¿pueden los agentes hacerlo?” sino “¿dónde vive la responsabilidad cuando el agente",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-002",
+      "section_id": "cierre",
+      "start_seconds": 816,
+      "end_seconds": 824,
+      "spoken_excerpt": "ya no está solo en texto, sino en una cadena de acciones durante horas?”.\n\nMi respuesta evolucionada: no puede vivir",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-003",
+      "section_id": "cierre",
+      "start_seconds": 824,
+      "end_seconds": 832,
+      "spoken_excerpt": "únicamente en el permiso inicial ni únicamente en el estado final. Tiene que vivir en el sistema de delegación: identidad",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-004",
+      "section_id": "cierre",
+      "start_seconds": 832,
+      "end_seconds": 840,
+      "spoken_excerpt": "y trazabilidad del actor no humano, auditoría de decisiones intermedias y controles reversibles que permitan intervenir cuando la ejecución se",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-005",
+      "section_id": "cierre",
+      "start_seconds": 840,
+      "end_seconds": 848,
+      "spoken_excerpt": "desvía.\n\nSi esta charla te ayudó a ver la diferencia entre un check y una evidencia operacional, sígueme—y si",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-006",
+      "section_id": "cierre",
+      "start_seconds": 848,
+      "end_seconds": 856,
+      "spoken_excerpt": "quieres que lo llevemos a un ejemplo tuyo, dime qué tarea delegas más hoy. Suscríbete y seguimos pensando en luces",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-007",
+      "section_id": "cierre",
+      "start_seconds": 856,
+      "end_seconds": 859,
+      "spoken_excerpt": "verdes que, de verdad, significan algo",
+      "queries": [
+        "Cierre visual: vuelve a aparecer el motivo de ‘luz verde’ pero ahora con una segunda capa de ‘línea de tiempo’ desplegable (concepto)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    }
+  ],
+  "policy": "Planning only; use repository acquisition/licensing/density gates before downloads."
+}

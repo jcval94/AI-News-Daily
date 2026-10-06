@@ -1,0 +1,35 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En Apollo 11, la tensión no se resolvió con una “luz verde” mágica: cuando aparecieron las alarmas 1201 y 1202 por desbordamiento, Control de Misión evaluó la situación y autorizó continuar. Eso importó porque el software, usando planificación por prioridades, no intentó cumplir todo indiscriminadamente: tras reinicios controlados, preservó o reanudó tareas esenciales de guiado y navegación, dejando caer trabajo de menor prioridad. El desenlace, documentado, es que el Eagle aterrizó con éxito el 20 de julio de 1969.\n\nLa analogía con agentes ayuda, pero no prueba que “poner prioridades” baste para seguridad hoy. Lo que sí marca la idea: una señal final sólo cuenta como evidencia si puedes reconstruir que hubo protección de lo esencial durante la ejecución y que las decisiones de continuación fueron revisables.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        4,
+        5,
+        1,
+        3
+      ],
+      "visual_queries": [
+        "Resumen visual: alarmas 1201/1202 → decisión humana de ‘continuar’ → reanudación de tareas esenciales → aterrizaje ‘sí’. Señalar que el check final requiere trazas del proceso."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, la pregunta que nos deja el episodio es incómoda y útil: cuando un agente vuelve con un “ya quedó”, ¿tenemos algo más que el resultado? La responsabilidad organizacional no debería terminar en el permiso inicial ni en el estado final; tiene que vivir en la supervisión operacional: trazabilidad de identidad, registros de decisiones intermedias y controles reversibles para cortar la cadena cuando el camino se sale de lo autorizado.\n\nSi te interesa esta manera de pensar—donde la noticia es evidencia y la responsabilidad es diseño—suscríbete y sigamos cuestionando esas luces verdes.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Cierre visual: la luz verde aparece, pero se abre un panel con línea de tiempo y ‘puntos de escalamiento’. Texto: ‘evidencia ≠ resultado’."
+      ]
+    }
+  ],
+  "seo_title": "Apollo 11 y agentes IA: la responsabilidad no termina en el ",
+  "seo_description": "Cómo el alunizaje del Apollo 11 muestra que una “luz verde” sólo es evidencia si durante la ejecución se preservan tareas esenciales con supervisión y registros",
+  "seo_keywords": [
+    "Apollo 11",
+    "alarmas 1201 y 1202",
+    "responsabilidad en IA",
+    "agentes autónomos en horas de ejecución"
+  ]
+}

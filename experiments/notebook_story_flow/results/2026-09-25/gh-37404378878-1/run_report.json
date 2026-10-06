@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "experiment": "notebook_story_flow",
+  "episode_date": "2026-09-25",
+  "publishable": false,
+  "status": "rejected_structure",
+  "notebook_sha256": "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16",
+  "started_at_utc": "2026-10-06T02:31:09.244664+00:00",
+  "model": "gpt-5.4-nano",
+  "max_logical_calls": 12,
+  "max_attempts_per_call": 3,
+  "words_per_minute": 150,
+  "experiment_code_sha": "8fbf089e2ffbbf3b8491e6aa1e0547887c97f28e",
+  "control_workflow_run_id": "",
+  "control_code_sha": "",
+  "news_snapshot_sha256": "aeb429ca1ecf7c6ff95886722ad98f8c52dc2fbff6be8830c37471cf5e09f910",
+  "profile_hashes": {
+    "voice": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+    "discourse": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375"
+  },
+  "script_sha256": "37b9ec6770ee728bbb8193c18d9866fb60642493fd6fc5fa4e10ec6568a6740b",
+  "word_count": 2133,
+  "estimated_duration_seconds": 859,
+  "opening_seconds": 165,
+  "first_current_evidence_seconds": 0,
+  "historical_payoff_seconds": 729,
+  "media_slot_count": 111,
+  "reason": "step9_epica: reserved historical outcome disclosed early; idea_C: reserved historical outcome disclosed early; opening must use setup claims only",
+  "finished_at_utc": "2026-10-06T02:32:12.124261+00:00",
+  "attempted_calls": 5,
+  "emitted_usage": {
+    "prompt_tokens": 73675,
+    "output_tokens": 10003,
+    "reasoning_tokens": 0,
+    "total_tokens": 83678
+  }
+}

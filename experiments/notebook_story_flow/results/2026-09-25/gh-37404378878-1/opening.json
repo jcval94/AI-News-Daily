@@ -1,0 +1,13 @@
+{
+  "text": "20 de julio de 1969: en el descenso lunar del Apollo 11, una parte del sistema de guiado empezó a decir, con números y alarmas, que estaba trabajando más de lo que podía digerir con calma. No es una metáfora: las alarmas 1201 y 1202 indicaron desbordamiento del Executive de la Apollo Guidance Computer, y en ese instante la misión no sólo “intentaba aterrizar”; estaba también intentando decidir qué tareas mantener cuando el propio plan empujaba por encima del margen.\n\nA ver, pensemos esto: el software no era un cerebro libre, era un conjunto de prioridades. Cuando el radar de encuentro pedía procesamiento adicional, el sistema añadía trabajo justo cuando ya venía acumulando carga. Y entonces aparece el corazón de la tensión: si el computador intenta hacer todo lo que “alguien le pidió”, puede dejar de ser útil para lo que importa. Las alarmas no prueban que el objetivo vaya a fallar, pero sí anuncian un riesgo operativo real: que la ejecución se acerque a sus límites.\n\nLo fascinante, desde esta distancia, es que el Executive no se quedó “atascado” de forma caótica; usaba planificación por prioridades. Tras reinicios controlados, preservaba o reanudaba tareas esenciales de guiado y navegación. Dicho en sencillo: no todo lo solicitado era igual de crítico en ese momento, y el sistema estaba diseñado para soltar lo menos esencial antes de perder lo esencial.\n\nPor eso esta historia no es sólo sobre cohetes y trayectorias. Es sobre evidencia: el tipo de señal que te deja creer que el camino fue correcto. Una luz verde final puede sonar como “ya quedó”, pero también puede ser sólo “terminó”. Y la pregunta que me interesa—y que aquí queda pendiente, justo en el borde—es cómo se distingue entre un sistema que concluye su objetivo y uno que lo hizo respetando los límites que su propia lógica reconoce: qué registros, qué trazas, qué diseño hacen que la decisión humana confíe en la “evidencia” y no sólo en el “resultado” mientras el descenso todavía está en juego.",
+  "memory_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "visual_queries": [
+    "Durante el descenso lunar del Apollo 11, pantalla o registro de alarmas 1201 y 1202 en el panel del computador de guiado (estética de la época).",
+    "Diagrama conceptual del Apollo Guidance Computer: capa Executive, planificación por prioridades y reinicios controlados (representación visual no literal).",
+    "Ilustración del radar de encuentro y su flujo de datos hacia el computador durante la fase de descenso (esquema general)."
+  ]
+}
