@@ -1,0 +1,29 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 6.0,
+  "invented_details": [
+    "En el borrador se usan frases del tipo “Para mí, eso siempre ha sido…”, “me parece tan inquietante”, “Ojo con la moraleja” y “Mi lectura, como hipótesis editorial” en un contexto que incluye afirmaciones factuales; aunque son opiniones personales, el texto las entrelaza sin separar claramente lo verificable de la interpretación, lo que dificulta auditoría estricta.",
+    "Se presenta explícitamente como hecho contextual (“En ARPANET… el 27 de octubre de 1980 la red quedó prácticamente inutilizable…”, “según el RFC 789…”, “el protocolo… flooding…”, “reiniciar nodos… no servía…”, etc.). Estas afirmaciones parecen alineadas con los verified_claims del RFC, pero el borrador no enlaza ni cita en el cuerpo (solo se asume por el sistema). Si el contrato exige verificación por referencia explícita, falta ese anclaje.",
+    "En la sección de agentes: “Evidencia actual…” y el resto afirman “según Reuters y ABC…” y “el material también indica…”. El contenido provisto como contexto dice que esa atribución está contenida en el summary/ledger, pero el borrador no discrimina qué parte viene de Reuters/ABC vs. qué parte es afirmación del gobierno vs. qué parte es afirmación de OpenAI; esto puede inducir a lectura de precisión no sustentada en una cita integrada."
+  ],
+  "source_issues": [
+    "La sección histórica no incluye una referencia textual/cita dentro del guion (p.ej., RFC 789). La auditoría no puede comprobar “correspondencia a prosa real” si el texto depende de metadatos fuera del borrador.",
+    "Las fuentes de actualidad se mencionan de forma agregada (“Reuters y ABC reportaron…”, “Microsoft anunció…”, “Amazon…”) sin evidenciar correspondencia literal con el material base en cada afirmación (p.ej., no se indican elementos concretos del anuncio/producto ni la formulación exacta de “bloquear en tiempo real”).",
+    "Hay afirmaciones causales generales en torno a “seguridad no se juega…” y “esto se traduce a agentes así…” que son razonamiento/interpretación; no están marcadas como no verificables. No son “falsas” necesariamente, pero sí requieren separación explícita entre hecho y conclusión."
+  ],
+  "unsupported_claims": [
+    "“En ese día, el disparador inmediato se atribuyó a un fallo de hardware que produjo una secuencia defectuosa de paquetes de control de red.” (requiere cita/ubicación explícita en el borrador; aunque coincide con verified_claims del RFC, el guion no lo sustenta con referencia dentro del texto).",
+    "“Según el RFC 789… bits descartados corrompieron números de secuencia…” (misma observación: falta anclaje/cita en el borrador).",
+    "“Y en ese contexto… el proceso de enrutamiento de alta prioridad consumió recursos en exceso y perjudicó a otros procesos.” (misma observación: falta cita explícita).",
+    "“OpenAI notificó… meses después…” y “Australia abrió una investigación más amplia…” (coinciden con el summary del item; pero el guion no indica si proviene exactamente de Reuters/ABC ni incluye el detalle verificable).",
+    "Afirmaciones de producto de Microsoft/Amazon (“bloquear en tiempo real…”, “cada acción queda registrada”, “más del 90%… aceptan…”) no están verificadas en el texto con citas concretas; además, algunas métricas del item de Amazon están marcadas como “reportadas por la empresa” en el contexto, pero el guion no preserva esa cautela en el mismo nivel."
+  ],
+  "repair_instructions": [
+    "Añade anclaje explícito para el bloque histórico: insertar una referencia visible en el texto del guion (p.ej., “RFC 789 (ARPANET, 1980)” o similar) al menos una vez en el párrafo donde se mencionan disparador, flooding, reinicios y consumo de recursos. Sin esto, la auditoría no puede validar la correspondencia prosa/afirmación.",
+    "Separa visual/gramaticalmente “hechos documentados” vs “interpretación/hypothesis”. Por ejemplo: etiqueta claramente frases del tipo “se traduce a agentes así”, “la moraleja”, “mi lectura” y “hipótesis editorial” como no verificables, manteniendo enunciados fácticos solo donde haya respaldo documental inmediato.",
+    "Para actualidad: donde el borrador dice “según Reuters y ABC…” y “según el gobierno…”, conserva el nivel de incertidumbre del ledger: evita sonar a determinación legal/alcance completo. Si no se menciona el “alcance no determinado públicamente”, añade una frase explícita tipo “con alcance y responsabilidad legal aún no determinados públicamente (según lo reportado)”.",
+    "En el apartado Amazon: conserva la cautela del contexto (“afirmaciones de la empresa; no equivalen a evaluación independiente”) al menos cuando cites adopción/aceptación. Si no vas a incluirla, elimina esas métricas del guion o decláralas como “según Amazon”.",
+    "Reduce o elimina cualquier formulación que implique causalidad fuerte no documentada (“Esto se traduce…”, “seguridad no se juega…”) y reemplázala por un enunciado condicional: “podría” / “sirve como argumento” / “como hipótesis de diseño”. Esto baja el riesgo factual sin tocar el mensaje principal."
+  ]
+}

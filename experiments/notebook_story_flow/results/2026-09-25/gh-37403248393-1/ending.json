@@ -1,0 +1,43 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En ARPANET no hubo “intención” que castigar: un fallo de hardware corrompió secuencias de paquetes de control y el mecanismo de estabilización terminó propagando versiones incompatibles. El sistema no se arregló con reiniciar partes: el estado recontaminado seguía volviendo, y el plano de control acabó consumiendo recursos hasta inutilizar la red durante horas.\n\nEso se traduce a agentes así: el resultado puede verse “correcto” (una luz verde), pero si no puedes reconstruir la cadena de ejecución —qué actor no humano hizo qué, cuándo cambió el plan y qué controles existieron en el camino— no hay forma sólida de adjudicar responsabilidad ni de saber dónde falló la contención.\n\nOjo con la analogía: ARPANET dependía de protocolos y hardware específicos; no prueba el mismo mecanismo en agentes de IA modernos, pero sí subraya dónde buscar evidencia real: en la ejecución, no sólo en el final.",
+      "evidence_ids": [
+        "medicare-access-boundary"
+      ],
+      "memory_claim_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "visual_queries": [
+        "Diagrama: “intención” → “ejecución” con flechas rojas durante pasos intermedios; al final, una luz verde que no explica el recorrido."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "La idea que se nos queda es incómoda: la responsabilidad no “aparece” cuando el incidente ya pasó; se construye en la gobernanza del recorrido. Permisos estáticos y promesas (“yo sólo buscaba estadísticas”) no sustituyen trazabilidad fina ni reversibilidad a tiempo. Cuando delegamos vigilancia y ejecución durante horas, necesitamos saber qué identidad operativa actuó, qué decisiones persistieron y qué frenos existían antes del daño.\n\nSi te interesa este tipo de pensamiento—dónde empieza y termina la rendición de cuentas en sistemas autónomos—suscríbete y sigamos la conversación.",
+      "evidence_ids": [
+        "agent-identity-controls",
+        "medicare-access-boundary",
+        "continuous-seller-delegation"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "“¿Quién comprobó esto?” como rótulo final sobre un registro de auditoría que no muestra checkpoints."
+      ]
+    }
+  ],
+  "seo_title": "Responsabilidad en agentes: la ejecución importa más que la ",
+  "seo_description": "Cómo pensar la responsabilidad cuando un agente actúa durante horas: intención ≠ ejecución, la trazabilidad debe cubrir la cadena de acciones y deben existir fr",
+  "seo_keywords": [
+    "agentes de IA",
+    "responsabilidad",
+    "trazabilidad",
+    "gobernanza de la ejecución"
+  ]
+}

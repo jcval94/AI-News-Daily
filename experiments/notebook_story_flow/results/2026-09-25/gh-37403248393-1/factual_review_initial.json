@@ -1,0 +1,30 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 7.4,
+  "invented_details": [
+    "En el borrador se afirma: “El RFC describe una reconstrucción técnica … y reconoce que ciertas posibilidades de corrupción no podían distinguirse con certeza absoluta.” Esto no está respaldado por el contenido de verified_claims entregado para ARPANET (solo incluye que haya incertidumbres del RFC, pero no esa formulación concreta).",
+    "En varias partes se presenta como afirmación general causal/funcional: “la corrupción hace que esa propagación no converja: se parece más a un flooding que a una corrección” y “el plano de control consume recursos … y cuanto más se difunde … más se recontamina”. La idea es coherente con el resumen, pero el borrador formula implicaciones dinámicas más allá de las verified_claims citadas (donde se habla de flooding y de consumo/impacto, no de ‘no convergencia’ como tesis explícita).",
+    "El guion introduce formulaciones y ejemplos no documentados como hechos: “Mucha delegación 24/7 reduce la necesidad de vigilancia humana constante” y “si muchas decisiones … la plataforma define reglas e incentivos”. No son afirmaciones verificadas en las fuentes provistas; son extrapolaciones del autor/editorial.",
+    "Se afirma que en Medicare ‘según el primer ministro, no se accedió a datos personales de pacientes’ (esto sí está en supported_facts), pero el guion también sugiere que el material disponible no detalla prompt/controles/decisiones intermedias “como hecho”. Esa parte depende de lo que Reuters/ABC publicaron; el dataset indica que no se detalla públicamente, pero el borrador no lo califica como incertidumbre en cada lugar."
+  ],
+  "source_issues": [
+    "Para los tramos sobre noticias (Medicare/OpenAI, Microsoft Security, Amazon Seller Assistant) el guion usa supported_facts como evidencia, pero en varios enunciados el texto pasa de ‘se informó/anunció’ a conclusiones operativas causales sin marcar límite (p. ej., eficacia real de controles de Microsoft, tasas/impacto de Amazon).",
+    "Para ARPANET se citan verified_claims, pero el texto del borrador añade matices (p. ej., ‘no converja’, ‘reconoce con certeza absoluta/ no podía distinguirse’) que no aparecen como claims verificados en el catálogo entregado."
+  ],
+  "unsupported_claims": [
+    "“lo crítico es si existen controles en la cadena de ejecución … que permitan revertir o bloquear antes del daño irrevocable” (hipótesis no probada con las noticias provistas; solo es propuesta).",
+    "“Mi lectura es doble—… - Sí … - Pero …” (opinión/interpretación editorial; no está ‘soportada’ como hecho por fuentes).",
+    "“Mi lectura … crea un tipo nuevo de superficie de riesgo” (interpretación; no evidencia empírica).",
+    "“Eso se traduce a agentes así” y “no hay forma sólida de adjudicar responsabilidad” (afirmación normativa/retórica; no demostrada con datos).",
+    "Cualquier afirmación de que Microsoft ‘evitaría’ incidentes o que sus funciones ‘tienen’ cierta cobertura/cobranza: no se afirma así literalmente, pero el texto sugiere aplicabilidad más allá de anuncio (requiere cautela)."
+  ],
+  "repair_instructions": [
+    "Cambiar formulaciones absolutas en ARPANET hacia correspondencia estricta con verified_claims. Por ejemplo: sustituir ‘no converja’ por ‘se propagaron actualizaciones por flooding y el proceso de control de alta prioridad consumió recursos’, sin afirmar convergencia/no-convergencia salvo que esté en verified_claims.",
+    "Eliminar o reescribir la frase sobre “reconoce … con certeza absoluta” para que refleje únicamente la incertidumbre indicada en your provided uncertainties del selected_memory (sin añadir redacción no verificada).",
+    "En las secciones de noticias (Medicare/Microsoft/Amazon), separar claramente: (a) hechos reportados/anunciados, (b) inferencias del autor. Donde el borrador pasa a causalidad o eficacia (‘revertir antes del daño’, ‘reduce la necesidad de vigilancia’, ‘crea superficie de riesgo’), agregar un marcador explícito de hipótesis/interpretación (p. ej., “como hipótesis”, “podría”, “no está demostrado con los datos disponibles”).",
+    "En los tramos donde se menciona que no se detallan prompt/entorno/decisiones intermedias, mantenerlo como incertidumbre: “no se hizo público” o “no se incluye en la información disponible reportada”, evitando que suene como conocimiento completo y cerrado.",
+    "Ajustar el claim de evidencia para que cada referencia a ‘supported_facts’ corresponda a una afirmación explícitamente ‘según X informó/anunció’. Evitar frases que puedan leerse como confirmación adicional (p. ej., que la seguridad de Microsoft funcionará en incidentes reales).",
+    "Reducir el riesgo eliminando promesas retóricas tipo “la luz verde es un chiste cruel”: mantener la metáfora, pero como opinión, no como conclusión factual sobre controles o procesos reales del mundo de esas empresas o del incidente."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "text": "En ARPANET, Estados Unidos, el 27 de octubre de 1980 la red quedó prácticamente inutilizable durante varias horas. Para mí, eso siempre ha sido una de las mejores lecciones: no necesitamos un villano “mágico” para romper un sistema grande; basta con que una parte falle y que el resto, intentando corregir, se vuelva parte del problema.\n\nImagina el plano de control como el nervio que decide por dónde deberían ir los mensajes. No es el flujo de datos principal el que se vuelve caótico, sino la manera en que las máquinas coordinan sus decisiones. En ese día, el disparador inmediato se atribuyó a un fallo de hardware que dejó una secuencia defectuosa de paquetes de control. Es decir: no fue una “mala intención”, fue un error mecánico que se coló en el mecanismo que instruye al resto.\n\nY aquí está el giro que me parece tan humano, aunque ocurra entre cables: cuando llegan secuencias corruptas, el sistema puede terminar perdiendo la noción de qué versión de qué decisión tiene que aplicar. Según el RFC 789, bits descartados corrompieron números de secuencia de una actualización de enrutamiento. Con esos números mal interpretados, versiones incompatibles de la misma actualización pudieron coexistir.\n\nA partir de ahí, la estabilización se vuelve una especie de carrera sin línea de meta. La red intenta “arreglar” su estado propagando más actualizaciones de control, pero la corrupción hace que esa propagación no converja: se parece más a un flooding que a una corrección. El plano de control consume recursos en vez de calmarlos, y cuanto más se difunde la actualización, más se recontamina el estado.\n\nNo estamos hablando de un apretón de reinicio que corta el bucle; la lógica de control distribuido puede seguir empujando el sistema hacia la inutilizabilidad mientras las piezas sigan creyendo —cada una por su cuenta— que tienen la respuesta más reciente.\n\nAhora, antes de celebrar cualquier “sonó a que funcionó”, me queda una pregunta incómoda y concreta: ¿qué “prueba” o evidencia interna necesitaríamos para afirmar que un agente no sólo hizo lo que le pedimos, sino que no tomó caminos no autorizados mientras la organización estaba fuera de la conversación?",
+  "memory_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "visual_queries": [
+    "ARPA NET en blanco y negro, mapa conceptual de nodos y enlaces en la década de 1980",
+    "diagrama simple de 'plano de control' versus 'plano de datos' con flechas de propagación (flooding)",
+    "ilustración de paquetes de control con 'secuencias' numeradas y una corrupción representada como dígitos tachados"
+  ]
+}
