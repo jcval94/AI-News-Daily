@@ -1,0 +1,36 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "Al final, el conflicto abierto del Apollo 11 no se resolvió con “hacer todo pase lo que pase”, sino con una decisión bajo sobrecarga: las alarmas 1201/1202 señalaron desbordamiento, el sistema conservó o reanudó tareas esenciales de guiado y navegación usando planificación por prioridades, y Control de Misión evaluó la situación y autorizó continuar. El resultado documentado es claro: el módulo lunar Eagle aterrizó con éxito el 20 de julio de 1969. \n\nAhora el puente no es automático: en agentes modernos no existe un Ejecutivo determinista ni una trayectoria física tan definida. Pero la estructura sí sirve: cuando no puedes ver cada paso, necesitas “luz verde” basada en condiciones gobernadas y verificables, no solo en el resultado final o en la confianza en que el agente interpretó bien.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        4,
+        5,
+        1,
+        2,
+        3
+      ],
+      "visual_queries": [
+        "Panel de control en dos capas: arriba, alarmas 1201/1202; abajo, ‘luz verde: continuar’ con un recuadro de ‘tareas esenciales preservadas’"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Si lo llevamos a agentes, la lección no es “desconfía de la automatización”, sino “haz que la delegación sea gobernable”. La responsabilidad se desplaza: de quién activó la tarea a qué límites, trazabilidad y reversibilidad gobernaron la ejecución cuando el sistema estaba saturado o interpretando obstáculos. \n\nLa pregunta que queda es práctica: ¿tu organización podría reconstruir, con evidencia mínima, qué se conservó y qué se sacrificó cuando la “luz verde” aparece bajo ambigüedad? \n\nSi te gustó esta forma de pensar, suscríbete para seguir explorando cómo usamos agentes sin perder el criterio humano.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "La misma ‘luz verde’, pero ahora con un sello: ‘auditable’ y ‘reversible’"
+      ]
+    }
+  ],
+  "seo_title": "Responsabilidad en agentes: trazabilidad, límites y la “luz”",
+  "seo_description": "Qué enseña el caso del Apollo 11 sobre priorizar y preservar tareas esenciales bajo sobrecarga, y cómo trasladarlo a la seguridad y gobernanza de agentes autón/",
+  "seo_keywords": [
+    "agentes de IA",
+    "seguridad de agentes",
+    "responsabilidad",
+    "trazabilidad de decisiones-particulares marcadas por sujeción semántica y límites operativos"
+  ]
+}

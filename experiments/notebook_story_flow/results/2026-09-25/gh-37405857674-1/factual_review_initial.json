@@ -1,0 +1,32 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 7.2,
+  "invented_details": [
+    "step9_epica: “20 de julio de 1969, en el descenso lunar del Apollo 11: en el instante en que la luz del radar y la guía automática tienen que decidir ‘ahora’ contra ‘después’” — el guion introduce una formulación sensorial/escénica (“luz del radar”, “decidir ‘ahora’ contra ‘después’”) que no está respaldada por los verified_claims disponibles (solo se listan alarmas 1201/1202, sobrecarga, radar de encuentro y decisiones/autorización).",
+    "hook_problema: “un agente puede seguir ‘trabajando’ —de buena fe o por interpretación— y convertir esa continuación en algo que nadie autorizó explícitamente.” — se presenta como posible mecanismo, pero el guion lo enuncia de forma general con implicación factual (autorización explícita no observada en los casos citados). No hay respaldo directo en las noticias ni en los verified_claims de que el incidente concreto ocurra “por interpretación” ni que “nadie autorizó explícitamente” en los términos que el guion sugiere.",
+    "idea_A: “Muchos controles tradicionales se parecen más a una lista de verificación previa” — generalización no respaldada por datos en las fuentes/news ni por claims verificadas.",
+    "idea_B_explica: “Microsoft anunció funciones… además de ampliar capacidades de Purview y Entra…” está respaldado; pero el guion además afirma “Si eso no queda registrado de forma reconstruible, entonces lo único que puedes auditar al final…” como afirmación normativa con premisa factual implícita sobre capacidades reales de auditoría; no está respaldado con evidencia del caso o del producto."
+  ],
+  "source_issues": [
+    "Paso de trazabilidad: varios enunciados del guion no enlazan a evidence_ids (por ejemplo, la mayor parte de la prosa de “interpretación”, “luz verde” y “tensión moral/práctica”). Esto no es un problema por sí mismo, pero aumenta el riesgo de que introduzcan premisas no verificadas.",
+    "Histórico: el guion afirma/describe que el Executive “preserva o reanuda lo esencial de guiado y navegación” y que “Control de Misión evaluó… y autorizó continuar”. Estas ideas están parcialmente alineadas con los verified_claims, pero el guion agrega detalles de escena (“luz del radar”, “ahora contra después”) que no están soportados.",
+    "Auditoría de evidencias: en el guion, evidence_ids solo aparecen en 3 bloques (“dato_1”, “dato_2”, y referencia conceptual para el caso Apollo vía memory_claim_indices). Los demás statements no reclaman evidencia concreta, pero también no se marcan como hipótesis explícita, aumentando el riesgo de sobreafirmación."
+  ],
+  "unsupported_claims": [
+    "step9_epica: “no hay margen para ‘probar’” — afirmación dramática sobre margen operativo; no respaldada por verified_claims.",
+    "step9_epica: “la luz del radar y la guía automática tienen que decidir ‘ahora’ contra ‘después’” — no respaldada por claims verificadas.",
+    "hook_cita: “Decidir qué cuenta como estado suficiente para continuar cuando el sistema está saturado…” — formulación causal/funcional; no respaldada con evidencia documental específica del caso ni de incidentes de agentes citados (se presenta como lección directa).",
+    "idea_C: “Necesitas… reversibilidad” y lista de requisitos (“si una cadena se desvía, ¿se puede detener o revertir…”) — es un argumento prescriptivo, pero el guion lo presenta como si fuera la dirección necesaria para la responsabilidad sin distinguir con claridad lo normativo vs lo evidenciable.",
+    "story_payoff: “El puente no es automático: en agentes modernos no existe un Ejecutivo determinista…” — contraste general no respaldado por datos; además “no existe” es una afirmación categórica.",
+    "cierre: “La responsabilidad se desplaza: de quién activó la tarea a qué límites…” — afirmación conceptual presentada como conclusión firme; no hay respaldo empírico."
+  ],
+  "repair_instructions": [
+    "Separa de forma explícita (y repetible) lo verificable de lo ilustrativo: donde el guion usa imágenes sensoriales o dramatización (“luz del radar”, “ahora vs después”, “semáforo con tensión moral”), conviértelo en “analogía/imaginación” o elimina esos elementos. Mantén solo lo que está en verified_claims: alarmas 1201/1202 por sobrecarga, contribución del radar de encuentro, planificación por prioridades con reinicios controlados, y autorización humana de Control de Misión; y el aterrizaje exitoso el 20 de julio de 1969.",
+    "Marca como hipótesis/argumento normativo cualquier frase que sostenga premisas no verificadas (p. ej., “si no puedes ver cada paso… entonces evidencia mínima…”) usando lenguaje de hipótesis (“esto sugiere”, “como diseño/auditoría posible”) y evita presentarlo como hecho causal universal.",
+    "Reescribe hook_problema para no implicar hechos no respaldados sobre “nadie autorizó explícitamente” o “de buena fe”: conserva la idea general de riesgo, pero como “puede” y sin afirmar condiciones fácticas sobre autorización en los casos citados.",
+    "En secciones donde cites anuncios (Microsoft/Amazon/Reuters), evita extrapolar a “lo único que puedes auditar” o “asegura” a menos que el material citado lo diga. Mantén el alcance: “la noticia/anuncio afirma X; el guion infiere que esto podría…”, sin afirmar capacidad real garantizada.",
+    "Para approved: si quieres elevar histórico, reduce la analización a claims verificables y elimina teatralidad. Mantén la analogía limitada a estructura (prioridades y degradación elegante) y recuerda explícitamente la analogy_limits ya declarada en los datos (pero sin necesidad de repetirla literal si ya se aplica).",
+    "Asegura que cada afirmación factual tenga respaldo: usa evidence_ids solo donde ya existen, y si no hay evidence_ids, trátalo como interpretación/hipótesis explícita o elimina el enunciado."
+  ]
+}

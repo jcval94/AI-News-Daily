@@ -1,0 +1,93 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 19.429,
+    "usage": {
+      "prompt_tokens": 22919,
+      "output_tokens": 2438,
+      "total_tokens": 25357
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 3.777,
+    "usage": {
+      "prompt_tokens": 2609,
+      "output_tokens": 555,
+      "total_tokens": 3164
+    }
+  },
+  {
+    "step": "development",
+    "agent": "notebook_development",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 14.464,
+    "usage": {
+      "prompt_tokens": 13525,
+      "output_tokens": 2453,
+      "total_tokens": 15978
+    }
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 4.123,
+    "usage": {
+      "prompt_tokens": 16857,
+      "output_tokens": 546,
+      "total_tokens": 17403
+    }
+  },
+  {
+    "step": "factual_review",
+    "agent": "notebook_factual_review",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 7.174,
+    "usage": {
+      "prompt_tokens": 11403,
+      "output_tokens": 1329,
+      "total_tokens": 12732
+    }
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 20.296,
+    "usage": {
+      "prompt_tokens": 13064,
+      "output_tokens": 3489,
+      "total_tokens": 16553
+    }
+  },
+  {
+    "step": "factual_recheck",
+    "agent": "notebook_factual_recheck",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 7.132,
+    "usage": {
+      "prompt_tokens": 11290,
+      "output_tokens": 1158,
+      "total_tokens": 12448
+    }
+  }
+]

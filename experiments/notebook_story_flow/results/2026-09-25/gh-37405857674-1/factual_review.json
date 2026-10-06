@@ -1,0 +1,27 @@
+{
+  "approved": false,
+  "risk": "medium",
+  "historical_grounding": 6.8,
+  "invented_details": [
+    "step9_epica: “20 de julio de 1969: en el descenso lunar del Apollo 11, el Apollo Guidance Computer entra en un momento…” — El texto no aporta el nivel de precisión sobre *en qué instante* o “momento” exacto ocurre el conjunto de eventos; el claim verificado disponible está a nivel de ocurrencia de alarmas y sobrecarga durante el descenso, pero el guion lo enmarca como una escena temporal detallada sin ese respaldo.",
+    "step9_epica: “Y lo primero que me pregunto… es esto: cuando un sistema no puede procesar todo lo que recibe ‘a la vez’…” — Presenta una formulación causal/operativa (“cuando… a la vez”) como si describiera la razón primaria del comportamiento; el material verificado habla de desbordamiento/sobrecarga y manejo por prioridades, no de esa generalización expresada como “lo primero” preguntado.",
+    "idea_A: “cuando el sistema ya no puede procesar todo, … reglas de operación verificables que el sistema respete incluso cuando el entorno se pone duro” — Traslada a “el sistema” (Apollo en la comparación) un requerimiento de “reglas de operación verificables” sin que el guion conecte explícitamente con los claims sobre planificación por prioridades y reinicios controlados; es más una extrapolación normativa que un hecho histórico."
+  ],
+  "source_issues": [
+    "El guion incluye explícitamente referencias a memoria (Ref: medicare-access-boundary; Ref: continuous-seller-delegation; Ref: agent-identity-controls), pero en varios lugares no hay evidence_ids declarados en el objeto por frase (p. ej., “datos_1” y “dato_2” están bien, pero “story_payoff” y varios argumentos no listan evidencia y dependen de inferencias enlazadas a claims de memoria). Esto no prueba inexactitud, pero dificulta auditoría trazable por enunciado.",
+    "En “dato_1”, la frase “Reuters/ABC reportaron que OpenAI notificó meses después” está contenida en supported_facts de la memoria; OK. No obstante, el guion agrupa el resto con “Ref: medicare-access-boundary” sin separar qué sub-aseveración corresponde a qué supported_fact.",
+    "En “story_payoff”, los “evidence_ids” está vacío: el párrafo reitera varios hechos de Apollo (alarmas, prioridades, autorización y aterrizaje) que sí están en claim_catalog de la memoria. Falta trazabilidad a nivel de enunciado en el propio contrato (aunque el contenido parece consistente con claims verificados)."
+  ],
+  "unsupported_claims": [
+    "step9_epica: “Ahora bien: si el control humano está en la ecuación, la historia también incluye la evaluación desde Control de Misión.” — El claim verificado incluye “Control de Misión evaluó las alarmas y autorizó continuar”. La frase es compatible, pero omite el vínculo explícito con “evaluó alarmas y autorizó continuar”; como redacción general, puede considerarse no suficientemente acotada a lo verificado.",
+    "hook_problema / hook_cita / idea_A / idea_B: “la organización no está mirando cada decisión intermedia” / “auditoría llega tarde” / “necesitas poder reconstruir… decisiones intermedias” — Son afirmaciones generales sobre necesidad de gobernanza en agentes; no están respaldadas por los supported_facts de las noticias ni por los claims históricos. Son interpretación/argumento, no “hecho”. Deben mantenerse como hipótesis/interpretación, no como premisa factual.",
+    "idea_C: “Luz verde no puede ser una metáfora. Debe existir como mecanismo: autorización basada en evidencia suficiente…” — Presenta una exigencia normativa (“debe existir”) que no es un hecho derivado del caso Apollo ni de las noticias; debe marcarse inequívocamente como recomendación/tesis del narrador (no como descripción de lo que ocurrió)."
+  ],
+  "repair_instructions": [
+    "Acota temporalmente el Apollo: reemplaza formulaciones escénicas como “entra en un momento” por “durante el descenso aparecieron alarmas 1201/1202” para evitar precisión temporal no respaldada.",
+    "En los tramos argumentativos (hook_problema, idea_B_explica, idea_B_desafio, idea_C, hook_cita), marca explícitamente que son tesis/recomendaciones (p. ej., “como criterio para gobernanza”, “en esta lectura”, “mi argumento”) y evita presentarlo como consecuencia factual directa de los casos.",
+    "Resta trazabilidad por enunciado: en los párrafos que re-declaran hechos de Apollo (p. ej., story_payoff) agrega evidencia_ids o al menos referencia clara a los memory_claim_indices pertinentes (1,2,3,4,5) según corresponda, para que la auditoría sea determinista.",
+    "Ajusta redacción de “Control de Misión” para que coincida estrictamente con el supported_fact: menciona “evaluó las alarmas y autorizó continuar” en vez de generalizar “incluye evaluación”.",
+    "Mantén la analogía dentro de límites: cuando extrapoles “reglas de operación verificables” o “luz verde como mecanismo”, deja inequívoco que es una traslación normativa desde la analogía, no un hecho del sistema Apollo ni una deducción demostrada para agentes actuales."
+  ]
+}

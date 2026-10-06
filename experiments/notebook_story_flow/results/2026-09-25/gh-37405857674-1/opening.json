@@ -1,0 +1,13 @@
+{
+  "text": "20 de julio de 1969, en el descenso lunar del Apollo 11: en el instante en que la luz del radar y la guía automática tienen que decidir “ahora” contra “después”, el sistema empieza a hablar en forma de alarmas.\n\nYo no estuve ahí; lo importante es que imagines el momento con honestidad: no hay margen para “probar”. En ese descenso, la computadora de a bordo recibe el trabajo de mantener la trayectoria—pero también, por las interacciones con el encuentro y el radar, le llegan solicitudes adicionales de procesamiento. Y entonces aparecen las alarmas 1201 y 1202, no como un truco narrativo, sino como la señal de que el Ejecutivo de la Guidance Computer está entrando en desbordamiento.\n\nLo fascinante es que la pregunta no es solo si “funcionó”. La pregunta real, la que nos sirve para pensar sobre sistemas que toman decisiones, es cómo se comporta una organización cuando el mundo exige más de lo que el sistema puede procesar todo a la vez.\n\nMira el patrón: si tú intentas cumplir cada instrucción con el mismo peso, el sistema se ahoga. Pero aquí hay un punto clave: el Executive usa planificación por prioridades. Eso significa que, ante el caos, no “se rompe y ya”; reordena el trabajo, y después de reinicios controlados, preserva o reanuda lo esencial de guiado y navegación.\n\nEn términos humanos: no es “hacer todo”. Es decidir qué no se negocia cuando el resto está llegando tarde.\n\nY aun así queda la tensión moral y práctica: la misión enfrenta un semáforo interno—una luz verde que permite seguir—cuando el estado es ambiguo para quien coordina desde afuera. Si la organización no puede mirar cada paso del agente, ¿qué evidencia mínima debería exigir para decidir cuándo “continuar” era seguro y cuándo era una luz verde basada en una lectura incompleta de la ejecución?\n\nLas alarmas ya están ahí; la decisión pendiente convierte ese dato en una apuesta con consecuencias físicas inmediatas, y el margen para equivocarse se vuelve cada vez más pequeño.",
+  "memory_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "visual_queries": [
+    "Vista del módulo lunar descendiendo sobre la superficie de la Luna con telemetría en pantalla (sin nombres ni cifras adicionales).",
+    "Diagrama conceptual del computador de a bordo: entrada de solicitudes, priorización, y selección de tareas esenciales vs. tareas diferibles.",
+    "Pantalla abstracta con alertas tipo ‘alarmas’ y un indicador de prioridad/planificador (sin reproducir textos no provistos)."
+  ]
+}
