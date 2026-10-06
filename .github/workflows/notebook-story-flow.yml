@@ -1,0 +1,161 @@
+name: Notebook Story Flow Experiment
+
+on:
+  workflow_run:
+    workflows: ["Build AI News Video Kit"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Episode date. Empty replays the latest approved episode."
+        type: string
+        required: false
+      source_mode:
+        description: "Source window for a manual date"
+        type: choice
+        default: scheduled_window
+        options: [scheduled_window, recent_window]
+      dry_run:
+        description: "Prepare evidence and prompts without calling models"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - "experiments/notebook_story_flow/**"
+      - "!experiments/notebook_story_flow/results/**"
+      - ".github/workflows/notebook-story-flow.yml"
+  pull_request:
+    paths:
+      - "experiments/notebook_story_flow/**"
+      - "!experiments/notebook_story_flow/results/**"
+      - ".github/workflows/notebook-story-flow.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: notebook-story-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  deterministic-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+      - run: python -m compileall experiments/notebook_story_flow
+      - run: python -m unittest discover -s experiments/notebook_story_flow -p 'test_*.py' -v
+
+  replicate:
+    needs: deterministic-contracts
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'workflow_run' ||
+       (github.event.workflow_run.head_branch == 'main' &&
+        github.event.workflow_run.head_repository.full_name == github.repository &&
+        (github.event.workflow_run.event == 'schedule' ||
+         github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      # Execute trusted default-branch code, never code downloaded from an artifact.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -c requirements.lock .
+
+      - name: Download the exact production attempt
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+          pattern: ai-news-run-*-${{ github.event.workflow_run.id }}
+          merge-multiple: true
+          path: /tmp/notebook-production-input
+
+      - name: Replicate the notebook flow
+        id: experiment
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          AGENT_MAX_ATTEMPTS: "3"
+          AGENT_RETRY_BASE_SECONDS: "2.0"
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_TARGET_DATE: ${{ inputs.target_date }}
+          MANUAL_SOURCE_MODE: ${{ inputs.source_mode }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          CONTROL_RUN_ID: ${{ github.event.workflow_run.id }}
+          CONTROL_SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARGS=(--run-id "gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            ARGS+=(--production-artifact /tmp/notebook-production-input)
+          elif [ -n "$MANUAL_TARGET_DATE" ]; then
+            ARGS+=(--target-date "$MANUAL_TARGET_DATE" --source-mode "${MANUAL_SOURCE_MODE:-scheduled_window}")
+          else
+            ARGS+=(--latest-approved)
+          fi
+          if [ "${DRY_RUN:-false}" = "true" ]; then
+            ARGS+=(--dry-run)
+          fi
+          export EXPERIMENT_CODE_SHA="$(git rev-parse HEAD)"
+          python -m experiments.notebook_story_flow.run "${ARGS[@]}"
+
+      - name: Preserve experiment artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-story-${{ github.run_id }}-${{ github.run_attempt }}
+          path: experiments/notebook_story_flow/results/*/gh-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Save experiment results only
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/notebook_story_flow/results/
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "experiment: notebook story flow results (${GITHUB_RUN_ID})"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report experimental outcome
+        if: always()
+        env:
+          EXPERIMENT_OUTCOME: ${{ steps.experiment.outcome }}
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import os
+          from pathlib import Path
+          paths = list(Path('experiments/notebook_story_flow/results').glob(f'*/gh-{os.environ["GITHUB_RUN_ID"]}-{os.environ["GITHUB_RUN_ATTEMPT"]}/RESULTS.md'))
+          print(paths[0].read_text() if paths else 'No experiment report was produced; inspect input/download logs.')
+          PY
+          if [ "$EXPERIMENT_OUTCOME" != "success" ]; then
+            echo "Experiment failed or was rejected. Production outcome is independent."
+            exit 1
+          fi
