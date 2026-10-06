@@ -47,9 +47,14 @@ conservando respuestas separadas, en lugar de llamadas independientes sin contex
 1. Cobertura parseable de fuentes con el resolver de producción; 75% como mínimo
    para ventanas nuevas. Un replay canónico aprobado usa su snapshot aprobado.
 2. Narrative Memory validada, retrieval acotado y cooldown del historial aprobado.
+   Se excluyen paralelos abstractos con menos de tres hechos documentados; cada
+   candidato tiene un catálogo con índices históricos explícitos desde 1.
    El experimento nunca escribe uso aprobado en la memoria.
 3. Plan Pydantic: historia recuperada, ledger sobre noticias reales, tres pilares;
    referencias históricas numeradas desde 1. Setup y desenlace deben ser disjuntos.
+   Para replay, Python vincula la pregunta y el ledger originales: el modelo no
+   puede reescribirlos. El contexto de preparación omite el antiguo tratamiento
+   de apertura/memoria para evitar anclar la nueva historia al paralelo anterior.
 4. El desenlace se reserva para `story_payoff`; se rechaza su uso en otros bloques.
    Los IDs no prueban veracidad: el auditor revisa también la prosa.
 5. Orden y longitudes por bloque, referencias, final literal de apertura, primera

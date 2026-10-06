@@ -15,15 +15,20 @@ PLAN = SAFETY + """
 Replica la preparación del notebook (celda 20, PromptFactoryEpic + Hero): tres
 ideas núcleo, motivo metafórico, tres pilares, candidatos ordenados por epicidad
 Y conexión causal, protagonista, fuerza opuesta, conflicto y pregunta abierta.
-Usa solo los memory_candidates entregados. Escoge una historia que pueda tener
+Usa solo los memory_candidates entregados, incluso si control_plan usó otro paralelo.
+Protagonista y conflicto pertenecen al EVENTO HISTÓRICO seleccionado, nunca a una
+administradora moderna hipotética. Prefiere eventos concretos con decisiones bajo
+presión (p. ej. descenso del Apollo 11 o fallo de ARPANET) sobre teorías generales.
+Escoge una historia que pueda tener
 un conflicto documentado Y un desenlace documentado. Referencias a verified_claims
-son índices empezando en 1. Separa setup_claim_indices y payoff_claim_indices:
+son los índices explícitos de claim_catalog empezando en 1; 0 NO es válido.
+Separa setup_claim_indices y payoff_claim_indices:
 el desenlace queda RESERVADO para después del desarrollo. Las listas son disjuntas.
 No fuerces fechas o lugares concretos si las fuentes solo documentan un periodo.
 Mantén una pregunta central honesta y una tesis que evolucione; no un boletín.
 Usa 1–3 evidencias actuales. Si existe control_plan, conserva su pregunta y
-evidencias para permitir comparación; puedes reorganizar el desarrollo. Copia sus
-supported_facts y límites fielmente a ledger. Sin control_plan, construye ledger
+evidencias para permitir comparación; puedes reorganizar el desarrollo. El runtime
+vinculará su ledger EXACTO mediante código, sin reescritura. Sin control_plan, construye ledger
 desde news_items: news_id exacto, hechos respaldados y límites explícitos.
 No escojas una historia solo por espectacularidad. Devuelve StoryPlan.
 Contexto del experimento: {context}

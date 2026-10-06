@@ -161,6 +161,17 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "semantics are frozen"):
             run.validate_plan(self.plan, self.inputs)
 
+    def test_runtime_binds_control_facts_without_model_retyping(self):
+        original = [row.model_dump() for row in self.plan.ledger]
+        question = self.plan.central_question
+        self.inputs["control"] = {"ledger": original, "plan": {"central_question": question}}
+        self.plan.ledger[0].supported_facts = ["An unsupported model paraphrase."]
+        self.plan.central_question = "An unrelated question about a different phenomenon?"
+        bound = run.bind_control_boundary(self.plan, self.inputs)
+        self.assertEqual(bound.central_question, question)
+        self.assertEqual(bound.ledger[0].model_dump(), original[0])
+        run.validate_plan(bound, self.inputs)
+
     def test_judge_approval_is_not_the_gate_authority(self):
         self.assertFalse(run.factual_passes(fact_fixture(risk="high")))
         self.assertFalse(run.factual_passes(fact_fixture(invented_details=["A fictional dialogue"])))
@@ -241,6 +252,8 @@ class RepositoryWiringTests(unittest.TestCase):
         self.assertNotIn("blocked", prepared)
         self.assertEqual(prepared["coverage"]["expected_dates"], ["2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05"])
         self.assertGreater(len(prepared["news_items"]), 0)
+        self.assertTrue(all(len(row["verified_claims"]) >= 3 for row in prepared["memory_candidates"]))
+        self.assertTrue(all(row["claim_catalog"][0]["index"] == 1 for row in prepared["memory_candidates"]))
 
     def test_real_control_snapshot_matches_its_ledger(self):
         prepared = run.prepare_inputs(None, run.ROOT / "scripts/2026-09-25", "scheduled_window", 4)

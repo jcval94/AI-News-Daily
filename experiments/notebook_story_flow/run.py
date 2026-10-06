@@ -13,7 +13,7 @@ from typing import Any
 
 from experiments.notebook_story_flow import prompts
 from experiments.notebook_story_flow.contracts import (
-    FactualReview, NarrativeReview, PairedReview, ScriptDraft, StoryPlan,
+    FactualReview, LedgerEntry, NarrativeReview, PairedReview, ScriptDraft, StoryPlan,
     SECTION_IDS, SECTION_SPECS,
 )
 from pipeline.narrative_memory import load_memory, load_usage_history, rank_candidates
@@ -149,8 +149,11 @@ def prepare_inputs(target: str | None, episode_dir: Path | None, source_mode: st
         memory, issues = load_memory(ROOT / "editorial/narrative_memory.jsonl")
         query = control["plan"]["central_question"] if control else " ".join(row["why_it_matters"] for row in news)
         candidates = rank_candidates(memory, query, load_usage_history(ROOT / "scripts", target_date), target_date, top_k=6)
-        # An open loop needs at least two distinct grounded claims, not an invented outcome.
-        candidates = [row for row in candidates if len(row["verified_claims"]) >= 2]
+        # Abstract two-claim parallels do not document a scene/conflict/outcome.
+        candidates = [row for row in candidates if len(row["verified_claims"]) >= 3]
+        for row in candidates:
+            row["claim_catalog"] = [{"index": i, "text": text}
+                                    for i, text in enumerate(row["verified_claims"], start=1)]
         if not candidates:
             return {"target_date": target, "blocked": "no_verified_history", "coverage": coverage}
         return {"target_date": target, "coverage": coverage, "news_items": news,
@@ -198,6 +201,17 @@ def validate_plan(plan: StoryPlan, inputs: dict[str, Any]) -> dict[str, Any]:
         if plan.central_question != inputs["control"]["plan"]["central_question"]:
             raise ValueError("Paired treatment must preserve the central question")
     return memory
+
+
+def bind_control_boundary(plan: StoryPlan, inputs: dict[str, Any]) -> StoryPlan:
+    """The approved control owns its question/ledger; never ask an LLM to retype it."""
+    control = inputs.get("control")
+    if not control:
+        return plan
+    return plan.model_copy(update={
+        "central_question": control["plan"]["central_question"],
+        "ledger": [LedgerEntry.model_validate(row) for row in control["ledger"]],
+    })
 
 
 def validate_draft(draft: ScriptDraft, plan: StoryPlan, memory: dict[str, Any]) -> list[str]:
@@ -355,7 +369,10 @@ async def execute(inputs: dict[str, Any], out: Path, backend: Any, *, dry_run: b
             return report
         report.update(news_snapshot_sha256=inputs["news_snapshot_sha256"], profile_hashes=inputs["profile_hashes"])
         planning = {k: inputs[k] for k in ("news_items", "memory_candidates", "voice_profile", "discourse_profile")}
-        planning["control_plan"] = (inputs.get("control") or {}).get("plan")
+        control_plan = (inputs.get("control") or {}).get("plan")
+        # Do not let the old opening/memory treatment anchor the experimental story choice.
+        planning["control_plan"] = ({k: control_plan[k] for k in ("central_question", "thesis", "evidence")}
+                                    if control_plan else None)
         planning["control_ledger"] = (inputs.get("control") or {}).get("ledger")
         write_json(out / "prompt_plan.json", {"instruction": prompts.PLAN, "context": planning,
                                              "section_specs": SECTION_SPECS})
@@ -368,12 +385,15 @@ async def execute(inputs: dict[str, Any], out: Path, backend: Any, *, dry_run: b
                 return report
             backend = RepoAgentBackend()
         plan = await backend.call("plan", prompts.PLAN, StoryPlan, planning, trace)
+        plan = bind_control_boundary(plan, inputs)
         try:
             memory = validate_plan(plan, inputs)
         except ValueError as exc:
             write_json(out / "story_plan_initial.json", plan.model_dump())
             plan = await backend.call("plan_repair", prompts.PLAN, StoryPlan,
                 {**planning, "previous_plan": plan.model_dump(), "deterministic_error": str(exc)}, trace)
+            write_json(out / "story_plan_repaired.json", plan.model_dump())
+            plan = bind_control_boundary(plan, inputs)
             memory = validate_plan(plan, inputs)
         write_json(out / "story_plan.json", plan.model_dump())
         context = writer_context(inputs, plan, memory)
