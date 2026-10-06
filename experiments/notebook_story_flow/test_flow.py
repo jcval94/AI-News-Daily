@@ -9,10 +9,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 import yaml
+from pydantic import ValidationError
 
 from experiments.notebook_story_flow import run
 from experiments.notebook_story_flow.contracts import (
-    FactualReview, NarrativeReview, PairedReview, ScriptDraft, StoryPlan,
+    DevelopmentDraft, EndingDraft, FactualReview, NarrativeReview, OpeningDraft,
+    PairedReview, ScriptDraft, StoryPlan,
     SECTION_SPECS,
 )
 
@@ -22,7 +24,8 @@ def inputs_fixture() -> dict:
             "news_items": [{"news_id": "news-one", "raw_content": "Original source text"}],
             "memory_candidates": [{"id": "documented-event", "verified_claims": [
                 "A documented conflict occurred.", "The documented outcome followed."],
-                "sources": ["https://example.org/archive"], "analogy_limits": "Different mechanisms today."}],
+                "period": "1969", "location": "Moon", "sources": ["https://example.org/archive"],
+                "analogy_limits": "Different mechanisms today."}],
             "voice_profile": "Reflective first-person narrator", "discourse_profile": "Earned progression",
             "news_snapshot_sha256": "fixture-hash", "profile_hashes": {}, "control": None,
             "next_video_url": ""}
@@ -92,6 +95,16 @@ class FakeBackend:
             return plan_fixture()
         if schema is ScriptDraft:
             return draft_fixture()
+        if schema is OpeningDraft:
+            first = draft_fixture().sections[0]
+            return OpeningDraft(text=first.text, memory_claim_indices=first.memory_claim_indices,
+                                visual_queries=first.visual_queries)
+        if schema is DevelopmentDraft:
+            return DevelopmentDraft(sections=draft_fixture().sections[1:10])
+        if schema is EndingDraft:
+            draft = draft_fixture()
+            return EndingDraft(sections=draft.sections[10:], seo_title=draft.seo_title,
+                               seo_description=draft.seo_description, seo_keywords=draft.seo_keywords)
         if schema is FactualReview:
             return self.fact_reviews.pop(0)
         if schema is NarrativeReview:
@@ -183,6 +196,30 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             run.output_path("2026-10-06", "../../scripts")
 
+    def test_provider_schema_rejects_memory_ids_as_news_and_reserved_outcome(self):
+        schema = run.scoped_schema(DevelopmentDraft, {"allowed_memory_indices": [1], "allowed_evidence_ids": ["e-one"]})
+        payload = {"sections": [row.model_dump() for row in self.draft.sections[1:10]]}
+        schema.model_validate(payload)
+        payload["sections"][0]["evidence_ids"] = ["documented-event"]
+        with self.assertRaises(ValidationError):
+            schema.model_validate(payload)
+        payload["sections"][0]["evidence_ids"] = []
+        payload["sections"][0]["memory_claim_indices"] = [2]
+        with self.assertRaises(ValidationError):
+            schema.model_validate(payload)
+
+    def test_zero_historical_index_fails_structured_schema(self):
+        payload = self.plan.model_dump()
+        payload["payoff_claim_indices"] = [0]
+        with self.assertRaises(ValidationError):
+            StoryPlan.model_validate(payload)
+
+    def test_opening_word_budget_enters_hardened_schema_repair(self):
+        payload = {"text": " ".join(["palabra"] * 324), "memory_claim_indices": [1],
+                   "visual_queries": ["archive"]}
+        with self.assertRaisesRegex(ValidationError, "324 spoken words"):
+            OpeningDraft.model_validate(payload)
+
 
 class ExecutionTests(unittest.TestCase):
     def execute_fixture(self, backend, inputs=None, dry_run=False):
@@ -198,7 +235,13 @@ class ExecutionTests(unittest.TestCase):
         self.assertEqual(report["status"], "ready_for_review")
         self.assertFalse(report["publishable"])
         self.assertNotIn("run_state.json", files)
-        self.assertEqual([s for s, _ in backend.calls], ["plan", "write", "factual_review", "narrative_review"])
+        self.assertEqual([s for s, _ in backend.calls], ["plan", "opening", "development", "ending", "factual_review", "narrative_review"])
+        opening_context = dict(backend.calls)["opening"]
+        self.assertNotIn("selected_memory", opening_context)
+        self.assertEqual([row["index"] for row in opening_context["opening_claims"]], [1])
+        middle = dict(backend.calls)["development"]
+        self.assertNotIn("selected_memory", middle)
+        self.assertEqual([row["index"] for row in middle["historical_claims"]], [1])
 
     def test_factual_repair_precedes_style_and_preserves_separation(self):
         backend = FakeBackend(fact_reviews=[fact_fixture(approved=False, risk="medium"), fact_fixture()])
@@ -219,7 +262,7 @@ class ExecutionTests(unittest.TestCase):
         self.assertIn("script.txt", files)
 
     def test_failure_keeps_partial_usage_and_trace(self):
-        report, files = self.execute_fixture(FakeBackend(fail_step="write"))
+        report, files = self.execute_fixture(FakeBackend(fail_step="opening"))
         self.assertEqual(report["status"], "failure")
         self.assertEqual(report["emitted_usage"]["total_tokens"], 46)
         self.assertEqual(len(json.loads(files["execution_trace.json"])), 2)

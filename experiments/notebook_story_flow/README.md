@@ -39,8 +39,9 @@ sin usar modelos. El replay inicial usa explícitamente el último episodio apro
 No se copia el notebook completo: contiene credenciales, salidas antiguas y
 dependencias externas de Colab/Drive/Flask no incluidas en el adjunto. Su SHA-256
 se conserva para identificar la fuente. Se elimina la introducción duplicada;
-la epopeya ya abre el guion. Se agrupan los bloques en una escritura coherente,
-conservando respuestas separadas, en lugar de llamadas independientes sin contexto.
+la epopeya ya abre el guion. Se escribe apertura → desarrollo → cierre, con contexto
+progresivo y respuestas por bloque. La apertura y el desarrollo no reciben los
+hechos reservados del desenlace. El resultado llega únicamente al escritor del cierre.
 
 ## Contrato y buenas prácticas
 
@@ -57,15 +58,19 @@ conservando respuestas separadas, en lugar de llamadas independientes sin contex
    de apertura/memoria para evitar anclar la nueva historia al paralelo anterior.
 4. El desenlace se reserva para `story_payoff`; se rechaza su uso en otros bloques.
    Los IDs no prueban veracidad: el auditor revisa también la prosa.
-5. Orden y longitudes por bloque, referencias, final literal de apertura, primera
-   evidencia actual, CTA y duración se validan con Python. Un solo intento de
+5. Orden, apertura de 350–400 palabras, tamaños razonables de bloques, referencias,
+   final literal de apertura, primera evidencia actual, CTA y duración se validan
+   con Python. Los demás presupuestos por bloque son orientativos en este
+   experimento; `idea_C` conserva la flexibilidad extensa del notebook. Los IDs
+   de evidencia e índices históricos se entregan como enums en el schema del
+   proveedor, y la última frase se deriva del texto real. Un solo intento de
    reparación estructural; nunca truncar ni rellenar mecánicamente el texto.
 6. Auditor factual separado. Una reparación exclusivamente factual y un recheck,
    si hacen falta; voz/SEO/atención se evalúan solo después del pase factual.
 7. Runtime ADK del repo: mismo modelo configurado, reintentos transitorios y reparación
    de schema acotados, cero reintentos por cuota permanente, traza y uso parcial.
-   Máximo ocho llamadas lógicas, tres intentos por llamada, 10,000 tokens de salida
-   por intento; se detienen nuevas llamadas cuando el uso emitido llega a 180,000
+   Máximo doce llamadas lógicas, tres intentos por llamada, 10,000 tokens de salida
+   por intento; se detienen nuevas llamadas cuando el uso emitido llega a 250,000
    tokens. Es un presupuesto operativo, no una garantía de costo monetario exacto.
 8. `ready_for_review` requiere revisión factual low, historia >=8.7,
    editorial/voz >=8.7, atención/SEO >=8.5, AI smell low, apertura inconclusa en

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from pipeline.production_script import word_count
 
 
 class Contract(BaseModel):
@@ -39,8 +41,8 @@ class StoryPlan(Contract):
     protagonist: str = Field(min_length=3)
     opposing_force: str = Field(min_length=3)
     conflict: str = Field(min_length=15)
-    setup_claim_indices: list[int] = Field(min_length=1)
-    payoff_claim_indices: list[int] = Field(min_length=1)
+    setup_claim_indices: list[Annotated[int, Field(ge=1)]] = Field(min_length=1)
+    payoff_claim_indices: list[Annotated[int, Field(ge=1)]] = Field(min_length=1)
     unresolved_question: str = Field(min_length=15)
     bridge_to_present: str = Field(min_length=15)
     analogy_limits: str = Field(min_length=15)
@@ -66,7 +68,9 @@ SECTION_IDS = tuple(spec[0] for spec in SECTION_SPECS)
 
 
 class Section(Contract):
-    id: str
+    id: Literal["step9_epica", "step10_reconexion", "hook_problema", "hook_cita",
+                "idea_A", "dato_1", "idea_B_explica", "idea_B_desafio", "dato_2",
+                "idea_C", "story_payoff", "cierre"]
     text: str = Field(min_length=30)
     evidence_ids: list[str] = Field(default_factory=list, max_length=3)
     memory_claim_indices: list[int] = Field(default_factory=list, max_length=12)
@@ -76,6 +80,31 @@ class Section(Contract):
 class ScriptDraft(Contract):
     sections: list[Section] = Field(min_length=12, max_length=12)
     opening_last_sentence: str = Field(min_length=15)
+    seo_title: str = Field(min_length=5, max_length=60)
+    seo_description: str = Field(min_length=15, max_length=160)
+    seo_keywords: list[str] = Field(min_length=4, max_length=4)
+
+
+class OpeningDraft(Contract):
+    text: str = Field(min_length=100)
+    memory_claim_indices: list[Annotated[int, Field(ge=1)]] = Field(min_length=1)
+    visual_queries: list[str] = Field(min_length=1, max_length=3)
+
+    @field_validator("text")
+    @classmethod
+    def validate_word_budget(cls, value: str) -> str:
+        count = word_count(value)
+        if not 350 <= count <= 400:
+            raise ValueError(f"Opening contains {count} spoken words; required 350–400, target 375")
+        return value
+
+
+class DevelopmentDraft(Contract):
+    sections: list[Section] = Field(min_length=9, max_length=9)
+
+
+class EndingDraft(Contract):
+    sections: list[Section] = Field(min_length=2, max_length=2)
     seo_title: str = Field(min_length=5, max_length=60)
     seo_description: str = Field(min_length=15, max_length=160)
     seo_keywords: list[str] = Field(min_length=4, max_length=4)

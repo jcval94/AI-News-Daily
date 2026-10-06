@@ -9,17 +9,20 @@ import os
 import re
 from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
+
+from pydantic import Field, create_model
 
 from experiments.notebook_story_flow import prompts
 from experiments.notebook_story_flow.contracts import (
-    FactualReview, LedgerEntry, NarrativeReview, PairedReview, ScriptDraft, StoryPlan,
+    DevelopmentDraft, EndingDraft, FactualReview, LedgerEntry, NarrativeReview,
+    OpeningDraft, PairedReview, ScriptDraft, Section, StoryPlan,
     SECTION_IDS, SECTION_SPECS,
 )
 from pipeline.narrative_memory import load_memory, load_usage_history, rank_candidates
 from pipeline.news import NewsItem
 from pipeline.news_resolution import collect_available_news
-from pipeline.production_script import format_time, word_count
+from pipeline.production_script import format_time, split_sentences, word_count
 from pipeline.source_coverage import evaluate_source_coverage
 
 
@@ -27,7 +30,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 RESULTS = HERE / "results"
 NOTEBOOK_SHA256 = "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16"
-MAX_LOGICAL_CALLS = 8
+MAX_LOGICAL_CALLS = 12
 
 
 def read_json(path: Path) -> Any:
@@ -222,8 +225,13 @@ def validate_draft(draft: ScriptDraft, plan: StoryPlan, memory: dict[str, Any]) 
     historical = set(range(1, len(memory["verified_claims"]) + 1))
     for row, (_, _, low, high) in zip(draft.sections, SECTION_SPECS):
         count = word_count(row.text)
-        if not low <= count <= high:
+        # Preserve the defining epic budget; other notebook block budgets are targets.
+        # The original notebook allowed a much longer idea_C. Experiment flexibility
+        # must not alter production's duration/quality thresholds.
+        if row.id == "step9_epica" and not low <= count <= high:
             issues.append(f"{row.id}: {count} words outside {low}..{high}")
+        elif row.id != "step9_epica" and not 10 <= count <= (800 if row.id == "idea_C" else 400):
+            issues.append(f"{row.id}: block is empty or disproportionately long")
         if not set(row.evidence_ids) <= evidence or not set(row.memory_claim_indices) <= historical:
             issues.append(f"{row.id}: unknown evidence or memory claim reference")
         if row.id != "story_payoff" and set(row.memory_claim_indices) & set(plan.payoff_claim_indices):
@@ -281,16 +289,74 @@ class RepoAgentBackend:
         if self.calls >= MAX_LOGICAL_CALLS:
             raise RuntimeError("Experiment model-call budget exhausted")
         total = sum(row.get("usage", {}).get("total_tokens", 0) for row in trace)
-        if total >= 180_000:
+        if total >= 250_000:
             raise RuntimeError("Experiment emitted-token budget exhausted")
         self.calls += 1
         agent = Agent(name=f"notebook_{step}", model=model(), instruction=instruction,
-                      output_schema=schema, output_key="result",
+                      output_schema=scoped_schema(schema, context), output_key="result",
                       generate_content_config=types.GenerateContentConfig(max_output_tokens=10000))
         state = await self.base.run_agent(agent, {"context": json.dumps(context, ensure_ascii=False)},
                                           "Execute this step and return the required structured contract.",
                                           step=step, trace=trace)
         return schema.model_validate(state["result"])
+
+
+def scoped_schema(schema: Any, context: dict[str, Any]) -> Any:
+    """Give the provider enums for references instead of asking it to copy IDs."""
+    if schema not in {OpeningDraft, DevelopmentDraft, EndingDraft}:
+        return schema
+    historical = tuple(context["allowed_memory_indices"])
+    if schema is OpeningDraft:
+        return create_model("ScopedOpening", __base__=OpeningDraft,
+                            memory_claim_indices=(list[Literal[historical]], Field(min_length=1)))
+    evidence = tuple(context["allowed_evidence_ids"])
+    section = create_model("ScopedSection", __base__=Section,
+        evidence_ids=(list[Literal[evidence]], Field(default_factory=list, max_length=3)),
+        memory_claim_indices=(list[Literal[historical]], Field(default_factory=list)))
+    count = 9 if schema is DevelopmentDraft else 2
+    return create_model(f"Scoped{schema.__name__}", __base__=schema,
+                        sections=(list[section], Field(min_length=count, max_length=count)))
+
+
+async def generate_flow(backend: Any, context: dict[str, Any], plan: StoryPlan,
+                        memory: dict[str, Any], trace: list[dict[str, Any]], out: Path) -> ScriptDraft:
+    setup = [{"index": i, "text": memory["verified_claims"][i - 1]} for i in plan.setup_claim_indices]
+    opening_context = {
+        "period": memory["period"], "location": memory["location"], "opening_claims": setup,
+        "protagonist": plan.protagonist, "opposing_force": plan.opposing_force,
+        "conflict": plan.conflict, "unresolved_question": plan.unresolved_question,
+        "motif": plan.motif, "voice_profile": context["voice_profile"],
+        "allowed_memory_indices": plan.setup_claim_indices,
+    }
+    opening = await backend.call("opening", prompts.OPENING, OpeningDraft, opening_context, trace)
+    write_json(out / "opening_initial.json", opening.model_dump())
+    count = word_count(opening.text)
+    if not 350 <= count <= 400:
+        opening = await backend.call("opening_repair", prompts.OPENING, OpeningDraft,
+            {**opening_context, "previous_opening": opening.model_dump(),
+             "deterministic_errors": [f"Opening has {count} words; must have 350–400, target 375."]}, trace)
+    write_json(out / "opening.json", opening.model_dump())
+    if not 350 <= word_count(opening.text) <= 400:
+        raise ValueError("Opening word budget failed after bounded repair")
+    # Withhold the outcome from both the opener and the middle, not merely its marker.
+    middle_context = {k: v for k, v in context.items() if k != "selected_memory"}
+    middle_context.update(opening=opening.text, historical_claims=setup,
+                          allowed_memory_indices=plan.setup_claim_indices,
+                          allowed_evidence_ids=[row.evidence_id for row in plan.ledger])
+    write_json(out / "prompt_development.json", {"instruction": prompts.DEVELOPMENT, "context": middle_context})
+    development = await backend.call("development", prompts.DEVELOPMENT, DevelopmentDraft, middle_context, trace)
+    write_json(out / "development.json", development.model_dump())
+    ending_context = {**context, "opening": opening.text, "development": development.model_dump(),
+                      "allowed_memory_indices": list(range(1, len(memory["verified_claims"]) + 1)),
+                      "allowed_evidence_ids": [row.evidence_id for row in plan.ledger]}
+    ending = await backend.call("ending", prompts.ENDING, EndingDraft, ending_context, trace)
+    write_json(out / "ending.json", ending.model_dump())
+    first = Section(id="step9_epica", text=opening.text, evidence_ids=[],
+                    memory_claim_indices=opening.memory_claim_indices, visual_queries=opening.visual_queries)
+    return ScriptDraft(sections=[first, *development.sections, *ending.sections],
+                       opening_last_sentence=split_sentences(opening.text)[-1],
+                       seo_title=ending.seo_title, seo_description=ending.seo_description,
+                       seo_keywords=ending.seo_keywords)
 
 
 def writer_context(inputs: dict[str, Any], plan: StoryPlan, memory: dict[str, Any]) -> dict[str, Any]:
@@ -308,7 +374,7 @@ def export_draft(out: Path, draft: ScriptDraft, plan: StoryPlan) -> dict[str, An
     write_json(out / "flow.json", {"name": "notebook_epic_hero", "schema_version": 1,
         "steps": [{"id": row.id, "auto": True, "include_in_doc": True, "input_mode": "edit",
                    "needs_media": "text", "template": (
-                       f"Escribe {SECTION_SPECS[i][1]} en {SECTION_SPECS[i][2]}–{SECTION_SPECS[i][3]} palabras. "
+                       f"Escribe {SECTION_SPECS[i][1]}, apuntando a {SECTION_SPECS[i][2]}–{SECTION_SPECS[i][3]} palabras. "
                        "Usa story_plan y fuentes congeladas; conserva el orden y el suspenso hasta story_payoff."),
                    "response": row.text, "evidence_ids": row.evidence_ids,
                    "memory_claim_indices": row.memory_claim_indices}
@@ -398,7 +464,7 @@ async def execute(inputs: dict[str, Any], out: Path, backend: Any, *, dry_run: b
         write_json(out / "story_plan.json", plan.model_dump())
         context = writer_context(inputs, plan, memory)
         write_json(out / "prompt_writer.json", {"instruction": prompts.WRITE, "context": context})
-        draft = await backend.call("write", prompts.WRITE, ScriptDraft, context, trace)
+        draft = await generate_flow(backend, context, plan, memory, trace, out)
         write_json(out / "draft_initial.json", draft.model_dump())
         issues = validate_draft(draft, plan, memory)
         if issues:

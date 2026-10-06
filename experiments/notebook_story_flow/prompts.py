@@ -104,3 +104,44 @@ Evalúa ganancia de curiosidad, costo de esperar la primera evidencia, continuid
 y payoff. No infieras métricas de audiencia reales. Devuelve PairedReview.
 Contexto: {context}
 """
+
+OPENING = SAFETY + """
+Escribe SOLO la epopeya inicial, en 350–400 palabras (apunta a 375), como OpeningDraft.
+No escribas desarrollo, resultado, SEO ni etiquetas internas dentro de text.
+Esta es la historia del EVENTO HISTÓRICO, no una escena moderna de oficina.
+La primera frase usa únicamente periodo/lugar documentados. El narrador acompaña
+al espectador, no finge estar allí. Reconstrucciones imaginadas deben decirlo.
+Las únicas afirmaciones históricas permitidas son opening_claims, con sus índices.
+No ves el desenlace porque no debes contarlo: para en la decisión crítica pendiente.
+No digas “así se salvó”, “autorizaron seguir”, “aterrizó”, ni “aquí cortamos la historia”.
+Termina con una frase de tensión narrativa real, sin metacomentario sobre el guion.
+No añadas nombres, diálogos, sonidos o detalles ausentes de los hechos entregados.
+Si recibes deterministic_errors, corrige exactamente esos errores sin añadir hechos.
+Contexto de la apertura: {context}
+"""
+
+DEVELOPMENT = SAFETY + """
+Escribe SOLO las nueve secciones centrales como DevelopmentDraft, en este orden:
+step10_reconexion, hook_problema, hook_cita, idea_A, dato_1, idea_B_explica,
+idea_B_desafio, dato_2, idea_C. Es una charla continua, no nueve mini-conclusiones.
+La apertura ya está escrita y no se modifica. Conserva su pregunta abierta durante
+todo el desarrollo: no conoces ni debes completar el resultado histórico.
+Usa las tres ideas del plan y SOLO sus evidencias actuales. evidence_ids usa IDs
+de ledger, nunca IDs de memoria. historical_claims incluye únicamente setup.
+Respeta los presupuestos orientativos de section_specs; evita expandir datos y
+retos en ensayos propios. El dato debe ser atribuido y breve; el reto, seguro.
+La reflexión no incluye citas inventadas. Incluye evidencia actual antes de idea_B.
+Apunta a 1,000–1,300 palabras en total, con voz hablada y una tesis que evolucione.
+Una ironía lateral es bienvenida si no trivializa daño humano.
+Contexto del desarrollo: {context}
+"""
+
+ENDING = SAFETY + """
+Escribe SOLO story_payoff y cierre, en ese orden, como EndingDraft, además de SEO.
+Ahora sí recibes el desenlace completo de la MISMA historia que abrió el episodio.
+story_payoff: 90–180 palabras: contesta el conflicto abierto con el resultado
+documentado, sin repetir toda la historia, y reconoce el límite de la analogía.
+cierre: 55–120 palabras: síntesis evolucionada, pregunta reflexiva y suscripción.
+No inventes una playlist o enlace si next_video_url está vacío. SEO no es narración.
+Contexto del cierre: {context}
+"""
