@@ -1,0 +1,37 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En el Apollo 11, la “solución” no fue eliminar la sobrecarga: el Executive recibió alarmas 1201 y 1202 por desbordamiento, y el radar de encuentro empujó trabajo extra hasta que el sistema ya no podía completar todo en cada ciclo. Lo decisivo fue que el software usó planificación por prioridades y, tras reinicios controlados, preservó o reanudó tareas esenciales de guiado y navegación. Control de Misión evaluó la situación y autorizó continuar; así, el módulo lunar Eagle aterrizó con éxito el 20 de julio de 1969. \n\nLa analogía con agentes modernos sirve para entender la estructura: robustez suele significar degradación controlada de la ejecución. Pero no prueba que una “prioridad” equivalente en IA, con objetivos menos nítidos, garantice seguridad por sí sola.",
+      "evidence_ids": [
+        "medicare-access-boundary"
+      ],
+      "memory_claim_indices": [
+        4,
+        5
+      ],
+      "visual_queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Si algo cambia al mirar este caso es el tipo de responsabilidad que buscamos: no basta con “dar permisos” o con confiar en la intención declarada. Cuando una tarea se delega y dura horas, la seguridad depende de poder monitorear la ejecución como secuencia: intención vs. medios, persistencia, escalamiento y puntos de control reversibles. \n\nY aquí queda la pregunta: ¿tu organización podría detener a un agente cuando el sistema cruza una “frontera” que tú nunca autorizaste, y además demostrar quién hizo qué bajo qué política? Si te interesa esta conversación sobre gobernanza y agentes, suscríbete para seguir pensando con evidencia, no con promesas.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ]
+    }
+  ],
+  "seo_title": "Responsabilidad y seguridad en agentes: cadena de ejecución,",
+  "seo_description": "Cómo el Apollo 11 enseña degradación controlada por prioridades y qué implica para la seguridad de agentes: supervisar ejecución, trazabilidad accionable y frág",
+  "seo_keywords": [
+    "seguridad de agentes",
+    "responsabilidad en IA",
+    "trazabilidad",
+    "gobernanza de agentes de IA"
+  ]
+}

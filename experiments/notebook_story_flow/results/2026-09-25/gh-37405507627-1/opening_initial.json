@@ -1,0 +1,13 @@
+{
+  "text": "El 20 de julio de 1969, durante el descenso lunar del Apollo 11, el Apollo Guidance Computer —el “Executive”— se encontró con un problema que no era dramático por fuera, pero sí peligroso por dentro: el sistema comenzó a acumular trabajo más rápido de lo que podía cerrarlo en cada ciclo.\n\nHay un tipo de alarma que, en sistemas reales, no te dice “te falta algo”; te dice “vas tarde, y seguirás llegando tarde si no decides qué soltar”. En ese descenso aparecieron alarmas 1201 y 1202, señales de que el Executive experimentaba desbordamiento del Executive de la Apollo Guidance Computer: el plan seguía existiendo, pero la ejecución empezaba a quedarse sin aire. [1]\n\nY mira cómo el conflicto se enreda: el radar de encuentro empujó solicitudes adicionales de procesamiento. No era “malo” por sí mismo; era una pieza más en el rompecabezas, pero cada pieza adicional consume tiempo y cómputo cuando el reloj no perdona. [2]\n\nEn el centro de todo estaba la lógica de prioridades del Executive: podía ordenar el trabajo por importancia, reiniciar partes bajo control y, tras esos reinicios, preservar o reanudar tareas esenciales de guiado y navegación. [3] No era magia. Era administración brutal de recursos: decidir qué tareas siguen vivas y cuáles quedan pospuestas, sin perder el hilo de lo que mantiene el vehículo en el camino.\n\nMientras seguimos este momento histórico, hay una pregunta que se siente peligrosamente moderna: si sabemos que la seguridad exige priorizar lo esencial, ¿cómo definimos “lo esencial” en agentes modernos? ¿Por intención declarada, por intención inferida, por permisos, por patrones de persistencia, o por algún criterio verificable durante la ejecución? \n\nLa “frontera” aquí no es un muro humano; es una interpretación del sistema sobre qué cuenta como obstáculo operativo. Y en el descenso, con cada alarma, el Executive tiene que decidir —sin margen para negociar— qué trabajo puede esperar y cuál no.",
+  "memory_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "visual_queries": [
+    "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+    "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+    "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación al punto de aterrizaje (recreación)."
+  ]
+}

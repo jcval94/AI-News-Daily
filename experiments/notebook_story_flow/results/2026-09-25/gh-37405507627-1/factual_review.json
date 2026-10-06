@@ -1,0 +1,26 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 8.9,
+  "invented_details": [
+    "(step9_epica) “El 20 de julio de 1969, durante el descenso lunar del Apollo 11 …” — La fecha del aterrizaje y el marco general están respaldados por verified_claims, pero el guion fija “durante el descenso” y encaja con el evento; aun así el texto no explicita incertidumbres del propio paquete histórico sobre la interpretación de alarmas ni el peso de decisiones humanas. No es un invento de evento, pero sí una sobrecerteza contextual respecto a lo que el material verificable detalla públicamente.",
+    "(dato_1) “Límite seguro: … que el material público disponible no detalla el prompt, el entorno ni las decisiones intermedias que llevarían a caracterizar con precisión ‘qué paso’ convirtió la frontera.” — El “material público disponible” no está cuantificado en la noticia (solo se afirma que no detalla ciertos elementos del incidente); esta formulación es razonable como límite, pero no está explicitada como hecho en los supported_facts; es una ampliación del alcance de “no disponible” sin evidencia directa en el texto fuente provisto.",
+    "(idea_C) “un caso límite que se aproxima a ‘agentes que vigilan y actúan’ es la ampliación de Amazon Seller Assistant…” — Se etiqueta como “caso límite” y “se aproxima” (permitido como analogía/interpretación), pero el guion lo trata como equivalente funcional para el marco de seguridad; esto no es un hecho respaldado, aunque tampoco afirma causalidad demostrada. Requiere reforzar el carácter hipotético/analógico para evitar que parezca evidencia de seguridad."
+  ],
+  "source_issues": [
+    "Se usan evidence_ids de manera parcial: el guion referencia medicare-access-boundary y agent-identity-controls en párrafos que también contienen inferencias normativas (seguridad/tipo de problema) que no están directamente contenidas en los supported_facts (son interpretaciones permitidas, pero conviene separar más claramente “lo que ocurrió” vs “qué implica”).",
+    "Varias secciones incluyen afirmaciones de tipo “observa una mecánica”/“mecanismo de continuidad” sin anclar cada elemento a verified_claims (especialmente en hook_problema, idea_A e idea_C). No necesariamente son falsas, pero aumentan el riesgo de que se lean como hechos sobre IA en vez de tesis interpretativa."
+  ],
+  "unsupported_claims": [
+    "(hook_problema) “...si el flujo puede desbordarse o desviarse, necesitas saber qué tareas se preservan…” — Es una recomendación/tesis de diseño; no es un hecho verificable del caso Apollo. Puede mantenerse como interpretación, pero el texto no lo marca como hipótesis explícita (aunque el contenido es normativo).",
+    "(idea_A) “...la planificación por prioridades y los reinicios controlados son, precisamente, mecanismos para conservar lo esencial cuando hay exceso.” — Apollo lo respalda a alto nivel (priority scheduling y reinicios controlados preservan tareas esenciales), pero el guion lo conecta causalmente con “exceso” en el sentido de “workload/insumos” sin enfatizar el límite del paralelo (analogy_limits).",
+    "(idea_C) “...necesitas circuitos para frenar y auditar sin depender de que ‘la intención’ sea suficiente.” — Es una tesis de seguridad; no es un hecho del historial Apollo ni del material corporativo de Amazon. Debe quedar inequívocamente como inferencia/hipótesis."
+  ],
+  "repair_instructions": [
+    "Separar con mayor claridad (mediante redacción) “hechos” vs “tesis interpretativa”. En cada sección normativa (hook_problema, hook_cita, idea_A, idea_C, cierre), añade una marca inequívoca tipo: “esto es una inferencia para el marco de seguridad; no es evidencia de que ocurra X en IA”.",
+    "En (step9_epica) reduce la sobrecerteza contextual: conserva “alarmas 1201/1202”, “contribución de solicitudes del radar” y “planificación por prioridades con reinicios controlados preservando tareas esenciales” (verified_claims), pero evita afirmaciones implícitas sobre cómo se “gestionó” en todos los detalles del descenso. Si el guion menciona interpretación humana, añádelo como incertidumbre respaldada (las verified_claims ya advierten que Control de Misión fue decisivo).",
+    "En (dato_1) ajusta el “Límite seguro” para que no prometa un estado de “material público” no verificado: reescribe como “en la información disponible en la nota, no se detalla…”, alineado con las uncertainties de medicare-access-boundary.",
+    "En (idea_C) deja explícito que el caso de Amazon es un paralelo/ilustración, no un ‘caso límite demostrado’: sustituye “un caso límite que se aproxima…” por “como ejemplo corporativo de delegación continua (según lo que la empresa afirma), que sirve para plantear la pregunta de control en ejecución”.",
+    "Para todas las secciones que citan evidence_ids: limita el papel de la evidencia a lo respaldado (qué se anunció, qué se informó, qué se declaró) y deja la parte de “implicación para seguridad” como hipótesis/interpretación, sin presentarla como deducción factual."
+  ]
+}

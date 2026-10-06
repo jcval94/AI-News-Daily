@@ -1,0 +1,34 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 6.5,
+  "invented_details": [
+    "Paso9: “el Apollo Guidance Computer —el ‘Executive’— se encontró con un problema que no era dramático por fuera” — el guion añade valoración sensorial/estética (“no era dramático por fuera”) que no está respaldada por los verified_claims.",
+    "Paso9: “En ese descenso aparecieron alarmas 1201 y 1202 ... el plan seguía existiendo, pero la ejecución empezaba a quedarse sin aire.” — hay interpretación figurada (“se quedaba sin aire”) además de una explicación que no está formulada como incertidumbre; los verified_claims confirman desbordamiento, no esa metáfora.",
+    "Paso9: “No era ‘malo’ por sí mismo; era una pieza más en el rompecabezas...” — interpretación/analogía narrativa sin respaldo factual adicional más allá de que el radar contribuyó a la sobrecarga.",
+    "Hook_problema: “un agente interpreta una frontera como obstáculo operativo, no como un límite humano.” — es generalización sobre comportamiento de agentes; no está respaldada por los artículos/noticias provistas (solo hay evidencia de que hubo acceso no autorizado y de anuncios de controles).",
+    "Idea_A: “Ojo con una tentación... creer que mientras el objetivo final parezca inocente, los medios serán inocentes.” — premisa factual no respaldada; es exhortación/lectura no verificable como hecho.",
+    "Idea_B_explica: “La lectura ... la seguridad empresarial está moviéndose desde ‘usuarios y aplicaciones’ hacia ‘actores no humanos’...” — interpretación editorial; aunque plausible, el material aportado no prueba esa tendencia como hecho."
+  ],
+  "source_issues": [
+    "No se enlazan los enunciados del guion con evidencia en cada frase: el guion usa evidence_ids vacíos en varias secciones, y en otros casos declara referencias (p.ej., [1],[2],[3]) sin correspondencia verificable visible en evidence_ids.",
+    "Story_payoff: La sección afirma que el módulo lunar aterrizó con éxito “así, ... con éxito ... el 20 de julio de 1969”, pero el evidence_id usado en esa sección es medicare-access-boundary (desajuste: mezcla evidencia histórica del Apollo con evidencia de Medicare).",
+    "Paso9 y Paso10: La memoria “apollo-11-priority-scheduling-overload” tiene verified_claims suficientes para alarmas 1201/1202, radar, planificación por prioridades, reinicios controlados y autorización para continuar; el guion, sin embargo, introduce detalles narrativos no cubiertos (metáforas y descripciones cualitativas)."
+  ],
+  "unsupported_claims": [
+    "Hook_problema: “la máquina puede sentir que ‘seguir intentando’ es lo correcto… aunque cruce algo que nadie autorizó explícitamente.” — el guion atribuye “sentir” y una inferencia motivacional del agente; los materiales proveen incidentes y anuncios, pero no demuestran esa psicología/criterio del agente.",
+    "Dato_1: “Límite seguro: ... no podemos concluir qué paso exacto hizo que la frontera se interpretara de otra manera.” — correcto como incertidumbre general, pero el guion ya afirma explícitamente ese “no se puede concluir” sin citar qué limitaciones concretas se aplican; además el statement mezcla el caso Medicare (acceso) con una noción (“frontera se interpretara”) que no está definida en la evidencia.",
+    "Idea_A: “el riesgo se vuelve una cadena de pasos intermedios” — es una afirmación conceptual presentada como si correspondiera al caso Apollo y a agentes; los validated facts no la establecen como hecho universal.",
+    "Idea_B_desafio: “convertir ... en un álbum de capturas” y “los agentes ... convierten ese álbum en una desventaja enorme” — afirmaciones causales no respaldadas por evidencia.",
+    "Idea_C: “En el Apollo 11... una forma de reversibilidad” — el guion trata reinicios controlados como reversibilidad en el sentido de seguridad de agentes; la analogía se permite, pero aquí se formula como mecanismo equiparable, lo que excede el soporte textual de verified_claims (no es un claim falso, pero sí no suficientemente sustentado en el guion como “reversibilidad de control” aplicado).",
+    "Cierre: “Cuando una tarea se delega y dura horas, la seguridad depende de poder monitorear la ejecución como secuencia...” — afirmación normativa/causal no respaldada por la evidencia provista."
+  ],
+  "repair_instructions": [
+    "(F1) Corregir el desajuste de evidencia: en “story_payoff” sustituir evidence_ids para usar la evidencia histórica del Apollo (apollo-11-priority-scheduling-overload) y no medicare-access-boundary.",
+    "(F2) Eliminar o reescribir metáforas y atribuciones motivacionales no soportadas como hechos. Ejemplos a reemplazar: “se quedaba sin aire”, “la máquina puede sentir”, “pieza en el rompecabezas”. Mantener solo “desbordamiento”, “planificación por prioridades”, “reinicios controlados”, “autorizar continuar” y marcar el resto como analogía explícita.",
+    "(F3) En las secciones donde el guion usa [1][2][3], añadir correspondencia estricta con las verified_claims de la memoria Apollo (alarmas 1201/1202, radar contribuyó, planificación por prioridades + reinicios controlados + preservación de tareas esenciales, Control de Misión autorizó continuar). Evitar afirmaciones adicionales no contenidas en verified_claims.",
+    "(F4) Donde se haga una generalización sobre agentes modernos (p.ej., “agente interpreta fronteras”, “sentirse correcto”, “desventaja enorme”), reformular como hipótesis explícita (p.ej., “podría”, “como hipótesis operativa”) y evitar causalidad o psicología atribuida.",
+    "(F5) Para los ejemplos del caso Medicare y anuncios de Microsoft/Amazon, asegurar que cualquier afirmación vaya en términos de lo que reporta la fuente (p.ej., ‘hubo acceso no autorizado según gobierno; sin datos personales según Albanese; investigación abierta’). Mantener las “lecturas” como interpretaciones sin presentarlas como hechos (y evitar que parezcan conclusiones sobre el comportamiento exacto del agente).",
+    "(F6) Ajustar “historical_grounding”: cuando uses analogía (Apollo ↔ agentes), agregar una frase inequívoca de límite (ya existe analogy_limits, pero conviene aplicarla también en los tramos donde parezca que la reversibilidad del Apollo garantiza seguridad en IA)."
+  ]
+}

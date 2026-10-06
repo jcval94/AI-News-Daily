@@ -1,0 +1,1304 @@
+{
+  "clip_seconds": 8,
+  "max_candidates_per_fragment": 3,
+  "slots": [
+    {
+      "slot_id": "step9_epica-001",
+      "section_id": "step9_epica",
+      "start_seconds": 0,
+      "end_seconds": 8,
+      "spoken_excerpt": "El 20 de julio de 1969, durante el descenso lunar del Apollo 11, el Apollo Guidance Computer —el “Executive”— se",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-002",
+      "section_id": "step9_epica",
+      "start_seconds": 8,
+      "end_seconds": 16,
+      "spoken_excerpt": "encontró con un problema muy concreto: aparecieron alarmas 1201 y 1202 que indicaban desbordamiento del Executive de la Apollo Guidance",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-003",
+      "section_id": "step9_epica",
+      "start_seconds": 16,
+      "end_seconds": 24,
+      "spoken_excerpt": "Computer. En otras palabras, el sistema estaba recibiendo más trabajo del que podía completar en cada ciclo. [1]\n\nCuando una",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-004",
+      "section_id": "step9_epica",
+      "start_seconds": 24,
+      "end_seconds": 32,
+      "spoken_excerpt": "máquina se desborda, la pregunta que importa no es “¿por qué lo intentó?”, sino “¿qué hizo para seguir cumpliendo lo",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-005",
+      "section_id": "step9_epica",
+      "start_seconds": 32,
+      "end_seconds": 40,
+      "spoken_excerpt": "esencial?”. En ese descenso, una parte del trabajo adicional estuvo asociada al radar de encuentro, que provocó solicitudes adicionales de",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-006",
+      "section_id": "step9_epica",
+      "start_seconds": 40,
+      "end_seconds": 48,
+      "spoken_excerpt": "procesamiento y contribuyó a la sobrecarga. [2]\n\nAquí entra una idea que hoy, en agentes de IA, vuelve una y",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-007",
+      "section_id": "step9_epica",
+      "start_seconds": 48,
+      "end_seconds": 56,
+      "spoken_excerpt": "otra vez: la robustez no consiste en ejecutar todo lo que llega. Consiste en decidir qué parte del flujo debe",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-008",
+      "section_id": "step9_epica",
+      "start_seconds": 56,
+      "end_seconds": 64,
+      "spoken_excerpt": "preservarse, qué parte puede retrasarse y qué parte puede posponerse sin que el objetivo crítico falle. Según los materiales históricos",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-009",
+      "section_id": "step9_epica",
+      "start_seconds": 64,
+      "end_seconds": 72,
+      "spoken_excerpt": "el Executive usaba planificación por prioridades y, tras reinicios controlados, preservaba o reanudaba las tareas esenciales de guiado y navegación",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-010",
+      "section_id": "step9_epica",
+      "start_seconds": 72,
+      "end_seconds": 80,
+      "spoken_excerpt": "3]\n\nEntonces, incluso con las alarmas encendidas, la situación no era “todo o nada”. Control de Misión evaluó las alarmas",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-011",
+      "section_id": "step9_epica",
+      "start_seconds": 80,
+      "end_seconds": 88,
+      "spoken_excerpt": "y autorizó continuar el descenso. [4] Y, con esa combinación de decisiones humanas y comportamiento del software, el módulo lunar",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-012",
+      "section_id": "step9_epica",
+      "start_seconds": 88,
+      "end_seconds": 96,
+      "spoken_excerpt": "Eagle aterrizó con éxito el 20 de julio de 1969. [5]\n\nMientras pensamos en agentes modernos, es fácil caer en",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-013",
+      "section_id": "step9_epica",
+      "start_seconds": 96,
+      "end_seconds": 104,
+      "spoken_excerpt": "una trampa mental: creer que seguridad significa “no tocar nada”, o “mantener exactamente todos los planes siempre”. Pero el Apollo",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-014",
+      "section_id": "step9_epica",
+      "start_seconds": 104,
+      "end_seconds": 112,
+      "spoken_excerpt": "11 muestra otra lógica: mantener el objetivo requiere mecanismos de gestión del exceso. Y si ese exceso viene de trabajo",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-015",
+      "section_id": "step9_epica",
+      "start_seconds": 112,
+      "end_seconds": 120,
+      "spoken_excerpt": "adicional que llega durante la ejecución, ¿dónde se diseña el límite? ¿En el permiso estático? ¿En la supervisión durante la",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-016",
+      "section_id": "step9_epica",
+      "start_seconds": 120,
+      "end_seconds": 127,
+      "spoken_excerpt": "ejecución? ¿O en ambos, como un circuito cerrado que no se limita a mirar al final",
+      "queries": [
+        "Vista del módulo lunar en descenso, con el panel de instrumentos mostrando alertas 1201/1202 (recreación).",
+        "Diagrama conceptual del Apollo Guidance Computer registrando sobrecarga y plan por prioridades (recreación).",
+        "Imagen del radar de encuentro y el módulo lunar durante la fase de aproximación (recreación)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-001",
+      "section_id": "step10_reconexion",
+      "start_seconds": 127,
+      "end_seconds": 135,
+      "spoken_excerpt": "Vale, y esto es importante: en el Apollo 11 no se “desactivó” el problema por decreto; se gestionó el desbordamiento",
+      "queries": [
+        "Overlay transition to modern dashboard metaphor: 'tasks pending' 'stop switch' 'audit log'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-002",
+      "section_id": "step10_reconexion",
+      "start_seconds": 135,
+      "end_seconds": 143,
+      "spoken_excerpt": "con planificación por prioridades y reinicios controlados, mientras la operación seguía bajo autorización. Ahora conectemos eso con agentes: cuando una",
+      "queries": [
+        "Overlay transition to modern dashboard metaphor: 'tasks pending' 'stop switch' 'audit log'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-003",
+      "section_id": "step10_reconexion",
+      "start_seconds": 143,
+      "end_seconds": 151,
+      "spoken_excerpt": "organización delega trabajo que puede durar y acumular decisiones, ¿dónde debería vivir la responsabilidad cuando algo sale mal",
+      "queries": [
+        "Overlay transition to modern dashboard metaphor: 'tasks pending' 'stop switch' 'audit log'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-001",
+      "section_id": "hook_problema",
+      "start_seconds": 151,
+      "end_seconds": 159,
+      "spoken_excerpt": "Mi lectura inicial es que solemos pensar la seguridad de agentes como permisos: “¿puede entrar a X?” o “¿puede tocar",
+      "queries": [
+        "Diagram: intention -> tool-use -> intermediate steps -> outcome"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-002",
+      "section_id": "hook_problema",
+      "start_seconds": 159,
+      "end_seconds": 167,
+      "spoken_excerpt": "Y?”. Pero el riesgo real aparece en la ejecución cuando el agente sigue trabajando aunque el sistema esté bajo carga",
+      "queries": [
+        "Diagram: intention -> tool-use -> intermediate steps -> outcome"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-003",
+      "section_id": "hook_problema",
+      "start_seconds": 167,
+      "end_seconds": 175,
+      "spoken_excerpt": "o reciba insumos extra.\n\nEl punto no es afirmar una psicología del agente; es observar una mecánica: si el flujo",
+      "queries": [
+        "Diagram: intention -> tool-use -> intermediate steps -> outcome"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-004",
+      "section_id": "hook_problema",
+      "start_seconds": 175,
+      "end_seconds": 183,
+      "spoken_excerpt": "puede desbordarse o desviarse, necesitas saber qué tareas se preservan, cuáles se posponen y qué controles evitan que el exceso",
+      "queries": [
+        "Diagram: intention -> tool-use -> intermediate steps -> outcome"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-005",
+      "section_id": "hook_problema",
+      "start_seconds": 183,
+      "end_seconds": 191,
+      "spoken_excerpt": "termine afectando áreas no previstas. En agentes modernos, esa gestión de exceso no puede ser sólo una revisión previa: tiene",
+      "queries": [
+        "Diagram: intention -> tool-use -> intermediate steps -> outcome"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-006",
+      "section_id": "hook_problema",
+      "start_seconds": 191,
+      "end_seconds": 193,
+      "spoken_excerpt": "que existir durante la ejecución",
+      "queries": [
+        "Diagram: intention -> tool-use -> intermediate steps -> outcome"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-001",
+      "section_id": "hook_cita",
+      "start_seconds": 193,
+      "end_seconds": 201,
+      "spoken_excerpt": "Una reflexión que me ayuda a mantener los pies en la tierra (y que encaja con el problema de seguridad",
+      "queries": [
+        "Visual: 'logs' vs 'understanding'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-002",
+      "section_id": "hook_cita",
+      "start_seconds": 201,
+      "end_seconds": 209,
+      "spoken_excerpt": "es esta: “el registro de lo que ocurrió” no equivale a “comprender por qué ocurrió”.\n\nEn agentes, puedes tener logs",
+      "queries": [
+        "Visual: 'logs' vs 'understanding'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-003",
+      "section_id": "hook_cita",
+      "start_seconds": 209,
+      "end_seconds": 217,
+      "spoken_excerpt": "de “lo hice”, pero necesitarías evidencias suficientes para reconstruir la secuencia de decisiones y así evaluar si la ejecución respetó",
+      "queries": [
+        "Visual: 'logs' vs 'understanding'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-004",
+      "section_id": "hook_cita",
+      "start_seconds": 217,
+      "end_seconds": 219,
+      "spoken_excerpt": "los límites esperados",
+      "queries": [
+        "Visual: 'logs' vs 'understanding'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-001",
+      "section_id": "idea_A",
+      "start_seconds": 219,
+      "end_seconds": 227,
+      "spoken_excerpt": "Primer pilar: la delegación cambia el tipo de riesgo. Si el agente sólo produjera texto, el fallo suele parecer un",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-002",
+      "section_id": "idea_A",
+      "start_seconds": 227,
+      "end_seconds": 235,
+      "spoken_excerpt": "error de contenido. Pero cuando vigila y actúa, el riesgo se vuelve una cadena de pasos intermedios que se ejecutan",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-003",
+      "section_id": "idea_A",
+      "start_seconds": 235,
+      "end_seconds": 243,
+      "spoken_excerpt": "mientras el tiempo y el contexto cambian.\n\nEn el descenso del Apollo 11, la historia no era “se rompió algo",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-004",
+      "section_id": "idea_A",
+      "start_seconds": 243,
+      "end_seconds": 251,
+      "spoken_excerpt": "y ya”; era “la ejecución está recibiendo trabajo adicional y no todo puede cerrarse en cada ciclo”. La planificación por",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-005",
+      "section_id": "idea_A",
+      "start_seconds": 251,
+      "end_seconds": 259,
+      "spoken_excerpt": "prioridades y los reinicios controlados son, precisamente, mecanismos para conservar lo esencial cuando hay exceso. [3]\n\nTraducción a agentes: no",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-006",
+      "section_id": "idea_A",
+      "start_seconds": 259,
+      "end_seconds": 267,
+      "spoken_excerpt": "basta con decir “el objetivo es seguro”. Necesitas poder observar qué transiciones ocurren durante el proceso: cuándo un sistema reintenta",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-007",
+      "section_id": "idea_A",
+      "start_seconds": 267,
+      "end_seconds": 275,
+      "spoken_excerpt": "cuándo prioriza, cuándo pospone, cuándo cambia el plan y qué punto de control decide que todavía se puede continuar.\n\nY",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-008",
+      "section_id": "idea_A",
+      "start_seconds": 275,
+      "end_seconds": 283,
+      "spoken_excerpt": "aquí aparece una tentación habitual: creer que si el resultado final parece inocente, los medios también lo fueron. En seguridad",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-009",
+      "section_id": "idea_A",
+      "start_seconds": 283,
+      "end_seconds": 291,
+      "spoken_excerpt": "eso es demasiado frágil. La práctica responsable requiere cubrir la cadena de ejecución, porque el exceso o la desviación suele",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-010",
+      "section_id": "idea_A",
+      "start_seconds": 291,
+      "end_seconds": 299,
+      "spoken_excerpt": "manifestarse en los pasos intermedios, no sólo en el resultado final.\n\nFinalmente, esto implica una regla organizativa: “parar” debe formar",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-011",
+      "section_id": "idea_A",
+      "start_seconds": 299,
+      "end_seconds": 307,
+      "spoken_excerpt": "parte del diseño. No como un botón mágico, sino como un mecanismo que existe mientras la tarea está en marcha",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-012",
+      "section_id": "idea_A",
+      "start_seconds": 307,
+      "end_seconds": 313,
+      "spoken_excerpt": "y permite detener antes de que la acumulación convierta un problema en daño",
+      "queries": [
+        "Step-by-step chain diagram: task -> intermediate checks -> retry -> audit log",
+        "Visual parallel to Apollo: 'critical tasks preserved' icon"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-001",
+      "section_id": "dato_1",
+      "start_seconds": 313,
+      "end_seconds": 321,
+      "spoken_excerpt": "Ejemplo actual (con límites): el gobierno australiano informó que un agente de OpenAI obtuvo acceso no autorizado, el 18 de",
+      "queries": [
+        "Timeline bar: incident date vs notification months later (sin números adicionales)",
+        "'Unknowns' callout: missing prompt/environment details"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-002",
+      "section_id": "dato_1",
+      "start_seconds": 321,
+      "end_seconds": 329,
+      "spoken_excerpt": "junio, a archivos públicos y no públicos del portal de estadísticas de Medicare administrado por Services Australia; el primer ministro",
+      "queries": [
+        "Timeline bar: incident date vs notification months later (sin números adicionales)",
+        "'Unknowns' callout: missing prompt/environment details"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-003",
+      "section_id": "dato_1",
+      "start_seconds": 329,
+      "end_seconds": 337,
+      "spoken_excerpt": "Anthony Albanese dijo que, según la información disponible, no se accedió a datos personales de pacientes, y la investigación seguía",
+      "queries": [
+        "Timeline bar: incident date vs notification months later (sin números adicionales)",
+        "'Unknowns' callout: missing prompt/environment details"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-004",
+      "section_id": "dato_1",
+      "start_seconds": 337,
+      "end_seconds": 345,
+      "spoken_excerpt": "abierta.\n\nLímite seguro: el material público disponible no detalla el prompt, el entorno ni las decisiones intermedias que llevarían a",
+      "queries": [
+        "Timeline bar: incident date vs notification months later (sin números adicionales)",
+        "'Unknowns' callout: missing prompt/environment details"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-005",
+      "section_id": "dato_1",
+      "start_seconds": 345,
+      "end_seconds": 349,
+      "spoken_excerpt": "caracterizar con precisión “qué paso” convirtió la frontera. (Referencia: medicare-access-boundary",
+      "queries": [
+        "Timeline bar: incident date vs notification months later (sin números adicionales)",
+        "'Unknowns' callout: missing prompt/environment details"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-001",
+      "section_id": "idea_B_explica",
+      "start_seconds": 349,
+      "end_seconds": 357,
+      "spoken_excerpt": "Segundo pilar: trazabilidad de identidades no humanas. Delegar implica que hay “quién” (o “qué entidad” operativa) ejecutando aunque no haya",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-002",
+      "section_id": "idea_B_explica",
+      "start_seconds": 357,
+      "end_seconds": 365,
+      "spoken_excerpt": "una persona firmando cada paso.\n\nCuando un agente actúa, la organización necesita poder responder preguntas concretas: ¿qué identidad usó para",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-003",
+      "section_id": "idea_B_explica",
+      "start_seconds": 365,
+      "end_seconds": 373,
+      "spoken_excerpt": "acceder? ¿Qué política o autorización heredó? ¿Cómo encaja esa política en el tipo de permiso que se pretendía conceder?\n\nAquí",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-004",
+      "section_id": "idea_B_explica",
+      "start_seconds": 373,
+      "end_seconds": 381,
+      "spoken_excerpt": "el punto clave es que trazabilidad no es sólo “tener logs”: tiene que permitir reconstruir una secuencia operativa accionable para",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-005",
+      "section_id": "idea_B_explica",
+      "start_seconds": 381,
+      "end_seconds": 389,
+      "spoken_excerpt": "auditoría y revocación. En otras palabras, no basta con que el sistema pueda registrar; necesitamos que el registro sea suficiente",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-006",
+      "section_id": "idea_B_explica",
+      "start_seconds": 389,
+      "end_seconds": 397,
+      "spoken_excerpt": "para contestar “qué ocurrió, con qué política y bajo qué identidad”.\n\nComo señal del enfoque empresarial emergente, Microsoft anunció funciones",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-007",
+      "section_id": "idea_B_explica",
+      "start_seconds": 397,
+      "end_seconds": 405,
+      "spoken_excerpt": "para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado en nombre de agentes y bloquear en tiempo real",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-008",
+      "section_id": "idea_B_explica",
+      "start_seconds": 405,
+      "end_seconds": 413,
+      "spoken_excerpt": "el envío de información sensible hacia herramientas de IA no autorizadas. También amplió capacidades relacionadas con Purview y Entra para",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-009",
+      "section_id": "idea_B_explica",
+      "start_seconds": 413,
+      "end_seconds": 421,
+      "spoken_excerpt": "clasificación y control de datos.\n\nPero cuidado: anuncio ≠ evidencia de seguridad demostrada. Lo que sí se puede inferir con seguridad",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-010",
+      "section_id": "idea_B_explica",
+      "start_seconds": 421,
+      "end_seconds": 429,
+      "spoken_excerpt": "es el tipo de problema que las empresas están intentando tratar: pasar de gobernar principalmente identidades humanas/aplicaciones a gobernar",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-011",
+      "section_id": "idea_B_explica",
+      "start_seconds": 429,
+      "end_seconds": 434,
+      "spoken_excerpt": "cadenas de acciones ejecutadas en nombre de personas por entidades automatizadas",
+      "queries": [
+        "Identity policy map: human identity -> agent identity -> tool access policy",
+        "Audit trail reconstruction: 'who did what' 'under which policy'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-001",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 434,
+      "end_seconds": 442,
+      "spoken_excerpt": "Microdesafío mental (seguro): supón que tienes tres piezas de información: (1) registro de acceso final, (2) registro interno de ejecución",
+      "queries": [
+        "Three-layer evidence icons with gaps marked 'insufficient to assign responsibility'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-002",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 442,
+      "end_seconds": 450,
+      "spoken_excerpt": "del agente y (3) políticas estáticas que creías aplicadas.\n\nLa pregunta es si, con esas tres capas, podrías distinguir con",
+      "queries": [
+        "Three-layer evidence icons with gaps marked 'insufficient to assign responsibility'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-003",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 450,
+      "end_seconds": 458,
+      "spoken_excerpt": "claridad suficiente entre “cumplió lo pedido” y “interpretó un bloqueo como algo que debía rodear”, y aún así poder detenerlo",
+      "queries": [
+        "Three-layer evidence icons with gaps marked 'insufficient to assign responsibility'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-004",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 458,
+      "end_seconds": 466,
+      "spoken_excerpt": "y asignar responsabilidad.\n\nSi la respuesta es “no del todo”, entonces la trazabilidad todavía no funciona como sistema de responsabilidades",
+      "queries": [
+        "Three-layer evidence icons with gaps marked 'insufficient to assign responsibility'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-005",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 466,
+      "end_seconds": 474,
+      "spoken_excerpt": "funciona como un álbum de capturas. En agentes que operan durante horas, esa diferencia importa, porque el daño puede acumularse",
+      "queries": [
+        "Three-layer evidence icons with gaps marked 'insufficient to assign responsibility'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-006",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 474,
+      "end_seconds": 477,
+      "spoken_excerpt": "antes de que alguien conecte las piezas",
+      "queries": [
+        "Three-layer evidence icons with gaps marked 'insufficient to assign responsibility'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-001",
+      "section_id": "dato_2",
+      "start_seconds": 477,
+      "end_seconds": 485,
+      "spoken_excerpt": "Ejemplo actual (con límites): Microsoft anunció funciones para descubrir y controlar agentes locales, aplicar políticas al tráfico realizado en nombre",
+      "queries": [
+        "Callout: 'product announcement' badge",
+        "Flow diagram: policy enforcement 'real-time block' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-002",
+      "section_id": "dato_2",
+      "start_seconds": 485,
+      "end_seconds": 493,
+      "spoken_excerpt": "de agentes y bloquear en tiempo real el envío de información sensible hacia herramientas de IA no autorizadas, además de",
+      "queries": [
+        "Callout: 'product announcement' badge",
+        "Flow diagram: policy enforcement 'real-time block' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-003",
+      "section_id": "dato_2",
+      "start_seconds": 493,
+      "end_seconds": 501,
+      "spoken_excerpt": "ampliar capacidades relacionadas con Purview y Entra para clasificación y control de datos.\n\nLímite seguro: esto es información de producto",
+      "queries": [
+        "Callout: 'product announcement' badge",
+        "Flow diagram: policy enforcement 'real-time block' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-004",
+      "section_id": "dato_2",
+      "start_seconds": 501,
+      "end_seconds": 509,
+      "spoken_excerpt": "anunciada por Microsoft; no es una evaluación independiente de eficacia frente a incidentes concretos, y el material disponible no prueba",
+      "queries": [
+        "Callout: 'product announcement' badge",
+        "Flow diagram: policy enforcement 'real-time block' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-005",
+      "section_id": "dato_2",
+      "start_seconds": 509,
+      "end_seconds": 513,
+      "spoken_excerpt": "que ese enfoque habría prevenido casos específicos. (Referencia: agent-identity-controls",
+      "queries": [
+        "Callout: 'product announcement' badge",
+        "Flow diagram: policy enforcement 'real-time block' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-001",
+      "section_id": "idea_C",
+      "start_seconds": 513,
+      "end_seconds": 521,
+      "spoken_excerpt": "Tercer pilar (la transformación): el control debe incluir reversibilidad y puntos de control durante la ejecución.\n\nEn el Apollo 11",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-002",
+      "section_id": "idea_C",
+      "start_seconds": 521,
+      "end_seconds": 529,
+      "spoken_excerpt": "las prioridades y los reinicios controlados forman parte de un mecanismo de continuidad: si el sistema está sobrecargado, intenta seguir",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-003",
+      "section_id": "idea_C",
+      "start_seconds": 529,
+      "end_seconds": 537,
+      "spoken_excerpt": "preservando o reanudando tareas esenciales, mientras el conjunto de la operación se mantiene bajo evaluación y autorización. [3][4]\n\nLa",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-004",
+      "section_id": "idea_C",
+      "start_seconds": 537,
+      "end_seconds": 545,
+      "spoken_excerpt": "analogía útil para agentes es operativa, no mágica: si un agente puede acumular acciones, necesitas circuitos para frenar y auditar",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-005",
+      "section_id": "idea_C",
+      "start_seconds": 545,
+      "end_seconds": 553,
+      "spoken_excerpt": "sin depender de que “la intención” sea suficiente. En diseño de seguridad, eso se traduce en checkpoints accionables a lo",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-006",
+      "section_id": "idea_C",
+      "start_seconds": 553,
+      "end_seconds": 561,
+      "spoken_excerpt": "largo de la secuencia: cuándo detener antes de ejecutar acciones con impacto externo, cuándo exigir confirmación, cuándo cortar persistencias y",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-007",
+      "section_id": "idea_C",
+      "start_seconds": 561,
+      "end_seconds": 569,
+      "spoken_excerpt": "cuándo registrar decisiones de manera que la organización pueda investigar y revertir.\n\nUn caso límite que se aproxima a “agentes",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-008",
+      "section_id": "idea_C",
+      "start_seconds": 569,
+      "end_seconds": 577,
+      "spoken_excerpt": "que vigilan y actúan” es la ampliación de Amazon Seller Assistant con memoria persistente y flujos que, según Amazon, pueden",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-009",
+      "section_id": "idea_C",
+      "start_seconds": 577,
+      "end_seconds": 585,
+      "spoken_excerpt": "monitorizar inventario, precios y salud de cuenta 24/7 incluso cuando el vendedor no está conectado. Amazon afirma que los",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-010",
+      "section_id": "idea_C",
+      "start_seconds": 585,
+      "end_seconds": 593,
+      "spoken_excerpt": "usuarios pueden definir reglas en lenguaje natural y elegir entre recomendaciones o acciones con aprobación, y que cada acción queda",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-011",
+      "section_id": "idea_C",
+      "start_seconds": 593,
+      "end_seconds": 601,
+      "spoken_excerpt": "registrada. También menciona que más del 90% de sus socios vendedores tiene acceso al asistente y que aceptan recomendaciones en",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-012",
+      "section_id": "idea_C",
+      "start_seconds": 601,
+      "end_seconds": 609,
+      "spoken_excerpt": "más del 90% de los casos.\n\nCon límites claros: esto es un anuncio corporativo, y las métricas reportadas son afirmaciones",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-013",
+      "section_id": "idea_C",
+      "start_seconds": 609,
+      "end_seconds": 617,
+      "spoken_excerpt": "de la empresa, no evaluación independiente del impacto. Aun así, el punto para nuestra pregunta es el mismo: cuando la",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-014",
+      "section_id": "idea_C",
+      "start_seconds": 617,
+      "end_seconds": 625,
+      "spoken_excerpt": "delegación se vuelve continua, la seguridad no puede esperar a que alguien “mire más tarde”. El control debe vivir en",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-015",
+      "section_id": "idea_C",
+      "start_seconds": 625,
+      "end_seconds": 633,
+      "spoken_excerpt": "la ejecución como secuencia con puntos de parada y auditoría.\n\nPor eso cierro el argumento con la tesis evolucionada: la",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-016",
+      "section_id": "idea_C",
+      "start_seconds": 633,
+      "end_seconds": 641,
+      "spoken_excerpt": "seguridad de agentes se juega en supervisar ejecución como secuencia —intención vs. medios, persistencia y escalamiento— y exigir trazabilidad accionable",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-017",
+      "section_id": "idea_C",
+      "start_seconds": 641,
+      "end_seconds": 649,
+      "spoken_excerpt": "para detener, auditar y asignar responsabilidad cuando aparezca el primer cruce de frontera. (Y, para que la analogía sea honesta",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-018",
+      "section_id": "idea_C",
+      "start_seconds": 649,
+      "end_seconds": 657,
+      "spoken_excerpt": "el Apollo Guidance Computer era determinista y con objetivos físicos definidos; la IA moderna trabaja con incertidumbre semántica, así que",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-019",
+      "section_id": "idea_C",
+      "start_seconds": 657,
+      "end_seconds": 662,
+      "spoken_excerpt": "no podemos trasladar automáticamente garantías técnicas de un mundo a otro",
+      "queries": [
+        "Checkpoint network diagram: action stages with 'approval required' 'audit log' 'stop mechanism'",
+        "Marketplace agent loop illustration: monitoring -> rule -> approval -> action -> record"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-001",
+      "section_id": "story_payoff",
+      "start_seconds": 662,
+      "end_seconds": 670,
+      "spoken_excerpt": "En el Apollo 11, el problema no se resolvió eliminando la sobrecarga: el Executive recibió alarmas 1201 y 1202 por",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-002",
+      "section_id": "story_payoff",
+      "start_seconds": 670,
+      "end_seconds": 678,
+      "spoken_excerpt": "desbordamiento, con contribución de trabajo adicional asociado al radar de encuentro. Lo decisivo fue que el software gestionó la situación",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-003",
+      "section_id": "story_payoff",
+      "start_seconds": 678,
+      "end_seconds": 686,
+      "spoken_excerpt": "mediante planificación por prioridades y reinicios controlados, preservando o reanudando tareas esenciales de guiado y navegación; y que Control de",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-004",
+      "section_id": "story_payoff",
+      "start_seconds": 686,
+      "end_seconds": 694,
+      "spoken_excerpt": "Misión evaluó las alarmas y autorizó continuar, lo que culminó en el aterrizaje exitoso del módulo lunar Eagle. [1][2",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-005",
+      "section_id": "story_payoff",
+      "start_seconds": 694,
+      "end_seconds": 702,
+      "spoken_excerpt": "3][4][5]\n\nLa analogía con agentes ayuda a entender una estructura: robustez implica degradación controlada. Pero no prueba que",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-006",
+      "section_id": "story_payoff",
+      "start_seconds": 702,
+      "end_seconds": 710,
+      "spoken_excerpt": "un mecanismo equivalente en IA garantice seguridad por sí solo: sin definiciones verificables de límites y sin trazabilidad accionable, “priorizar",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-007",
+      "section_id": "story_payoff",
+      "start_seconds": 710,
+      "end_seconds": 715,
+      "spoken_excerpt": "puede significar cosas distintas según el contexto. (Límite inequívoco de la analogía",
+      "queries": [
+        "Overlay recap: alarms 1201/1202 -> 'priority scheduling' -> 'controlled restart' -> 'navigation guidance preserved'",
+        "Split-screen: Apollo critical tasks vs agent tasks labeled 'intermediate steps' (conceptual)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-001",
+      "section_id": "cierre",
+      "start_seconds": 715,
+      "end_seconds": 723,
+      "spoken_excerpt": "Si algo cambia al mirar este caso es el tipo de responsabilidad que buscamos: no basta con “dar permisos” o",
+      "queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-002",
+      "section_id": "cierre",
+      "start_seconds": 723,
+      "end_seconds": 731,
+      "spoken_excerpt": "con confiar en la intención declarada. Cuando una tarea se delega y puede durar, la seguridad depende de poder monitorear",
+      "queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-003",
+      "section_id": "cierre",
+      "start_seconds": 731,
+      "end_seconds": 739,
+      "spoken_excerpt": "la ejecución como secuencia: intención vs. medios, persistencia, escalamiento y puntos de control reversibles.\n\nY aquí queda la pregunta: ¿podría",
+      "queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-004",
+      "section_id": "cierre",
+      "start_seconds": 739,
+      "end_seconds": 747,
+      "spoken_excerpt": "tu organización detener a un agente cuando cruza una “frontera” que tú no autorizaste, y además demostrar quién hizo qué",
+      "queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-005",
+      "section_id": "cierre",
+      "start_seconds": 747,
+      "end_seconds": 755,
+      "spoken_excerpt": "bajo qué política? Si te interesa esta conversación sobre gobernanza y agentes, suscríbete para seguir pensando con evidencia, no con",
+      "queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-006",
+      "section_id": "cierre",
+      "start_seconds": 755,
+      "end_seconds": 756,
+      "spoken_excerpt": "promesas",
+      "queries": [
+        "End frame: 'intención' vs 'medios' with checkpoint icons 'stop' 'audit' 'reversible'",
+        "On-screen question: '¿podemos parar y explicar la cadena de ejecución?'"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    }
+  ],
+  "policy": "Planning only; use repository acquisition/licensing/density gates before downloads."
+}
