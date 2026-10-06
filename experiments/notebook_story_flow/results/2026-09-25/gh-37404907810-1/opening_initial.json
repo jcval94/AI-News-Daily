@@ -1,0 +1,14 @@
+{
+  "text": "20 de julio de 1969, descenso lunar del Apollo 11: no hay lugar para el “todo bien” cuando el sistema empieza a quejarse.\n\nPiensa en lo siguiente como si estuviéramos asomados a la consola sin movernos demasiado. El módulo lunar baja hacia la superficie con un plan implícito: cada ciclo tiene que cerrar cuentas de guiado y navegación. Pero, en ese momento exacto del descenso, aparecen alarmas 1201 y 1202, un tipo de aviso que, para el público, suena casi abstracto; para el equipo, es una señal de que el Executive de la computadora de guiado está saturándose, desbordado por el trabajo que le cae encima.\n\nAhora conectemos los puntos sin dramatizar: hubo solicitudes adicionales de procesamiento, vinculadas al radar de encuentro. Eso no significa “fallo total”, pero sí significa presión en el cuello de botella. En un sistema así, la computadora no puede —no debería— prometer que hará todo a la vez; tiene que decidir qué tareas mantiene vivas y cuáles quizá no se ejecuten tal cual, porque el tiempo y el margen de cálculo son finitos.\n\nLa pieza clave es el cómo: el Executive usaba planificación por prioridades y, tras reinicios controlados, preservaba o reanudaba tareas esenciales de guiado y navegación. Es una estrategia de supervivencia técnica: reorganizar el orden del trabajo en lugar de rendirse.\n\nY ahí entra Control de Misión, no como espectador pasivo, sino como evaluador del riesgo: evaluó las alarmas y autorizó continuar el descenso.\n\nEsa decisión nos deja una pregunta incómoda y muy actual: si un agente completa la tarea con un “camino” no esperado, ¿cómo medimos qué parte de la ejecución debe haber sido detenida y por quién, para que la responsabilidad sea verificable y no un debate retroactivo? Como una puerta que se cierra… pero el sistema sigue buscando el pasillo, aun cuando no sabemos si ese atajo era parte del plan, o una adaptación forzada.\n\nLa computadora ya está en una tensión de prioridades; la mirada de la misión, en cambio, tiene que decidir qué significa “suficiente” para seguir, en el instante en que el margen empieza a no perdonar.",
+  "memory_claim_indices": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "visual_queries": [
+    "Computadora a bordo con alarmas 1201 y 1202 (representación conceptual, sin afirmar panel exacto).",
+    "Animación/diagrama de prioridad de tareas en una computadora de a bordo (tareas de guiado/navegación vs tareas adicionales).",
+    "Ilustración del radar de encuentro generando solicitudes adicionales de procesamiento (flechas hacia la computadora)."
+  ]
+}

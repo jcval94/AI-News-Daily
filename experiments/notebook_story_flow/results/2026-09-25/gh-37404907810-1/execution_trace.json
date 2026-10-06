@@ -1,0 +1,94 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 15.876,
+    "usage": {
+      "prompt_tokens": 22919,
+      "output_tokens": 2385,
+      "total_tokens": 25304
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 3.729,
+    "usage": {
+      "prompt_tokens": 2653,
+      "output_tokens": 589,
+      "total_tokens": 3242
+    }
+  },
+  {
+    "step": "development",
+    "agent": "notebook_development",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 13.324,
+    "usage": {
+      "prompt_tokens": 13448,
+      "output_tokens": 2478,
+      "total_tokens": 15926
+    }
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 4.008,
+    "usage": {
+      "prompt_tokens": 16769,
+      "output_tokens": 570,
+      "total_tokens": 17339
+    }
+  },
+  {
+    "step": "factual_review",
+    "agent": "notebook_factual_review",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 7.908,
+    "usage": {
+      "prompt_tokens": 11347,
+      "output_tokens": 1410,
+      "total_tokens": 12757
+    }
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "error",
+    "elapsed_seconds": 18.201,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\nsections.0\n  Value error, step9_epica: reserved outcome claims belong only to story_payoff [type=value_error, input_value={'id': 'step9_epica', 'te...les de procesamiento.']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 2,
+    "status": "success",
+    "elapsed_seconds": 19.809,
+    "usage": {
+      "prompt_tokens": 13142,
+      "output_tokens": 3438,
+      "total_tokens": 16580
+    }
+  }
+]

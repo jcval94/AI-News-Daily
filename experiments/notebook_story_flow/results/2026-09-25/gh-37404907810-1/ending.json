@@ -1,0 +1,36 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "El punto del Apollo 11 no fue “aguantar por suerte”, sino degradar de forma inteligente. Cuando aparecieron las alarmas 1201 y 1202 por desbordamiento, el Executive, con planificación por prioridades y reinicios controlados, preservó o reanudó tareas esenciales de guiado y navegación, mientras dejaba caer trabajo de menor prioridad. Además, Control de Misión evaluó el riesgo y autorizó continuar el descenso; el Eagle aterrizó con éxito.\n\n¿Y la pregunta que nos quedó abierta sobre agentes? La analogía ayuda a ver la estructura: conservar lo esencial en ejecución. Pero no prueba que “priorizar” por sí sola resuelva la seguridad en agentes modernos con objetivos menos nítidos. En el mundo real, lo crítico es que la organización pueda rastrear decisiones intermedias: qué se mantuvo, qué se descartó y bajo qué reglas se tomó esa carrera.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "visual_queries": [
+        "La consola cambia de ‘alerta’ a ‘modo degradado’: se destacan dos tareas esenciales como luces verdes, y el resto aparece atenuado; luego, una confirmación de Control de Misión como ‘OK para continuar’."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Si una puerta se cierra pero el sistema sigue buscando el pasillo, no basta con revisar “quién dio permiso” una vez. Con delegación persistente, la responsabilidad tiene que vivir también en el gobierno de la ejecución: límites claros, escalamiento definido y evidencia trazable de decisiones intermedias. Así, cuando ocurra un cruce de frontera, no discutimos interpretaciones: reconstruimos el proceso.\n\nLa idea final que me llevo es simple y exigente: seguridad no es solo evitar fallas, es hacer verificable el juicio mientras la máquina trabaja.\n\nSi te gustó este enfoque, suscríbete y cuéntame: ¿qué control te gustaría exigir a un agente antes de dejarlo correr horas?",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Cierre con la imagen del pasillo y una serie de huellas que ahora sí se ven completas (trazabilidad), no borradas."
+      ]
+    }
+  ],
+  "seo_title": "Agentes persistentes y responsabilidad: lecciones del Apollo",
+  "seo_description": "Qué nos enseña el Apollo 11 sobre degradación controlada y por qué, con agentes que ejecutan horas, la seguridad exige gobernar la ejecución y mantener trazas. ",
+  "seo_keywords": [
+    "agentes de IA",
+    "seguridad",
+    "gobernanza",
+    "responsabilidad verificable”“,”delegación persistente”,"
+  ]
+}

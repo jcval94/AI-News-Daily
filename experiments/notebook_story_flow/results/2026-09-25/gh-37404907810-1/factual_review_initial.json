@@ -1,0 +1,34 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 6.8,
+  "invented_details": [
+    "[hook_cita] “Hay una idea que me gusta usar como regla mental: delegar no es abdicar.” → Es una cita/afirmación atribuida a una “idea que me gusta usar” (opinión del narrador). No hay respaldo factual en el material provisto; además funciona como sentencia general, pero no corresponde a un hecho verificable con los datos dados.",
+    "[step9_epica] “20 de julio de 1969, descenso lunar del Apollo 11:” → El draft afirma la fecha de forma explícita en la escena. En la memoria seleccionada se indica “period: 20 de julio de 1969” y “Apollo 11 … aterrizó con éxito el 20 de julio”, lo cual respalda el día; sin embargo, el texto enlaza esa fecha con el inicio de la escena de alarmas sin marcar la incertidumbre sobre el “momento exacto” (la memoria advierte diferencias divulgativas).",
+    "[story_payoff] “El punto del Apollo 11 no fue “aguantar por suerte”, sino degradar de forma inteligente.” → Contraste interpretativo enmarcado como conclusión. No es un hecho verificable; es una interpretación del narrador (comparación no respaldada por un criterio documental).",
+    "[story_payoff] “¿Y la pregunta que nos quedó abierta sobre agentes? La analogía ayuda a ver la estructura…” → Analogía/interpretación del narrador. No es un hecho sobre IA; no prueba seguridad en agentes modernos (aunque la limitación de analogía esté declarada en plan, aquí no se vuelve a afirmar explícitamente)."
+  ],
+  "source_issues": [
+    "[step9_epica/story_payoff] En el draft no se usan evidence_ids para las afirmaciones del Apollo (aunque el cierre del guion usa memory_claim_indices). Se incluyen detalles narrativos (escena/flow) pero la sección no enlaza de forma trazable a las verified_claims específicas (1201/1202, planificación por prioridades, reinicios controlados, evaluación de Control de Misión, aterrizaje).",
+    "[dato_1] La evidencia de Medicare está indicada por evidencia_id, pero el texto del guion mezcla resumen con “(Referencia: medicare-access-boundary)”. No se identifican qué partes corresponden a qué supported_facts; esto dificulta auditoría frase-por-frase.",
+    "[idea_B_explica] Se afirma explícitamente que la “seguridad exige gobernar la cadena de acciones durante la ejecución” con bullets. Esto está alineado con hipótesis, pero el guion lo formula como requisito normativo sin dejar claro que depende del caso/teoría (no de una verificación factual).",
+    "[idea_C] Se afirma “Nadie sabe quién aprobó qué” y “la responsabilidad se vuelve un mito.” Son afirmaciones causales generalizadas sin evidencia en las fuentes proporcionadas. Están en el terreno interpretativo pero formuladas como hechos sobre organizaciones en general."
+  ],
+  "unsupported_claims": [
+    "[hook_problema] “cuando el trabajo es persistente —cuando dura horas— el agente no solo entrega un resultado: va tomando decisiones intermedias.” → No está respaldado por las fuentes; es una generalización sobre cómo “agentes” operan en general (podría ser cierto para algunos, pero no está verificado aquí).",
+    "[hook_problema] “Como una puerta que se cierra, pero el sistema sigue buscando el pasillo.” → Escena/analogía. No es un hecho; está presentado como imagen narrativa, pero se vuelve implícito como mecanismo.",
+    "[idea_A] “Con agentes, la distancia entre ‘lo relacionado’ y ‘lo autorizado’ puede volverse borrosa.” → Interpretación/generalización no verificada.",
+    "[idea_B_explica] “Así que la responsabilidad no puede quedarse en ‘quien aprobó la intención’…” → Prescripción/interpretación que no se deduce como hecho de las evidencias; la memoria lo plantea como tesis, pero el guion lo formula como regla factual.",
+    "[idea_B_desafio] “Este es el tipo de situación donde las organizaciones terminan discutiendo interpretación: no hechos. Y la historia se vuelve un juicio ex post.” → Generalización no respaldada.",
+    "[idea_C] “la seguridad deja de ser solo un tema de permisos estáticos. Se vuelve un tema de identidad operacional…” → Formulación teórica que no es un hecho demostrado por las fuentes.",
+    "[idea_C] “Nadie sabe quién aprobó qué ‘cuando el agente estaba en plena carrera’.” → Afirmación universal (“nadie”) sin evidencia.",
+    "[cierre] “Así, cuando ocurra un cruce de frontera, no discutimos interpretaciones: reconstruimos el proceso.” → Promesa causal no respaldada."
+  ],
+  "repair_instructions": [
+    "Separar hechos y tesis en el guion: mantén las analogías como analogías. Donde ahora haya causalidad o universalidad (“nadie”, “la seguridad deja de ser…”, “se reconstruye el proceso”), reformula como hipótesis/objetivo: p. ej., “una forma de diseñarlo es…”, “esto sugiere…”, “podría requerir…”.",
+    "Para el Apollo (sección step9_epica y story_payoff), ata explícitamente cada afirmación factual a las verified_claims de la memoria: alarmas 1201/1202, contribución del radar, planificación por prioridades, reinicios controlados/preservación de tareas esenciales, evaluación por Control de Misión y aterrizaje. Elimina o marca como no verificable cualquier añadido narrativo de “momento exacto” o “qué decisiones tomó el software” más allá de lo respaldado.",
+    "En las secciones de agentes, marcar explícitamente que las afirmaciones sobre “decisiones intermedias” y “persistencia exige…” son tesis/hipótesis, no hechos universales. Usa lenguaje tipo: “en muchos diseños”, “como hipótesis”, “a nivel de gobernanza, podría requerirse…”.",
+    "Reemplazar universalidades y promesas por enunciados condicionales y no absolutos. Ejemplos de reparación: cambiar “la responsabilidad… tiene que vivir también…” por “probablemente necesite…”, y cambiar “no discutimos interpretaciones” por “la meta es poder reconstruir…”.",
+    "Asegura trazabilidad interna: si usas evidence_ids/memory_claim_indices, al menos en las frases principales de cada sección deja claro qué conjunto de claims respalda (p. ej., Medicare: “acceso no autorizado el 18 de junio…”, “no se accedió a datos personales según…”, etc.)."
+  ]
+}
