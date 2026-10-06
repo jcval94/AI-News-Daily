@@ -1,0 +1,41 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 15.266,
+    "usage": {
+      "prompt_tokens": 22919,
+      "output_tokens": 2179,
+      "total_tokens": 25098
+    }
+  },
+  {
+    "step": "write",
+    "agent": "notebook_write",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 21.031,
+    "usage": {
+      "prompt_tokens": 13983,
+      "output_tokens": 3760,
+      "total_tokens": 17743
+    }
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 20.107,
+    "usage": {
+      "prompt_tokens": 18061,
+      "output_tokens": 3569,
+      "total_tokens": 21630
+    }
+  }
+]
