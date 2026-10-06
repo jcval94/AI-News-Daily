@@ -62,7 +62,9 @@ hechos reservados del desenlace. El resultado llega únicamente al escritor del 
 5. Orden, apertura extensa (objetivo 350–400; tolerancia 300–450 palabras), tamaños
    razonables de bloques, referencias,
    final literal de apertura, primera evidencia actual, CTA y duración se validan
-   con Python. Los demás presupuestos por bloque son orientativos en este
+   con Python. La apertura admite fuentes históricas, nunca IDs de noticias
+   actuales que falseen el tiempo de primera evidencia. Los demás presupuestos
+   por bloque son orientativos en este
    experimento; `idea_C` conserva la flexibilidad extensa del notebook. Los IDs
    de evidencia e índices históricos se entregan como enums en el schema del
    proveedor, y la última frase se deriva del texto real también después de una

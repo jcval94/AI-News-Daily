@@ -41,6 +41,8 @@ una sola charla; no anuncies la estructura ni cierres cada bloque con una morale
 1. step9_epica: 350–400 palabras. Fecha/periodo y lugar documentados al comienzo,
 conflicto humano concreto, tensión creciente; DETENTE antes del desenlace, en el
 punto de máxima tensión. opening_last_sentence debe ser su última frase literal.
+La apertura es únicamente histórica: evidence_ids queda vacío; sus fuentes van
+en memory_claim_indices. No etiquetes una reflexión histórica como noticia actual.
 2. step10_reconexion: relaciona la pregunta sin contar el final histórico.
 3. hook_problema: experiencia reconocible y primeras consecuencias actuales.
 4. hook_cita: reflexión propia; cita SOLO si el texto exacto está en fuentes.

@@ -239,6 +239,8 @@ def validate_draft(draft: ScriptDraft, plan: StoryPlan, memory: dict[str, Any]) 
         if "<!--" in row.text or "```" in row.text:
             issues.append(f"{row.id}: spoken text contains markup/instructions")
     opening, payoff = draft.sections[0], draft.sections[-2]
+    if opening.evidence_ids:
+        issues.append("historical opening cannot carry current-news evidence references")
     if not opening.text.rstrip().endswith(draft.opening_last_sentence.strip()):
         issues.append("opening_last_sentence is not the literal ending")
     if not set(opening.memory_claim_indices) or not set(opening.memory_claim_indices) <= set(plan.setup_claim_indices):

@@ -259,6 +259,14 @@ class ContractTests(unittest.TestCase):
         schema = run.scoped_schema(ScriptDraft, {"plan": self.plan.model_dump(), "selected_memory": self.memory})
         schema.model_validate(self.draft.model_dump())
 
+    def test_repair_cannot_fake_first_news_timing_with_historical_opening_reference(self):
+        self.draft.sections[0].evidence_ids = ["e-one"]
+        self.assertTrue(any("historical opening cannot carry" in issue
+                            for issue in run.validate_draft(self.draft, self.plan, self.memory)))
+        schema = run.scoped_schema(ScriptDraft, {"plan": self.plan.model_dump(), "selected_memory": self.memory})
+        with self.assertRaisesRegex(ValidationError, "historical opening cannot carry"):
+            schema.model_validate(self.draft.model_dump())
+
     def test_opening_word_budget_enters_hardened_schema_repair(self):
         payload = {"text": " ".join(["palabra"] * 299), "memory_claim_indices": [1],
                    "visual_queries": ["archive"]}
