@@ -229,6 +229,19 @@ class ContractTests(unittest.TestCase):
         payload["sections"][0]["evidence_ids"] = ["documented-event"]
         with self.assertRaises(ValidationError):
             schema.model_validate(payload)
+        payload = self.draft.model_dump()
+        payload["sections"][0]["memory_claim_indices"] = [1, 2]
+        with self.assertRaisesRegex(ValidationError, "reserved outcome"):
+            schema.model_validate(payload)
+
+    def test_development_schema_requires_all_control_evidence_before_ending(self):
+        schema = run.scoped_schema(DevelopmentDraft, {"allowed_memory_indices": [1],
+                                  "allowed_evidence_ids": ["e-one", "e-two"]})
+        payload = {"sections": [row.model_dump() for row in self.draft.sections[1:10]]}
+        with self.assertRaisesRegex(ValidationError, "e-two"):
+            schema.model_validate(payload)
+        payload["sections"][-1]["evidence_ids"] = ["e-two"]
+        schema.model_validate(payload)
 
     def test_opening_word_budget_enters_hardened_schema_repair(self):
         payload = {"text": " ".join(["palabra"] * 299), "memory_claim_indices": [1],

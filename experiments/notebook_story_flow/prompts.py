@@ -152,6 +152,11 @@ La apertura ya está escrita y no se modifica. Conserva su pregunta abierta dura
 todo el desarrollo: no conoces ni debes completar el resultado histórico.
 Usa las tres ideas del plan y SOLO sus evidencias actuales. evidence_ids usa IDs
 de ledger, nunca IDs de memoria. historical_claims incluye únicamente setup.
+Debes incorporar al menos un hecho atribuido de CADA required_evidence_id y
+declararlo en las referencias de la sección donde aparezca. No basta con mencionar
+dos casos y omitir el tercero. Puedes combinar varios casos dentro de una idea;
+no conviertas esto en una sección por noticia. Si recibes un error de cobertura,
+añade la evidencia faltante al desarrollo apropiado, sin reescribir la historia.
 Respeta los presupuestos orientativos de section_specs; evita expandir datos y
 retos en ensayos propios. El dato debe ser atribuido y breve; el reto, seguro.
 La reflexión no incluye citas inventadas. Incluye evidencia actual antes de idea_B.

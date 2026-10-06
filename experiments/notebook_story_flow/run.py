@@ -11,7 +11,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import Field, create_model
+from pydantic import Field, create_model, model_validator
 
 from experiments.notebook_story_flow import prompts
 from experiments.notebook_story_flow.contracts import (
@@ -312,11 +312,29 @@ def scoped_schema(schema: Any, context: dict[str, Any]) -> Any:
                             memory_claim_indices=(list[Literal[historical]], Field(min_length=1)))
     evidence = tuple(context.get("allowed_evidence_ids") or
                      [row["evidence_id"] for row in context["plan"]["ledger"]])
+    reserved = set(context.get("plan", {}).get("payoff_claim_indices", []))
+
+    def check_section_references(value: Any) -> Any:
+        if value.id != "story_payoff" and set(value.memory_claim_indices) & reserved:
+            raise ValueError(f"{value.id}: reserved outcome claims belong only to story_payoff")
+        return value
+
     section = create_model("ScopedSection", __base__=Section,
+        __validators__={"check_reserved_outcome": model_validator(mode="after")(check_section_references)},
         evidence_ids=(list[Literal[evidence]], Field(default_factory=list, max_length=3)),
         memory_claim_indices=(list[Literal[historical]], Field(default_factory=list)))
     count = 9 if schema is DevelopmentDraft else 12 if schema is ScriptDraft else 2
+
+    def check_coverage(value: Any) -> Any:
+        if schema in {DevelopmentDraft, ScriptDraft}:
+            used = {identifier for row in value.sections for identifier in row.evidence_ids}
+            missing = sorted(set(evidence) - used)
+            if missing:
+                raise ValueError("Include a grounded fact from every required current evidence: " + ", ".join(missing))
+        return value
+
     return create_model(f"Scoped{schema.__name__}", __base__=schema,
+                        __validators__={"check_evidence_coverage": model_validator(mode="after")(check_coverage)},
                         sections=(list[section], Field(min_length=count, max_length=count)))
 
 
@@ -344,7 +362,8 @@ async def generate_flow(backend: Any, context: dict[str, Any], plan: StoryPlan,
     middle_context = {k: v for k, v in context.items() if k != "selected_memory"}
     middle_context.update(opening=opening.text, historical_claims=setup,
                           allowed_memory_indices=plan.setup_claim_indices,
-                          allowed_evidence_ids=[row.evidence_id for row in plan.ledger])
+                          allowed_evidence_ids=[row.evidence_id for row in plan.ledger],
+                          required_evidence_ids=[row.evidence_id for row in plan.ledger])
     write_json(out / "prompt_development.json", {"instruction": prompts.DEVELOPMENT, "context": middle_context})
     development = await backend.call("development", prompts.DEVELOPMENT, DevelopmentDraft, middle_context, trace)
     write_json(out / "development.json", development.model_dump())
