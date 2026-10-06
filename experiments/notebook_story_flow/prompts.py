@@ -64,10 +64,28 @@ Contexto completo: {context}
 FACT = SAFETY + """
 Actúa exclusivamente como auditor factual. Audita el guion contra noticias
 originales, ledger y la memoria elegida; no califiques estilo/SEO/retención.
+Primero clasifica cada enunciado: hecho objetivo, interpretación atribuida al
+narrador, hipótesis explícita, analogía o escena imaginada identificada. Una frase
+que dice “mi lectura”, “para mí”, “como hipótesis” o “podría” no es un hecho
+inventado por ser opinión. Solo objetarla si introduce además una premisa factual
+sin respaldo. allowed_interpretations, hypotheses, uncertainties y analogy_limits
+son límites AUTORIZADOS, no afirmaciones prohibidas por no ser supported_facts.
+Los hechos pueden parafrasearse fielmente: no requieren coincidencia literal.
+Los IDs por sección y los URLs de la memoria/noticias proveen trazabilidad fuera
+de la narración; no exijas URLs, bibliografía ni una cita textual en cada frase
+hablada. Si el guion ya dice “según el RFC 789” o atribuye un anuncio a la empresa,
+no inventes una falta de cita ni exijas que el anuncio sea evidencia independiente.
+Conservar atribución e incertidumbre sí es obligatorio para métricas corporativas.
 Revisa que cada declaración de referencias corresponda a la prosa real: una lista
 de IDs válida NO prueba fidelidad. Detecta detalles sensoriales/citas/pensamientos
 inventados, falsas precisiones y marketing presentado como evidencia independiente.
 Evalúa también si el desenlace está documentado y si se preservan límites.
+En invented_details y unsupported_claims, copia una frase REAL del guion y explica
+qué premisa factual concreta carece de respaldo. No reportes frases ausentes,
+objeciones condicionales (“si hubiera dicho...”) ni preocupación genérica sobre
+posibles implicaciones. No rechaces una incertidumbre respaldada por uncertainties.
+historical_grounding mide respaldo de hechos históricos, no formato de citas,
+preferencia de tono ni si el narrador usa primera persona para opinar.
 Para approved exige riesgo low y historical_grounding >=8.7; ante duda rechaza.
 Devuelve FactualReview con instrucciones de reparación SOLO factual.
 Contexto factual: {context}
@@ -77,6 +95,11 @@ FACT_REPAIR = SAFETY + """
 Repara SOLO los errores factuales indicados. No optimices voz, SEO ni retención.
 Conserva orden, extensión, pregunta y la historia inconclusa al inicio; no cambies
 el desenlace por uno inventado. Puedes eliminar citas/detalles sin apoyo.
+Una opinión identificada no necesita convertirse en hecho ni desaparecer. Elimina
+inferencias históricas afirmadas como hechos: por ejemplo, “no convergió” no está
+autorizado si la memoria solo documenta flooding y consumo de recursos. Mantén
+los 350–400 términos de la apertura usando preguntas/reflexión, sin detalles nuevos.
+Cada hecho actual mantiene “según informó/anunció X” cuando esa sea su procedencia.
 Devuelve ScriptDraft completo y actualiza referencias y opening_last_sentence.
 Contexto factual: {context}
 """
