@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "experiment": "notebook_story_flow",
+  "episode_date": "2026-09-25",
+  "publishable": false,
+  "status": "failure",
+  "notebook_sha256": "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16",
+  "started_at_utc": "2026-10-06T02:22:16.047374+00:00",
+  "model": "gpt-5.4-nano",
+  "max_logical_calls": 12,
+  "max_attempts_per_call": 3,
+  "words_per_minute": 150,
+  "experiment_code_sha": "f2b3c3c7c302c0103d4bc4e005950802f3185fa9",
+  "control_workflow_run_id": "",
+  "control_code_sha": "",
+  "news_snapshot_sha256": "aeb429ca1ecf7c6ff95886722ad98f8c52dc2fbff6be8830c37471cf5e09f910",
+  "profile_hashes": {
+    "voice": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+    "discourse": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375"
+  },
+  "error_type": "ValidationError",
+  "finished_at_utc": "2026-10-06T02:22:45.267306+00:00",
+  "attempted_calls": 4,
+  "emitted_usage": {
+    "prompt_tokens": 22919,
+    "output_tokens": 2425,
+    "reasoning_tokens": 0,
+    "total_tokens": 25344
+  }
+}

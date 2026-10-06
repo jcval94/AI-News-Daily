@@ -1,0 +1,57 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 17.37,
+    "usage": {
+      "prompt_tokens": 22919,
+      "output_tokens": 2425,
+      "total_tokens": 25344
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "error",
+    "elapsed_seconds": 3.39,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedOpening\ntext\n  Value error, Opening contains 337 spoken words; required 350–400, target 375 [type=value_error, input_value='20 de julio de 1969, dur...orizó explícitamente?', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 2,
+    "status": "error",
+    "elapsed_seconds": 3.761,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedOpening\ntext\n  Value error, Opening contains 333 spoken words; required 350–400, target 375 [type=value_error, input_value='Durante el descenso luna...orizó explícitamente?', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 3,
+    "status": "error",
+    "elapsed_seconds": 3.284,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedOpening\ntext\n  Value error, Opening contains 329 spoken words; required 350–400, target 375 [type=value_error, input_value='Durante el descenso luna... de caer sobre su mesa.', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  }
+]
