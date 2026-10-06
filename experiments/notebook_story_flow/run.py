@@ -234,7 +234,7 @@ def validate_draft(draft: ScriptDraft, plan: StoryPlan, memory: dict[str, Any]) 
             issues.append(f"{row.id}: block is empty or disproportionately long")
         if not set(row.evidence_ids) <= evidence or not set(row.memory_claim_indices) <= historical:
             issues.append(f"{row.id}: unknown evidence or memory claim reference")
-        if row.id != "story_payoff" and set(row.memory_claim_indices) & set(plan.payoff_claim_indices):
+        if row.id in SECTION_IDS[:10] and set(row.memory_claim_indices) & set(plan.payoff_claim_indices):
             issues.append(f"{row.id}: reserved historical outcome disclosed early")
         if "<!--" in row.text or "```" in row.text:
             issues.append(f"{row.id}: spoken text contains markup/instructions")
@@ -270,6 +270,13 @@ def narrative_passes(review: NarrativeReview) -> bool:
             and review.ai_smell_risk == "low" and review.opening_ends_at_peak_tension
             and review.opening_is_unresolved and not review.premature_resolution
             and review.payoff_answers_opening and review.bridge_is_earned)
+
+
+def derive_opening_end(draft: ScriptDraft) -> ScriptDraft:
+    """The last-sentence marker is derived metadata, never a second LLM assertion."""
+    return draft.model_copy(update={
+        "opening_last_sentence": split_sentences(draft.sections[0].text)[-1],
+    })
 
 
 class RepoAgentBackend:
@@ -315,8 +322,8 @@ def scoped_schema(schema: Any, context: dict[str, Any]) -> Any:
     reserved = set(context.get("plan", {}).get("payoff_claim_indices", []))
 
     def check_section_references(value: Any) -> Any:
-        if value.id != "story_payoff" and set(value.memory_claim_indices) & reserved:
-            raise ValueError(f"{value.id}: reserved outcome claims belong only to story_payoff")
+        if value.id in SECTION_IDS[:10] and set(value.memory_claim_indices) & reserved:
+            raise ValueError(f"{value.id}: reserved outcome claims cannot precede story_payoff")
         return value
 
     section = create_model("ScopedSection", __base__=Section,
@@ -331,6 +338,11 @@ def scoped_schema(schema: Any, context: dict[str, Any]) -> Any:
             missing = sorted(set(evidence) - used)
             if missing:
                 raise ValueError("Include a grounded fact from every required current evidence: " + ", ".join(missing))
+        if schema is ScriptDraft:
+            value.opening_last_sentence = split_sentences(value.sections[0].text)[-1]
+            issues = validate_draft(value, StoryPlan.model_validate(context["plan"]), context["selected_memory"])
+            if issues:
+                raise ValueError("Repair must preserve the complete structural contract: " + "; ".join(issues))
         return value
 
     return create_model(f"Scoped{schema.__name__}", __base__=schema,
@@ -493,6 +505,7 @@ async def execute(inputs: dict[str, Any], out: Path, backend: Any, *, dry_run: b
             # One deterministic structural repair, before quality judgment. No relaxed constraints.
             draft = await backend.call("structure_repair", prompts.WRITE, ScriptDraft,
                 {**context, "previous_draft": draft.model_dump(), "deterministic_errors": issues}, trace)
+            draft = derive_opening_end(draft)
         write_json(out / "draft.json", draft.model_dump())
         report.update(export_draft(out, draft, plan))
         issues = validate_draft(draft, plan, memory)
@@ -507,6 +520,7 @@ async def execute(inputs: dict[str, Any], out: Path, backend: Any, *, dry_run: b
         if not factual_passes(factual):
             draft = await backend.call("factual_repair", prompts.FACT_REPAIR, ScriptDraft,
                 {**factual_context, "review": factual.model_dump(), "section_specs": context["section_specs"]}, trace)
+            draft = derive_opening_end(draft)
             write_json(out / "draft.json", draft.model_dump())
             report.update(export_draft(out, draft, plan))
             issues = validate_draft(draft, plan, memory)

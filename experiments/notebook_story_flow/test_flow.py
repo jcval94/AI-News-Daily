@@ -243,6 +243,22 @@ class ContractTests(unittest.TestCase):
         payload["sections"][-1]["evidence_ids"] = ["e-two"]
         schema.model_validate(payload)
 
+    def test_full_repair_preserves_word_budget_and_derives_last_sentence(self):
+        schema = run.scoped_schema(ScriptDraft, {"plan": self.plan.model_dump(), "selected_memory": self.memory})
+        payload = self.draft.model_dump()
+        payload["opening_last_sentence"] = "Stale metadata from before the factual correction."
+        repaired = schema.model_validate(payload)
+        self.assertEqual(repaired.opening_last_sentence, run.split_sentences(repaired.sections[0].text)[-1])
+        payload["sections"][0]["text"] = " ".join(["palabra"] * 294)
+        with self.assertRaisesRegex(ValidationError, "294 words outside 300..450"):
+            schema.model_validate(payload)
+
+    def test_post_payoff_closing_can_recall_documented_outcome(self):
+        self.draft.sections[-1].memory_claim_indices = [2]
+        self.assertEqual(run.validate_draft(self.draft, self.plan, self.memory), [])
+        schema = run.scoped_schema(ScriptDraft, {"plan": self.plan.model_dump(), "selected_memory": self.memory})
+        schema.model_validate(self.draft.model_dump())
+
     def test_opening_word_budget_enters_hardened_schema_repair(self):
         payload = {"text": " ".join(["palabra"] * 299), "memory_claim_indices": [1],
                    "visual_queries": ["archive"]}

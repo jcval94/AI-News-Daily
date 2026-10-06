@@ -56,7 +56,8 @@ hechos reservados del desenlace. El resultado llega únicamente al escritor del 
    Para replay, Python vincula la pregunta y el ledger originales: el modelo no
    puede reescribirlos. El contexto de preparación omite el antiguo tratamiento
    de apertura/memoria para evitar anclar la nueva historia al paralelo anterior.
-4. El desenlace se reserva para `story_payoff`; se rechaza su uso en otros bloques.
+4. El desenlace se reserva para `story_payoff`; se rechaza su uso en los diez bloques
+   anteriores. `cierre` puede retomarlo después de esa recompensa.
    Los IDs no prueban veracidad: el auditor revisa también la prosa.
 5. Orden, apertura extensa (objetivo 350–400; tolerancia 300–450 palabras), tamaños
    razonables de bloques, referencias,
@@ -64,7 +65,9 @@ hechos reservados del desenlace. El resultado llega únicamente al escritor del 
    con Python. Los demás presupuestos por bloque son orientativos en este
    experimento; `idea_C` conserva la flexibilidad extensa del notebook. Los IDs
    de evidencia e índices históricos se entregan como enums en el schema del
-   proveedor, y la última frase se deriva del texto real. Un solo intento de
+   proveedor, y la última frase se deriva del texto real también después de una
+   reparación. Las reparaciones completas se validan dentro del runtime antes de
+   aceptar su respuesta, incluyendo la longitud de apertura. Un solo intento de
    reparación estructural; nunca truncar ni rellenar mecánicamente el texto.
 6. Auditor factual separado. Una reparación exclusivamente factual y un recheck,
    si hacen falta; voz/SEO/atención se evalúan solo después del pase factual.

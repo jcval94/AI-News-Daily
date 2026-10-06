@@ -54,7 +54,8 @@ Si next_video_url está vacío, NO inventes enlaces ni una playlist disponible.
 Incluye una ironía lateral si encaja, nunca sobre víctimas o daños humanos.
 No reveles el desenlace en las primeras diez secciones: tampoco en el puente.
 Cada sección declara evidence_ids y memory_claim_indices usados. Los índices del
-payoff solo aparecen en story_payoff. Evidencia actual aparece antes de idea_B.
+payoff aparecen a partir de story_payoff; cierre puede retomarlos después.
+Evidencia actual aparece antes de idea_B.
 Las búsquedas visuales (1–3 por sección) son metadata; no hechos ni descargas.
 SEO es metadata y no cuenta como texto hablado. No añadas otra intro_historia:
 el notebook la duplicaba, aquí la epopeya ya cumple esa función.
@@ -100,7 +101,11 @@ inferencias históricas afirmadas como hechos: por ejemplo, “no convergió” 
 autorizado si la memoria solo documenta flooding y consumo de recursos. Mantén
 los 350–400 términos de la apertura usando preguntas/reflexión, sin detalles nuevos.
 Cada hecho actual mantiene “según informó/anunció X” cuando esa sea su procedencia.
-Devuelve ScriptDraft completo y actualiza referencias y opening_last_sentence.
+Devuelve ScriptDraft completo y actualiza referencias. El runtime deriva la última
+frase del texto final. Apertura: mínimo 300, máximo 450 palabras; objetivo 375.
+No acortes la apertura a un resumen al eliminar un detalle: conserva la tensión
+con preguntas y reflexión explícita. Respeta los límites aunque la reparación
+factual afecte otros bloques; no reescribas SEO.
 Contexto factual: {context}
 """
 
