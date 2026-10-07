@@ -135,16 +135,19 @@ class ReconcileTests(unittest.TestCase):
         self.assertIn("news/**", data["on"]["push"]["paths"])
         self.assertIn("editorial/narrative_memory.jsonl", data["on"]["push"]["paths"])
 
-    def test_watchdog_mesh_cannot_self_trigger_or_read_pr_artifacts(self):
+    def test_watchdog_uses_two_daily_schedules_without_workflow_run_mesh(self):
         root = Path(__file__).resolve().parents[1]
         data = yaml.load((root/".github/workflows/news-ingestion-watchdog.yml").read_text(), Loader=yaml.BaseLoader)
-        self.assertNotIn(data["name"], data["on"]["workflow_run"]["workflows"])
-        self.assertEqual(len(data["on"]["schedule"]), 2)
+        self.assertNotIn("workflow_run", data["on"])
+        self.assertEqual(
+            data["on"]["schedule"],
+            [{"cron": "30 16 * * *"}, {"cron": "0 20 * * *"}],
+        )
         job = data["jobs"]["reconcile-drive"]
-        self.assertIn("head_repository.full_name == github.repository", job["if"])
+        self.assertEqual(job["if"], "github.ref == 'refs/heads/main' && inputs.date == ''")
         self.assertEqual(job["steps"][0]["with"]["ref"], "main")
         self.assertEqual(job["permissions"], {"contents": "read", "actions": "write"})
-        self.assertIn("github.event_name != 'workflow_run'", data["jobs"]["watchdog"]["if"])
+        self.assertNotIn("if", data["jobs"]["watchdog"])
 
 
 if __name__ == "__main__":
