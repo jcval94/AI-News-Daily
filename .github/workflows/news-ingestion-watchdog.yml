@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: "30 16 * * *" # 10:30 America/Mexico_City: early missing-ingestion detection
     - cron: "0 20 * * *"  # 14:00 America/Mexico_City: same-day recovery verification
-  workflow_run:
-    # Reuse surviving native wakeups. The watchdog itself is deliberately excluded.
-    workflows: ["Google Drive AI News Bridge", "Google Drive Weekly Research Bridge", "Google Drive Narrative Memory Bridge", "CI", "Production Preflight"]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
     inputs:
       date:
@@ -37,11 +32,7 @@ concurrency:
 
 jobs:
   reconcile-drive:
-    if: >-
-      github.ref == 'refs/heads/main' && inputs.date == '' &&
-      (github.event_name != 'workflow_run' ||
-       (github.event.workflow_run.head_branch == 'main' &&
-        github.event.workflow_run.head_repository.full_name == github.repository))
+    if: github.ref == 'refs/heads/main' && inputs.date == ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -93,7 +84,6 @@ jobs:
           retention-days: 14
 
   watchdog:
-    if: github.event_name != 'workflow_run'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
