@@ -188,12 +188,31 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
             (old/"script.txt").write_text("ensayo previo")
             config = replace(pipeline_run.CONFIG, max_novelty_replans=1)
             duplicate = {
-                "similarity": 0.95,
-                "episode_date": "2026-08-20",
-                "topic_signature": "same",
-                "matched_concepts": ["agency", "governance"],
+                "duplicate": True,
+                "nearest_previous_essay": {
+                    "similarity": 0.95,
+                    "episode_date": "2026-08-20",
+                    "topic_signature": "same",
+                    "matched_concepts": ["agency", "governance"],
+                    "dimensions": {
+                        "question": 0.82,
+                        "thesis": 0.78,
+                        "mechanism": 0.91,
+                        "lens": 0.70,
+                        "evidence_overlap": 0.0,
+                        "same_primary_memory": False,
+                    },
+                    "decision_reasons": ["same_mechanism_and_argument"],
+                    "duplicate": True,
+                },
+                "dimension_thresholds": {
+                    "core": 0.57,
+                    "strong": 0.67,
+                    "evidence_overlap": 0.5,
+                },
+                "decision_reasons": ["same_mechanism_and_argument"],
             }
-            with patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), patch.object(pipeline_run, "CONFIG", config), patch.object(pipeline_run, "run_agent", side_effect=fake), patch.object(pipeline_run, "nearest_essay_similarity", return_value=duplicate):
+            with patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), patch.object(pipeline_run, "CONFIG", config), patch.object(pipeline_run, "run_agent", side_effect=fake), patch.object(pipeline_run, "assess_episode_novelty", return_value=duplicate):
                 out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False, editorial_dir=root / "editorial")
             state = json.loads((out/"run_state.json").read_text())
             self.assertEqual(state["status"], "no_novel_essay_angle")
@@ -205,6 +224,14 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
                 ["agency", "governance"],
             )
             self.assertIn("rejected_plan", novelty_feedback_seen[0])
+            self.assertEqual(
+                novelty_feedback_seen[0]["decision_reasons"],
+                ["same_mechanism_and_argument"],
+            )
+            self.assertEqual(
+                novelty_feedback_seen[0]["dimension_scores"]["mechanism"],
+                0.91,
+            )
             self.assertIn("different evidence cluster", novelty_feedback_seen[0]["instruction"])
             self.assertNotIn("write_script", steps)
 

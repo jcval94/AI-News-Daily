@@ -44,11 +44,12 @@ from pipeline.core import (
     NO_SOURCE_NEWS,
     SCRIPT_NOT_APPROVED,
     PipelineConfig,
+    assess_episode_novelty,
     build_timeline_slots,
+    episode_evidence_keys,
     evaluate_script_gate,
     expected_news_dates,
     is_retryable_exception,
-    nearest_essay_similarity,
     timeline_duration_seconds,
 )
 from pipeline.credits import write_credits
@@ -289,6 +290,34 @@ def load_essay_history(
             except OSError:
                 script_excerpt = ""
 
+        selected_items: list[dict[str, Any]] = []
+        selected_path = episode_dir / "selected_news.json"
+        if selected_path.exists():
+            try:
+                selected_payload = json.loads(selected_path.read_text(encoding="utf-8"))
+                if isinstance(selected_payload, dict) and isinstance(
+                    selected_payload.get("items"), list
+                ):
+                    selected_items = [
+                        item
+                        for item in selected_payload["items"]
+                        if isinstance(item, dict)
+                    ]
+            except (OSError, json.JSONDecodeError):
+                selected_items = []
+
+        narrative_arc = plan.get("narrative_arc", {})
+        if not isinstance(narrative_arc, dict):
+            narrative_arc = {}
+        mechanism = " ".join(
+            part
+            for part in (
+                str(narrative_arc.get("narrative_turn") or "").strip(),
+                str(narrative_arc.get("evolved_thesis") or "").strip(),
+            )
+            if part
+        )
+
         essays.append(
             {
                 "episode_date": episode_date.isoformat(),
@@ -296,6 +325,9 @@ def load_essay_history(
                 "central_question": str(plan.get("central_question") or ""),
                 "thesis": str(plan.get("thesis") or ""),
                 "narrative_lens": str(plan.get("narrative_lens") or ""),
+                "mechanism": mechanism,
+                "primary_memory_id": str(plan.get("primary_memory_id") or ""),
+                "evidence_keys": sorted(episode_evidence_keys(plan, selected_items)),
                 "hook": str(plan.get("hook") or ""),
                 "script_excerpt": script_excerpt,
             }
@@ -854,13 +886,15 @@ async def build(
             if candidate_plan is None:
                 raise RuntimeError("Editorial Director did not produce a contract-valid episode plan")
             resolve_selected_memory(candidate_plan, memory_candidates)
-            candidate_topic = " ".join(
-                str(candidate_plan.get(key, "") or "")
-                for key in ("topic_signature", "central_question", "thesis", "narrative_lens")
+            novelty_assessment = assess_episode_novelty(
+                candidate_plan,
+                selection["items"],
+                previous_essays,
+                CONFIG.essay_duplicate_threshold,
             )
-            nearest = nearest_essay_similarity(candidate_topic, previous_essays)
+            nearest = novelty_assessment.get("nearest_previous_essay")
             similarity = float(nearest.get("similarity", 0)) if nearest else 0.0
-            duplicate = bool(nearest and similarity >= CONFIG.essay_duplicate_threshold)
+            duplicate = bool(novelty_assessment.get("duplicate"))
             novelty_attempts.append(
                 {
                     "attempt": novelty_attempt,
@@ -870,6 +904,12 @@ async def build(
                     "nearest_previous_essay": nearest,
                     "similarity": similarity,
                     "threshold": CONFIG.essay_duplicate_threshold,
+                    "dimension_thresholds": novelty_assessment.get(
+                        "dimension_thresholds", {}
+                    ),
+                    "decision_reasons": novelty_assessment.get(
+                        "decision_reasons", []
+                    ),
                     "duplicate": duplicate,
                 }
             )
@@ -891,14 +931,23 @@ async def build(
                     },
                     "similarity": similarity,
                     "threshold": CONFIG.essay_duplicate_threshold,
-                    "matched_concepts_to_avoid": list(nearest.get("matched_concepts", [])) if nearest else [],
+                    "dimension_scores": (
+                        dict(nearest.get("dimensions", {})) if nearest else {}
+                    ),
+                    "decision_reasons": novelty_assessment.get(
+                        "decision_reasons", []
+                    ),
+                    "matched_concepts_to_avoid": (
+                        list(nearest.get("matched_concepts", [])) if nearest else []
+                    ),
                     "pivot_required": True,
                     "instruction": (
                         "Do not merely rephrase the rejected plan. Pivot to a genuinely different evidence "
                         "cluster from selected_news when alternatives exist. Change at least two of: underlying "
-                        "question, causal mechanism, human stakes, historical mirror, narrative lens. Avoid "
-                        "centering the matched concepts above unless the new mechanism is clearly distinct. "
-                        "Prefer selected news that was not central to the rejected plan."
+                        "question, causal mechanism, human stakes, historical mirror, narrative lens. The novelty "
+                        "gate blocks only when the editorial core overlaps across dimensions; broad recurring "
+                        "channel concepts alone are not enough. Prefer selected news that was not central to the "
+                        "rejected plan."
                     ),
                 },
                 ensure_ascii=False,
@@ -910,6 +959,8 @@ async def build(
         write_json(
             episode_scripts_dir / "novelty_check.json",
             {
+                "decision_model": "multidimensional_v2",
+                "legacy_similarity_role": "retrieval_only",
                 "history_days": CONFIG.essay_history_days,
                 "previous_essay_count": len(previous_essays),
                 "threshold": CONFIG.essay_duplicate_threshold,
@@ -929,8 +980,9 @@ async def build(
                     target_date=target_date,
                     status=NO_NOVEL_ESSAY_ANGLE,
                     reason=(
-                        "No sufficiently novel essay angle was found after bounded replanning; "
-                        f"nearest similarity={final_novelty.get('similarity')}"
+                        "No sufficiently distinct editorial core was found after bounded replanning; "
+                        f"decision_reasons={final_novelty.get('decision_reasons', [])}; "
+                        f"retrieval_similarity={final_novelty.get('similarity')}"
                     ),
                     started_at=started_at,
                     validation_warnings=validation_warnings,

@@ -326,6 +326,226 @@ def nearest_essay_similarity(
     return nearest
 
 
+
+def _canonical_evidence_identity(item: dict[str, Any]) -> str:
+    url = str(item.get("url") or "").strip().lower()
+    if url:
+        canonical = url.split("#", 1)[0].split("?", 1)[0].rstrip("/")
+        if canonical:
+            return "url:" + canonical
+    news_id = str(item.get("news_id") or "").strip()
+    if news_id:
+        return "news_id:" + news_id
+    title = normalize_topic_text(str(item.get("title") or ""))
+    return "title:" + title if title else ""
+
+
+def episode_evidence_keys(
+    plan: dict[str, Any], selected_news_items: list[dict[str, Any]]
+) -> set[str]:
+    """Resolve the actual source stories used by an episode plan."""
+    keys: set[str] = set()
+    items = selected_news_items if isinstance(selected_news_items, list) else []
+    for evidence in plan.get("evidence", []) if isinstance(plan, dict) else []:
+        if not isinstance(evidence, dict):
+            continue
+        try:
+            index = int(evidence.get("selected_news_index", 0) or 0)
+        except (TypeError, ValueError):
+            continue
+        if not (1 <= index <= len(items)):
+            continue
+        item = items[index - 1]
+        if not isinstance(item, dict):
+            continue
+        identity = _canonical_evidence_identity(item)
+        if identity:
+            keys.add(identity)
+    return keys
+
+
+def _episode_mechanism_text(plan: dict[str, Any]) -> str:
+    explicit = str(plan.get("mechanism") or "").strip()
+    if explicit:
+        return explicit
+    arc = plan.get("narrative_arc", {}) if isinstance(plan, dict) else {}
+    if not isinstance(arc, dict):
+        arc = {}
+    return " ".join(
+        part
+        for part in (
+            str(arc.get("narrative_turn") or "").strip(),
+            str(arc.get("evolved_thesis") or "").strip(),
+        )
+        if part
+    )
+
+
+def _essay_retrieval_text(plan: dict[str, Any]) -> str:
+    return " ".join(
+        str(plan.get(key, "") or "")
+        for key in ("topic_signature", "central_question", "thesis", "narrative_lens")
+    ).strip()
+
+
+def _evidence_overlap(left: set[str], right: set[str]) -> float:
+    if not left or not right:
+        return 0.0
+    return round(len(left & right) / min(len(left), len(right)), 4)
+
+
+def assess_episode_novelty(
+    candidate_plan: dict[str, Any],
+    selected_news_items: list[dict[str, Any]],
+    previous_essays: list[dict[str, Any]],
+    duplicate_threshold: float,
+) -> dict[str, Any]:
+    """Decide novelty from editorial dimensions, not one monolithic similarity score.
+
+    The legacy aggregate similarity remains a retrieval signal for finding the nearest
+    historical neighbor. Blocking requires agreement on the episode's editorial core:
+    question/thesis plus mechanism, or substantial evidence reuse plus the same argument.
+    Broad recurring concepts such as trust/governance/verification are diagnostic only.
+    """
+    core_threshold = round(min(0.95, duplicate_threshold + 0.15), 4)
+    strong_threshold = round(min(0.98, duplicate_threshold + 0.25), 4)
+    evidence_overlap_threshold = 0.50
+
+    candidate_retrieval = _essay_retrieval_text(candidate_plan)
+    candidate_mechanism = _episode_mechanism_text(candidate_plan)
+    candidate_evidence = episode_evidence_keys(candidate_plan, selected_news_items)
+    candidate_memory = str(candidate_plan.get("primary_memory_id") or "").strip()
+
+    comparisons: list[dict[str, Any]] = []
+    for essay in previous_essays:
+        if not isinstance(essay, dict):
+            continue
+        retrieval_similarity = topic_similarity(
+            candidate_retrieval, _essay_retrieval_text(essay)
+        )
+        question_similarity = topic_similarity(
+            str(candidate_plan.get("central_question") or ""),
+            str(essay.get("central_question") or ""),
+        )
+        thesis_similarity = topic_similarity(
+            str(candidate_plan.get("thesis") or ""),
+            str(essay.get("thesis") or ""),
+        )
+        mechanism_similarity = topic_similarity(
+            candidate_mechanism, _episode_mechanism_text(essay)
+        )
+        lens_similarity = topic_similarity(
+            str(candidate_plan.get("narrative_lens") or ""),
+            str(essay.get("narrative_lens") or ""),
+        )
+        previous_evidence = {
+            str(value) for value in essay.get("evidence_keys", []) if str(value)
+        }
+        evidence_overlap = _evidence_overlap(candidate_evidence, previous_evidence)
+        same_memory = bool(
+            candidate_memory
+            and candidate_memory == str(essay.get("primary_memory_id") or "").strip()
+        )
+
+        reasons: list[str] = []
+        if (
+            mechanism_similarity >= core_threshold
+            and max(question_similarity, thesis_similarity) >= core_threshold
+        ):
+            reasons.append("same_mechanism_and_argument")
+        if (
+            question_similarity >= strong_threshold
+            and thesis_similarity >= core_threshold
+        ) or (
+            thesis_similarity >= strong_threshold
+            and question_similarity >= core_threshold
+        ):
+            reasons.append("same_question_and_thesis")
+        if (
+            evidence_overlap >= evidence_overlap_threshold
+            and max(question_similarity, thesis_similarity, mechanism_similarity)
+            >= core_threshold
+        ):
+            reasons.append("reused_evidence_with_same_argument")
+
+        duplicate_strength = round(
+            max(
+                min(
+                    mechanism_similarity,
+                    max(question_similarity, thesis_similarity),
+                ),
+                min(question_similarity, thesis_similarity),
+                min(
+                    evidence_overlap,
+                    max(question_similarity, thesis_similarity, mechanism_similarity),
+                ),
+            ),
+            4,
+        )
+        comparison_text = _essay_retrieval_text(essay)
+        comparisons.append(
+            {
+                "episode_date": essay.get("episode_date"),
+                "topic_signature": essay.get("topic_signature"),
+                "central_question": essay.get("central_question"),
+                "thesis": essay.get("thesis"),
+                "narrative_lens": essay.get("narrative_lens"),
+                "primary_memory_id": essay.get("primary_memory_id"),
+                "similarity": retrieval_similarity,
+                "retrieval_similarity": retrieval_similarity,
+                "matched_concepts": sorted(
+                    topic_concepts(candidate_retrieval)
+                    & topic_concepts(comparison_text)
+                ),
+                "dimensions": {
+                    "question": question_similarity,
+                    "thesis": thesis_similarity,
+                    "mechanism": mechanism_similarity,
+                    "lens": lens_similarity,
+                    "evidence_overlap": evidence_overlap,
+                    "same_primary_memory": same_memory,
+                },
+                "decision_reasons": reasons,
+                "duplicate_strength": duplicate_strength,
+                "duplicate": bool(reasons),
+            }
+        )
+
+    blocking = [item for item in comparisons if item["duplicate"]]
+    if blocking:
+        nearest = max(
+            blocking,
+            key=lambda item: (
+                float(item["duplicate_strength"]),
+                float(item["retrieval_similarity"]),
+            ),
+        )
+    elif comparisons:
+        nearest = max(
+            comparisons,
+            key=lambda item: float(item["retrieval_similarity"]),
+        )
+    else:
+        nearest = None
+
+    return {
+        "duplicate": bool(blocking),
+        "nearest_previous_essay": nearest,
+        "comparison_count": len(comparisons),
+        "candidate_evidence_keys": sorted(candidate_evidence),
+        "dimension_thresholds": {
+            "core": core_threshold,
+            "strong": strong_threshold,
+            "evidence_overlap": evidence_overlap_threshold,
+        },
+        "decision_reasons": (
+            list(nearest.get("decision_reasons", []))
+            if nearest and nearest.get("duplicate")
+            else []
+        ),
+    }
+
+
 def expected_news_dates(target_date: date) -> list[date]:
     """Resolve the deterministic source window for an episode.
 

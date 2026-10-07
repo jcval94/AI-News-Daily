@@ -642,14 +642,26 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Propagate non-publishable outcome
+      - name: Report controlled editorial outcome
         if: >-
-          steps.episode_outcome.outputs.status == 'missing_openai_secret' ||
           steps.episode_outcome.outputs.status == 'no_source_news' ||
           steps.episode_outcome.outputs.status == 'no_relevant_news' ||
           steps.episode_outcome.outputs.status == 'no_novel_essay_angle' ||
+          steps.episode_outcome.outputs.status == 'script_not_approved'
+        run: |
+          echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
+          echo "Run artifacts were preserved; nothing non-approved was promoted."
+          {
+            echo "### Editorial outcome"
+            echo "- Status: `${{ steps.episode_outcome.outputs.status }}`"
+            echo "- Published: no"
+            echo "- Classification: controlled editorial outcome, not a system failure"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Propagate production failure
+        if: >-
+          steps.episode_outcome.outputs.status == 'missing_openai_secret' ||
           steps.episode_outcome.outputs.status == 'failure' ||
-          steps.episode_outcome.outputs.status == 'script_not_approved' ||
           steps.dense_media.outcome == 'failure' ||
           steps.production_script.outcome == 'failure' ||
           steps.recording_pack.outcome == 'failure' ||
@@ -664,5 +676,5 @@ jobs:
           steps.report.outcome == 'failure'
         run: |
           echo "Episode outcome: ${{ steps.episode_outcome.outputs.status }}"
-          echo "Run artifacts were preserved; nothing non-approved was promoted."
+          echo "Run artifacts were preserved; production did not complete safely."
           exit 1

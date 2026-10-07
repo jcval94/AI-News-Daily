@@ -7,21 +7,38 @@ from pipeline.core import PIPELINE_ENV_DEFAULTS
 
 
 class ConfigurationContractTests(unittest.TestCase):
-    def test_production_workflow_fails_every_non_publishable_terminal_state(self) -> None:
+    def test_production_workflow_separates_editorial_outcomes_from_failures(self) -> None:
         workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
+        editorial = workflow.split("- name: Report controlled editorial outcome", 1)[1].split(
+            "- name: Propagate production failure", 1
+        )[0]
+        failure = workflow.split("- name: Propagate production failure", 1)[1]
+
         for status in (
-            "missing_openai_secret",
             "no_source_news",
             "no_relevant_news",
             "no_novel_essay_angle",
-            "failure",
             "script_not_approved",
         ):
             self.assertIn(
                 f"steps.episode_outcome.outputs.status == '{status}'",
-                workflow,
+                editorial,
                 status,
             )
+            self.assertNotIn(
+                f"steps.episode_outcome.outputs.status == '{status}'",
+                failure,
+                status,
+            )
+
+        for status in ("missing_openai_secret", "failure"):
+            self.assertIn(
+                f"steps.episode_outcome.outputs.status == '{status}'",
+                failure,
+                status,
+            )
+        self.assertIn("controlled editorial outcome, not a system failure", editorial)
+        self.assertIn("exit 1", failure)
 
     def test_editorial_regression_uses_semantic_latest_source_date(self) -> None:
         workflow = Path(".github/workflows/editorial-regression.yml").read_text(encoding="utf-8")
