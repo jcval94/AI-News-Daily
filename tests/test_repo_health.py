@@ -269,6 +269,7 @@ jobs:
                 pages_root=pages,
                 as_of=date(2026, 9, 24),
                 github_snapshot=github,
+                current_workflow_context={},
             )
             checks = {item["id"]: item for item in report["checks"]}
             build = checks["workflow-build-ai-news-video-kit"]
