@@ -40,7 +40,7 @@ The canonical GitHub workflow is:
 
 - `.github/workflows/gdrive-raw-bridge-probe.yml`
 - workflow name: **Google Drive AI News Bridge**
-- scheduled every five minutes and manually dispatchable.
+- scheduled once per hour at minute 02 UTC and manually dispatchable; the existing watchdog/reconciler may also request an exact-file dispatch from native repository events.
 
 The filename is historical; despite the old `probe` name, this workflow is the production consumer.
 

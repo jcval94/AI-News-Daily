@@ -83,9 +83,14 @@ or inspection/dispatch failure makes reconciliation fail visibly. These limits
 bound the reconciler's observed API dispatches; they do not disable the separate
 consumer crons or prove delivery when GitHub's run listing itself is unavailable.
 
-Consumer crons are staggered away from minute zero, keeping five-minute cadence:
-Daily `2-57/5`, Weekly `3-58/5`, Narrative `4-59/5` (UTC).
-This is a scheduling mitigation, not evidence of a proven platform root cause.
+As of 2026-10-06, consumer crons are staggered away from minute zero and run
+once per hour: Daily `2 * * * *`, Weekly `3 * * * *`, Narrative
+`4 * * * *` (UTC). The hourly polls are a low-frequency safety net; the
+existing reconciliation mesh can still request exact-file `workflow_dispatch`
+wakeups from other native repository events. This reduces idle polling and queue
+pressure without changing publication authority, validation, or idempotency.
+It remains a scheduling mitigation, not evidence of a proven platform root cause
+or a fixed-latency SLA.
 
 ## Producer and Repair Watch boundary
 

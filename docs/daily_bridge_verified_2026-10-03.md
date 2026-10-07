@@ -33,7 +33,7 @@ This baseline refines [the shared contract](scheduled_drive_publication.md) and 
 
 Sheet-side write/readback/enqueue evidence comes from the real producer execution in this conversation. Repository, processed metadata, workflow jobs, and live Pages were independently reread during this baseline audit.
 
-The bridge cron is configured every five minutes; this is not a five-minute delivery SLA. This handoff was enqueued around 08:35 CDMX and published at 09:42:33 CDMX. GitHub scheduling and queue latency remain observable operational constraints.
+At the time of this 2026-10-03 baseline, the bridge cron was configured every five minutes. As of 2026-10-06, the production Drive consumers use an hourly staggered safety-net cadence. This handoff was enqueued around 08:35 CDMX and published at 09:42:33 CDMX; it remains evidence of consumer correctness, not a delivery SLA. GitHub scheduling and queue latency remain observable operational constraints.
 
 ## Roles and actual schedule snapshot
 

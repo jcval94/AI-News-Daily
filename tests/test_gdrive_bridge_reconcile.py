@@ -80,8 +80,14 @@ class ReconcileTests(unittest.TestCase):
 
     def test_three_workflows_wire_verified_io_and_exact_dispatch(self):
         root = Path(__file__).resolve().parents[1]
+        expected_crons = {
+            "daily": "2 * * * *",
+            "weekly": "3 * * * *",
+            "narrative": "4 * * * *",
+        }
         for lane, contract in LANES.items():
             data = yaml.load((root/".github/workflows"/contract.workflow).read_text(), Loader=yaml.BaseLoader)
+            self.assertEqual(data["on"]["schedule"], [{"cron": expected_crons[lane]}])
             self.assertIn("handoff_id", data["on"]["workflow_dispatch"]["inputs"])
             self.assertIn("inputs.handoff_id", data["run-name"])
             steps = data["jobs"]["consume"]["steps"]
