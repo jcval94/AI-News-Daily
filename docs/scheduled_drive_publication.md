@@ -470,10 +470,10 @@ Apps Script is not part of this production architecture. Its periodic trigger sh
 
 See [the 2026-10-04 hardening runbook](bridge_scheduler_hardening_2026-10-04.md)
 for shared paginated discovery, exact-file dispatches, verified same-file moves,
-bounded wakeups in the existing watchdog, and the remaining platform-wide
-availability limit. As of 2026-10-06, the three production consumer crons are
-hourly and staggered at minutes 02, 03 and 04 UTC for Daily, Weekly and Narrative
-respectively; the reconciliation mesh remains available for bounded exact-file
-wakeups from other native repository events. A pending transport is not missing
-editorial content: Repair Watch must inspect the inbox before generating a
-replacement handoff.
+bounded reconciliation, and the remaining platform-wide availability limit. As
+of 2026-10-06, the three production consumer crons are hourly and staggered at
+minutes 02, 03 and 04 UTC for Daily, Weekly and Narrative respectively. The
+News Ingestion Watchdog reconciles at 10:30 and 14:00 America/Mexico_City;
+`workflow_run` wakeups are intentionally disabled, and manual dispatch remains
+available. A pending transport is not missing editorial content: Repair Watch
+must inspect the inbox before generating a replacement handoff.
