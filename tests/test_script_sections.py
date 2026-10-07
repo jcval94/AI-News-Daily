@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import unittest
 
-from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script, writer_marker_contract
+from pipeline.script_sections import (
+    SectionAlignmentError,
+    parse_sectioned_script,
+    writer_marker_contract,
+    writer_structure_repair_prompt,
+)
 
 
 PLAN = {
@@ -34,6 +39,24 @@ class ScriptSectionTests(unittest.TestCase):
         self.assertIn('inside ONE of these sections: beat:turn.', contract)
         self.assertEqual(contract.count('<!--MEMORY:memory-case-->'), 1)
         self.assertNotIn('inside ONE of these sections: opening', contract)
+
+    def test_structure_repair_prompt_reuses_invalid_draft_instead_of_regenerating(self) -> None:
+        previous = (
+            "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio. "
+            "<!--SECTION:beat:first-reveal-->Revelación. "
+            "<!--SECTION:beat:turn-->Giro. "
+            "<!--SECTION:synthesis-->Cierre."
+        )
+        prompt = writer_structure_repair_prompt(
+            previous,
+            "Narrative Memory planned for opening must appear inside opening",
+            PLAN,
+        )
+        self.assertIn(previous, prompt)
+        self.assertIn("do not write a new essay from scratch", prompt)
+        self.assertIn("Validation error to repair:", prompt)
+        self.assertIn("Exact SECTION order:", prompt)
+        self.assertIn("Return the complete repaired draft only", prompt)
 
     def test_markers_follow_idea_beats_not_news_items(self) -> None:
         marked = (

@@ -61,7 +61,12 @@ from pipeline.narrative_memory import (
     resolve_selected_memory,
 )
 from pipeline.news import NewsItem, parse_news_file
-from pipeline.script_sections import SectionAlignmentError, parse_sectioned_script, writer_marker_contract
+from pipeline.script_sections import (
+    SectionAlignmentError,
+    parse_sectioned_script,
+    writer_marker_contract,
+    writer_structure_repair_prompt,
+)
 
 APP_NAME = "ai_news_daily_video"
 USER_ID = "github_actions"
@@ -956,19 +961,17 @@ async def build(
         writer_structure_error = ""
 
         for writer_attempt in range(1, 3):
-            writer_prompt = (
-                "Write the finished 7-20 minute Spanish reflective AI essay."
-                if writer_attempt == 1
-                else (
-                    "Rewrite the same planned essay because the previous draft violated only the hidden "
-                    f"structure contract: {writer_structure_error}. Do not change the episode plan or factual "
-                    "claims merely to repair metadata. Return narration only. The first non-whitespace characters "
-                    "MUST be <!--SECTION:opening-->. Preserve exactly one SECTION marker for every planned section "
-                    f"in order and exactly one <!--MEMORY:{primary_memory_id}--> marker in the section required by "
-                    "the primary narrative_parallel.placement."
+            if writer_attempt == 1:
+                writer_prompt = (
+                    "Write the finished 7-20 minute Spanish reflective AI essay."
+                    + writer_marker_contract(episode_plan)
                 )
-            )
-            writer_prompt += writer_marker_contract(episode_plan)
+            else:
+                writer_prompt = writer_structure_repair_prompt(
+                    sectioned_draft_script,
+                    writer_structure_error,
+                    episode_plan,
+                )
             writer_state = await run_agent(
                 writer_agent,
                 writer_context,
