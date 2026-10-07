@@ -62,6 +62,16 @@ class ScriptProductivityTests(unittest.TestCase):
         )
         self.assertIn("const wordsPerSecond = 2.75;", rendered)
 
+    def test_original_text_cannot_close_the_runtime_script(self) -> None:
+        rendered = apply_script_productivity(
+            self._editor_document(),
+            episode_key="2026-09-24",
+            original_text="texto </script><script>alert(1)</script>",
+            words_per_second=2.5,
+        )
+        self.assertNotIn('const originalText = "texto </script>', rendered)
+        self.assertIn(r"texto <\/script><script>alert(1)<\/script>", rendered)
+
     def test_productivity_layer_is_idempotent(self) -> None:
         once = apply_script_productivity(
             self._editor_document(),

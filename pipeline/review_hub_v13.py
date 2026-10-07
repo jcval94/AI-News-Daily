@@ -310,7 +310,7 @@ def apply_script_productivity(
     runtime = (
         SCRIPT_PRODUCTIVITY_JS
         .replace("__EPISODE_KEY__", json.dumps(episode_key, ensure_ascii=False))
-        .replace("__ORIGINAL_TEXT__", json.dumps(original_text, ensure_ascii=False))
+        .replace("__ORIGINAL_TEXT__", json.dumps(original_text, ensure_ascii=False).replace("</", r"<\/"))
         .replace("__WORDS_PER_SECOND__", json.dumps(float(words_per_second)))
     )
     document = document.replace('</body>', runtime + '\n</body>', 1)

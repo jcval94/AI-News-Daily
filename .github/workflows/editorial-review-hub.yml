@@ -51,11 +51,14 @@ on:
       - "pipeline/narrative_memory*.py"
       - "editorial/narrative_memory.jsonl"
       - "pipeline/video_metrics_dashboard.py"
+      - "pipeline/experiments_dashboard.py"
       - "tests/test_e2e_failure_paths.py"
       - "tests/fixtures/e2e_narrative_memory.jsonl"
       - "tests/test_repo_health.py"
       - "tests/test_narrative_memory_dashboard.py"
       - "tests/test_video_metrics_dashboard.py"
+      - "tests/test_experiments_dashboard.py"
+      - "experiments/**"
       - "config/cost_rates.json"
       - "evals/editorial/**"
 
@@ -391,6 +394,7 @@ jobs:
           grep -q 'id="repoHealthLink"' pages-site/index.html
           grep -q 'id="memoryLink"' pages-site/index.html
           grep -q 'id="metricsLink"' pages-site/index.html
+          grep -q 'id="experimentsLink"' pages-site/index.html
           grep -q "episodes/$TARGET_DATE/index.html" pages-site/index.html
 
       - name: Build repository health dashboard
@@ -444,6 +448,21 @@ jobs:
           grep -q 'data-metrics-page="video-metrics-history"' pages-site/metrics/index.html
           grep -q '"metric_scope": "editorial_pipeline_not_youtube_analytics"' pages-site/metrics/video-metrics-history.json
 
+      - name: Build experiments dashboard
+        run: |
+          set -euo pipefail
+          python -m pipeline.experiments_dashboard \
+            --root experiments \
+            --root .review-source/experiments \
+            --output-dir pages-site/experiments
+          test -s pages-site/experiments/index.html
+          test -s pages-site/experiments/experiments.json
+          grep -q 'data-experiments-page="experiments"' pages-site/experiments/index.html
+          EDITABLE_RUN="$(python -c 'from pathlib import Path; print(next(str(p) for p in Path("pages-site/experiments/runs").glob("*/index.html") if "data-script-editor=\"v1\"" in p.read_text(encoding="utf-8")))')"
+          test -n "$EDITABLE_RUN"
+          grep -q 'data-script-productivity-runtime="v1"' "$EDITABLE_RUN"
+          grep -q 'Mapa de historias' "$EDITABLE_RUN"
+
       - name: Upload lightweight Pages catalog snapshot
         uses: actions/upload-artifact@v4
         with:
@@ -488,6 +507,8 @@ jobs:
           MEMORY_URL="${ROOT_URL}memory/"
           MEMORY_RUNTIME_URL="${ROOT_URL}memory/memory.js"
           METRICS_URL="${ROOT_URL}metrics/"
+          EXPERIMENTS_URL="${ROOT_URL}experiments/"
+          EXPERIMENTS_JSON_URL="${ROOT_URL}experiments/experiments.json"
           for attempt in 1 2 3 4 5 6; do
             if curl -fsSL --max-time 20 "$ROOT_URL" -o /tmp/catalog.html \
               && grep -q 'class="episode-sidebar"' /tmp/catalog.html \
@@ -495,6 +516,7 @@ jobs:
               && grep -q 'id="repoHealthLink"' /tmp/catalog.html \
               && grep -q 'id="memoryLink"' /tmp/catalog.html \
               && grep -q 'id="metricsLink"' /tmp/catalog.html \
+              && grep -q 'id="experimentsLink"' /tmp/catalog.html \
               && curl -fsSL --max-time 20 "$EPISODE_URL" -o /tmp/episode.html \
               && grep -q 'id="globalSearch"' /tmp/episode.html \
               && grep -q 'data-tab="overview"' /tmp/episode.html \
@@ -515,7 +537,16 @@ jobs:
               && grep -q 'bootMemoryRuntime' /tmp/memory.js \
               && node --check /tmp/memory.js \
               && curl -fsSL --max-time 20 "$METRICS_URL" -o /tmp/metrics.html \
-              && grep -q 'data-metrics-page="video-metrics-history"' /tmp/metrics.html; then
+              && grep -q 'data-metrics-page="video-metrics-history"' /tmp/metrics.html \
+              && curl -fsSL --max-time 20 "$EXPERIMENTS_URL" -o /tmp/experiments.html \
+              && grep -q 'data-experiments-page="experiments"' /tmp/experiments.html \
+              && curl -fsSL --max-time 20 "$EXPERIMENTS_JSON_URL" -o /tmp/experiments.json \
+              && EXPERIMENT_SLUG="$(jq -r 'first(.experiments[] | select(.has_script) | .slug) // empty' /tmp/experiments.json)" \
+              && test -n "$EXPERIMENT_SLUG" \
+              && curl -fsSL --max-time 20 "${EXPERIMENTS_URL}runs/${EXPERIMENT_SLUG}/" -o /tmp/experiment-run.html \
+              && grep -q 'data-script-editor="v1"' /tmp/experiment-run.html \
+              && grep -q 'data-script-productivity-runtime="v1"' /tmp/experiment-run.html \
+              && grep -q 'Mapa de historias' /tmp/experiment-run.html; then
               echo "Pages smoke test passed: $ROOT_URL"
               exit 0
             fi
