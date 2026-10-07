@@ -49,12 +49,12 @@ Neither generation nor editorial recovery is performed by these modules.
 ## Existing watchdog as reconciliation entry point
 
 The existing News Ingestion Watchdog retains its two daily schedules. No new
-periodic workflow or scheduled ChatGPT task is added. Its new reconciliation job
-can also wake after the three bridges, CI or Production Preflight finish on
-main in this same repository. It always checks out trusted main and never
-consumes upstream PR artifacts. The watchdog is excluded from its own upstream
-list; workflow_run wakeups skip the unrelated incident-reporting health job.
-Dated health checks dispatched by Daily retain their original behavior.
+periodic workflow or scheduled ChatGPT task is added. As of 2026-10-06, the
+`workflow_run` wakeup mesh has been removed deliberately: reconciliation runs
+at the existing 10:30 and 14:00 America/Mexico_City checks, on explicit manual
+dispatch, and on the workflow's narrow maintenance push paths. It always checks
+out trusted main and never consumes upstream PR artifacts. Dated health checks
+dispatched by Daily retain their original behavior.
 
 The reconciliation job uses Drive **read-only** scope plus GitHub Actions write
 permission to call the existing consumer workflows. It lists the inbox and
@@ -85,12 +85,12 @@ consumer crons or prove delivery when GitHub's run listing itself is unavailable
 
 As of 2026-10-06, consumer crons are staggered away from minute zero and run
 once per hour: Daily `2 * * * *`, Weekly `3 * * * *`, Narrative
-`4 * * * *` (UTC). The hourly polls are a low-frequency safety net; the
-existing reconciliation mesh can still request exact-file `workflow_dispatch`
-wakeups from other native repository events. This reduces idle polling and queue
-pressure without changing publication authority, validation, or idempotency.
-It remains a scheduling mitigation, not evidence of a proven platform root cause
-or a fixed-latency SLA.
+`4 * * * *` (UTC). The hourly polls are the normal transport safety net; the
+Watchdog performs two bounded daily reconciliation checks and manual dispatch
+remains available. This reduces idle polling and cross-workflow wakeups without
+changing publication authority, validation, or idempotency. It remains a
+scheduling mitigation, not evidence of a proven platform root cause or a
+fixed-latency SLA.
 
 ## Producer and Repair Watch boundary
 
@@ -126,11 +126,11 @@ modified by this change. CV fit is excluded.
 
 ## Remaining availability limit
 
-The native recovery mesh reduces dependency on one workflow's cron. It cannot
-guarantee a fixed publication latency if **all** GitHub Actions wakeups stop.
-GitHub also limits workflow_run chain depth, so this mesh is not an unbounded
-queue-draining loop. Consumer polling and subsequent independent wakes remain
-necessary for larger queues.
+Hourly consumer polling plus the two daily reconciliation checks reduce
+dependency on any single scheduled wakeup, but they cannot guarantee fixed
+publication latency if **all** GitHub Actions wakeups stop. Manual dispatch
+remains the explicit recovery path. Larger queues drain across subsequent
+consumer runs.
 
 An independent Drive event relay remains a separate, undeployed integration.
 The consumers' exact-file workflow_dispatch interface is ready for it, but the
