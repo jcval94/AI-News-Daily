@@ -23,6 +23,7 @@ TEST_NEWS_ID = stable_news_id(
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
     async def test_approved_episode_reaches_multimedia_without_external_calls(self) -> None:
         script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:beat:evidence-->" + " ".join(["noticia"] * 500) + " <!--SECTION:beat:turn--><!--MEMORY:electrification-organizational-redesign-->" + " ".join(["noticia"] * 100) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
+        selector_states: list[dict] = []
 
         async def fake_run_agent(agent, initial_state, prompt, *, step, trace, iteration=None):
             trace.append(
@@ -37,6 +38,7 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                 }
             )
             if step == "select_news":
+                selector_states.append(dict(initial_state))
                 return {
                     "selected_news": {
                         "items": [
@@ -221,6 +223,17 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(selected_payload["items"][0]["selected_news_index"], 1)
             self.assertEqual(selected_payload["items"][0]["source_locator"], "2026-08-20.txt#item-1")
             self.assertEqual(selected_payload["items"][0]["url"], "https://example.com/story")
+            self.assertEqual(len(selector_states), 1)
+            self.assertNotIn("news_text", selector_states[0])
+            self.assertIn("news_catalog", selector_states[0])
+            compact_catalog = json.loads(selector_states[0]["news_catalog"])
+            self.assertEqual(compact_catalog["items"][0]["news_id"], TEST_NEWS_ID)
+            self.assertNotIn("raw_content", compact_catalog["items"][0])
+            self.assertNotIn("source_locator", compact_catalog["items"][0])
+            self.assertEqual(
+                json.loads(selector_states[0]["valid_news_ids"]),
+                [TEST_NEWS_ID],
+            )
             self.assertEqual(novelty["previous_essay_count"], 0)
             self.assertFalse(novelty["attempts"][-1]["duplicate"])
             self.assertGreaterEqual(plan["timeline_duration_seconds"], 420)

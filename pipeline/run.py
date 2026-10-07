@@ -117,6 +117,32 @@ def collect_available_news(
     return json.dumps(payload, ensure_ascii=False), available, missing, items
 
 
+def build_selector_catalog(source_items: list[NewsItem]) -> str:
+    """Return the compact, authoritative selector view of current news.
+
+    Selection needs editorial meaning plus exact opaque IDs, not raw source blocks.
+    Keeping raw_content out of this state reduces context noise without weakening
+    downstream factual grounding, which still uses the full news_text.
+    """
+    payload = {
+        "schema_version": 1,
+        "items": [
+            {
+                "news_id": item.news_id,
+                "title": item.title,
+                "date": item.date,
+                "source": item.source,
+                "url_quality": item.url_quality,
+                "category": item.category,
+                "summary": item.summary,
+                "why_it_matters": item.why_it_matters,
+            }
+            for item in source_items
+        ],
+    }
+    return json.dumps(payload, ensure_ascii=False)
+
+
 def materialize_selection(
     decision: dict[str, Any], source_items: list[NewsItem]
 ) -> dict[str, Any]:
@@ -747,6 +773,7 @@ async def build(
         )
         previous_essays_json = json.dumps(previous_essays, ensure_ascii=False)
 
+        selector_catalog = build_selector_catalog(source_items)
         valid_news_ids = [item.news_id for item in source_items]
         valid_news_ids_json = json.dumps(valid_news_ids, ensure_ascii=False)
         selection: dict[str, Any] | None = None
@@ -754,17 +781,19 @@ async def build(
         for selector_contract_attempt in range(1, 3):
             selector_prompt = (
                 "Select the unique, high-value AI developments for this episode. "
-                "Every returned news_id MUST be copied exactly from valid_news_ids."
+                "Every returned news_id MUST be copied exactly from this allow-list: "
+                f"{valid_news_ids_json}. Do not derive or regenerate IDs from titles or URLs."
             )
             if selector_contract_error:
                 selector_prompt += (
                     " Your previous selection violated the deterministic ID contract: "
-                    f"{selector_contract_error}. Return only IDs from valid_news_ids."
+                    f"{selector_contract_error}. Repair only the references and copy each news_id "
+                    f"character-for-character from this exact allow-list: {valid_news_ids_json}."
                 )
             selection_state = await run_agent(
                 selector_agent,
                 {
-                    "news_text": news_text,
+                    "news_catalog": selector_catalog,
                     "valid_news_ids": valid_news_ids_json,
                     "previous_selected_news": previous_selected_news,
                 },
