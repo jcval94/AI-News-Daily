@@ -166,11 +166,14 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_exhausted_novelty_replans_stop_before_writer(self) -> None:
         steps: list[str] = []
+        novelty_feedback_seen: list[dict] = []
 
         async def fake(agent, state, prompt, *, step, trace, iteration=None):
             steps.append(step)
             if step == "select_news":
                 return {"selected_news": {"items": [{"news_id": TEST_NEWS_ID, "selection_reason": "relevante"}], "discarded_duplicates": [], "selection_notes": []}}
+            if step == "replan_episode_novelty":
+                novelty_feedback_seen.append(json.loads(state["novelty_feedback"]))
             if step in {"plan_episode", "replan_episode_novelty"}:
                 return {"episode_plan": plan_payload()}
             self.fail(f"Unexpected step {step}")
@@ -184,12 +187,25 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
             (old/"episode_plan.json").write_text(json.dumps(plan_payload()))
             (old/"script.txt").write_text("ensayo previo")
             config = replace(pipeline_run.CONFIG, max_novelty_replans=1)
-            duplicate = {"similarity": 0.95, "episode_date": "2026-08-20", "topic_signature": "same"}
+            duplicate = {
+                "similarity": 0.95,
+                "episode_date": "2026-08-20",
+                "topic_signature": "same",
+                "matched_concepts": ["agency", "governance"],
+            }
             with patch.dict(os.environ, {"OPENAI_API_KEY": "test"}), patch.object(pipeline_run, "CONFIG", config), patch.object(pipeline_run, "run_agent", side_effect=fake), patch.object(pipeline_run, "nearest_essay_similarity", return_value=duplicate):
                 out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False, editorial_dir=root / "editorial")
             state = json.loads((out/"run_state.json").read_text())
             self.assertEqual(state["status"], "no_novel_essay_angle")
             self.assertEqual(steps.count("replan_episode_novelty"), 1)
+            self.assertEqual(len(novelty_feedback_seen), 1)
+            self.assertTrue(novelty_feedback_seen[0]["pivot_required"])
+            self.assertEqual(
+                novelty_feedback_seen[0]["matched_concepts_to_avoid"],
+                ["agency", "governance"],
+            )
+            self.assertIn("rejected_plan", novelty_feedback_seen[0])
+            self.assertIn("different evidence cluster", novelty_feedback_seen[0]["instruction"])
             self.assertNotIn("write_script", steps)
 
 

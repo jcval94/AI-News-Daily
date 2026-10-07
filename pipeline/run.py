@@ -882,11 +882,23 @@ async def build(
                 {
                     "problem": "The proposed essay is too similar to a recent approved essay.",
                     "nearest_previous_essay": nearest,
+                    "rejected_plan": {
+                        "topic_signature": candidate_plan.get("topic_signature"),
+                        "central_question": candidate_plan.get("central_question"),
+                        "thesis": candidate_plan.get("thesis"),
+                        "narrative_lens": candidate_plan.get("narrative_lens"),
+                        "evidence": candidate_plan.get("evidence", []),
+                    },
                     "similarity": similarity,
                     "threshold": CONFIG.essay_duplicate_threshold,
+                    "matched_concepts_to_avoid": list(nearest.get("matched_concepts", [])) if nearest else [],
+                    "pivot_required": True,
                     "instruction": (
-                        "Change the underlying question, mechanism, human stakes, historical mirror, or "
-                        "narrative lens. Do not merely rephrase the current thesis."
+                        "Do not merely rephrase the rejected plan. Pivot to a genuinely different evidence "
+                        "cluster from selected_news when alternatives exist. Change at least two of: underlying "
+                        "question, causal mechanism, human stakes, historical mirror, narrative lens. Avoid "
+                        "centering the matched concepts above unless the new mechanism is clearly distinct. "
+                        "Prefer selected news that was not central to the rejected plan."
                     ),
                 },
                 ensure_ascii=False,
