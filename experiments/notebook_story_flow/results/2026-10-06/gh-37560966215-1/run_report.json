@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "experiment": "notebook_story_flow",
+  "episode_date": "2026-10-06",
+  "publishable": false,
+  "status": "blocked_inputs",
+  "notebook_sha256": "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16",
+  "started_at_utc": "2026-10-07T02:14:42.563597+00:00",
+  "model": "gpt-5.4-nano",
+  "max_logical_calls": 12,
+  "max_attempts_per_call": 3,
+  "words_per_minute": 150,
+  "experiment_code_sha": "081fb5147d941a7bf88865bae4c00d139deb256c",
+  "control_workflow_run_id": "37560676060",
+  "control_code_sha": "081fb5147d941a7bf88865bae4c00d139deb256c",
+  "reason": "control_has_no_usable_script",
+  "finished_at_utc": "2026-10-07T02:14:42.563727+00:00",
+  "attempted_calls": 0,
+  "emitted_usage": {
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_tokens": 0,
+    "total_tokens": 0
+  }
+}
