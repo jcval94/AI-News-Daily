@@ -4,7 +4,7 @@ import unittest
 
 from pydantic import ValidationError
 
-from app.agent import EpisodePlan, editorial_director_agent, writer_agent
+from app.agent import EpisodePlan, WriterDraftResult, editorial_director_agent, writer_agent
 from app.refiners import factual_refiner_agent, secondary_refiner_agent, voice_refiner_agent
 from pipeline.run import _select_refinement_phase
 
@@ -104,6 +104,11 @@ class EditorialRuntimeContractTests(unittest.TestCase):
         self.assertIn("selected_news_count", director)
         self.assertIn("1..selected_news_count", director)
         self.assertIn("one strong piece is valid", director)
+        self.assertIs(writer_agent.output_schema, WriterDraftResult)
+        self.assertEqual(writer_agent.output_key, "writer_draft")
+        self.assertIn("structured section output", writer)
+        self.assertIn("do not output any html section or memory comments", writer)
+        self.assertIn("primary_memory_section_index", writer)
 
     def test_episode_plan_requires_primary_narrative_memory_but_not_opening(self) -> None:
         plan = valid_plan()

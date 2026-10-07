@@ -4,26 +4,23 @@ from typing import Any
 
 from google.adk.agents import Agent
 
-from app.agent import model, writer_agent
+from app.agent import WriterDraftResult, model, writer_agent
 
 
 MARKER_GUARD = """
 
-ABSOLUTE SECTION-MARKER VALIDATION — REQUIRED:
-Before returning the script, silently validate the marker sequence against episode_plan.beats.
-The output is invalid unless ALL of these are true:
-1. <!--SECTION:opening--> appears exactly once and is first.
-2. For every beat in episode_plan.beats, <!--SECTION:beat:BEAT_ID--> appears exactly once, in plan order.
-3. No beat marker may be repeated, restarted, copied, or emitted a second time later in the narration.
-4. <!--SECTION:synthesis--> appears exactly once and is last.
-5. The total number of SECTION markers must equal len(episode_plan.beats) + 2.
-6. If you want to revisit an earlier idea, do so in prose under the current section; NEVER repeat its marker.
-7. Exactly one <!--MEMORY:PRIMARY_MEMORY_ID--> marker must appear, using the exact episode_plan.primary_memory_id.
-8. Put that marker in the section implied by the primary narrative_parallel.placement: opening -> opening; narrative_turn -> a turn beat; closing_callback -> synthesis; support -> a development beat. If placement is opening, keep the marker within the first 120 spoken words.
-9. Do not emit any other MEMORY marker.
-10. Do not emit a second pass, alternate draft, recap, appendix, or continuation containing section markers.
-Return one draft only.
+ABSOLUTE STRUCTURED-WRITER VALIDATION — REQUIRED:
+Before returning, silently validate the WriterDraftResult against episode_plan.
+1. opening is non-empty spoken narration.
+2. beats contains exactly one spoken string per episode_plan.beats item, in plan order.
+3. synthesis is non-empty spoken narration.
+4. Do not emit <!--SECTION:...--> or <!--MEMORY:...--> comments; Python owns hidden metadata.
+5. primary_memory_section_index uses 0=opening, 1..N=beats in order, N+1=synthesis.
+6. That index must match the primary narrative_parallel.placement.
+7. The primary Narrative Memory passage must BEGIN the indexed section so Python can place its hidden marker deterministically.
+8. Return one structured draft only. Do not append an alternate draft, recap, continuation, or prose outside the schema.
 """
+
 
 
 hardened_writer_agent = Agent(
@@ -31,11 +28,12 @@ hardened_writer_agent = Agent(
     model=model(),
     description=writer_agent.description,
     instruction=str(writer_agent.instruction) + MARKER_GUARD,
-    output_key="draft_script",
+    output_schema=WriterDraftResult,
+    output_key="writer_draft",
 )
 
 
 def install(base: Any) -> Any:
-    """Replace only the writer with a marker-contract-hardened equivalent."""
+    """Replace only the writer with a structured-output-hardened equivalent."""
     base.writer_agent = hardened_writer_agent
     return base

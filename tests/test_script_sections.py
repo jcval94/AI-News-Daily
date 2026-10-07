@@ -4,9 +4,11 @@ import unittest
 
 from pipeline.script_sections import (
     SectionAlignmentError,
+    materialize_writer_draft,
     parse_sectioned_script,
     writer_marker_contract,
     writer_structure_repair_prompt,
+    writer_structured_contract,
 )
 
 
@@ -41,22 +43,133 @@ class ScriptSectionTests(unittest.TestCase):
         self.assertNotIn('inside ONE of these sections: opening', contract)
 
     def test_structure_repair_prompt_reuses_invalid_draft_instead_of_regenerating(self) -> None:
-        previous = (
-            "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio. "
-            "<!--SECTION:beat:first-reveal-->Revelación. "
-            "<!--SECTION:beat:turn-->Giro. "
-            "<!--SECTION:synthesis-->Cierre."
-        )
+        previous = {
+            "opening": "Inicio.",
+            "beats": ["Revelación.", "Giro."],
+            "synthesis": "Cierre.",
+            "primary_memory_section_index": 2,
+        }
         prompt = writer_structure_repair_prompt(
             previous,
-            "Narrative Memory planned for opening must appear inside opening",
+            "primary_memory_section_index must respect the planned placement",
             PLAN,
         )
-        self.assertIn(previous, prompt)
+        self.assertIn('"opening": "Inicio."', prompt)
         self.assertIn("do not write a new essay from scratch", prompt)
         self.assertIn("Validation error to repair:", prompt)
-        self.assertIn("Exact SECTION order:", prompt)
-        self.assertIn("Return the complete repaired draft only", prompt)
+        self.assertIn("Structured output contract:", prompt)
+        self.assertIn("complete corrected structured draft", prompt)
+
+    def test_structured_writer_contract_exposes_dynamic_beat_order(self) -> None:
+        contract = writer_structured_contract(PLAN)
+        self.assertIn("exactly 2 beats", contract)
+        self.assertIn("beat_id=first-reveal", contract)
+        self.assertIn("beat_id=turn", contract)
+        self.assertIn("primary_memory_section_index must be one of [0]", contract)
+        self.assertIn("Python adds them deterministically", contract)
+
+    def test_materialize_writer_draft_builds_exact_markers(self) -> None:
+        structured = {
+            "opening": "Inicio intrigante.",
+            "beats": [
+                "Dos casos se comparan dentro del mismo argumento.",
+                "Aquí cambia la pregunta sin introducir otra noticia.",
+            ],
+            "synthesis": "Cierre que transforma el inicio.",
+            "primary_memory_section_index": 0,
+        }
+        marked = materialize_writer_draft(structured, PLAN)
+        self.assertEqual(marked.count("<!--SECTION:"), 4)
+        self.assertEqual(marked.count("<!--MEMORY:memory-case-->"), 1)
+        self.assertTrue(
+            marked.startswith(
+                "<!--SECTION:opening--><!--MEMORY:memory-case-->Inicio intrigante."
+            )
+        )
+        clean, payload = parse_sectioned_script(marked, PLAN)
+        self.assertNotIn("SECTION", clean)
+        self.assertEqual(
+            [item["section_key"] for item in payload["sections"]],
+            ["opening", "beat:first-reveal", "beat:turn", "synthesis"],
+        )
+
+    def test_materialize_writer_draft_rejects_wrong_beat_count(self) -> None:
+        structured = {
+            "opening": "Inicio.",
+            "beats": ["Sólo un beat."],
+            "synthesis": "Cierre.",
+            "primary_memory_section_index": 0,
+        }
+        with self.assertRaisesRegex(
+            SectionAlignmentError, "exactly 2 items"
+        ):
+            materialize_writer_draft(structured, PLAN)
+
+    def test_materialize_writer_draft_enforces_turn_memory_index(self) -> None:
+        import copy
+        plan = copy.deepcopy(PLAN)
+        plan["opening_memory_id"] = None
+        plan["narrative_parallels"][0]["placement"] = "narrative_turn"
+        structured = {
+            "opening": "Inicio.",
+            "beats": ["Revelación.", "El caso histórico abre este giro."],
+            "synthesis": "Cierre.",
+            "primary_memory_section_index": 2,
+        }
+        marked = materialize_writer_draft(structured, plan)
+        self.assertIn(
+            "<!--SECTION:beat:turn--><!--MEMORY:memory-case-->",
+            marked,
+        )
+        bad = {**structured, "primary_memory_section_index": 1}
+        with self.assertRaisesRegex(
+            SectionAlignmentError, "planned placement"
+        ):
+            materialize_writer_draft(bad, plan)
+
+    def test_materialize_writer_draft_rejects_model_generated_markers(self) -> None:
+        structured = {
+            "opening": "<!--SECTION:opening-->Inicio.",
+            "beats": ["Revelación.", "Giro."],
+            "synthesis": "Cierre.",
+            "primary_memory_section_index": 0,
+        }
+        with self.assertRaisesRegex(SectionAlignmentError, "must not contain hidden"):
+            materialize_writer_draft(structured, PLAN)
+
+    def test_materialize_writer_draft_supports_closing_callback(self) -> None:
+        import copy
+        plan = copy.deepcopy(PLAN)
+        plan["opening_memory_id"] = None
+        plan["narrative_parallels"][0]["placement"] = "closing_callback"
+        structured = {
+            "opening": "Inicio.",
+            "beats": ["Revelación.", "Giro."],
+            "synthesis": "La memoria abre el cierre.",
+            "primary_memory_section_index": 3,
+        }
+        marked = materialize_writer_draft(structured, plan)
+        self.assertIn(
+            "<!--SECTION:synthesis--><!--MEMORY:memory-case-->",
+            marked,
+        )
+
+    def test_materialize_writer_draft_support_uses_declared_development_beat(self) -> None:
+        import copy
+        plan = copy.deepcopy(PLAN)
+        plan["opening_memory_id"] = None
+        plan["narrative_parallels"][0]["placement"] = "support"
+        structured = {
+            "opening": "Inicio.",
+            "beats": ["La memoria apoya esta revelación.", "Giro."],
+            "synthesis": "Cierre.",
+            "primary_memory_section_index": 1,
+        }
+        marked = materialize_writer_draft(structured, plan)
+        self.assertIn(
+            "<!--SECTION:beat:first-reveal--><!--MEMORY:memory-case-->",
+            marked,
+        )
 
     def test_markers_follow_idea_beats_not_news_items(self) -> None:
         marked = (

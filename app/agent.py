@@ -479,6 +479,22 @@ Do not invent new evidence. Do not write polished narration.
 )
 
 
+class WriterDraftResult(BaseModel):
+    """Structured narration returned by the initial writer before Python adds metadata."""
+
+    opening: str = Field(min_length=1)
+    beats: List[str] = Field(min_length=1, max_length=6)
+    synthesis: str = Field(min_length=1)
+    primary_memory_section_index: int = Field(
+        ge=0,
+        le=7,
+        description=(
+            "0=opening, 1..N=episode_plan.beats in order, N+1=synthesis. "
+            "The primary Narrative Memory passage must begin this section."
+        ),
+    )
+
+
 writer_agent = Agent(
     name="essay_script_writer",
     model=model(),
@@ -526,22 +542,27 @@ OPENING — HUMAN TENSION FIRST, HISTORY ONLY WHEN IT EARNS THE COLD OPEN:
 
 NARRATIVE MEMORY — FLEXIBLE PLACEMENT, DEFAULT TO THE TURN:
 - episode_plan.primary_memory_id identifies the one required primary Narrative Memory record.
-- Place the exact hidden marker <!--MEMORY:PRIMARY_MEMORY_ID--> immediately before the first sentence grounded in that primary record, replacing PRIMARY_MEMORY_ID with the exact ID.
-- The marker may appear in opening, development, or synthesis according to the selected narrative_parallel.placement. It must appear exactly once.
+- Do NOT output any HTML SECTION or MEMORY comments yourself. Python owns all hidden metadata.
+- Put the primary Narrative Memory passage at the BEGINNING of the section where it belongs and set
+  primary_memory_section_index to that section.
+- Index meaning: 0=opening, 1..N=episode_plan.beats in order, N+1=synthesis.
+- The index must respect narrative_parallel.placement: opening -> 0; narrative_turn -> a beat whose kind is
+  "turn"; closing_callback -> N+1; support -> one development beat.
 - When placement="narrative_turn", introduce the historical/structural case only after the present-day problem is concrete, and use it to make the viewer reinterpret what came before.
-- When placement="opening", use the case as a compact verified micro-story and keep the marker within roughly the first 120 spoken words.
-- When placement="closing_callback", use the record to sharpen the payoff rather than to introduce a new unrelated idea.
+- When placement="opening", use the case as a compact verified micro-story at the beginning of opening.
+- When placement="closing_callback", begin synthesis with the callback before widening into the final payoff.
 - Keep the primary Narrative Memory passage compact by default, roughly 60-110 spoken words. Do not pad and do not turn the essay into a history class.
 - If its analogy has an important limit, surface that limit naturally when needed.
 
-INTERNAL SECTION ALIGNMENT — REQUIRED BUT NEVER SPOKEN:
-- Return the draft with HTML-comment markers that Python will remove before judges/TTS.
-- Exact order: <!--SECTION:opening-->, then one <!--SECTION:beat:BEAT_ID--> for EACH episode_plan.beats item in plan order using its beat_id, then <!--SECTION:synthesis-->.
+STRUCTURED SECTION OUTPUT — REQUIRED:
+- opening contains only the spoken opening narration.
+- beats contains EXACTLY one spoken string for EACH episode_plan.beats item, in the same order.
+- synthesis contains only the spoken closing synthesis.
+- primary_memory_section_index identifies the section whose FIRST passage is grounded in the primary Narrative Memory.
 - Beats are IDEA sections, not news sections. A beat can contain no current-news item, one item, or several items according to evidence_ids.
-- Put each marker immediately before the narration belonging to that beat.
-- Do not add any other SECTION markers. The single required <!--MEMORY:...--> marker is separate metadata and may appear in the section where the primary Narrative Memory case is actually used. It must appear exactly once. Do not wrap the result in a code fence.
-- These markers are metadata, not headings; narration must flow naturally across them.
-- Do NOT include a subscribe/comment CTA in the raw essay; the deterministic production layer appends the CTA after the reflective closing question.
+- Never place HTML comments, section labels, JSON-as-prose, headings such as "Beat 1", or internal planning labels inside the spoken text.
+- Python will deterministically add SECTION/MEMORY markers after validating your structured response.
+- Do NOT include a subscribe/comment CTA; the deterministic production layer appends it after the reflective closing question.
 
 DRAMATURGICAL MOVEMENT — FOLLOW THE STRUCTURED ARC, BUT KEEP IT INVISIBLE:
 The exact planning fields are:
@@ -616,9 +637,10 @@ Forbidden AI-smell patterns include empty phrases such as “En un mundo cada ve
 Avoid plastic symmetry, corporate language, list-like narration, mechanically perfect transitions,
 unnecessary jargon, obscure vocabulary, strong regionalisms, and NEWS-DESK framing.
 
-Return ONLY the narration script.
+Return ONLY the structured WriterDraftResult fields required by the output schema.
 """,
-    output_key="draft_script",
+    output_schema=WriterDraftResult,
+    output_key="writer_draft",
 )
 
 

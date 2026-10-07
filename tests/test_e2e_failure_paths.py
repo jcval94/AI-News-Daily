@@ -67,13 +67,16 @@ def plan_payload() -> dict:
     }
 
 
-def marked_script() -> str:
-    return (
-        "<!--SECTION:opening--><!--MEMORY:electrification-organizational-redesign-->" + " ".join(["inicio"] * 250) +
-        " <!--SECTION:beat:evidence-->" + " ".join(["desarrollo"] * 500) +
-        " <!--SECTION:beat:turn-->" + " ".join(["giro"] * 100) +
-        " <!--SECTION:synthesis-->" + " ".join(["cierre"] * 200)
-    )
+def writer_payload() -> dict:
+    return {
+        "opening": " ".join(["inicio"] * 250),
+        "beats": [
+            " ".join(["desarrollo"] * 500),
+            " ".join(["giro"] * 100),
+        ],
+        "synthesis": " ".join(["cierre"] * 200),
+        "primary_memory_section_index": 0,
+    }
 
 
 TEST_NEWS_ID = stable_news_id(
@@ -143,7 +146,10 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
             if step == "plan_episode":
                 return {"episode_plan": plan_payload()}
             if step == "write_script":
-                return {"draft_script": marked_script()}
+                payload = writer_payload()
+                if steps.count("write_script") == 1:
+                    payload["beats"] = payload["beats"][:1]
+                return {"writer_draft": payload}
             if step == "editorial_judge":
                 return {"review": {"score": 9.2, "approved": True, "factuality_risk": "low", "strengths": [], "problems": [], "improvements": []}}
             if step in {"seo_judge", "attention_judge"}:
@@ -162,6 +168,10 @@ class E2EFailurePathTests(unittest.IsolatedAsyncioTestCase):
                 out = await pipeline_run.build(target_date=date(2026,8,21), news_dir=news, scripts_root=scripts, multimedia_root=media, history_scripts_root=history, max_media_downloads=0, download_multimedia=False, editorial_dir=root / "editorial")
             state = json.loads((out/"run_state.json").read_text())
             self.assertEqual(state["status"], "script_not_approved")
+            self.assertEqual(steps.count("write_script"), 2)
+            attempts = json.loads((out/"writer_attempts.json").read_text())
+            self.assertIn("exactly 2 items", attempts["attempts"][0]["validation_error"])
+            self.assertEqual(attempts["attempts"][1]["validation_error"], "")
             self.assertNotIn("plan_multimedia", steps)
 
     async def test_exhausted_novelty_replans_stop_before_writer(self) -> None:

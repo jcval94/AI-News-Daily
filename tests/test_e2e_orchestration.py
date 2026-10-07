@@ -22,8 +22,17 @@ TEST_NEWS_ID = stable_news_id(
 
 class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
     async def test_approved_episode_reaches_multimedia_without_external_calls(self) -> None:
-        script = ("<!--SECTION:opening-->" + " ".join(["noticia"] * 250) + " <!--SECTION:beat:evidence-->" + " ".join(["noticia"] * 500) + " <!--SECTION:beat:turn--><!--MEMORY:electrification-organizational-redesign-->" + " ".join(["noticia"] * 100) + " <!--SECTION:synthesis-->" + " ".join(["noticia"] * 200))
+        writer_payload = {
+            "opening": " ".join(["noticia"] * 250),
+            "beats": [
+                " ".join(["noticia"] * 500),
+                " ".join(["noticia"] * 100),
+            ],
+            "synthesis": " ".join(["noticia"] * 200),
+            "primary_memory_section_index": 2,
+        }
         selector_states: list[dict] = []
+        writer_states: list[dict] = []
 
         async def fake_run_agent(agent, initial_state, prompt, *, step, trace, iteration=None):
             trace.append(
@@ -118,7 +127,8 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                     }
                 }
             if step == "write_script":
-                return {"draft_script": script}
+                writer_states.append(dict(initial_state))
+                return {"writer_draft": writer_payload}
             if step == "editorial_judge":
                 return {
                     "review": {
@@ -213,6 +223,12 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(episode_plan["opening_memory_id"])
             self.assertEqual(episode_plan["narrative_parallels"][0]["memory_id"], "electrification-organizational-redesign")
             self.assertEqual(episode_plan["narrative_parallels"][0]["placement"], "narrative_turn")
+            writer_attempts = json.loads((result / "writer_attempts.json").read_text(encoding="utf-8"))
+            self.assertEqual(writer_attempts["attempts"][0]["validation_error"], "")
+            self.assertEqual(
+                writer_attempts["attempts"][0]["writer_draft"]["primary_memory_section_index"],
+                2,
+            )
             alignment = json.loads((result / "script_sections.json").read_text(encoding="utf-8"))
             self.assertEqual(alignment["narrative_memory"]["primary_memory_id"], "electrification-organizational-redesign")
             self.assertEqual(alignment["narrative_memory"]["placement"], "narrative_turn")
@@ -234,6 +250,10 @@ class OrchestrationE2ETests(unittest.IsolatedAsyncioTestCase):
                 json.loads(selector_states[0]["valid_news_ids"]),
                 [TEST_NEWS_ID],
             )
+            self.assertEqual(len(writer_states), 1)
+            writer_sources = json.loads(writer_states[0]["news_text"])
+            self.assertEqual(len(writer_sources["items"]), 1)
+            self.assertEqual(writer_sources["items"][0]["news_id"], TEST_NEWS_ID)
             self.assertEqual(novelty["previous_essay_count"], 0)
             self.assertFalse(novelty["attempts"][-1]["duplicate"])
             self.assertGreaterEqual(plan["timeline_duration_seconds"], 420)
