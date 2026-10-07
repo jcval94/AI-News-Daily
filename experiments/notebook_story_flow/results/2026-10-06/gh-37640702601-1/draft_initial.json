@@ -1,0 +1,149 @@
+{
+  "sections": [
+    {
+      "id": "step9_epica",
+      "text": "En Hanói, en la Indochina francesa de 1902, una campaña de control se montó alrededor de un indicador que parecía simple: si quieres saber si la plaga baja, mide lo que la plaga “deja” a la vista.\n\nYo no estuve ahí; lo reconstruimos a partir de lo que se afirma que ocurrió. Y lo primero que golpea es el mecanismo: durante un brote de peste bubónica, la administración colonial lanzó una campaña de control de ratas en la que, según el relato disponible, se ofrecía una recompensa por cada cola de rata entregada como prueba. La lógica es casi hipnótica por su claridad: no hace falta contar a ojo; basta con cobrar cuando presentas la evidencia.\n\nPero mira de cerca qué está pasando: el objetivo operativo se vuelve, en la práctica, el mismo signo que se usa para verificar el trabajo. En vez de “reducir la peste” como meta difícil de observar directamente, el sistema termina premiando una marca que “parece” definitiva. Y cuando una marca es verificable, el comportamiento puede ajustarse para maximizar el pago, no necesariamente para maximizar el bien.\n\nLo que se describe después es el tipo de fallo que hoy reconocemos como un desacople entre métrica y propósito. En el programa, las autoridades observaron ratas vivas a las que se les había cortado la cola. Es decir: la señal que servía para cobrar podía lograrse sin que la realidad epidemiológica mejorara de la forma que se pretendía.\n\nA veces esto se parece menos a una trampa deliberada y más a una consecuencia casi mecánica: cuando el detector es más “seguro” que el estado deseado, los incentivos pueden empujar el sistema hacia el indicador, incluso si el indicador ya no garantiza el objetivo humano.\n\nY la pregunta que me queda—aplicada a hoy, con nuestros controles, auditorías y automatismos—es concreta y tensa: ¿qué diseño institucional real obliga a revisar la incertidumbre del detector para que no termine funcionando como castigo o exclusión automática cuando se equivoca? La respuesta importa, porque en cada época alguien intenta convertir lo complejo en una prueba de una sola mirada.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1,
+        2,
+        3
+      ],
+      "visual_queries": [
+        "Vista general de Hanói (1902) con arquitectura colonial francesa y calles de la época.",
+        "Ilustración o fotografía histórica de ratas usadas como símbolo de plagas en campañas sanitarias.",
+        "Recreación visual de un puesto de recompensa donde se entrega una prueba física (sin mostrar violencia gráfica)."
+      ]
+    },
+    {
+      "id": "step10_reconexion",
+      "text": "A veces la historia suena lejana… hasta que te das cuenta de que seguimos haciendo lo mismo con otros “signos” que creemos que hablan por sí solos: una marca, una puntuación, un porcentaje. Y cuando esa señal viaja directo a una decisión de alto impacto, lo que importa deja de ser la realidad y empieza a ser el indicador. Entonces, antes de pensar si un detector “acierta”, hay que preguntar qué clase de muro institucional lo rodea para que no se convierta en destino.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Imagen mental: un medidor/etiqueta que cambia de significado al pasar de “informar” a “decidir”"
+      ]
+    },
+    {
+      "id": "hook_problema",
+      "text": "Volvamos a la pregunta abierta: si una institución usa una señal probabilística para decidir sobre educación, empleo o sanciones, ¿qué debe existir alrededor del detector —reglas, umbrales, combinación de evidencias, impugnación— para que la justicia no dependa de la suerte estadística? Porque el gran riesgo no es que la tecnología sea “mala”; el riesgo es que la incertidumbre, cuando no se protege como incertidumbre, se vuelve una sentencia automática. O dicho con más claridad: la falla no es solo técnica; es procedimental.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Close-up: un número probabilístico que aparece al lado de un botón de ‘aprobar / castigar’"
+      ]
+    },
+    {
+      "id": "hook_cita",
+      "text": "Aquí vale una regla práctica: cuando el sistema reconoce falsos positivos y falsos negativos, cualquier uso que trate su salida como certeza debería sentirse sospechoso. No porque “culpe” al detector, sino porque admite que puede equivocarse… y aun así empujaría decisiones humanas.",
+      "evidence_ids": [
+        "eu-text-provenance-stats"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Tarjeta visual: ‘Falsos positivos / falsos negativos’ como advertencia de uso"
+      ]
+    },
+    {
+      "id": "idea_A",
+      "text": "Mi primer pilar es casi una obviedad, pero cuesta aplicarla: una marca técnica con falsos positivos y falsos negativos no es lo mismo que certeza de autoría o de conducta. En el lenguaje cotidiano suena a detalle; en la práctica es el punto que define si la señal es útil como pista o peligrosa como veredicto.\n\nPiensa en el motivo recurrente de nuestro episodio —la marca que “parece” definitiva—. Es seductor porque reduce complejidad: una etiqueta invisible que, al activarse, se interpreta como procedencia. El problema aparece cuando esa etiqueta se vuelve el atajo: si el sistema decide “esto es X” con base en una probabilidad, entonces la vida de alguien queda condicionada por un instrumento que, por diseño, admite error.\n\nY ojo: no hace falta asumir mala intención ni manipulación. Basta con que el procedimiento institucional trate el número como si fuera determinación. Ahí ocurre el desacople: lo que se mide (una marca) ya no coincide con lo que se quiere (justicia, asignación correcta, corrección del riesgo).",
+      "evidence_ids": [
+        "eu-text-provenance-stats"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Dibujo: ‘marca invisible’ -> ‘interpretación’ -> ‘decisión’ con una zona roja entre ‘probabilidad’ y ‘sentencia’"
+      ]
+    },
+    {
+      "id": "dato_1",
+      "text": "OpenAI, al anunciar una marca estadística invisible para textos elegibles en la UE, reconoce que puede haber falsos positivos y falsos negativos; además indica que la detección puede ser menor en textos breves o restringidos y degradarse con edición de palabras. (Referencia: eu-text-provenance-stats)",
+      "evidence_ids": [
+        "eu-text-provenance-stats"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Gráfica simple: precisión variable según longitud/edición"
+      ]
+    },
+    {
+      "id": "idea_B_explica",
+      "text": "Mi segundo pilar cambia el foco: no basta con aceptar que hay error; hay que ver cómo el error “viaja” dentro del proceso. La incertidumbre se puede proteger de dos maneras distintas: (1) como información que obliga a revisar antes del daño, o (2) como ruido que, aun cuando exista, nunca llega a manos humanas.\n\nAquí entra un punto que me parece éticamente incómodo: los sistemas automatizados pueden crear una ilusión de control. Cuando un filtro reduce carga —por eficiencia, por volumen— tiende a parecer que “algo” se comprobó. Pero si el filtro elimina antes de la revisión, los falsos descartes se vuelven invisibles: no porque no existan, sino porque el caso ni siquiera llega a la conversación donde podría corregirse.\n\nAsí que la pregunta operacional no es “¿qué tan bien detecta?”, sino “¿en qué parte del recorrido decide el sistema, y con qué derecho a revisión llega la persona afectada?”. Si el procedimiento convierte un pre-resultado en exclusión irreversible, entonces la probabilidad ya no es incertidumbre: es destino institucional.\n\nY aquí, aunque hablemos de procedencia, el mismo mecanismo aparece en selección de propuestas o acceso a recursos: si el primer paso con IA excluye casi a la mitad, el diseño del segundo paso —y la posibilidad real de impugnar— se vuelve la diferencia entre un proceso robusto y uno frágil.",
+      "evidence_ids": [
+        "crane-ai-triage-appeal"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Flujo: solicitud -> filtro IA -> ‘no llega a panel’ vs ‘revisión antes de decisión’"
+      ]
+    },
+    {
+      "id": "idea_B_desafio",
+      "text": "Para aterrizarlo, hagamos un microexperimento mental (sin asumir que sea idéntico en todos los contextos): supongamos que el sistema tiene un error relativamente “bajo” en promedio. Pero si ese error opera en un punto donde la decisión humana ocurre después —o nunca—, entonces lo que parece bajo en estadística puede volverse alto en injusticia individual. El reto institucional es entonces doble: detectar errores no basta; hay que diseñar el calendario de la corrección. ¿Se revisa antes del daño, con criterios explicables y con posibilidad efectiva de reparación? Si la respuesta es “no”, el sistema convierte su incertidumbre en exclusión silenciosa.",
+      "evidence_ids": [
+        "crane-ai-triage-appeal"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Caja temporal: ‘revisión humana’ antes/después del ‘daño’"
+      ]
+    },
+    {
+      "id": "dato_2",
+      "text": "Times Higher Education reporta que CRANE suspendió ofertas y revisará propuestas descartadas inicialmente por un filtro de IA; describe 179 solicitudes donde casi la mitad fue excluida antes de una revisión humana individual, y señala que la corrección anunciada del procedimiento aún no prueba por sí sola que se hayan reparado decisiones injustas ni que exista auditoría independiente de efectos. (Referencia: crane-ai-triage-appeal)",
+      "evidence_ids": [
+        "crane-ai-triage-appeal"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Conteo: 179 -> ‘casi la mitad’ fuera antes de revisión"
+      ]
+    },
+    {
+      "id": "idea_C",
+      "text": "Mi tercer pilar es una transformación: la legitimidad no depende del desempeño del detector aislado; depende del diseño de la vía de corrección. Dicho de otro modo: un detector probabilístico solo es tolerable en decisiones de alto impacto si la institución traduce la incertidumbre en procedimiento.\n\nEsa traducción tiene tres piezas mínimas, y las voy a decir con un tono deliberadamente “de ingeniería social”, porque es donde duele:\n\nPrimero, revisión antes del daño. Si el sistema puede causar una exclusión, sanción o pérdida de oportunidad, entonces la revisión no puede ser un trámite posterior que ya no cambia el resultado. En casos donde hay filtros previos, el punto crítico es que la persona afectada no quede estadísticamente “muerta” antes de poder corregirse.\n\nSegundo, umbrales y reglas explícitas: no “un porcentaje” como veredicto, sino límites técnicos (con sus tasas de error reconocidas), condiciones de uso (por ejemplo, qué pasa con textos breves o editados) y una política sobre cuándo la señal se usa como evidencia y cuándo se trata solo como sospecha.\n\nTercero, impugnación con contenido, no con humo. Impugnar “a ciegas” no es impugnar. Tiene que haber una forma significativa de pedir revisión, aportar contexto, y obtener una explicación verificable de por qué la institución se mantuvo en su decisión. Y, muy importante, la institución debe estar dispuesta a reabrir decisiones y corregir rutas cuando la corrección es el mecanismo, no una promesa.\n\nAquí la analogía de Hanói deja de ser decorado: el sistema premiaba una marca verificable y produjo un resultado que no correspondía al objetivo humano. No digo que la IA moderna sea igual, ni que cualquier detector cause el mismo tipo de daño. La analogía sirve para señalar la estructura de riesgo: cuando el indicador es demasiado determinante y la vía de corrección llega tarde o llega mal, el comportamiento institucional se desacopla del propósito.\n\nLa tesis evolucionada, entonces, queda así: una señal imperfecta solo puede ser aceptable si el sistema obliga a que la incertidumbre circule como incertidumbre —con revisión previa, reglas de decisión que respeten los límites técnicos y un derecho real a impugnar que pueda cambiar el resultado. Si no existe esa arquitectura, no importa que el detector sea “probabilístico”: la estadística se convierte en una ruleta con uniforme institucional. Y la justicia, en ese escenario, no falla por maldad: falla por diseño.",
+      "evidence_ids": [
+        "eu-text-provenance-stats",
+        "crane-ai-triage-appeal"
+      ],
+      "memory_claim_indices": [
+        2,
+        3
+      ],
+      "visual_queries": [
+        "Triángulo institucional: (1) revisión previa, (2) reglas/umbrales, (3) impugnación con cambio real"
+      ]
+    },
+    {
+      "id": "story_payoff",
+      "text": "Volvemos a la historia de Hanói con una idea más precisa: no fue “la señal” lo que falló, sino el acoplamiento. La administración necesitaba menos ratas; pero pagó por colas. Al hacerlo, convirtió un indicador verificable en un objetivo operativo, y el resultado documentado fue racional para el incentivo… pero peor para el propósito: ratas vivas con la cola cortada y explotación del sistema (tráfico o cría) para seguir cobrando.\n\nEn decisiones de hoy, la lección no es “la IA copia a Hanói”. Es más sutil: si una institución trata una marca probabilística como sentencia, y la corrección llega tarde o es difícil, la incertidumbre puede traducirse en daño. La analogía solo ilumina la estructura de riesgo, no prueba equivalencias.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        5
+      ],
+      "visual_queries": [
+        "Reencuadre: de ‘una señal’ a ‘la vía institucional que convierte señal en objetivo’"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, ¿qué tendría que existir alrededor del detector para que la justicia no dependa de la suerte estadística? Reglas de decisión con límites técnicos, revisión antes del daño y una impugnación real que pueda cambiar el resultado (no solo “pedir reconsideración”). Cuando falta esa arquitectura, el número se vuelve destino.\n\nSi quieres, quédate con esta pregunta la próxima vez que veas una etiqueta probabilística: ¿está diseñada para informar… o para decidir? Si te sirvió este enfoque, suscríbete y comparte el episodio con alguien que tome decisiones (o diseñe sistemas) donde el error cuesta demasiado.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Texto final en pantalla: ‘¿Informar o decidir?’"
+      ]
+    }
+  ],
+  "opening_last_sentence": "La respuesta importa, porque en cada época alguien intenta convertir lo complejo en una prueba de una sola mirada.",
+  "seo_title": "Detectores probabilísticos y debido proceso: cuándo la señal",
+  "seo_description": "Qué debe existir alrededor de una señal probabilística (umbrales, revisión previa y derecho a impugnar) para evitar que la incertidumbre se convierta en castigo",
+  "seo_keywords": [
+    "detector probabilístico",
+    "debido proceso",
+    "impugnación",
+    "falsos positivos y negativos','revisión antes del daño','IA en decisiones"
+  ]
+}

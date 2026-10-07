@@ -1,0 +1,115 @@
+{
+  "central_question": "Cuando una institución usa una señal probabilística para decidir sobre educación, empleo o sanciones, ¿qué debe existir alrededor del detector (reglas, umbrales, combinación de evidencias, impugnación) para que la justicia no dependa de la suerte estadística?",
+  "provisional_thesis": "Los detectores probabilísticos de procedencia pueden aumentar transparencia, pero vuelven frágil el debido proceso si se usan como veredicto aislado. El problema no es solo “si detecta”, sino si la incertidumbre viaja hasta la decisión y si existe un derecho real a corregir errores cuando fallan.",
+  "evolved_thesis": "Una señal imperfecta solo puede ser aceptable en decisiones de alto impacto si el sistema institucional traduce la incertidumbre en procedimiento: revisión antes del daño, posibilidad de impugnación significativa y combinación de evidencias que impida que un “porcentaje” se convierta en sentencia.",
+  "core_ideas": [
+    "Una marca técnica con falsos positivos/negativos no es lo mismo que certeza de autoría.",
+    "El daño aparece cuando la incertidumbre no se protege como incertidumbre sino que se convierte en destino institucional.",
+    "La legitimidad no depende del desempeño del detector aislado, sino del diseño de la vía de corrección (apelación, revisión previa y reglas de decisión)."
+  ],
+  "motif": "la marca que “parece” definitiva",
+  "pillars": [
+    "Señales probabilísticas: límites técnicos explícitos (falsos positivos/negativos, degradación por edición).",
+    "Procedimiento: cuándo la señal se usa como veredicto aislado vs. cuándo se trata como evidencia entre varias.",
+    "Derecho a corrección: impugnación y revisión antes de que el daño sea irreversible."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "apollo-11-priority-scheduling-overload",
+      "epicity": 8.9,
+      "relevance": 8.2,
+      "reason": "Durante una sobrecarga, el software preserva tareas críticas y deja caer trabajo de menor prioridad; sirve para pensar cómo un sistema debe decidir qué conservar cuando hay límites y riesgo. Relaciona “señal” y “misión” sin implicar que IA moderna sea equivalente."
+    },
+    {
+      "memory_id": "hanoi-rat-tail-bounty-gaming",
+      "epicity": 10.0,
+      "relevance": 9.1,
+      "reason": "Un incentivo ligado a una señal verificable (colas) termina desconectándose del objetivo humano (menos ratas) por gaming; es un paralelo muy limpio para el riesgo de que un detector se vuelva el objetivo y no el medio."
+    },
+    {
+      "memory_id": "seattle-dialysis-scarcity-committee",
+      "epicity": 9.6,
+      "relevance": 8.6,
+      "reason": "Una capacidad técnica nueva crea escasez y exige un mecanismo institucional de asignación; permite explorar qué hace falta para que decisiones de alto impacto tengan legitimidad y corrección."
+    }
+  ],
+  "selected_memory_id": "hanoi-rat-tail-bounty-gaming",
+  "protagonist": "Las autoridades coloniales que diseñan un sistema de recompensa basado en una señal (colas entregadas) para combatir una plaga durante un brote de peste.",
+  "opposing_force": "El “hacking” racional del sistema: cuando la señal es más verificable que el estado deseado, los incentivos pueden desacoplarse del objetivo humano y producir el efecto contrario.",
+  "conflict": "El diseño convierte un indicador medible en el objetivo operativo; para cobrar, el comportamiento se adapta y aparece un resultado peor (ratas vivas sin cola y tráfico/cría asociada a la recompensa).",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4,
+    5
+  ],
+  "unresolved_question": "En los sistemas actuales, ¿qué diseño institucional concreta la impugnación y la revisión real para que la incertidumbre del detector no se transforme en castigo o exclusión automática?",
+  "bridge_to_present": "Pensemos la marca de procedencia como una “cola” estadística: verificable en ciertos términos, pero imperfecta. Si el procedimiento la usa como veredicto aislado, el daño surge por el mismo tipo de desacople entre señal y objetivo (autoría/justicia), igual que en el programa de recompensas.",
+  "analogy_limits": "Hanói es un caso de incentivos humanos y coerción contextual; no demuestra automáticamente que un detector de procedencia sea engañado de la misma forma. La analogía sirve para iluminar la estructura de riesgo: cuando la métrica/aviso se vuelve demasiado determinante frente al resultado humano, aparecen efectos perversos. En IA moderna, la incertidumbre es distinta a un incentivo monetario directo y requiere diseño institucional específico.",
+  "ledger": [
+    {
+      "evidence_id": "eu-text-provenance-stats",
+      "news_id": "n_271c085a13589ff9",
+      "supported_facts": [
+        "OpenAI anunció que añadirá una marca estadística invisible a salidas de texto elegibles de ChatGPT y Codex en la Unión Europea como respuesta al AI Act.",
+        "OpenAI indica que la activación y el detector tendrían opciones/condiciones de despliegue y acceso (por ejemplo, inicialmente sólo para investigadores y organizaciones aprobadas).",
+        "OpenAI reconoce falsos positivos y falsos negativos en el detector.",
+        "OpenAI afirma que la detección puede ser menor en textos breves o restringidos y que puede degradarse con edición de palabras.",
+        "OpenAI presenta estos elementos como pruebas/decisiones comunicadas por la compañía, no como garantía universal de autoría."
+      ],
+      "allowed_interpretations": [
+        "La existencia de falsos positivos/negativos implica que la señal no debe tratarse como equivalente a certeza de autoría.",
+        "La degradación por edición sugiere que el desempeño puede variar según el contexto de uso y el tipo de texto."
+      ],
+      "hypotheses": [
+        "Si una institución usa esta señal como veredicto aislado, aumentaría la probabilidad de daños injustos en casos límite (hipótesis)."
+      ],
+      "uncertainties": [
+        "El anuncio no establece métricas públicas de precisión (sensibilidad/especificidad) en el universo de casos reales.",
+        "No se especifica aquí cómo se combinaría la señal con otras evidencias en decisiones finales.",
+        "No se prueba en esta fuente cómo se resuelven apelaciones o qué tasa de corrección existe en práctica."
+      ],
+      "prohibited_claims": [
+        "No afirmar que el detector ya causa injusticias en casos reales.",
+        "No afirmar que el detector sea inherentemente injusto o siempre falla.",
+        "No suponer que la marca invisible prueba autoría humana/IA sin cálculo de probabilidad y contexto."
+      ],
+      "source_limitations": [
+        "La fuente es un comunicado/anuncio de OpenAI; refleja lo que la compañía afirma, no una verificación independiente reportada en el material citado.",
+        "El texto resume límites reconocidos por la empresa, sin incluir auditorías externas o resultados en decisiones reales."
+      ]
+    },
+    {
+      "evidence_id": "crane-ai-triage-appeal",
+      "news_id": "n_8600aeb7b06bd413",
+      "supported_facts": [
+        "Times Higher Education informa que CRANE suspendió ofertas y anunció revisar propuestas descartadas por un filtro de IA.",
+        "El reporte describe un proceso de 179 solicitudes donde casi la mitad fue excluida antes de una revisión humana individual.",
+        "Se anuncia una corrección del procedimiento, con reconstitución del panel.",
+        "El artículo señala que la revisión anunciada no demuestra por sí sola que se hayan reparado decisiones injustas ni que exista una auditoría independiente de efectos."
+      ],
+      "allowed_interpretations": [
+        "Cuando hay un pre-filtro automatizado, los errores de descarte pueden volverse invisibles porque no llegan a revisión experta.",
+        "La posibilidad de impugnar exclusiones antes de que se consuman decisiones puede ser un componente clave de legitimidad."
+      ],
+      "hypotheses": [
+        "En sistemas de procedencia, si no hay impugnación efectiva, los falsos positivos podrían volverse daños institucionales similares a falsos descartes (hipótesis)."
+      ],
+      "uncertainties": [
+        "No se proporcionan aquí tasas de error del filtro ni evidencia de injusticia específica en casos concretos.",
+        "No se detalla el criterio del filtro ni los métodos exactos de la revisión humana posterior."
+      ],
+      "prohibited_claims": [
+        "No afirmar que el caso de CRANE sea equivalente a detectores de procedencia en educación o sanciones.",
+        "No inferir causalidad directa (sin datos) sobre la magnitud del daño."
+      ],
+      "source_limitations": [
+        "La fuente es un medio (Times Higher Education) con su descripción; puede omitir detalles técnicos del proceso y la revisión.",
+        "El material señala límites de evidencia sobre auditoría independiente, lo que reduce el poder de generalización."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "Volvemos a la historia de Hanói con una idea más precisa: no fue “la señal” lo que falló, sino el acoplamiento. La administración necesitaba menos ratas; pero pagó por colas. Al hacerlo, convirtió un indicador verificable en un objetivo operativo, y el resultado documentado fue racional para el incentivo… pero peor para el propósito: ratas vivas con la cola cortada y explotación del sistema (tráfico o cría) para seguir cobrando.\n\nEn decisiones de hoy, la lección no es “la IA copia a Hanói”. Es más sutil: si una institución trata una marca probabilística como sentencia, y la corrección llega tarde o es difícil, la incertidumbre puede traducirse en daño. La analogía solo ilumina la estructura de riesgo, no prueba equivalencias.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        5
+      ],
+      "visual_queries": [
+        "Reencuadre: de ‘una señal’ a ‘la vía institucional que convierte señal en objetivo’"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, ¿qué tendría que existir alrededor del detector para que la justicia no dependa de la suerte estadística? Reglas de decisión con límites técnicos, revisión antes del daño y una impugnación real que pueda cambiar el resultado (no solo “pedir reconsideración”). Cuando falta esa arquitectura, el número se vuelve destino.\n\nSi quieres, quédate con esta pregunta la próxima vez que veas una etiqueta probabilística: ¿está diseñada para informar… o para decidir? Si te sirvió este enfoque, suscríbete y comparte el episodio con alguien que tome decisiones (o diseñe sistemas) donde el error cuesta demasiado.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Texto final en pantalla: ‘¿Informar o decidir?’"
+      ]
+    }
+  ],
+  "seo_title": "Detectores probabilísticos y debido proceso: cuándo la señal",
+  "seo_description": "Qué debe existir alrededor de una señal probabilística (umbrales, revisión previa y derecho a impugnar) para evitar que la incertidumbre se convierta en castigo",
+  "seo_keywords": [
+    "detector probabilístico",
+    "debido proceso",
+    "impugnación",
+    "falsos positivos y negativos','revisión antes del daño','IA en decisiones"
+  ]
+}

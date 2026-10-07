@@ -1,0 +1,96 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 17.682,
+    "usage": {
+      "prompt_tokens": 19333,
+      "output_tokens": 2016,
+      "total_tokens": 21349
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 4.426,
+    "usage": {
+      "prompt_tokens": 2568,
+      "output_tokens": 550,
+      "total_tokens": 3118
+    }
+  },
+  {
+    "step": "development",
+    "agent": "notebook_development",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 13.889,
+    "usage": {
+      "prompt_tokens": 11164,
+      "output_tokens": 2136,
+      "total_tokens": 13300
+    }
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 4.106,
+    "usage": {
+      "prompt_tokens": 14163,
+      "output_tokens": 481,
+      "total_tokens": 14644
+    }
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "error",
+    "elapsed_seconds": 21.986,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\n  Value error, Repair must preserve the complete structural contract: payoff omits the reserved historical outcome; closing lacks subscription CTA [type=value_error, input_value={'sections': [{'id': 'ste...o','IA en decisiones\"]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 2,
+    "status": "error",
+    "elapsed_seconds": 23.27,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\n  Value error, Repair must preserve the complete structural contract: payoff omits the reserved historical outcome [type=value_error, input_value={'sections': [{'id': 'ste...vos y negativos incl.']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 3,
+    "status": "error",
+    "elapsed_seconds": 21.577,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\n  Value error, Repair must preserve the complete structural contract: payoff omits the reserved historical outcome [type=value_error, input_value={'sections': [{'id': 'ste... , 'IA en decisiones'\"]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  }
+]
