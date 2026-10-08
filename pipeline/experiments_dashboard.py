@@ -166,7 +166,7 @@ def _checks(item: dict[str, Any]) -> str:
 
 def _card(item: dict[str, Any]) -> str:
     action = "Abrir mesa de guion" if item["script"] else "Ver resultado"
-    return f"""<article class="experiment-card" data-experiment-card>
+    return f"""<article class="experiment-card" data-experiment-card data-title="{html.escape(item['title'], quote=True)}" data-status="{html.escape(item['status'], quote=True)}" data-date="{html.escape(item['date'], quote=True)}" data-run="{html.escape(item['run'], quote=True)}">
   <header><div><span class="eyebrow">{html.escape(item['date'] or 'sin fecha')} · {html.escape(item['run'])}</span><h2>{html.escape(item['title'])}</h2></div><span class="status">{html.escape(_label(item['status']))}</span></header>
   <dl>{_metric('Score', item['score'])}{_metric('Riesgo factual', item['factuality_risk'])}{_metric('Palabras', item['word_count'])}{_metric('Duración', f"{item['estimated_duration_seconds']} s" if item['estimated_duration_seconds'] is not None else None)}</dl>
   <ul class="checks">{_checks(item)}</ul><a class="button primary" href="runs/{item['slug']}/index.html">{action}</a>
@@ -174,11 +174,61 @@ def _card(item: dict[str, Any]) -> str:
 
 
 def dashboard_document(experiments: list[dict[str, Any]]) -> str:
-    cards = "".join(_card(item) for item in experiments)
+    scripted = [item for item in experiments if item["has_script"]]
+    without_script = [item for item in experiments if not item["has_script"]]
+    experiment_options = "".join(
+        f'<option value="{html.escape(title, quote=True)}">{html.escape(title)}</option>'
+        for title in sorted({str(item["title"]) for item in experiments})
+    )
+    status_options = "".join(
+        f'<option value="{html.escape(status, quote=True)}">{html.escape(_label(status))}</option>'
+        for status in sorted({str(item["status"]) for item in experiments})
+    )
+    no_script_group = (
+        f'<details class="archive" id="noScriptGroup"><summary>Sin guion <span id="noScriptCount">{len(without_script)} resultados</span></summary>'
+        '<p class="muted">Intentos que terminaron antes de producir un guion. Haz clic para revisarlos.</p>'
+        f'<section class="grid" data-card-grid>{"".join(_card(item) for item in without_script)}</section></details>'
+        if without_script
+        else ""
+    )
     empty = "" if experiments else '<p class="empty">Todavía no hay resultados de experimentos publicados.</p>'
     return f"""<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Experimentos · AI News Daily</title><style>{BASE_CSS}</style></head>
-<body data-experiments-page="experiments"><main><span class="eyebrow">Laboratorio editorial</span><h1>Experimentos</h1><p class="lead">Resultados reproducibles, gates y mesas de guion editables. Incluye intentos fallidos para que el aprendizaje no desaparezca.</p><input id="experimentSearch" type="search" placeholder="Buscar experimento, fecha o estado…" aria-label="Buscar experimentos"><section class="grid">{cards}{empty}</section></main>
-<script>const search=document.getElementById('experimentSearch');const cards=[...document.querySelectorAll('[data-experiment-card]')];search.addEventListener('input',()=>{{const q=search.value.trim().toLocaleLowerCase('es');cards.forEach(card=>card.hidden=!!q&&!card.textContent.toLocaleLowerCase('es').includes(q));}});</script></body></html>"""
+<body data-experiments-page="experiments"><main><span class="eyebrow">Laboratorio editorial</span><h1>Experimentos</h1><p class="lead">Resultados reproducibles, gates y mesas de guion editables. Incluye intentos fallidos para que el aprendizaje no desaparezca.</p>
+<section class="toolbar" aria-label="Filtros de experimentos">
+  <label class="search-field">Buscar<input id="experimentSearch" type="search" placeholder="Nombre, fecha, ejecución o estado…"></label>
+  <label>Experimento<select id="experimentName"><option value="">Todos</option>{experiment_options}</select></label>
+  <label>Estado<select id="experimentStatus"><option value="">Todos</option>{status_options}</select></label>
+  <label>Orden<select id="experimentSort"><option value="newest">Más recientes</option><option value="oldest">Más antiguos</option><option value="title">Nombre A–Z</option><option value="status">Estado A–Z</option></select></label>
+</section>
+<p class="result-count" id="experimentCount" aria-live="polite"></p>
+<section class="grid" id="scriptedExperiments" data-card-grid>{"".join(_card(item) for item in scripted)}</section>
+<p class="empty" id="scriptedEmpty" hidden>No hay experimentos con guion que coincidan con los filtros.</p>{no_script_group}{empty}</main>
+<script>
+const search=document.getElementById('experimentSearch');
+const nameFilter=document.getElementById('experimentName');
+const statusFilter=document.getElementById('experimentStatus');
+const sort=document.getElementById('experimentSort');
+const cards=[...document.querySelectorAll('[data-experiment-card]')];
+const archive=document.getElementById('noScriptGroup');
+const compare=(a,b,key)=>a.dataset[key].localeCompare(b.dataset[key],'es',{{numeric:true,sensitivity:'base'}});
+function refresh(){{
+  const q=search.value.trim().toLocaleLowerCase('es');
+  let visible=0,archived=0,scriptedVisible=0;
+  cards.forEach(card=>{{
+    const show=(!q||card.textContent.toLocaleLowerCase('es').includes(q))&&(!nameFilter.value||card.dataset.title===nameFilter.value)&&(!statusFilter.value||card.dataset.status===statusFilter.value);
+    card.hidden=!show;
+    if(show){{visible++;card.closest('#noScriptGroup')?archived++:scriptedVisible++;}}
+  }});
+  document.querySelectorAll('[data-card-grid]').forEach(grid=>{{
+    [...grid.children].sort((a,b)=>sort.value==='oldest'?compare(a,b,'date')||compare(a,b,'run'):sort.value==='title'?compare(a,b,'title')||-compare(a,b,'date'):sort.value==='status'?compare(a,b,'status')||-compare(a,b,'date'):-compare(a,b,'date')||-compare(a,b,'run')).forEach(card=>grid.append(card));
+  }});
+  document.getElementById('experimentCount').textContent=`${{visible}} resultado${{visible===1?'':'s'}}`;
+  document.getElementById('scriptedEmpty').hidden=cards.length===0||scriptedVisible>0;
+  if(archive){{archive.hidden=archived===0;document.getElementById('noScriptCount').textContent=`${{archived}} resultado${{archived===1?'':'s'}}`;}}
+}}
+[search,nameFilter,statusFilter,sort].forEach(control=>control.addEventListener(control===search?'input':'change',refresh));
+refresh();
+</script></body></html>"""
 
 
 def _story_map_html(stories: list[dict[str, Any]]) -> str:
@@ -233,7 +283,7 @@ def run_document(item: dict[str, Any]) -> str:
 
 
 BASE_CSS = r"""
-:root{--bg:#080d13;--panel:#0f1822;--line:#243548;--text:#eef6ff;--muted:#8da0b3;--accent:#66d9ff;--ok:#57c49a;--bad:#ff8b8b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:38px 22px 80px}.eyebrow{display:block;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}h1{font-size:clamp(30px,5vw,56px);margin:7px 0}h2{margin:0 0 14px}h3{margin:5px 0}.lead,.muted{color:var(--muted);line-height:1.6}.back{display:inline-block;margin-bottom:24px;color:var(--accent);text-decoration:none}input{width:100%;margin:22px 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#0b121a;color:var(--text)}.grid{display:grid;gap:16px}.experiment-card,.panel,#guion{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);margin:18px 0}.experiment-card header{display:flex;justify-content:space-between;gap:16px}.status{display:inline-block;height:max-content;padding:6px 9px;border:1px solid #315c70;border-radius:999px;color:var(--accent);font-size:11px}dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0}dl div{padding:10px;background:#0a1119;border-radius:10px}dt{font-size:10px;color:var(--muted)}dd{margin:4px 0 0;font-weight:750}.checks{display:flex;flex-wrap:wrap;gap:7px;padding:0;list-style:none}.checks li{padding:6px 9px;border-radius:8px;background:#0a1119;font-size:12px}.pass{color:var(--ok)}.fail{color:var(--bad)}.button{display:inline-block;border:1px solid #35506b;border-radius:9px;background:#152638;color:#d7ebfa;padding:8px 11px;text-decoration:none;font:inherit}.button.primary{background:#17344a;border-color:#356789;color:#dff5ff}.story-grid{display:grid;gap:10px}.story-card{border:1px solid var(--line);border-radius:12px;background:#0a1119;padding:14px}.story-kind{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--accent)}code{color:#a8bdd0}.story-card li{margin:10px 0}.story-card li span{color:var(--accent);font-size:11px}.story-card li p{color:var(--muted);margin:4px 0;font-size:12px}.script{max-width:850px;margin:auto;white-space:pre-wrap;line-height:1.68;color:#e4edf5}.empty{color:var(--muted)}[hidden]{display:none!important}@media(max-width:650px){main{padding:24px 14px}dl{grid-template-columns:repeat(2,1fr)}.experiment-card header{display:block}}
+:root{--bg:#080d13;--panel:#0f1822;--line:#243548;--text:#eef6ff;--muted:#8da0b3;--accent:#66d9ff;--ok:#57c49a;--bad:#ff8b8b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:38px 22px 80px}.eyebrow{display:block;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}h1{font-size:clamp(30px,5vw,56px);margin:7px 0}h2{margin:0 0 14px}h3{margin:5px 0}.lead,.muted{color:var(--muted);line-height:1.6}.back{display:inline-block;margin-bottom:24px;color:var(--accent);text-decoration:none}.toolbar{display:grid;grid-template-columns:minmax(240px,2fr) repeat(3,minmax(130px,1fr));gap:12px;margin:24px 0 10px}.toolbar label{display:grid;gap:7px;color:var(--muted);font-size:13px;font-weight:700}.toolbar input,.toolbar select{width:100%;min-height:44px;margin:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#0b121a;color:var(--text);font:inherit}.result-count{margin:12px 0;color:var(--muted);font-size:13px}.grid{display:grid;gap:16px}.experiment-card,.panel,#guion{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);margin:18px 0}.experiment-card header{display:flex;justify-content:space-between;gap:16px}.status{display:inline-block;height:max-content;padding:6px 9px;border:1px solid #315c70;border-radius:999px;color:var(--accent);font-size:11px}dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0}dl div{padding:10px;background:#0a1119;border-radius:10px}dt{font-size:10px;color:var(--muted)}dd{margin:4px 0 0;font-weight:750}.checks{display:flex;flex-wrap:wrap;gap:7px;padding:0;list-style:none}.checks li{padding:6px 9px;border-radius:8px;background:#0a1119;font-size:12px}.pass{color:var(--ok)}.fail{color:var(--bad)}.button{display:inline-block;border:1px solid #35506b;border-radius:9px;background:#152638;color:#d7ebfa;padding:8px 11px;text-decoration:none;font:inherit}.button.primary{background:#17344a;border-color:#356789;color:#dff5ff}.archive{margin-top:32px;border-top:1px solid var(--line);padding-top:18px}.archive summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;padding:12px 2px;color:var(--text);font-size:18px;font-weight:800}.archive summary span{color:var(--muted);font-size:13px;font-weight:650}.archive:not([open])>.grid,.archive:not([open])>p{display:none}.story-grid{display:grid;gap:10px}.story-card{border:1px solid var(--line);border-radius:12px;background:#0a1119;padding:14px}.story-kind{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--accent)}code{color:#a8bdd0}.story-card li{margin:10px 0}.story-card li span{color:var(--accent);font-size:11px}.story-card li p{color:var(--muted);margin:4px 0;font-size:12px}.script{max-width:850px;margin:auto;white-space:pre-wrap;line-height:1.68;color:#e4edf5}.empty{color:var(--muted)}[hidden]{display:none!important}@media(max-width:800px){.toolbar{grid-template-columns:1fr 1fr}.search-field{grid-column:1/-1}}@media(max-width:650px){main{padding:24px 14px}.toolbar{grid-template-columns:1fr}.search-field{grid-column:auto}dl{grid-template-columns:repeat(2,1fr)}.experiment-card header{display:block}}
 """
 
 
