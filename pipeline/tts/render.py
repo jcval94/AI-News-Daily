@@ -35,6 +35,19 @@ def _is_approved_episode(path: Path) -> bool:
     return state.get("status") == "approved"
 
 
+def approved_episodes(scripts_root: Path = Path("scripts")) -> list[Path]:
+    if not scripts_root.exists():
+        return []
+    return sorted(
+        (
+            path
+            for path in scripts_root.iterdir()
+            if path.is_dir() and _is_approved_episode(path)
+        ),
+        key=lambda path: path.name,
+    )
+
+
 def resolve_episode(script: str, scripts_root: Path = Path("scripts")) -> Path:
     if script != "latest":
         candidate = scripts_root / script
@@ -43,10 +56,7 @@ def resolve_episode(script: str, scripts_root: Path = Path("scripts")) -> Path:
         if not _is_approved_episode(candidate):
             raise ValueError(f"Episode is not approved: {candidate}")
         return candidate
-    candidates: list[Path] = []
-    for path in scripts_root.iterdir() if scripts_root.exists() else []:
-        if path.is_dir() and _is_approved_episode(path):
-            candidates.append(path)
+    candidates = approved_episodes(scripts_root)
     if not candidates:
         raise FileNotFoundError("No approved episode with script_sections.json was found")
     return sorted(candidates, key=lambda p: p.name)[-1]

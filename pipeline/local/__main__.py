@@ -95,6 +95,7 @@ def parse_args() -> argparse.Namespace:
             "doctor",
             "smoke",
             "render",
+            "render-pending",
             "benchmark",
             "accept",
             "promote",
