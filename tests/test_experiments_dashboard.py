@@ -68,7 +68,9 @@ class ExperimentsDashboardTests(unittest.TestCase):
             failed_page = (base / "site" / "runs" / failed_item["slug"] / "index.html").read_text(encoding="utf-8")
 
             self.assertEqual(len(discovered), 2)
+            self.assertTrue(all(item["title"] == "Epopeya abierta" for item in discovered))
             self.assertIn('data-experiments-page="experiments"', document)
+            self.assertIn("Epopeya abierta", document)
             self.assertIn("Abrir mesa de guion", document)
             self.assertIn('data-script-editor="v1"', run_page)
             self.assertIn('data-script-productivity-runtime="v1"', run_page)

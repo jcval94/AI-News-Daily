@@ -13,6 +13,7 @@ from pipeline.review_hub_v13 import apply_script_productivity
 
 
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+EXPERIMENT_TITLES = {"notebook_story_flow": "Epopeya abierta"}
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -131,7 +132,7 @@ def discover_experiments(roots: list[Path]) -> list[dict[str, Any]]:
                     "id": identity,
                     "slug": _slug(identity),
                     "experiment": experiment_id,
-                    "title": _label(experiment_id),
+                    "title": EXPERIMENT_TITLES.get(experiment_id, _label(experiment_id)),
                     "date": date,
                     "run": parts[-1] if parts else run_dir.name,
                     "status": str(report.get("status") or "unknown"),
