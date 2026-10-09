@@ -1,0 +1,36 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 9.0,
+  "invented_details": [
+    "“Yo no puedo reconstruir ‘cómo se sintió’ nada —eso sería inventar—” (no es un hecho verificable; es una afirmación sobre el propio conocimiento del narrador, aunque no introduce datos externos. No hace falta para la auditoría factual).",
+    "“El problema humano es que las señales técnicas —aunque sean honestamente probabilísticas— se vuelven psicológicamente irresistibles cuando alguien tiene que decidir rápido.” (introduce una afirmación psicológica/causal general no respaldada por los materiales de noticia/ledger provistos).",
+    "“Y cuando la decisión tiene consecuencias (sanciones, expulsiones, acusaciones)…” (lista de consecuencias como ejemplos plausibles, pero no está respaldada como parte del contenido verificado de las fuentes usadas).",
+    "“Hay una frase útil —y no es de una empresa—: ‘La escritura… da una apariencia de conocimiento sin comprensión real’.” (la cita no está trazada a ninguna fuente/ID en el material provisto; además no queda claro quién la dijo).",
+    "“El desenlace, documentado, refuerza…” (afirma efecto/interpretación persuasiva del documento, no un hecho verificable por sí mismo).",
+    "“Eso seduce a la burocracia: reduce trabajo interpretativo, sugiere objetividad y deja trazas.” (afirmación motivacional/causal general no respaldada por las fuentes).",
+    "“puede terminar ocupando el lugar de una prueba” / “una luz verde que ‘ya quedó’ puede ser exactamente…” (predicciones/causalidad social no respaldadas por evidencia específica en el ledger)."
+  ],
+  "source_issues": [
+    "El guion incluye una cita textual (“La escritura…”) sin que exista en evidence_ids/ledger un ID que identifique autor o procedencia; no puede auditarse fidelidad textual.",
+    "Varias afirmaciones causales/psicológicas y sobre “efectos” institucionales aparecen sin evidencia directa en los news_items/ledger (que sólo cubren hechos sobre procedimientos/anuncios y un estudio de preferencias).",
+    "Uso parcial de la evidencia: el guion añade interpretación (riesgo de castigo, seducción burocrática, etc.) pero no se limita a lo soportado por supported_facts/allowed_interpretations."
+  ],
+  "unsupported_claims": [
+    "(Psicología/cognición) “se vuelven psicológicamente irresistibles cuando alguien tiene que decidir rápido.”",
+    "(Efectos institucionales) “termina preguntando… ‘¿confi as en la máquina lo suficiente…?’” (en forma de atribución a una intención/diálogo general no respaldado).",
+    "(Cita) La atribución y literalidad de “La escritura… da una apariencia…” no respaldadas por evidencia provista.",
+    "(Motivación/causalidad) “Eso seduce a la burocracia…” y que “reduce trabajo interpretativo… sugiere objetividad y deja trazas.”",
+    "(Predicción) “el desenlace… refuerza el punto central de nuestro paralelo” (aplica interpretación persuasiva como si fuera evidencia documental del mismo).",
+    "(Generalización/alcance) “una luz verde… puede ser exactamente lo que nos impide mirar con cuidado…” (generalización causal no demostrada).",
+    "(Consecuencias concretas) mención de “sanciones, expulsiones, acusaciones” como marco del problema no respaldada por las fuentes citadas (pueden ser ejemplos retóricos, pero el guion las presenta como si fueran parte del contexto analizado)."
+  ],
+  "repair_instructions": [
+    "Reemplaza la cita textual no trazada por una formulación sin atribución (p. ej., “se ha descrito que…”) o elimina la cita literal; si se mantiene, agrega evidencia/ID que identifique autor y procedencia en evidence_ids/ledger (si no existe, no mantener la cita).",
+    "Elimina o reescribe las afirmaciones causales generales no respaldadas (p. ej., “irresistibles”, “seduce a la burocracia”, “termina preguntando…”). Sustitúyelas por descripciones condicionadas y no causales, o por afirmaciones en forma de hipótesis explícita apoyada en allowed_interpretations/hipotheses (p. ej., “podría”, “en algunos diseños”).",
+    "Separa claramente hechos verificables del guion frente a interpretación: conserva los supported_facts de OpenAI y el estudio (encuesta y umbrales), y limita el resto a: (a) hipótesis del autor sobre riesgos/guardrails y (b) analogía con AF447 como estructura, recordando los limits ya declarados.",
+    "En “story_payoff” y cierres, evita afirmar que el “documentado” demuestra “refuerza” como hecho. Cambia a: “es consistente con el punto” / “sirve para ilustrar” (enmarcado como interpretación), sin convertirlo en evidencia causal adicional.",
+    "Mantén ejemplos de consecuencias (sanciones/expulsiones/acusaciones) únicamente como ejemplos explícitos (“por ejemplo…”) y no como parte de evidencia analizada; idealmente no enumerarlas si no están respaldadas por las fuentes usadas.",
+    "No añadas nuevos mecanismos no presentes en ledger/news (p. ej., que la burocracia “reduce trabajo” o “deja trazas”) salvo que sean hipótesis explícitas y no se presenten como hechos del sistema descrito por las fuentes."
+  ]
+}

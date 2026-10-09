@@ -1,0 +1,1351 @@
+{
+  "clip_seconds": 8,
+  "max_candidates_per_fragment": 3,
+  "slots": [
+    {
+      "slot_id": "step9_epica-001",
+      "section_id": "step9_epica",
+      "start_seconds": 0,
+      "end_seconds": 8,
+      "spoken_excerpt": "Junio de 2009: en el océano Atlántico, un avión que iba de paso entra en una zona donde lo que",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-002",
+      "section_id": "step9_epica",
+      "start_seconds": 8,
+      "end_seconds": 16,
+      "spoken_excerpt": "parece “datos” puede convertirse en duda. Y lo que nos obliga a mirar este caso no es el morbo del",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-003",
+      "section_id": "step9_epica",
+      "start_seconds": 16,
+      "end_seconds": 24,
+      "spoken_excerpt": "accidente, sino la manera en que una cadena de incertidumbre se mete en el cerebro humano cuando la automatización deja",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-004",
+      "section_id": "step9_epica",
+      "start_seconds": 24,
+      "end_seconds": 32,
+      "spoken_excerpt": "de sostener la rutina. \n\nEl vuelo Air France 447 se accidentó el 1 de junio de 2009 y murieron las",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-005",
+      "section_id": "step9_epica",
+      "start_seconds": 32,
+      "end_seconds": 40,
+      "spoken_excerpt": "228 personas a bordo. Lo que importa, para entender por qué esto sigue doliendo décadas después, es lo que pasó",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-006",
+      "section_id": "step9_epica",
+      "start_seconds": 40,
+      "end_seconds": 48,
+      "spoken_excerpt": "alrededor de los números que el avión usaba para decidir: hubo una obstrucción temporal de las sondas Pitot por cristales",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-007",
+      "section_id": "step9_epica",
+      "start_seconds": 48,
+      "end_seconds": 56,
+      "spoken_excerpt": "de hielo, y eso produjo inconsistencias en las velocidades medidas. \n\nEn aviación, la velocidad no es un dato más: es",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-008",
+      "section_id": "step9_epica",
+      "start_seconds": 56,
+      "end_seconds": 64,
+      "spoken_excerpt": "una brújula invisible. Si esa brújula empieza a tambalear, el sistema cambia su conducta; y cuando la información deja de",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-009",
+      "section_id": "step9_epica",
+      "start_seconds": 64,
+      "end_seconds": 72,
+      "spoken_excerpt": "ser confiable, las capas de ayuda pueden desconectarse. En este caso, esas inconsistencias provocaron la desconexión del piloto automático y",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-010",
+      "section_id": "step9_epica",
+      "start_seconds": 72,
+      "end_seconds": 80,
+      "spoken_excerpt": "la pérdida de sistemas de asistencia al vuelo. \n\nA partir de ahí, la escena se vuelve inquietante en un sentido",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-011",
+      "section_id": "step9_epica",
+      "start_seconds": 80,
+      "end_seconds": 88,
+      "spoken_excerpt": "muy concreto. La tripulación queda obligada a asumir control manual bajo incertidumbre, mientras el avión —con su lenguaje de alertas",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-012",
+      "section_id": "step9_epica",
+      "start_seconds": 88,
+      "end_seconds": 96,
+      "spoken_excerpt": "marca una situación de peligro continuo. Pero el conflicto no es solo técnico: es cognitivo. La automatización deja de sostener",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-013",
+      "section_id": "step9_epica",
+      "start_seconds": 96,
+      "end_seconds": 104,
+      "spoken_excerpt": "la tarea justo cuando las señales ya no sirven como antes; y entonces aparece una carga mental enorme, con una",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-014",
+      "section_id": "step9_epica",
+      "start_seconds": 104,
+      "end_seconds": 112,
+      "spoken_excerpt": "sola tarea urgente… y con una reacción que no llega a tiempo.\n\nYo no puedo reconstruir “cómo se sintió” nada",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-015",
+      "section_id": "step9_epica",
+      "start_seconds": 112,
+      "end_seconds": 120,
+      "spoken_excerpt": "eso sería inventar—, pero sí puedo señalar el patrón: cuando un sistema institucional confía en señales probabilísticas, el diseño importa",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-016",
+      "section_id": "step9_epica",
+      "start_seconds": 120,
+      "end_seconds": 128,
+      "spoken_excerpt": "La pregunta que me queda pegada es simple y peligrosa: cuando una institución recibe una señal técnica probabilística, ¿cómo construye",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-017",
+      "section_id": "step9_epica",
+      "start_seconds": 128,
+      "end_seconds": 136,
+      "spoken_excerpt": "un “puente” para que el error no se convierta en castigo automático?\n\nY mientras la alarma de pérdida sigue encendida",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-018",
+      "section_id": "step9_epica",
+      "start_seconds": 136,
+      "end_seconds": 143,
+      "spoken_excerpt": "hay un tramo crítico en el que una decisión pendiente pesa más que cualquier regla aprendida",
+      "queries": [
+        "Vista general del Océano Atlántico con condiciones de niebla/nubes en un atardecer, estilo documental; enfoque en horizonte y mar en calma aparente.",
+        "Ilustración conceptual de un avión sobre el océano con trayectorias de datos inconsistentes (líneas que se separan) que representan lecturas de velocidad.",
+        "Diagrama simple de “capa de automatización” que se desconecta y pasa el control a “control manual”, mostrando flujo de alerta continua hacia la cabina."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-001",
+      "section_id": "step10_reconexion",
+      "start_seconds": 143,
+      "end_seconds": 151,
+      "spoken_excerpt": "Vale, regresemos del simulador mental al presente. Hoy no hablamos de sondas Pitot ni de automatización de cabina, sino de",
+      "queries": [
+        "Un semáforo con luz verde que, al acercarlo, parece un medidor probabilístico con números borrosos; transición visual desde una cabina de avión a una pantalla de verificación de textos."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-002",
+      "section_id": "step10_reconexion",
+      "start_seconds": 151,
+      "end_seconds": 159,
+      "spoken_excerpt": "una infraestructura que intenta “leer” de dónde salió un texto: una marca probabilística, invisible, que no garantiza autoría individual… pero",
+      "queries": [
+        "Un semáforo con luz verde que, al acercarlo, parece un medidor probabilístico con números borrosos; transición visual desde una cabina de avión a una pantalla de verificación de textos."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-003",
+      "section_id": "step10_reconexion",
+      "start_seconds": 159,
+      "end_seconds": 167,
+      "spoken_excerpt": "que puede terminar ocupando el lugar de una prueba. ¿Qué parte de la responsabilidad se mueve para que esa luz",
+      "queries": [
+        "Un semáforo con luz verde que, al acercarlo, parece un medidor probabilístico con números borrosos; transición visual desde una cabina de avión a una pantalla de verificación de textos."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-004",
+      "section_id": "step10_reconexion",
+      "start_seconds": 167,
+      "end_seconds": 170,
+      "spoken_excerpt": "verde no se vuelva sentencia automática",
+      "queries": [
+        "Un semáforo con luz verde que, al acercarlo, parece un medidor probabilístico con números borrosos; transición visual desde una cabina de avión a una pantalla de verificación de textos."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-001",
+      "section_id": "hook_problema",
+      "start_seconds": 170,
+      "end_seconds": 178,
+      "spoken_excerpt": "El problema humano es que las señales técnicas —aunque sean honestamente probabilísticas— se vuelven psicológicamente irresistibles cuando alguien tiene que",
+      "queries": [
+        "Un formulario con casillas de verificación; una etiqueta “probable” convertida visualmente en “confirmado”, sin que el usuario entienda la diferencia."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-002",
+      "section_id": "hook_problema",
+      "start_seconds": 178,
+      "end_seconds": 186,
+      "spoken_excerpt": "decidir rápido. Y cuando la decisión tiene consecuencias (sanciones, expulsiones, acusaciones), el sistema termina preguntando, sin decirlo: “¿confías en la",
+      "queries": [
+        "Un formulario con casillas de verificación; una etiqueta “probable” convertida visualmente en “confirmado”, sin que el usuario entienda la diferencia."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-003",
+      "section_id": "hook_problema",
+      "start_seconds": 186,
+      "end_seconds": 191,
+      "spoken_excerpt": "máquina lo suficiente como para que el error también te represente",
+      "queries": [
+        "Un formulario con casillas de verificación; una etiqueta “probable” convertida visualmente en “confirmado”, sin que el usuario entienda la diferencia."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-001",
+      "section_id": "hook_cita",
+      "start_seconds": 191,
+      "end_seconds": 199,
+      "spoken_excerpt": "Hay una frase útil —y no es de una empresa—: “La escritura… da una apariencia de conocimiento sin comprensión real",
+      "queries": [
+        "Una pizarra con dos columnas: “rastro” vs “comprensión”; una mano tachando “parece saber”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-002",
+      "section_id": "hook_cita",
+      "start_seconds": 199,
+      "end_seconds": 207,
+      "spoken_excerpt": "Es un recordatorio antiguo de que cuando la gente ve un rastro, confunde rastro con verdad. No demuestra nada sobre",
+      "queries": [
+        "Una pizarra con dos columnas: “rastro” vs “comprensión”; una mano tachando “parece saber”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-003",
+      "section_id": "hook_cita",
+      "start_seconds": 207,
+      "end_seconds": 211,
+      "spoken_excerpt": "IA moderna; solo describe un patrón cognitivo que se repite",
+      "queries": [
+        "Una pizarra con dos columnas: “rastro” vs “comprensión”; una mano tachando “parece saber”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-001",
+      "section_id": "idea_A",
+      "start_seconds": 211,
+      "end_seconds": 219,
+      "spoken_excerpt": "Primer pilar: procedencia ≠ veredicto. En el fondo, lo que estamos discutiendo no es “si una marca de texto detecta cosas",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-002",
+      "section_id": "idea_A",
+      "start_seconds": 219,
+      "end_seconds": 227,
+      "spoken_excerpt": "sino qué significa socialmente cuando alguien la interpreta como prueba de autoría individual.\n\nPiensa en la analogía con el tablero",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-003",
+      "section_id": "idea_A",
+      "start_seconds": 227,
+      "end_seconds": 235,
+      "spoken_excerpt": "de la cabina: una velocidad medida es información, pero la velocidad también es la base de una cascada de decisiones",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-004",
+      "section_id": "idea_A",
+      "start_seconds": 235,
+      "end_seconds": 243,
+      "spoken_excerpt": "Si la señal pierde calidad en un tramo (por ejemplo, porque hay un tipo de obstrucción o un cambio en",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-005",
+      "section_id": "idea_A",
+      "start_seconds": 243,
+      "end_seconds": 251,
+      "spoken_excerpt": "condiciones), el sistema puede comportarse como si todo siguiera normal o, peor, desconectarse. La analogía no afirma que IA y",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-006",
+      "section_id": "idea_A",
+      "start_seconds": 251,
+      "end_seconds": 259,
+      "spoken_excerpt": "aviación sean lo mismo; afirma la estructura: cuando el sistema confía en un número, el número se vuelve conducta.\n\nCon",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-007",
+      "section_id": "idea_A",
+      "start_seconds": 259,
+      "end_seconds": 267,
+      "spoken_excerpt": "las marcas probabilísticas de procedencia ocurre algo parecido. OpenAI anunció que activará una marca estadística invisible para salidas de texto",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-008",
+      "section_id": "idea_A",
+      "start_seconds": 267,
+      "end_seconds": 275,
+      "spoken_excerpt": "elegibles en la Unión Europea, “en respuesta al AI Act”, y también reconoció explícitamente que existen falsos positivos y falsos",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-009",
+      "section_id": "idea_A",
+      "start_seconds": 275,
+      "end_seconds": 283,
+      "spoken_excerpt": "negativos. Eso ya nos obliga a algo: la señal no es determinista. Y cuando la señal no es determinista, interpretarla",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-010",
+      "section_id": "idea_A",
+      "start_seconds": 283,
+      "end_seconds": 291,
+      "spoken_excerpt": "como “quién escribió” en casos individuales requiere un andamiaje institucional.\n\nAdemás, la propia explicación de la empresa incluye condiciones donde",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-011",
+      "section_id": "idea_A",
+      "start_seconds": 291,
+      "end_seconds": 299,
+      "spoken_excerpt": "el desempeño baja: textos breves o restringidos, y un punto especialmente relevante para la vida real: la señal puede degradarse",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-012",
+      "section_id": "idea_A",
+      "start_seconds": 299,
+      "end_seconds": 307,
+      "spoken_excerpt": "fuertemente tras editar palabras. O sea: el mundo no es un laboratorio donde el texto entra intacto y el veredicto",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-013",
+      "section_id": "idea_A",
+      "start_seconds": 307,
+      "end_seconds": 315,
+      "spoken_excerpt": "cae limpio. El mundo edita, resume, reescribe, corrige.\n\nEntonces, si tú eres una institución —universidad, empleador, plataforma con normas, organismo",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-014",
+      "section_id": "idea_A",
+      "start_seconds": 315,
+      "end_seconds": 323,
+      "spoken_excerpt": "de revisión— y conviertes esa marca en una luz verde, estás tomando una señal diseñada para probabilidad y la transformas",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-015",
+      "section_id": "idea_A",
+      "start_seconds": 323,
+      "end_seconds": 331,
+      "spoken_excerpt": "en una sentencia sobre agencia humana. Ahí nace el riesgo: no por la tecnología sola, sino por cómo se le",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-016",
+      "section_id": "idea_A",
+      "start_seconds": 331,
+      "end_seconds": 339,
+      "spoken_excerpt": "da autoridad.\n\nLa primera pieza del puente, entonces, es aceptar el límite: “probable” no es igual a “culpable”, y “detectable",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-017",
+      "section_id": "idea_A",
+      "start_seconds": 339,
+      "end_seconds": 347,
+      "spoken_excerpt": "no es igual a “demostrable” en términos de autoría individual. La procedencia puede ser un indicio; jamás debería ser el",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-018",
+      "section_id": "idea_A",
+      "start_seconds": 347,
+      "end_seconds": 349,
+      "spoken_excerpt": "último escalón sin verificación adicional",
+      "queries": [
+        "Infografía: “procedencia probable” (indicador) vs “veredicto” (sentencia); flechas mostrando cómo un indicador puede escalar si no hay salvaguardas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-001",
+      "section_id": "dato_1",
+      "start_seconds": 349,
+      "end_seconds": 357,
+      "spoken_excerpt": "OpenAI reconoció en su anuncio que su detector puede dar falsos positivos y falsos negativos, que detecta peor en textos",
+      "queries": [
+        "Captura estilizada de un post de anuncio con tres etiquetas: “falsos positivos/negativos”, “textos breves”, “degradación por edición”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-002",
+      "section_id": "dato_1",
+      "start_seconds": 357,
+      "end_seconds": 365,
+      "spoken_excerpt": "breves o restringidos y que la señal puede degradarse fuertemente tras editar palabras; también aclaró que las pruebas comunicadas por",
+      "queries": [
+        "Captura estilizada de un post de anuncio con tres etiquetas: “falsos positivos/negativos”, “textos breves”, “degradación por edición”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-003",
+      "section_id": "dato_1",
+      "start_seconds": 365,
+      "end_seconds": 368,
+      "spoken_excerpt": "la compañía no garantizan autoría universal",
+      "queries": [
+        "Captura estilizada de un post de anuncio con tres etiquetas: “falsos positivos/negativos”, “textos breves”, “degradación por edición”."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-001",
+      "section_id": "idea_B_explica",
+      "start_seconds": 368,
+      "end_seconds": 376,
+      "spoken_excerpt": "Segundo pilar: los umbrales “aceptables” no son puramente técnicos; dependen del costo humano. Esto es fácil de olvidar porque solemos",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-002",
+      "section_id": "idea_B_explica",
+      "start_seconds": 376,
+      "end_seconds": 384,
+      "spoken_excerpt": "hablar de métricas como si fueran neutrales: sensibilidad, especificidad, probabilidad. Pero el verdadero criterio social es: ¿qué error estamos dispuestos",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-003",
+      "section_id": "idea_B_explica",
+      "start_seconds": 384,
+      "end_seconds": 392,
+      "spoken_excerpt": "a tolerar cuando los errores pesan de verdad?\n\nEn aviación, el costo de equivocarte no es abstracto: se paga con",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-004",
+      "section_id": "idea_B_explica",
+      "start_seconds": 392,
+      "end_seconds": 400,
+      "spoken_excerpt": "vidas. En decisiones institucionales alrededor de procedencia textual, el costo puede ser expulsión, pérdida de oportunidades o estigmatización. Por eso",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-005",
+      "section_id": "idea_B_explica",
+      "start_seconds": 400,
+      "end_seconds": 408,
+      "spoken_excerpt": "el umbral que “suena justo” no puede venir solo de un laboratorio.\n\nAquí entra un micro-mecanismo muy útil para nuestro",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-006",
+      "section_id": "idea_B_explica",
+      "start_seconds": 408,
+      "end_seconds": 416,
+      "spoken_excerpt": "debate: la gente no acepta cualquier intercambio de errores. Un estudio (en npj Digital Medicine) encuestó a 1.222 personas",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-007",
+      "section_id": "idea_B_explica",
+      "start_seconds": 416,
+      "end_seconds": 424,
+      "spoken_excerpt": "de la población general y a 106 supervivientes de cáncer de pulmón de larga duración sobre cuántos casos omitidos (falsos",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-008",
+      "section_id": "idea_B_explica",
+      "start_seconds": 424,
+      "end_seconds": 432,
+      "spoken_excerpt": "negativos) y cuántos falsos positivos aceptarían por cada cien evaluaciones. Los autores convirtieron esas respuestas en umbrales medios mínimos de",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-009",
+      "section_id": "idea_B_explica",
+      "start_seconds": 432,
+      "end_seconds": 440,
+      "spoken_excerpt": "sensibilidad y especificidad de 0,90, y además observaron exigencias mayores entre quienes tenían antecedentes de cáncer.\n\nOjo: no es",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-010",
+      "section_id": "idea_B_explica",
+      "start_seconds": 440,
+      "end_seconds": 448,
+      "spoken_excerpt": "que ese estudio “demuestre” el umbral ideal para detectores de autoría textual. Sería una extrapolación ilegítima. Lo que sí hace",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-011",
+      "section_id": "idea_B_explica",
+      "start_seconds": 448,
+      "end_seconds": 456,
+      "spoken_excerpt": "es mostrar la estructura: cuando el costo emocional y material de los dos tipos de error no es simétrico para",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-012",
+      "section_id": "idea_B_explica",
+      "start_seconds": 456,
+      "end_seconds": 464,
+      "spoken_excerpt": "la gente, el umbral de decisión se vuelve una negociación social.\n\nSi trasladamos esto a marcas probabilísticas, el reto es",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-013",
+      "section_id": "idea_B_explica",
+      "start_seconds": 464,
+      "end_seconds": 472,
+      "spoken_excerpt": "el siguiente: distintos grupos pueden valorar distinto “aceptar” un falso positivo (que alguien sea señalado injustamente) versus “aceptar” un falso",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-014",
+      "section_id": "idea_B_explica",
+      "start_seconds": 472,
+      "end_seconds": 480,
+      "spoken_excerpt": "negativo (que alguien use el sistema sin dejar rastro). No hay garantía de que un único umbral numérico sea éticamente",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-015",
+      "section_id": "idea_B_explica",
+      "start_seconds": 480,
+      "end_seconds": 488,
+      "spoken_excerpt": "defendible para todos.\n\nLa segunda parte del puente, entonces, es institucionalizar la noción de tolerancia a error: calibrar umbrales por",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-016",
+      "section_id": "idea_B_explica",
+      "start_seconds": 488,
+      "end_seconds": 496,
+      "spoken_excerpt": "contexto, explicitar el costo de equivocarse, y permitir que la regla se ajuste según el tipo de consecuencia. En otras",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-017",
+      "section_id": "idea_B_explica",
+      "start_seconds": 496,
+      "end_seconds": 502,
+      "spoken_excerpt": "palabras: no basta con tener un detector; hay que diseñar cómo se decide con él",
+      "queries": [
+        "Diagrama de intercambio: eje X = falsos positivos; eje Y = falsos negativos; una región “aceptable” distinta para grupos distintos, mostrada con colores."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-001",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 502,
+      "end_seconds": 510,
+      "spoken_excerpt": "Microexperimento mental (corto, pero revelador): supón que te dicen “tenemos un número de probabilidad”. Ahora cambia solo una cosa: el",
+      "queries": [
+        "Una misma pantalla de resultado con el mismo “0,90” pero con dos etiquetas de consecuencia: “auditoría reversible” vs “sanción”. La región de aceptación cambia visualmente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-002",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 510,
+      "end_seconds": 518,
+      "spoken_excerpt": "tipo de consecuencia.\n\nSi el costo de un falso positivo es un castigo inmediato y público, el umbral social exigido",
+      "queries": [
+        "Una misma pantalla de resultado con el mismo “0,90” pero con dos etiquetas de consecuencia: “auditoría reversible” vs “sanción”. La región de aceptación cambia visualmente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-003",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 518,
+      "end_seconds": 526,
+      "spoken_excerpt": "para actuar debería subir. Si el costo es reversible y con revisión rápida, puede ser más tolerable. Lo que el",
+      "queries": [
+        "Una misma pantalla de resultado con el mismo “0,90” pero con dos etiquetas de consecuencia: “auditoría reversible” vs “sanción”. La región de aceptación cambia visualmente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-004",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 526,
+      "end_seconds": 534,
+      "spoken_excerpt": "estudio de preferencias hipotéticas sugiere —en otro dominio, pero con la misma lógica— es que la aceptación cambia con la",
+      "queries": [
+        "Una misma pantalla de resultado con el mismo “0,90” pero con dos etiquetas de consecuencia: “auditoría reversible” vs “sanción”. La región de aceptación cambia visualmente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-005",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 534,
+      "end_seconds": 542,
+      "spoken_excerpt": "experiencia y el perfil del afectado. Por eso, una política que usa un umbral único sin mirar contexto no solo",
+      "queries": [
+        "Una misma pantalla de resultado con el mismo “0,90” pero con dos etiquetas de consecuencia: “auditoría reversible” vs “sanción”. La región de aceptación cambia visualmente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-006",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 542,
+      "end_seconds": 545,
+      "spoken_excerpt": "puede equivocarse: puede hacerlo de forma injusta",
+      "queries": [
+        "Una misma pantalla de resultado con el mismo “0,90” pero con dos etiquetas de consecuencia: “auditoría reversible” vs “sanción”. La región de aceptación cambia visualmente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-001",
+      "section_id": "dato_2",
+      "start_seconds": 545,
+      "end_seconds": 553,
+      "spoken_excerpt": "El estudio citado encuestó preferencias hipotéticas y halló que las respuestas podían traducirse a umbrales medios mínimos de sensibilidad y",
+      "queries": [
+        "Tarjeta con “preferencias hipotéticas” marcada como advertencia; cifra 0,90 aparece con un sello de incertidumbre."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-002",
+      "section_id": "dato_2",
+      "start_seconds": 553,
+      "end_seconds": 561,
+      "spoken_excerpt": "especificidad de 0,90, con exigencias mayores entre quienes tenían antecedentes de cáncer; también advierte que son preferencias declaradas, no",
+      "queries": [
+        "Tarjeta con “preferencias hipotéticas” marcada como advertencia; cifra 0,90 aparece con un sello de incertidumbre."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-003",
+      "section_id": "dato_2",
+      "start_seconds": 561,
+      "end_seconds": 564,
+      "spoken_excerpt": "un estándar universal ni resultados clínicos",
+      "queries": [
+        "Tarjeta con “preferencias hipotéticas” marcada como advertencia; cifra 0,90 aparece con un sello de incertidumbre."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-001",
+      "section_id": "idea_C",
+      "start_seconds": 564,
+      "end_seconds": 572,
+      "spoken_excerpt": "Tercer pilar: salvaguardas de decisión —verificación, calibración por contexto y derecho real a impugnar antes de castigar—. Y aquí es",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-002",
+      "section_id": "idea_C",
+      "start_seconds": 572,
+      "end_seconds": 580,
+      "spoken_excerpt": "donde la analogía con la cabina se pone útil sin romantizar tragedias.\n\nEn el caso histórico, lo crítico no fue",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-003",
+      "section_id": "idea_C",
+      "start_seconds": 580,
+      "end_seconds": 588,
+      "spoken_excerpt": "que existiera automatización; lo crítico fue el momento en que la automatización deja de sostener la tarea justo cuando las",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-004",
+      "section_id": "idea_C",
+      "start_seconds": 588,
+      "end_seconds": 596,
+      "spoken_excerpt": "señales se vuelven inconsistentes. Esa brecha de “puente” entre señales y acción humana genera una carga cognitiva enorme: la tripulación",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-005",
+      "section_id": "idea_C",
+      "start_seconds": 596,
+      "end_seconds": 604,
+      "spoken_excerpt": "recibe un estado anómalo, ve alertas, pero el tiempo para convertir ese estado en una decisión correcta puede no aparecer",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-006",
+      "section_id": "idea_C",
+      "start_seconds": 604,
+      "end_seconds": 612,
+      "spoken_excerpt": "como debería.\n\nEn el presente, el equivalente no es un piloto automático: es el conjunto de reglas de una institución",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-007",
+      "section_id": "idea_C",
+      "start_seconds": 612,
+      "end_seconds": 620,
+      "spoken_excerpt": "que decide qué hacer con una señal probabilística. Si el puente falla, el sistema “desconecta” salvaguardas: convierte “probable” en “sospechoso",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-008",
+      "section_id": "idea_C",
+      "start_seconds": 620,
+      "end_seconds": 628,
+      "spoken_excerpt": "y luego en “inaceptable”, sin un camino efectivo para corregir.\n\nLa parte más delicada es que una marca invisible puede",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-009",
+      "section_id": "idea_C",
+      "start_seconds": 628,
+      "end_seconds": 636,
+      "spoken_excerpt": "parecer verificable de manera automática. Eso seduce a la burocracia: reduce trabajo interpretativo, sugiere objetividad y deja trazas. Pero si",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-010",
+      "section_id": "idea_C",
+      "start_seconds": 636,
+      "end_seconds": 644,
+      "spoken_excerpt": "se usa como sentencia, entonces la incertidumbre pasa de ser un atributo del detector a ser una injusticia sobre personas",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-011",
+      "section_id": "idea_C",
+      "start_seconds": 644,
+      "end_seconds": 652,
+      "spoken_excerpt": "Lo que haría falta —y aquí va la tesis evolucionada de todo el episodio— no es solo “mejorar el detector",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-012",
+      "section_id": "idea_C",
+      "start_seconds": 652,
+      "end_seconds": 660,
+      "spoken_excerpt": "La marca puede ayudar a trazabilidad; el punto crítico es el diseño del traspaso entre el sistema técnico y la",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-013",
+      "section_id": "idea_C",
+      "start_seconds": 660,
+      "end_seconds": 668,
+      "spoken_excerpt": "decisión humana.\n\nConcretando en salvaguardas:\n- Verificación adicional: la señal no debería ser suficiente para dictar consecuencias máximas; debería activar procesos",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-014",
+      "section_id": "idea_C",
+      "start_seconds": 668,
+      "end_seconds": 676,
+      "spoken_excerpt": "de comprobación (por ejemplo, revisión contextual, otras evidencias, análisis del flujo de trabajo, etc.).\n- Umbrales humanos por contexto: aceptar un",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-015",
+      "section_id": "idea_C",
+      "start_seconds": 676,
+      "end_seconds": 684,
+      "spoken_excerpt": "intercambio distinto de errores según la consecuencia. Que “0,90” sea tolerable en una etapa no significa que lo sea",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-016",
+      "section_id": "idea_C",
+      "start_seconds": 684,
+      "end_seconds": 692,
+      "spoken_excerpt": "en una sanción irreversible.\n- Derecho real a impugnar: no “puedes apelar”, sino “hay una vía efectiva y con tiempo”, con",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-017",
+      "section_id": "idea_C",
+      "start_seconds": 692,
+      "end_seconds": 700,
+      "spoken_excerpt": "posibilidad de revisión significativa. Si la apelación existe solo en papel, el puente no existe; solo hay un traslado de",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-018",
+      "section_id": "idea_C",
+      "start_seconds": 700,
+      "end_seconds": 708,
+      "spoken_excerpt": "culpa.\n\nCuando esas piezas están presentes, la incertidumbre no se elimina, pero cambia de lugar: deja de ser algo que",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-019",
+      "section_id": "idea_C",
+      "start_seconds": 708,
+      "end_seconds": 716,
+      "spoken_excerpt": "la gente sufre sin remedio y se vuelve algo que el sistema gestiona con procedimientos. Y eso es lo que",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-020",
+      "section_id": "idea_C",
+      "start_seconds": 716,
+      "end_seconds": 724,
+      "spoken_excerpt": "nos mantiene humanos.\n\nOjo con una ironía lateral: lo más “limpio” a nivel técnico puede ser lo más sucio a",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-021",
+      "section_id": "idea_C",
+      "start_seconds": 724,
+      "end_seconds": 732,
+      "spoken_excerpt": "nivel social si se usa como atajo. Una luz verde que “ya quedó” puede ser exactamente lo que nos impide",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-022",
+      "section_id": "idea_C",
+      "start_seconds": 732,
+      "end_seconds": 735,
+      "spoken_excerpt": "mirar con cuidado el costo del error",
+      "queries": [
+        "Panel dividido: a la izquierda “detector” (probabilidad, errores); a la derecha “puente institucional” (verificación, umbral por contexto, apelación). Flechas muestran que el veredicto no se toma directamente del número."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-001",
+      "section_id": "story_payoff",
+      "start_seconds": 735,
+      "end_seconds": 743,
+      "spoken_excerpt": "En AF447, el problema no fue “tener automatización”, sino el momento en que esa automatización dejó de sostener la tarea",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-002",
+      "section_id": "story_payoff",
+      "start_seconds": 743,
+      "end_seconds": 751,
+      "spoken_excerpt": "cuando las mediciones se volvieron inconsistentes por la obstrucción de las sondas. La alarma de pérdida sonó de forma continua",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-003",
+      "section_id": "story_payoff",
+      "start_seconds": 751,
+      "end_seconds": 759,
+      "spoken_excerpt": "durante 54 segundos, pero la tripulación no respondió de manera apropiada; el avión permaneció en pérdida hasta el impacto. El",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-004",
+      "section_id": "story_payoff",
+      "start_seconds": 759,
+      "end_seconds": 767,
+      "spoken_excerpt": "desenlace, documentado, refuerza el punto central de nuestro paralelo: cuando el sistema técnico desconecta ayudas bajo incertidumbre y la interfaz",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-005",
+      "section_id": "story_payoff",
+      "start_seconds": 767,
+      "end_seconds": 775,
+      "spoken_excerpt": "no ayuda a reconstruir el estado, la responsabilidad práctica se desplaza hacia humanos con una carga cognitiva distinta y, a",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-006",
+      "section_id": "story_payoff",
+      "start_seconds": 775,
+      "end_seconds": 783,
+      "spoken_excerpt": "veces, con tiempo insuficiente. Eso no prueba que “la IA” siempre produzca fallas; solo muestra la estructura del riesgo cuando",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-007",
+      "section_id": "story_payoff",
+      "start_seconds": 783,
+      "end_seconds": 787,
+      "spoken_excerpt": "el puente entre señal y decisión se rompe",
+      "queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-001",
+      "section_id": "cierre",
+      "start_seconds": 787,
+      "end_seconds": 795,
+      "spoken_excerpt": "Si una marca probabilística convierte incertidumbre en un número, el destino ético no lo decide el detector: lo decide el",
+      "queries": [
+        "Puente institucional dibujado como tres tablones: 'verificación', 'umbral por contexto', 'impugnación efectiva'."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-002",
+      "section_id": "cierre",
+      "start_seconds": 795,
+      "end_seconds": 803,
+      "spoken_excerpt": "puente institucional. La procedencia puede ayudar a la trazabilidad, pero solo es defendible cuando existen umbrales calibrados por contexto, verificación",
+      "queries": [
+        "Puente institucional dibujado como tres tablones: 'verificación', 'umbral por contexto', 'impugnación efectiva'."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-003",
+      "section_id": "cierre",
+      "start_seconds": 803,
+      "end_seconds": 811,
+      "spoken_excerpt": "adicional y un derecho real a impugnar antes de que el “probable” se vuelva irreversible. La analogía con AF447 sirve",
+      "queries": [
+        "Puente institucional dibujado como tres tablones: 'verificación', 'umbral por contexto', 'impugnación efectiva'."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-004",
+      "section_id": "cierre",
+      "start_seconds": 811,
+      "end_seconds": 819,
+      "spoken_excerpt": "para recordar dónde se acumula el riesgo: en el traspaso, no en el sensor. ¿Qué salvaguardas exigirías si esa luz",
+      "queries": [
+        "Puente institucional dibujado como tres tablones: 'verificación', 'umbral por contexto', 'impugnación efectiva'."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-005",
+      "section_id": "cierre",
+      "start_seconds": 819,
+      "end_seconds": 827,
+      "spoken_excerpt": "verde pudiera afectar tu vida? Si te gustó esta forma de pensar, suscríbete y sigamos vigilando el puente",
+      "queries": [
+        "Puente institucional dibujado como tres tablones: 'verificación', 'umbral por contexto', 'impugnación efectiva'."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    }
+  ],
+  "policy": "Planning only; use repository acquisition/licensing/density gates before downloads."
+}

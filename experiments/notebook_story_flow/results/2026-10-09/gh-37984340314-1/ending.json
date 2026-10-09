@@ -1,0 +1,37 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En AF447, el problema no fue “tener automatización”, sino el momento en que esa automatización dejó de sostener la tarea cuando las mediciones se volvieron inconsistentes por la obstrucción de las sondas. La alarma de pérdida sonó de forma continua durante 54 segundos, pero la tripulación no respondió de manera apropiada; el avión permaneció en pérdida hasta el impacto. El desenlace, documentado, refuerza el punto central de nuestro paralelo: cuando el sistema técnico desconecta ayudas bajo incertidumbre y la interfaz no ayuda a reconstruir el estado, la responsabilidad práctica se desplaza hacia humanos con una carga cognitiva distinta y, a veces, con tiempo insuficiente. Eso no prueba que “la IA” siempre produzca fallas; solo muestra la estructura del riesgo cuando el puente entre señal y decisión se rompe.",
+      "evidence_ids": [
+        "eu_text_provenance_watermarking"
+      ],
+      "memory_claim_indices": [
+        4,
+        5
+      ],
+      "visual_queries": [
+        "Cronograma estilo cabina: alarma de pérdida encendida durante 54 segundos y, al lado, una etiqueta 'respuesta no apropiada' (sin dramatizar personas)."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Si una marca probabilística convierte incertidumbre en un número, el destino ético no lo decide el detector: lo decide el puente institucional. La procedencia puede ayudar a la trazabilidad, pero solo es defendible cuando existen umbrales calibrados por contexto, verificación adicional y un derecho real a impugnar antes de que el “probable” se vuelva irreversible. La analogía con AF447 sirve para recordar dónde se acumula el riesgo: en el traspaso, no en el sensor. ¿Qué salvaguardas exigirías si esa luz verde pudiera afectar tu vida? Si te gustó esta forma de pensar, suscríbete y sigamos vigilando el puente.",
+      "evidence_ids": [
+        "public_minimum_performance_toler"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Puente institucional dibujado como tres tablones: 'verificación', 'umbral por contexto', 'impugnación efectiva'."
+      ]
+    }
+  ],
+  "seo_title": "Puente institucional entre señales probabilísticas y veredic",
+  "seo_description": "Cómo evitar que una marca probabilística se vuelva castigo automático: procedencia ≠ veredicto, umbrales por contexto, verificación adicional y derecho real a o",
+  "seo_keywords": [
+    "señal probabilística",
+    "procedencia",
+    "veredicto",
+    "falsos positivos y negativos"
+  ]
+}

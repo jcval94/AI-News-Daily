@@ -1,0 +1,112 @@
+{
+  "central_question": "Si una prueba técnica convierte incertidumbre en un número, ¿qué parte de la responsabilidad debe moverse para que ese número no se vuelva castigo automático?",
+  "provisional_thesis": "Una marca invisible/probabilística puede servir como señal de procedencia, pero solo es defendible si las instituciones tratan la señal como evidencia limitada: calibran umbrales por contexto, exigen verificación adicional y aseguran impugnación real. Sin eso, la sociedad tiende a construir un ‘equilibrio’ donde el error probabilístico se transforma en veredicto.",
+  "evolved_thesis": "La marca puede mejorar trazabilidad, pero el punto crítico no es el detector: es el diseño del traspaso entre sistema técnico y decisión humana. Si el sistema reduce el trabajo interpretativo sin rehacer salvaguardas (uso restringido, umbrales humanos, revisión y reparación), el resultado es una transferencia de riesgo: la incertidumbre se mantiene… solo cambia de quién la paga.",
+  "core_ideas": [
+    "Una señal técnica (probabilística) no equivale a prueba determinista de autoría individual.",
+    "El umbral que ‘parece justo’ depende del costo humano de cada tipo de error (y no será igual para todos los grupos).",
+    "El conflicto central aparece cuando la institución convierte una métrica limitada en sentencia sin mecanismos de corrección."
+  ],
+  "motif": "La luz verde que se siente como ‘ya quedó’",
+  "pillars": [
+    "Procedencia ≠ veredicto: límites de una señal invisible con falsos positivos/negativos y sensibilidad a edición/longitud.",
+    "Umbrales humanos: la aceptación social de errores define desempeño mínimo aceptable.",
+    "Salvaguardas de decisión: verificación, calibración por contexto y derecho real a impugnar antes de castigar."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "af447-automation-handoff-stall",
+      "epicity": 9.6,
+      "relevance": 9.2,
+      "reason": "El traspaso de control ocurre justamente cuando la información es ambigua: automatización que ‘absorbe’ y luego desconecta, dejando a humanos con una tarea difícil sin que la interfaz lo traduzca en comprensión segura. Estructura ideal para hablar de responsabilidad y verificación bajo incertidumbre."
+    },
+    {
+      "memory_id": "apollo-11-priority-scheduling-overload",
+      "epicity": 8.8,
+      "relevance": 7.8,
+      "reason": "Prioridades y degradación elegante: útil para discutir cómo un sistema debe conservar lo esencial bajo saturación. Menos directo para ‘marca como veredicto’ y para el costo de error social."
+    },
+    {
+      "memory_id": "operation-cottage-empty-island",
+      "epicity": 8.6,
+      "relevance": 7.5,
+      "reason": "Un plan persiste tras cambiar el estado del mundo; conecta con riesgo de operar con supuestos. Pero el paralelismo con un detector probabilístico como ‘sentencia’ es más indirecto que AF447."
+    }
+  ],
+  "selected_memory_id": "af447-automation-handoff-stall",
+  "protagonist": "La tripulación del vuelo Air France 447, obligada a asumir control manual bajo incertidumbre cuando la automatización se desconecta.",
+  "opposing_force": "Una cadena de incertidumbre causada por mediciones inconsistentes y retirada de ayudas, que culmina en pérdida aerodinámica pese a la alarma de pérdida continua sin reacción apropiada.",
+  "conflict": "La automatización deja de sostener la tarea rutinaria justo cuando las señales dejan de ser fiables; la tripulación recibe una situación anómala y una carga cognitiva alta, y no reacciona adecuadamente ante la alarma de pérdida durante 54 segundos.",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4,
+    5
+  ],
+  "unresolved_question": "Cuando una institución recibe una señal técnica probabilística, ¿cómo diseñar un ‘puente’ institucional (umbral, verificación y reparación) para que el error no se convierta en castigo automático?",
+  "bridge_to_present": "En el presente, una marca invisible/probabilística busca convertir una parte de la incertidumbre en señal utilizable. La pregunta es si el uso institucional tratará la señal como evidencia limitada con salvaguardas, o como veredicto. El paralelo con AF447 insiste en que la transferencia de control bajo ambigüedad exige diseño de interfaz, práctica y mecanismos de corrección; si no, el sistema no ‘corrige’ el riesgo humano.",
+  "analogy_limits": "AF447 no prueba que la automatización/IA siempre cause errores humanos ni que desconectarse sea siempre malo. La cabina y el contexto operacional tienen dinámica, física y responsabilidades distintas a un detector de procedencia. La analogía solo ayuda a pensar la estructura: qué pasa cuando el sistema técnico deja de ser suficiente justo bajo incertidumbre, y quién queda responsable de interpretar y actuar.",
+  "ledger": [
+    {
+      "evidence_id": "eu_text_provenance_watermarking",
+      "news_id": "n_271c085a13589ff9",
+      "supported_facts": [
+        "OpenAI anunció que activará una marca estadística invisible para salidas de texto elegibles de ChatGPT y Codex en la Unión Europea, en respuesta al AI Act.",
+        "Desde el 5 de octubre, ciertos clientes de API pueden optar por activarla globalmente.",
+        "OpenAI indicó que el detector se abriría inicialmente solo a investigadores y organizaciones aprobadas.",
+        "OpenAI reconoció que existen falsos positivos y falsos negativos.",
+        "OpenAI señaló que hay menor detección en textos breves o restringidos.",
+        "OpenAI señaló que la señal puede degradarse fuertemente tras editar palabras.",
+        "OpenAI aclaró que las pruebas/decisiones comunicadas por la compañía no garantizan autoría universal."
+      ],
+      "allowed_interpretations": [
+        "La marca produce una señal probabilística/estadística, no una prueba determinista de autoría, por lo que su uso institucional requiere cautela."
+      ],
+      "hypotheses": [
+        "Si una institución trata la señal como veredicto sin salvaguardas, incrementará el daño de errores (p. ej., acusaciones o sanciones injustas)."
+      ],
+      "uncertainties": [
+        "El desempeño cuantitativo del detector por idioma, longitud y nivel de edición en condiciones reales no está totalmente establecido en el material resumido.",
+        "No se establece cuál será el marco legal/procedimental de impugnación ni cómo se decidirán umbrales en decisiones reales."
+      ],
+      "prohibited_claims": [
+        "Que la marca identifique con certeza absoluta al autor humano en casos individuales.",
+        "Que el detector sea igual de fiable en todos los contextos (idiomas, longitudes, ediciones) sin datos adicionales."
+      ],
+      "source_limitations": [
+        "La evidencia proviene de un anuncio/explicación de OpenAI; los resultados descritos son pruebas y decisiones comunicadas por la compañía, no una validación independiente universal."
+      ]
+    },
+    {
+      "evidence_id": "public_minimum_performance_toler",
+      "news_id": "n_72b1872ff996cb96",
+      "supported_facts": [
+        "Un estudio encuestó a 1.222 personas de la población general y a 106 supervivientes de cáncer de pulmón de larga duración sobre cuántos casos omitidos (falsos negativos) y falsos positivos aceptarían por cada cien evaluaciones.",
+        "Los autores convirtieron esas respuestas en umbrales medios mínimos de sensibilidad y especificidad de 0,90.",
+        "El estudio observó exigencias mayores entre quienes tenían antecedentes de cáncer.",
+        "Las conclusiones son preferencias hipotéticas declaradas en una muestra nacional; no son resultados clínicos ni un estándar universal de aprobación."
+      ],
+      "allowed_interpretations": [
+        "Las instituciones deberían pensar el umbral de aceptación como algo que depende de la tolerancia humana al tipo de error y del costo de cada error."
+      ],
+      "hypotheses": [
+        "Si las políticas institucionales aceptan niveles de error por debajo de lo que la gente considera mínimo aceptable, el sistema se vuelve socialmente injusto aunque sea técnicamente defendible.",
+        "Un umbral único puede fallar para distintos grupos por diferencias en tolerancia al intercambio de errores."
+      ],
+      "uncertainties": [
+        "No se especifica cómo se traducen esas preferencias a umbrales legales o disciplinarios concretos.",
+        "No se mide el impacto real en decisiones individuales (empleo/educación) ni tasas reales de apelación."
+      ],
+      "prohibited_claims": [
+        "Que el umbral 0,90 sea automáticamente aplicable a cualquier detector de procedencia textual.",
+        "Que las preferencias hipotéticas equivalgan a comportamiento real ante decisiones reales."
+      ],
+      "source_limitations": [
+        "La evidencia es de encuesta con preferencias hipotéticas; no prueba desempeño clínico o resultados reales."
+      ]
+    }
+  ]
+}
