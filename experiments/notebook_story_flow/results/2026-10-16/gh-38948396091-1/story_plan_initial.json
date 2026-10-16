@@ -1,0 +1,108 @@
+{
+  "central_question": "Si una IA puede ayudar a producir un trabajo correcto, ¿qué prueba necesitamos para saber si el estudiante ganó comprensión que funcionará cuando la ayuda desaparezca?",
+  "provisional_thesis": "No basta con medir la calidad del resultado “con IA”. Necesitamos evidencia de aprendizaje independiente, transferencia y capacidad de autorreconstruir el conocimiento sin la señal visible que la IA provee; y esa capacidad sólo se vuelve confiable cuando la evaluación incluye mecanismos que retiren la ayuda o detecten sustitución del esfuerzo.",
+  "evolved_thesis": "Lo decisivo no es el “nivel” del resultado con ayuda, sino si el sistema de evaluación obliga a que el estudiante demuestre control interno: que pueda rehacer el razonamiento cuando la señal externa se retira y que esa demostración no se parezca a “aprender a complacer una métrica”. Por eso la evaluación debe diseñarse como una prueba de resistencia a la confusión entre desempeño y comprensión (y, si usamos tutores/simulaciones, debemos temer que optimicen la métrica equivocada).",
+  "core_ideas": [
+    "Desempeño con ayuda ≠ comprensión transferible sin ayuda.",
+    "Evaluar aprendizaje independiente requiere evidencias diferidas y tareas nuevas (no sólo “entregas” inmediatas).",
+    "Hay un riesgo de “gaming” de la evaluación: mejorar la respuesta a una prueba puede ocultar aprendizaje incompleto si la prueba está mal acotada."
+  ],
+  "motif": "la luz verde que en realidad no significa “ya sabes”, sólo significa “ya entregaste”.",
+  "pillars": [
+    "Criterio pedagógico: aprendizaje independiente y transferencia (evaluar sin ayuda).",
+    "Diseño contra el autoengaño: distinguir ayuda que enseña vs ayuda que sustituye.",
+    "Robustez de la evidencia: preocuparse por fallas de medición incluso cuando las pruebas parecen sofisticadas."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "apollo-11-priority-scheduling-overload",
+      "epicity": 9.4,
+      "relevance": 9.0,
+      "reason": "El descenso del Apollo 11 muestra que, bajo sobrecarga, “seguir haciendo todo” no es robusto: el sistema preserva tareas esenciales y sacrifica trabajo no crítico. Analogía operativa: la evaluación debe preservar evidencias de comprensión (tareas esenciales) y permitir que se dejen caer señales superficiales que “se ven bien” pero no prueban dominio."
+    },
+    {
+      "memory_id": "clever-hans-unconscious-evaluator-cues",
+      "epicity": 8.6,
+      "relevance": 8.8,
+      "reason": "Clever Hans ilustra la contaminación del canal de evaluación: un evaluador informado filtra pistas que hacen que la respuesta parezca capacidad. Analogía: una prueba puede “contar aciertos” sin verificar si la comprensión proviene del estudiante o de señales externas (incluida la IA)."
+    },
+    {
+      "memory_id": "studentsim-artificial-light-dorsal-response",
+      "epicity": 7.4,
+      "relevance": 7.0,
+      "reason": "La respuesta dorsal de insectos ante luz artificial ayuda a pensar en reglas locales que fallan al cambiar el entorno. Podría servir como advertencia: un método educativo que funciona en un contexto puede fallar cuando cambian condiciones (por ejemplo, retirar la ayuda). Pero es menos directa que Apollo/Clever Hans para diseñar evidencia de ‘sin ayuda’."
+    }
+  ],
+  "selected_memory_id": "apollo-11-priority-scheduling-overload",
+  "protagonist": "Un estudiante que entrega una tarea muy bien resuelta con ayuda de IA, pero que necesita demostrar que realmente puede reconstruir el razonamiento cuando la ayuda se retira.",
+  "opposing_force": "El “modo evaluación” que confunde señal visible (respuestas correctas con IA) con comprensión interna, y/o un tutor/evaluador que optimiza métricas en lugar de dominio transferible.",
+  "conflict": "La presión por producir un resultado correcto y rápido choca con el requisito de que el estudiante muestre aprendizaje independiente y transferencia; el sistema de evaluación puede premiar la apariencia de dominio y dejar intacta la dependencia de la señal.",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4,
+    5
+  ],
+  "unresolved_question": "¿Cómo diseñamos, en una prueba real (y no sólo en un laboratorio), mecanismos que retiren la ayuda lo suficiente para que el estudiante muestre control interno—sin convertir la evaluación en algo que también se pueda “arreglar” para complacer la métrica?",
+  "bridge_to_present": "En el episodio, el descenso del Apollo 11 sirve como espejo conceptual: bajo limitaciones, la robustez no es hacer más, sino decidir qué “tareas críticas” se conservan. Traducción educativa: necesitamos que la evaluación conserve evidencias críticas de comprensión (independencia y transferencia) y no se deje saturar por la tarea de “parecer correcto” cuando la IA está disponible.",
+  "analogy_limits": "Apollo usa software determinista con prioridades explícitas en un objetivo físico muy definido; la evaluación educativa ocurre en un espacio semántico incierto, con motivación, contexto y estrategias diversas. La analogía sugiere una dirección de diseño (preservar lo esencial y degradar lo no esencial), pero no garantiza que un esquema análogo de “prioridades” se traduzca en seguridad educativa sin pruebas empíricas.",
+  "ledger": [
+    {
+      "evidence_id": "aero-independent-learning-check",
+      "news_id": "n_b06971ab3b1993c8",
+      "supported_facts": [
+        "AERO publicó orientaciones para docentes y responsables escolares que reconocen que la evidencia sobre los efectos de la IA en el aprendizaje todavía es limitada.",
+        "AERO propone priorizar prácticas pedagógicas respaldadas, vigilar riesgos, establecer expectativas de uso, revisar evaluación y considerar contexto cultural.",
+        "AERO distingue entre mejorar un trabajo con ayuda y adquirir conocimientos utilizables sin ella.",
+        "AERO enmarca su guía como apoyada en evidencia emergente, no como una prohibición legal ni como un ensayo que demuestre daños universales."
+      ],
+      "allowed_interpretations": [
+        "Que una diferencia entre ‘resultado’ y ‘aprendizaje independiente’ puede justificar rediseños de evaluación centrados en transferencia y dominio sin ayuda."
+      ],
+      "hypotheses": [
+        "El beneficio educativo (si ocurre) podría depender más de cuándo se retira la ayuda que de la calidad de las respuestas con ayuda."
+      ],
+      "uncertainties": [
+        "Qué magnitud y condiciones específicas tendrá el efecto de la IA en aprendizaje en distintos contextos.",
+        "Cómo exactamente implementar evaluación que mida transferencia diferida de manera consistente según edad y materia."
+      ],
+      "prohibited_claims": [
+        "Que AERO demuestre empíricamente que la IA siempre reduce aprendizaje o que siempre haga trampa en estudiantes.",
+        "Que AERO proponga un método único universal de evaluación."
+      ],
+      "source_limitations": [
+        "Es una guía institucional con evidencia emergente; la fuerza causal de sus recomendaciones depende de la investigación disponible (no toda su guía es un resultado experimental propio)."
+      ]
+    },
+    {
+      "evidence_id": "studentsim-tutor-simulated-cred",
+      "news_id": "n_381be957230a05c2",
+      "supported_facts": [
+        "Microsoft Research presentó StudentSim, un sistema de investigación que adapta simuladores a registros públicos desidentificados de estudiantes.",
+        "StudentSim evalúa tanto fidelidad al comportamiento individual como cambios después de recibir orientación, en ajedrez, escritura en inglés y matemáticas.",
+        "Los autores reportan mejores resultados que baselines y utilidad para entrenar tutores, como resultados de investigación autorreportados.",
+        "El sistema no está desplegado como producto y no reemplaza pruebas con alumnos reales."
+      ],
+      "allowed_interpretations": [
+        "Que evaluar tutores en entornos sintéticos puede mejorar métricas sin garantizar transferencia real a estudiantes con perfiles distintos."
+      ],
+      "hypotheses": [
+        "Un tutor puede aprender a convencer o adaptar su conducta a un simulador en lugar de enseñar de forma transferible a un estudiante real."
+      ],
+      "uncertainties": [
+        "Qué tan bien se mantendrán los efectos en aulas reales, con dificultades no representadas en los registros usados.",
+        "Cómo fallan exactamente los tutores al transferir cuando cambia el subgrupo o la dinámica del aula."
+      ],
+      "prohibited_claims": [
+        "Que StudentSim demuestre que los tutores de IA no sirven en educación real.",
+        "Que el método simulado produce necesariamente aprendizaje superficial; sólo sugiere un riesgo de evaluación."
+      ],
+      "source_limitations": [
+        "Resultados autorreportados y sin despliegue como producto; no sustituye evidencia en entornos reales."
+      ]
+    }
+  ]
+}
