@@ -1,0 +1,500 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-10-16",
+  "window": {
+    "from": "2026-10-10",
+    "to": "2026-10-16"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "La ruta LLM para iterar y SLM para servir ya tiene evidencia sobre tráfico real.",
+      "why_it_matters": "Un caso de producción destila 11.6k decisiones de un agente a Qwen3-8B, obtiene 0.913 de acuerdo y reduce la mediana de latencia aproximadamente 2.5 veces; el patrón separa velocidad de desarrollo y economía de serving."
+    },
+    {
+      "summary": "La memoria no debe evaluarse por existir, sino por cambiar correctamente la conducta.",
+      "why_it_matters": "Activation steering conserva selectividad pero usa hechos en como máximo 15% de los casos, mientras tool graph memory rara vez supera baselines y puede duplicar llamadas; ambos resultados favorecen evals causales contra no-memory y random guidance."
+    },
+    {
+      "summary": "Serving necesita controlar TTFT e ITL como objetivos distintos y dependientes de la carga.",
+      "why_it_matters": "Token Window Pacing regula admisión con feedback por token y mejora throughput hasta 45–58%; otro trabajo muestra que la región óptima TP/PP cambia con SLO, composición de prefill y longitud de contexto."
+    },
+    {
+      "summary": "Olvidar en un agente es una propiedad del sistema, no sólo de los parámetros.",
+      "why_it_matters": "AUBench separa conocimiento paramétrico, memoria persistente y reacquisición vía tools; borrar pesos no basta si el dato sobrevive en artefactos o puede recuperarse otra vez."
+    },
+    {
+      "summary": "RAG iterativo mejora cuando reconstruye relaciones entre evidencias, no sólo acumula pasajes.",
+      "why_it_matters": "RCER explicita correspondencias de entidades y dependencias inferenciales entre rondas, superando al mejor baseline en promedio por 2.83 EM y 3.06 F1 en tres benchmarks multi-hop."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2610.14576",
+      "title": "Iterate on an LLM, Serve on an SLM",
+      "type": "technical_post",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-10",
+      "updated_at": null,
+      "authors": [
+        "Keegan Wang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.14576",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.14576",
+        "arxiv": "2610.14576"
+      },
+      "topics": [
+        "agents",
+        "llm_production",
+        "evaluation",
+        "serving",
+        "inference",
+        "architecture"
+      ],
+      "summary": "Propone desarrollar rápidamente el comportamiento de una tarea estrecha con un LLM frontera y feedback de tráfico real, para después destilar las decisiones registradas a un SLM especializado mediante SFT.",
+      "what_changed": "Aporta un caso de producción de scheduling de cuidados domiciliarios, usando decisiones reales en lugar de imitaciones sintéticas y comparando consistencia, criterio profesional, latencia y costo.",
+      "why_it_matters": "Da un lifecycle práctico para tareas agentic repetitivas: conservar flexibilidad durante exploración y mover el hot path estable a un modelo pequeño sin congelar prematuramente el producto.",
+      "evidence": [
+        "Un LoRA de Qwen3-8B entrenado con 11.6k decisiones registradas alcanza 0.913 de acuerdo.",
+        "El teacher GPT-5.4-nano sólo coincide 72.7% consigo mismo al repetir sus prompts históricos.",
+        "En desacuerdos, un scheduler profesional ciego prefirió al student 48 veces frente a 29 y la mediana de latencia fue aproximadamente 2.5 veces menor."
+      ],
+      "limitations": [
+        "Es un solo caso binario y estrecho; no demuestra generalización a tareas abiertas o tool chains largas.",
+        "El student aprende la política observada, incluidos posibles sesgos del tráfico y del teacher."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "serving"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.14958",
+      "title": "What Survives When Activation Steering Is Used as Memory",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-10",
+      "updated_at": null,
+      "authors": [
+        "Vedant Jumle"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.14958",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.14958",
+        "arxiv": "2610.14958"
+      },
+      "topics": [
+        "agents",
+        "evaluation",
+        "memory",
+        "architecture"
+      ],
+      "summary": "Estudio pre-registrado de memoria training-free basada en shifts de activaciones tardías, almacenados por gist y reinyectados cuando una conversación posterior coincide.",
+      "what_changed": "Evalúa directamente qué información sobrevive: la memoria es selectiva, pero los hechos quedan como palabras a producir y las preferencias dependen críticamente de la referencia usada al escribir el vector.",
+      "why_it_matters": "Previene confundir una intervención interna compacta con memoria semántica fiable. Para hechos, texto recuperable sigue siendo mucho más efectivo y auditable.",
+      "evidence": [
+        "Cerca de 98% de respuestas no relacionadas permanecen sin cambio.",
+        "El uso limpio de hechos llega como máximo a 15%, frente a 96–98% cuando el hecho está en contexto.",
+        "Una preferencia negativa puede recordarse como positiva si la referencia sustraída al escribirla es inadecuada."
+      ],
+      "limitations": [
+        "Evalúa Qwen3.5-2B y 9B y un diseño específico de activation memory.",
+        "Los resultados negativos no descartan memorias latentes entrenadas o arquitecturas diferentes."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.15177",
+      "title": "Only What You've Signed up For: Secure Workflows with Constrained Diffusion Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-10",
+      "updated_at": null,
+      "authors": [
+        "Michael Cardei",
+        "Anjun Hu",
+        "Chenrui Ma",
+        "Francesco Pinto",
+        "Chawin Sitawarin",
+        "Chulin Xie",
+        "Ferdinando Fioretto"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.15177",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.15177",
+        "arxiv": "2610.15177"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "safety",
+        "guardrails",
+        "inference",
+        "architecture"
+      ],
+      "summary": "CoDA impone políticas de seguridad dependientes de la tarea dentro del proceso de denoising de diffusion language models, proyectando distribuciones de tokens al conjunto permitido en cada paso.",
+      "what_changed": "Mueve enforcement desde detectar instrucciones maliciosas hacia mantener satisfacción de restricciones durante toda la generación, y prueba ataques estáticos y adaptativos.",
+      "why_it_matters": "Es una dirección de defensa por construcción: el atacante no sólo debe evadir un detector, sino superar restricciones integradas en el mecanismo generativo.",
+      "evidence": [
+        "Se evalúa en varias familias modernas de diffusion language models.",
+        "Cubre ataques de prompt injection estáticos y adaptativos.",
+        "Reporta reducciones sustanciales del attack success rate con utilidad competitiva y overhead práctico."
+      ],
+      "limitations": [
+        "El enfoque depende de diffusion language models y todavía no se traslada directamente al serving autoregresivo dominante.",
+        "El resumen público no proporciona una cifra única de seguridad-utilidad comparable entre todos los escenarios."
+      ],
+      "practical_applications": [
+        "design",
+        "deployment",
+        "agents",
+        "safety"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.17659",
+      "title": "Can Agents Truly Forget? Explore Machine Unlearning for LLM Agents",
+      "type": "benchmark",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-13",
+      "updated_at": null,
+      "authors": [
+        "Junkai Lin",
+        "Ge Xu",
+        "Zheng Xu",
+        "Junkai Chen",
+        "Xiangyuan Lan"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.17659",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.17659",
+        "arxiv": "2610.17659"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "memory",
+        "safety",
+        "architecture"
+      ],
+      "summary": "Formula agent unlearning como eliminación de información privada a través de parámetros, memoria persistente y adquisición posterior mediante tools.",
+      "what_changed": "AUBench extiende un entorno de autores ficticios con memoria, snapshot web offline, documentos accesibles por tools y trayectorias con provenance para comprobar dónde reaparece el dato olvidado.",
+      "why_it_matters": "Un cumplimiento de borrado a nivel de modelo puede ser ilusorio si caches, resúmenes, vector stores o herramientas siguen exponiendo la información.",
+      "evidence": [
+        "El benchmark separa tres canales de persistencia y reacquisición.",
+        "Incluye memoria persistente, web offline y documentos tool-accessible.",
+        "La evaluación de métodos paramétricos y de memoria revela una brecha entre model forgetting y system-level unlearning."
+      ],
+      "limitations": [
+        "El entorno de autores ficticios es controlado y no captura toda la complejidad legal y operacional de datos reales.",
+        "El trabajo establece el benchmark más que una solución completa de unlearning end-to-end."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "agents",
+        "safety"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.17689",
+      "title": "Stable Token-level Scheduling for Serverless LLM Inference",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-13",
+      "updated_at": null,
+      "authors": [
+        "Hardi Ashishbhai Desai",
+        "Balaji N K",
+        "Sourav Kanti Addya"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.17689",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.17689",
+        "arxiv": "2610.17689"
+      },
+      "topics": [
+        "llm_production",
+        "observability",
+        "serving",
+        "inference",
+        "architecture"
+      ],
+      "summary": "Token Window Pacing usa feedback de ITL, profundidad de cola y características de carga para regular admisión por token y combinarla con prefill fragmentado.",
+      "what_changed": "Optimiza explícitamente estabilidad durante decode, no sólo time-to-first-token, mediante un token window autorregulado que limita interferencia de nuevas solicitudes.",
+      "why_it_matters": "En streaming, una TTFT aceptable puede ocultar pausas severas durante la respuesta. La política cierra el loop sobre la métrica que el usuario realmente percibe después del primer token.",
+      "evidence": [
+        "Usa cargas serverless realistas.",
+        "Reduce spikes, P99 e irregularidad de ITL manteniendo TTFT estable.",
+        "Mejora throughput hasta 45% sobre ServerlessLLM y 58% sobre schedulers convencionales."
+      ],
+      "limitations": [
+        "Los resultados dependen del runtime, hardware y mezcla de cargas evaluados.",
+        "La política de feedback añade control y tuning operacional al scheduler."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "deployment",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.18861",
+      "title": "Hybrid Reasoning Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-13",
+      "updated_at": null,
+      "authors": [
+        "Jiaru Zou",
+        "Yunzhe Qi",
+        "Sirui Chen",
+        "Federico Bianchi",
+        "Shang Zhu",
+        "Pan Lu",
+        "Jingrui He",
+        "James Zou"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.18861",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.18861",
+        "arxiv": "2610.18861"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "llm_production",
+        "evaluation",
+        "serving",
+        "inference",
+        "memory",
+        "architecture"
+      ],
+      "summary": "Arquitectura que alterna dinámicamente razonamiento latente y texto ejecutable mediante HybridLink, conservando contexto híbrido continuo y tool use multi-turn.",
+      "what_changed": "Añade HybridSFT y HybridRL para aprender cuándo razonar en latente y cuándo volver a texto para interactuar, en tres escalas y once benchmarks.",
+      "why_it_matters": "Ataca simultáneamente costo de tokens y necesidad de interfaces textuales auditables para tools, sin exigir que todo el razonamiento permanezca verbalizado.",
+      "evidence": [
+        "Evalúa tres escalas de modelo y once benchmarks de matemáticas, ciencia, medicina, búsqueda y agentes.",
+        "Reporta 10.4% de mejora de rendimiento.",
+        "Reduce tokens 35.5–54.7%, acelera inferencia 1.8–2.6 veces y reduce costo 2.7–3.7 veces."
+      ],
+      "limitations": [
+        "Requiere cambios arquitectónicos y post-training dedicado; no es un drop-in para APIs cerradas.",
+        "La inspeccionabilidad de estados latentes no equivale automáticamente a explicabilidad o seguridad."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "agents",
+        "serving"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.19398",
+      "title": "RCER: Reconstructing Cross-Evidence Relations for Iterative Retrieval-Augmented Generation",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-14",
+      "updated_at": null,
+      "authors": [
+        "Linyao Zheng",
+        "Xuhang Shi",
+        "Zhifang Mao",
+        "Xiuquan Hou",
+        "Sai Zhou"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.19398",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.19398",
+        "arxiv": "2610.19398"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "agents",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Método RAG iterativo que reconstruye correspondencias de entidades y dependencias inferenciales entre pasajes acumulados para guiar descomposición, nuevas búsquedas y composición final.",
+      "what_changed": "Separa adquisición relacional entre rondas, reconstrucción de un contexto coherente y razonamiento composicional sobre evidencias cruzadas.",
+      "why_it_matters": "En multi-hop QA, recuperar pasajes relevantes no basta si el sistema no resuelve que dos menciones representan la misma entidad o cómo una evidencia depende de otra.",
+      "evidence": [
+        "Evalúa tres benchmarks multi-hop QA.",
+        "Supera al mejor baseline por 2.83 puntos EM y 3.06 F1 en promedio.",
+        "Reporta ventajas particulares en razonamiento narrativo e implícito."
+      ],
+      "limitations": [
+        "La evidencia se concentra en QA multi-hop y no demuestra aún robustez en corpora empresariales dinámicos.",
+        "La reconstrucción añade pasos generativos y posibles errores de inferencia entre pasajes."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "retrieval",
+        "agents"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.19405",
+      "title": "Scaling LLM Inference via Parallelism: Throughput-Latency Trade-off",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-14",
+      "updated_at": null,
+      "authors": [
+        "Javad Mirzaei",
+        "Jeebak Mitra"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.19405",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.19405",
+        "arxiv": "2610.19405"
+      },
+      "topics": [
+        "llm_production",
+        "evaluation",
+        "serving",
+        "inference",
+        "architecture"
+      ],
+      "summary": "Marco para elegir tensor parallelism, pipeline parallelism o híbridos a partir de regiones factibles TTFT-ITL, fronteras de Pareto y goodput bajo SLO.",
+      "what_changed": "Caracteriza transiciones sistemáticas entre configuraciones TP- y PP-dominantes conforme cambian prefill, restricciones de latencia y longitud de contexto.",
+      "why_it_matters": "Evita seleccionar paralelismo por throughput máximo aislado; la configuración correcta depende de las dos fases de inferencia y de qué SLO limita el servicio.",
+      "evidence": [
+        "Construye regiones operativas y fronteras TTFT-ITL.",
+        "SLOs estrictos de TTFT favorecen configuraciones PP-dominantes; restricciones relajadas desplazan optimalidad hacia TP.",
+        "En long context, PP muestra mejor escalabilidad relativa y cumplimiento de SLO."
+      ],
+      "limitations": [
+        "La configuración óptima sigue dependiendo de topología, implementación y modelo concretos.",
+        "El marco requiere perfiles representativos y revalidación cuando cambia la distribución de carga."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "deployment",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.21571",
+      "title": "Rethinking the Role of Tool Graph Memory in Multi-Turn Tool Use",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-15",
+      "updated_at": null,
+      "authors": [
+        "Uiji Hwang",
+        "Richeng Xuan",
+        "Taeuk Kim"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.21571",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.21571",
+        "arxiv": "2610.21571"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "memory",
+        "architecture"
+      ],
+      "summary": "Evaluación controlada de tool graph memory que compara guía basada en transiciones históricas con baselines sin guía, guía aleatoria y experiencia almacenada como insights textuales.",
+      "what_changed": "Muestra que gran parte de la aparente mejora proviene de cómputo adicional, no de que el grafo recomiende la siguiente tool correcta.",
+      "why_it_matters": "Obliga a incluir controles de costo y ablations causales antes de atribuir mejoras a memoria. Los recuerdos funcionan mejor como prior suave que como prescripción rígida de acciones.",
+      "evidence": [
+        "Evalúa nueve modelos y dos benchmarks.",
+        "Tool graph memory rara vez mejora significativamente y, cuando lo hace, cuesta más del doble de llamadas LLM.",
+        "Guidance aleatoria o ausente conserva gran parte de la ganancia; insights textuales superan al grafo con casi ninguna llamada extra."
+      ],
+      "limitations": [
+        "Dos benchmarks no cubren todos los dominios ni grafos de herramientas.",
+        "El resultado cuestiona la representación evaluada, no toda memoria estructurada o planificación sobre grafos."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Separa el modelo de exploración del modelo de serving: registra decisiones reales, estabiliza primero el comportamiento y destila sólo cuando la tarea sea estrecha y observable.",
+      "Trata memoria como una intervención que debe ganar contra no-memory y random guidance al mismo presupuesto; prefiere priors textuales recuperables cuando no exista evidencia causal.",
+      "Para unlearning, mantén provenance y políticas de borrado coordinadas en pesos, stores, resúmenes, caches, documentos y tools."
+    ],
+    "evaluation": [
+      "Reporta TTFT, ITL, P99 y goodput juntos; una sola métrica de latencia oculta interferencia entre prefill y decode.",
+      "En RAG multi-hop evalúa correspondencias de entidades y dependencias entre evidencias, no sólo recall de pasajes.",
+      "Mide costo por éxito y ejecuta ablations contra cómputo equivalente antes de acreditar mejoras a memoria o razonamiento adicional."
+    ],
+    "deployment": [
+      "Ajusta scheduling y paralelismo a la mezcla real de carga y a los SLO; re-perfila cuando cambien contexto, modelo o hardware.",
+      "Si despliegas SLMs destilados, conserva shadow evaluation contra el teacher y revisión humana en desacuerdos de alto impacto.",
+      "Aísla políticas experimentales de diffusion agents y razonamiento híbrido hasta verificar portabilidad, auditabilidad y fallos bajo ataques adaptativos."
+    ]
+  }
+}
