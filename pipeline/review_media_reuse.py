@@ -43,6 +43,8 @@ def reuse_media(episode_dir: Path, output_dir: Path, zip_path: Path, *, minimum=
     if output_dir.exists():
         raise ValueError('Reuse destination must not exist')
     shutil.copytree(source, output_dir)
+    from pipeline.media_origin import label_manifest
+    write_json(output_dir / "manifest.json", label_manifest(manifest))
     write_json(output_dir/'review_media_origin.json', {
         'schema_version': 1, 'kind': 'reused_staging' if staging is not None else 'reused_episode_bundle',
         'episode_date': episode_dir.name, 'new_model_calls': 0,

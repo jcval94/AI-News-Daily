@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from pipeline.review_video_preview import upgrade_lazy_video_previews
+from pipeline.media_origin import label_manifest
+from pipeline.review_media_sources import upgrade_media_sources
 
 _DATE_RE = re.compile(r"(?<!\d)(20\d{2}-\d{2}-\d{2})(?!\d)")
 _EPISODE_MARKERS = ('id="globalSearch"', 'data-tab="overview"')
@@ -139,6 +141,15 @@ def _patch_episode_site(site_root: Path) -> None:
     except OSError:
         return
     upgraded = upgrade_lazy_video_previews(document)
+    manifest_path = site_root / "artifacts" / "media-manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        manifest = None
+    if isinstance(manifest, list):
+        manifest = label_manifest(manifest)
+        upgraded = upgrade_media_sources(upgraded, manifest)
+        manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if upgraded != document:
         index.write_text(upgraded, encoding="utf-8")
 

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.review_hub_v3 import parse_args
+from pipeline.review_media_sources import upgrade_media_sources
 from pipeline.review_hub_v4 import derive_real_indicators
 from pipeline.review_hub_v5 import build_site as _build_site_v5
 
@@ -419,7 +420,7 @@ def apply_p1_scanability(
     document = _enhance_technical(document, provenance)
     document = _enhance_media(document, manifest)
     document = document.replace("</body>", P1_JS + "\n</body>", 1)
-    return document
+    return upgrade_media_sources(document, manifest)
 
 
 def build_site(

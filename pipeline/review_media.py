@@ -664,6 +664,8 @@ async def build_review_media(
             "agent_trace": trace,
         },
     )
+    from pipeline.media_origin import label_manifest
+    manifest = label_manifest(manifest)
     write_json(output_dir / "manifest.json", manifest)
     write_credits(manifest, output_dir)
     write_edit_manifest(
