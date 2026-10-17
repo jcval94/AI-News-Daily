@@ -23,6 +23,8 @@ editorial/
 
 `Narrative Memory` is not prompt glue or trivia. A scheduled research task can expand it offline; deterministic Python revalidates every row, derives prior usage from approved episode artifacts, applies cooldown/diversity retrieval, and exposes only a small candidate set to the Editorial Director. See `docs/narrative_memory_contract.md`.
 
+`Essay Novelty Memory` is different: it is the lightweight lookup of **approved episode arguments** used by `previous_essays` to avoid repeating the same question or thesis even when all source news is new. It is not retrieval of full past scripts or another news source; the existing multidimensional novelty gate owns this check. See [`docs/topic_novelty_design.md`](docs/topic_novelty_design.md).
+
 This lets prompts and models evolve without silently redefining the channel's identity.
 
 ## Mental model
