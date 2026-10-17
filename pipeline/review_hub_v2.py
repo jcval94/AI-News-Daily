@@ -9,6 +9,7 @@ from string import Template
 from typing import Any
 
 from pipeline.core import PipelineConfig
+from pipeline.media_origin import label_manifest
 
 CONFIG = PipelineConfig.from_env()
 
@@ -122,7 +123,7 @@ def build_site(
     selected = read_json(episode_dir / "selected_news.json", {})
     novelty = read_json(episode_dir / "novelty_check.json", {})
     regression = read_json(regression_path, {})
-    manifest = read_json(media_dir / "manifest.json", [])
+    manifest = label_manifest(read_json(media_dir / "manifest.json", []))
     media_plan = read_json(media_dir / "plan.json", {})
 
     target_date = str(state.get("episode_date", episode_dir.name))
@@ -149,7 +150,9 @@ def build_site(
     ):
         copy_file(episode_dir / name, output_dir / "artifacts" / name)
     copy_file(regression_path, output_dir / "artifacts" / "editorial-regression.json")
-    copy_file(media_dir / "manifest.json", output_dir / "artifacts" / "media-manifest.json")
+    (output_dir / "artifacts" / "media-manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     copy_file(media_dir / "plan.json", output_dir / "artifacts" / "media-plan.json")
     copy_file(media_dir / "credits.md", output_dir / "artifacts" / "credits.md")
     media_zip_name = media_zip.name
