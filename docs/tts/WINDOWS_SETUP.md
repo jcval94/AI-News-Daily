@@ -117,3 +117,17 @@ without Git synchronization, use:
 ```powershell
 .\scripts\local\tts_automation.ps1 -NoSync
 ```
+
+Create the desktop shortcut for the latest approved episode:
+
+```powershell
+.\scripts\local\tts_automation.ps1 -InstallShortcut
+```
+
+The shortcut points to this checkout and runs the script with `-LatestOnly -Open`.
+The launcher first fast-forwards the dedicated clean checkout, then reuses a
+valid matching TTS run or renders the changed latest script. It writes a
+single-episode listening page at `.local\tts\latest\index.html` and logs to
+`.local\tts\automation\latest-episode.log`. The daily task still maintains
+the full library. A logged-in user session and AC power are required for the
+daily task.

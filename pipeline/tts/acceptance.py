@@ -520,6 +520,12 @@ def run_local_tts_action(
             config_path=config_path,
             repo_root=repo_root,
         )
+    if action == "render-latest":
+        return render_pending_library(
+            config_path=config_path,
+            repo_root=repo_root,
+            latest_only=True,
+        )
     if action == "benchmark":
         path = benchmark_voices(
             fixture=repo_root / "evals/tts/voice_bakeoff_es.txt",

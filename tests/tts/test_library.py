@@ -123,6 +123,47 @@ class TtsLibraryTests(unittest.TestCase):
         self.assertIn("narration_preview.mp3", catalog)
         self.assertIn("narration_master.wav", catalog)
 
+    def test_latest_catalog_selects_only_newest_approved_episode(self):
+        root = Path(tempfile.mkdtemp())
+        older = _episode(root, "2026-09-01")
+        newest = _episode(root, "2026-09-25")
+        _run(root, newest)
+
+        with patch("pipeline.tts.library.render_episode") as render:
+            payload = render_pending_library(
+                config_path=root / "tts.yaml", repo_root=root, latest_only=True
+            )
+
+        render.assert_not_called()
+        self.assertEqual(payload["summary"], {
+            "approved": 1, "rendered": 0, "current": 1, "failed": 0,
+        })
+        self.assertEqual(payload["episodes"][0]["episode_date"], newest.name)
+        self.assertEqual(payload["listening_report"], ".local/tts/latest/index.html")
+        page = (root / ".local/tts/latest/index.html").read_text(encoding="utf-8")
+        self.assertIn(newest.name, page)
+        self.assertNotIn(older.name, page)
+        self.assertNotIn(str(root), page)
+
+    def test_latest_catalog_renders_changed_newest_script_only(self):
+        root = Path(tempfile.mkdtemp())
+        _episode(root, "2026-09-01")
+        newest = _episode(root, "2026-09-25")
+        _run(root, newest)
+        (newest / "script.txt").write_text("Texto nuevo", encoding="utf-8")
+
+        def render(*, episode_dir, **kwargs):
+            self.assertEqual(episode_dir, newest)
+            return _run(root, newest, run_id="20261006T000000Z-kokoro-test")
+
+        with patch("pipeline.tts.library.render_episode", side_effect=render) as mocked:
+            payload = render_pending_library(
+                config_path=root / "tts.yaml", repo_root=root, latest_only=True
+            )
+
+        mocked.assert_called_once()
+        self.assertEqual(payload["summary"]["rendered"], 1)
+
     def test_changed_script_or_missing_asset_is_rendered_again(self):
         for cause in ("script", "asset"):
             with self.subTest(cause=cause):
