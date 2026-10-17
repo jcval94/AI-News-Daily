@@ -90,3 +90,30 @@ The same pattern is available for the bake-off:
 ```
 
 High-quality WAV, native engine output, models and local logs remain under `.local/` and are never committed.
+
+## Automatic local audio library
+
+Render every approved episode that does not already have current audio:
+
+```powershell
+.\.venv\Scripts\python.exe -m pipeline.local tts render-pending
+```
+
+The command reuses valid runs with the same script identity, renders only missing
+or changed scripts, and writes a local listening page at
+`.local\tts\library\index.html`. It does not publish to Pages or enable Edge.
+
+On the dedicated clean TTS checkout, register the daily 09:00 Windows task:
+
+```powershell
+.\scripts\local\tts_automation.ps1 -Register
+```
+
+The task runs only in the interactive user session, uses the Windows default AC
+power restrictions, catches up after a missed start, refuses dirty checkouts,
+fast-forwards `main`, and then runs `render-pending`. For a manual offline run
+without Git synchronization, use:
+
+```powershell
+.\scripts\local\tts_automation.ps1 -NoSync
+```

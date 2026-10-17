@@ -39,6 +39,7 @@ _REQUIRED_FILES = [
     "scripts/local/run_staged.ps1",
     "scripts/local/status.ps1",
     "scripts/local/toolchain.ps1",
+    "scripts/local/tts_automation.ps1",
     "scripts/local/acceptance.ps1",
     "docs/local/README.md",
     "docs/local/contracts.md",

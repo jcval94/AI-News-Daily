@@ -16,6 +16,7 @@ from .audio_qa import (
 from .benchmark import benchmark_status, benchmark_voices
 from .config import DEFAULT_CONFIG, load_tts_config
 from .engines import render_native, resolve_tts_python
+from .library import render_pending_library
 from .release_store import promote_benchmark, promote_narration
 from .render import _convert_edit, render_episode, resolve_episode
 
@@ -514,6 +515,11 @@ def run_local_tts_action(
             "duration_seconds": payload["metrics"]["duration_seconds"],
             "qa": payload["qa"],
         }
+    if action == "render-pending":
+        return render_pending_library(
+            config_path=config_path,
+            repo_root=repo_root,
+        )
     if action == "benchmark":
         path = benchmark_voices(
             fixture=repo_root / "evals/tts/voice_bakeoff_es.txt",
