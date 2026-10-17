@@ -38,12 +38,15 @@ def request_json(url: str, *, body=None, headers=None, timeout=40) -> dict:
     request = urllib.request.Request(url, data=data, headers={
         "User-Agent": "AI-News-Daily-video-experiment/1.0",
         "Content-Type": "application/json", **(headers or {})})
-    try:
+    def fetch():
         with urllib.request.urlopen(request, timeout=timeout) as response:
             raw = response.read(8 * 1024 * 1024 + 1)
         if len(raw) > 8 * 1024 * 1024:
             raise RuntimeError("Oversized API response")
-        result = json.loads(raw)
+        return raw
+    try:
+        from pipeline.media_http import public_json
+        result = json.loads(fetch()) if body is not None or headers else public_json(url, fetch)
         if not isinstance(result, dict):
             raise ValueError("API returned a non-object")
         return result

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import unicodedata
 from pathlib import Path
@@ -154,7 +155,8 @@ def _director_fields(*, slot: dict[str, Any], beat: dict[str, Any] | None = None
         }
 
     role_by_kind = {
-        "evidence": "evidence",
+        # A deterministic domain query is illustration, never exact evidence of a study.
+        "evidence": "explanation",
         "reveal": "explanation",
         "turn": "explanation",
         "complication": "contrast",
@@ -333,7 +335,7 @@ def build_offline_review_media(
         max_media_downloads=max_media_downloads,
     )
 
-    pool = prepare_pool(episode_dir, output_dir, plan, offline=True)
+    pool = prepare_pool(episode_dir, output_dir, plan, offline=os.environ.get("MEDIA_LIVE_ACQUISITION") != "1")
     if pool is not None and retrieval_mode() == "integrated":
         plan = pool.payload["segments"]
     planned_segments = [dict(s) for s in plan if s.get("mode") == "media"]
@@ -353,12 +355,12 @@ def build_offline_review_media(
         record: dict[str, Any] | None = None
         relative_file = ""
 
-        if pool is not None and retrieval_mode() == "integrated" and is_specific(segment):
+        if pool is not None and retrieval_mode() == "integrated":
             record = pool.assign(segment, output_dir, folder)
-            if record is None:
+            if record is None and is_specific(segment):
                 selected_segments.append({**segment, "association": folder, "file": "", "retrieval_status": "unresolved"})
                 continue
-            relative_file = record["file"]
+            relative_file = record["file"] if record else ""
         if record is None and preferred_video:
             video_name = media_filename(segment, extension=".mp4")
             video_destination = output_dir / folder / video_name

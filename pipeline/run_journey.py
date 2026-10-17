@@ -72,7 +72,7 @@ def _discover_production_media(episode_dir: Path) -> Path | None:
         return None
     candidate = root / "multimedia" / episode_dir.name
     origin = _read_json(candidate / "review_media_origin.json", {})
-    if origin.get("kind") in {"staging", "reused_staging"}:
+    if origin.get("kind") in {"staging", "reused_staging", "review_only"}:
         return None
     return candidate if (candidate / "manifest.json").exists() else None
 

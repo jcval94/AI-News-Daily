@@ -19,6 +19,10 @@ on:
         required: true
         default: "54"
         type: string
+      refresh_media:
+        description: "Rebuild isolated review media instead of reusing a bundle/cache"
+        type: boolean
+        default: false
       history_episode_limit:
         description: "Maximum distinct episodes retained in Pages"
         required: true
@@ -96,7 +100,7 @@ jobs:
           cache: pip
 
       - name: Install project
-        run: python -m pip install -c requirements.lock .
+        run: python -m pip install -c requirements.lock '.[media-retrieval]'
 
       - name: Install media validation tools
         run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
@@ -251,58 +255,46 @@ jobs:
           EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
         run: python -m pipeline.evidence_reconciliation --episode-dir "$EPISODE_DIR" --write
 
-      - name: Build dense review multimedia with bounded external dependency
+      - name: Restore review acquisition cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .review-media-cache
+          key: review-media-v2-${{ steps.source.outputs.target_date }}-${{ github.run_id }}
+          restore-keys: review-media-v2-${{ steps.source.outputs.target_date }}-
+
+      - name: Build isolated review multimedia
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_RETRIEVAL_MODE: ${{ vars.MEDIA_RETRIEVAL_MODE || 'integrated' }}
           MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
-          MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
           MAX_MEDIA: ${{ inputs.max_media_downloads || '54' }}
           EPISODE_DIR: ${{ steps.source.outputs.episode_dir }}
           TARGET_DATE: ${{ steps.source.outputs.target_date }}
           RUN_ID: ${{ steps.source.outputs.run_id }}
+          REFRESH_MEDIA: ${{ inputs.refresh_media || 'false' }}
         run: |
           set -euo pipefail
-          MAX_MEDIA="${MAX_MEDIA:-54}"
           rm -rf review-media review-downloads
           mkdir -p review-media review-downloads
           ZIP="review-downloads/multimedia-${TARGET_DATE}-run-${RUN_ID}.zip"
-
-          run_offline() {
-            rm -rf "review-media/$TARGET_DATE" "$ZIP"
-            python -m pipeline.review_media_offline_dense \
-              --episode-dir "$EPISODE_DIR" \
-              --output-dir "review-media/$TARGET_DATE" \
-              --zip-out "$ZIP" \
-              --max-media-downloads "$MAX_MEDIA"
-          }
-
-          if python -m pipeline.review_media_reuse \
+          EXTRA=()
+          if [ "$REFRESH_MEDIA" = "true" ]; then EXTRA+=(--refresh); fi
+          python -m pipeline.review_media_acquire \
             --episode-dir "$EPISODE_DIR" \
             --output-dir "review-media/$TARGET_DATE" \
-            --zip-out "$ZIP"; then
-            echo "Validated episode media reused without model calls"
-          elif [ -n "${OPENAI_API_KEY:-}" ]; then
-            set +e
-            timeout 12m python -m pipeline.review_media_dense_hardened \
-              --episode-dir "$EPISODE_DIR" \
-              --output-dir "review-media/$TARGET_DATE" \
-              --zip-out "$ZIP" \
-              --max-media-downloads "$MAX_MEDIA" 2>&1 | tee /tmp/review-media.log
-            STATUS=${PIPESTATUS[0]}
-            set -e
-            if [ "$STATUS" -ne 0 ]; then
-              echo "::warning::External media path failed/timed out ($STATUS); using deterministic fallback"
-              run_offline
-            fi
-          else
-            run_offline
-          fi
-
+            --zip-out "$ZIP" \
+            --max-media-downloads "$MAX_MEDIA" "${EXTRA[@]}"
           test -s "review-media/$TARGET_DATE/manifest.json"
           test -s "$ZIP"
+
+      - name: Save review acquisition cache
+        uses: actions/cache/save@v4
+        with:
+          path: .review-media-cache
+          key: review-media-v2-${{ steps.source.outputs.target_date }}-${{ github.run_id }}
 
       - name: Build static editorial review site
         env:

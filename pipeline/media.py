@@ -371,22 +371,18 @@ def download_shot_asset(
         except Exception as exc:
             errors.append(f"{provider.__name__}: {type(exc).__name__}: {exc}")
 
-    record = (
-        max(provider_candidates, key=lambda item: float(item.get("relevance_score", 0) or 0))
-        if provider_candidates
-        else None
-    )
-    if record:
-        decision = assess_license(str(record.get("provider", "")), str(record.get("license", "")))
+    record = None
+    for candidate in sorted(provider_candidates, key=lambda item: float(item.get("relevance_score", 0) or 0), reverse=True):
+        decision = assess_license(str(candidate.get("provider", "")), str(candidate.get("license", "")))
         if not decision["allowed"]:
             errors.append(f"license: {decision['reason']}")
-            record = None
-        else:
-            try:
-                _save_as_jpeg(_download_bytes(record["download_url"]), destination)
-            except Exception as exc:
-                errors.append(f"download: {type(exc).__name__}: {exc}")
-                record = None
+            continue
+        try:
+            _save_as_jpeg(_download_bytes(candidate["download_url"]), destination)
+            record = candidate
+            break
+        except Exception as exc:
+            errors.append(f"download {candidate.get('provider')}: {type(exc).__name__}: {exc}")
 
     if not record:
         make_fallback_card(shot.get("on_screen_text") or query, destination)
