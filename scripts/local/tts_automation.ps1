@@ -1,7 +1,10 @@
 [CmdletBinding()]
 param(
     [switch]$Register,
-    [switch]$NoSync
+    [switch]$NoSync,
+    [switch]$LatestOnly,
+    [switch]$Open,
+    [switch]$InstallShortcut
 )
 
 $ErrorActionPreference = "Stop"
@@ -34,9 +37,27 @@ if ($Register) {
     exit 0
 }
 
+if ($InstallShortcut) {
+    $Desktop = [Environment]::GetFolderPath("Desktop")
+    if (-not $Desktop -or -not (Test-Path $Desktop)) {
+        throw "No se encontró el Escritorio del usuario."
+    }
+    $ShortcutPath = Join-Path $Desktop "AI News Daily - Ultimo episodio.lnk"
+    $Shell = New-Object -ComObject WScript.Shell
+    $Shortcut = $Shell.CreateShortcut($ShortcutPath)
+    $Shortcut.TargetPath = (Get-Command powershell.exe).Source
+    $Shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -LatestOnly -Open"
+    $Shortcut.WorkingDirectory = $RepoRoot
+    $Shortcut.Description = "Actualiza y abre el audio del último episodio aprobado."
+    $Shortcut.Save()
+    Write-Host "Acceso directo: $ShortcutPath"
+    exit 0
+}
+
 $LogDir = Join-Path $RepoRoot ".local\tts\automation"
 New-Item -ItemType Directory -Force $LogDir | Out-Null
-Start-Transcript -Path (Join-Path $LogDir "latest.log") -Force | Out-Null
+$LogName = if ($LatestOnly) { "latest-episode.log" } else { "latest.log" }
+Start-Transcript -Path (Join-Path $LogDir $LogName) -Force | Out-Null
 try {
     Set-Location $RepoRoot
     $Python = Join-Path $RepoRoot ".venv\Scripts\python.exe"
@@ -55,9 +76,13 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "git pull --ff-only origin main falló." }
     }
 
-    & $Python -m pipeline.local tts render-pending
-    if ($LASTEXITCODE -ne 0) { throw "render-pending terminó con código $LASTEXITCODE." }
-    Write-Host "Biblioteca: $RepoRoot\.local\tts\library\index.html"
+    $Action = if ($LatestOnly) { "render-latest" } else { "render-pending" }
+    $Catalog = if ($LatestOnly) { "latest" } else { "library" }
+    & $Python -m pipeline.local tts $Action
+    if ($LASTEXITCODE -ne 0) { throw "$Action terminó con código $LASTEXITCODE." }
+    $Report = Join-Path $RepoRoot ".local\tts\$Catalog\index.html"
+    Write-Host "Biblioteca: $Report"
+    if ($Open) { Start-Process -FilePath $Report }
 }
 finally {
     Stop-Transcript | Out-Null

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .contracts import validate_manifest
-from .render import _script_id, approved_episodes, render_episode
+from .render import _script_id, approved_episodes, render_episode, resolve_episode
 
 
 def _utc_now() -> str:
@@ -80,7 +80,9 @@ def _relative_url(repo_path: str, *, catalog_dir: Path, repo_root: Path) -> str:
     return Path(os.path.relpath(repo_root / repo_path, catalog_dir)).as_posix()
 
 
-def _write_catalog_html(path: Path, payload: dict[str, Any], repo_root: Path) -> None:
+def _write_catalog_html(
+    path: Path, payload: dict[str, Any], repo_root: Path, *, latest_only: bool = False
+) -> None:
     cards: list[str] = []
     for item in reversed(payload["episodes"]):
         episode = html.escape(item["episode_date"])
@@ -120,14 +122,15 @@ def _write_catalog_html(path: Path, payload: dict[str, Any], repo_root: Path) ->
             f'<a href="{manifest}">manifest</a></p>'
             f"{warnings}</article>"
         )
+    title = "Último episodio TTS" if latest_only else "Biblioteca TTS local"
     document = f"""<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-<title>AI News Daily · Biblioteca TTS local</title>
+<title>AI News Daily · {title}</title>
 <style>
 body{{font:16px system-ui;max-width:900px;margin:2rem auto;padding:0 1rem;background:#101218;color:#eef}}
 article{{background:#1a1e28;border:1px solid #343b4d;border-radius:12px;padding:1rem;margin:1rem 0}}
 article.failed{{border-color:#b44}} audio{{width:100%}} a{{color:#8cc8ff}} h1,h2{{margin-top:0}}
-</style></head><body><h1>Biblioteca TTS local</h1>
+</style></head><body><h1>{title}</h1>
 <p>Actualizada {html.escape(payload['generated_at_utc'])} · estado {html.escape(payload['status'])}</p>
 {''.join(cards)}</body></html>
 """
@@ -139,13 +142,20 @@ def render_pending_library(
     config_path: Path,
     repo_root: Path = Path("."),
     output_root: Path = Path(".local/tts"),
+    latest_only: bool = False,
 ) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     root = output_root if output_root.is_absolute() else repo_root / output_root
-    library_dir = root / "library"
+    catalog_name = "latest" if latest_only else "library"
+    library_dir = root / catalog_name
     episodes: list[dict[str, Any]] = []
 
-    for episode in approved_episodes(repo_root / "scripts"):
+    selected = (
+        [resolve_episode("latest", repo_root / "scripts")]
+        if latest_only
+        else approved_episodes(repo_root / "scripts")
+    )
+    for episode in selected:
         script_id = _script_id(episode)
         current = _current_manifest(episode, script_id=script_id, output_root=root)
         try:
@@ -192,12 +202,14 @@ def render_pending_library(
             "failed": sum(item["result"] == "failed" for item in episodes),
         },
         "episodes": episodes,
-        "listening_report": ".local/tts/library/index.html",
+        "listening_report": f".local/tts/{catalog_name}/index.html",
     }
     library_dir.mkdir(parents=True, exist_ok=True)
     (library_dir / "latest.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    _write_catalog_html(library_dir / "index.html", payload, repo_root)
+    _write_catalog_html(
+        library_dir / "index.html", payload, repo_root, latest_only=latest_only
+    )
     return payload
