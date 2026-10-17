@@ -1,0 +1,159 @@
+name: Multisource Media Validation
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/multisource-acquisition]
+    paths: [.github/media-multisource-request.json]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - run: |
+          python -m compileall -q app pipeline
+          python -m unittest discover -s tests -v
+
+  sources:
+    needs: contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Probe five real sources
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: python -m pipeline.media_multisource_validation --controls
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: multisource-controls-${{ github.run_id }}
+          path: .pipeline-runs/
+          include-hidden-files: true
+          retention-days: 7
+
+  benchmark:
+    needs: contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        case: [khan-baba, juliane-koepcke, tsutomu-yamaguchi, vesna-vulovic, vasili-arkhipov, stanislav-petrov, toyota-war, emu-war, lake-nyos, molasses-flood, halifax-explosion, tanganyika-laughter]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Exact image and video retrieval
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          CASE_ID: ${{ matrix.case }}
+        run: python -m pipeline.media_multisource_validation --case "$CASE_ID"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: multisource-${{ matrix.case }}-${{ github.run_id }}
+          path: .pipeline-runs/
+          include-hidden-files: true
+          retention-days: 7
+
+  handoff:
+    needs: contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Approved episode and portable editing handoff
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: python -m pipeline.media_integration_staging --catalogue-replay
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: multisource-handoff-${{ github.run_id }}
+          path: .pipeline-runs/
+          include-hidden-files: true
+          retention-days: 7
+
+  review-replay:
+    needs: contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - date: '2026-10-16'
+            run: '38947788782'
+          - date: '2026-10-09'
+            run: '37983192414'
+          - date: '2026-10-06'
+            run: '37640109839'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements.lock '.[media-retrieval]'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Retrieve original attempted episode
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ matrix.run }}
+          TARGET_DATE: ${{ matrix.date }}
+        run: |
+          gh run download "$SOURCE_RUN" --name "ai-news-run-$TARGET_DATE-$SOURCE_RUN" --dir .review-source
+          python -m pipeline.review_source --root .review-source --target-date "$TARGET_DATE" --output resolved.json
+          EPISODE_DIR="$(python -c 'import json; print(json.load(open("resolved.json"))["episode_dir"])')"
+          echo "EPISODE_DIR=$EPISODE_DIR" >> "$GITHUB_ENV"
+      - name: Rebuild isolated media and Pages
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_RETRIEVAL_MODE: integrated
+          TARGET_DATE: ${{ matrix.date }}
+        run: |
+          python -m pipeline.review_media_acquire --episode-dir "$EPISODE_DIR" --output-dir "review-media/$TARGET_DATE" --zip-out "review-media/review.zip" --max-media-downloads 54 --refresh
+          python -m pipeline.editorial_regression --episode-dir "$EPISODE_DIR" --output editorial-regression.json
+          python -m pipeline.review_hub --episode-dir "$EPISODE_DIR" --media-dir "review-media/$TARGET_DATE" --media-zip review-media/review.zip --regression editorial-regression.json --cases evals/editorial/cases.json --output-dir review-site --run-id "$GITHUB_RUN_ID"
+          python -m pipeline.media_density_gate --media-dir "review-media/$TARGET_DATE" --budget 54 --output review-media/density-result.json
+          python -c 'from pathlib import Path; s=Path("review-site/index.html").read_text(); assert "Resultado por fuente" in s; assert "Reconstrucción para revisión" in s'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: multisource-review-${{ matrix.date }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/
+            review-media/
+            review-site/
+          include-hidden-files: true
+          retention-days: 7

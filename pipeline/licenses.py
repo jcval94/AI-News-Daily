@@ -21,6 +21,10 @@ def assess_license(provider: str, license_name: str) -> dict[str, Any]:
             "reason": "Pexels License" if name == "pexels license" else "Unexpected Pexels license metadata",
         }
 
+    if provider_key == "nasa" and name == "nasa media usage guidelines (editorial use)":
+        return {"allowed": True, "requires_attribution": True,
+                "reason": "NASA factual editorial use; attribute NASA, no endorsement or promotional reuse"}
+
     forbidden = ("all rights reserved", "fair use", "noncommercial", "non-commercial", "-nc", "no derivatives", "-nd")
     if not name or any(token in name for token in forbidden):
         return {"allowed": False, "requires_attribution": False, "reason": "License is missing or incompatible with edited/public video use"}

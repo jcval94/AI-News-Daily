@@ -547,12 +547,12 @@ async def build_review_media(
         preferred_video = segment.get("preferred_asset_type") == "video"
         record: dict[str, Any] | None = None
         relative_file = ""
-        if pool is not None and retrieval_mode() == "integrated" and is_specific(segment):
+        if pool is not None and retrieval_mode() == "integrated":
             record = pool.assign(segment, output_dir, folder)
-            if record is None:
+            if record is None and is_specific(segment):
                 selected_segments.append({**segment, "association": folder, "file": "", "retrieval_status": "unresolved"})
                 continue
-            relative_file = record["file"]
+            relative_file = record["file"] if record else ""
         if record is None and preferred_video:
             video_name = media_filename(segment, extension=".mp4")
             video_destination = output_dir / folder / video_name

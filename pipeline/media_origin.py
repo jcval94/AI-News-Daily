@@ -11,7 +11,7 @@ PROVIDERS = {
     "aic": "Art Institute of Chicago", "loc": "Library of Congress",
     "generated_fallback": "Respaldo local", "unknown": "Sin fuente registrada",
 }
-ALIASES = {"wikimedia": "commons", "wikimedia_commons": "commons", "archive.org": "archive"}
+ALIASES = {"wikimedia": "commons", "wikimedia_commons": "commons", "archive.org": "archive", "artic": "aic", "wikipedia": "commons"}
 KINDS = {"external": "Externo", "local": "Local", "unknown": "Origen sin verificar"}
 HOSTS = {"pexels.com": "pexels", "commons.wikimedia.org": "commons", "archive.org": "archive",
          "youtube.com": "youtube", "youtu.be": "youtube", "nasa.gov": "nasa"}

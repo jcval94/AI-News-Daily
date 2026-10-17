@@ -15,6 +15,8 @@ def pool_panel(media_dir: Path) -> str:
     origin_path = media_dir / 'review_media_origin.json'
     origin = json.loads(origin_path.read_text(encoding='utf-8')) if origin_path.is_file() else {}
     origin_label = '<p>Prueba de integración; este paquete no fue promovido a producción.</p>' if origin.get('kind') in {'staging', 'reused_staging'} else ''
+    if origin.get('kind') == 'review_only' or summary.get('purpose') == 'review':
+        origin_label = '<p><strong>Reconstrucción para revisión.</strong> No es multimedia de producción ni cambia la aprobación del guion.</p>'
     labels = [('downloaded', 'Descargados'), ('eligible', 'Elegibles'), ('assigned', 'Asignados'),
               ('exact', 'Exactos por catálogo'), ('context', 'Contextuales'), ('low_resolution', 'Baja resolución')]
     metrics = ' · '.join(f'{label}: <strong>{esc(summary.get(key, 0))}</strong>' for key, label in labels)
@@ -34,6 +36,14 @@ def pool_panel(media_dir: Path) -> str:
     unresolved = summary.get('unresolved_slots', [])
     audit_path = media_dir / 'media_cost_audit.json'
     cost = ''
+    provider_rows = []
+    from pipeline.media_origin import PROVIDERS
+    for provider, counts in summary.get('provider_report', {}).items():
+        provider_rows.append('<tr><th scope="row">' + esc(PROVIDERS.get(provider, provider)) + '</th>' +
+                             ''.join('<td>' + esc(counts.get(k, 0)) + '</td>' for k in ('found', 'downloaded', 'eligible', 'assigned')) +
+                             '<td>' + esc('; '.join(counts.get('reasons', [])) or counts.get('unselected_reason', '')) + '</td></tr>')
+    providers = ('<details open><summary>Resultado por fuente</summary><div style="overflow-x:auto"><table><thead><tr><th>Fuente</th><th>Encontrados</th><th>Descargados</th><th>Elegibles</th><th>Asignados</th><th>Limitación</th></tr></thead><tbody>' +
+                 ''.join(provider_rows) + '</tbody></table></div><p>La diversidad se cuenta sobre archivos asignados. Los portales de búsqueda no equivalen a nuevas fuentes incorporadas.</p></details>') if provider_rows else ''
     if audit_path.is_file():
         audit = json.loads(audit_path.read_text(encoding='utf-8'))
         cost = ('<p>Costo estimado de adquisición documental: <strong>USD ' +
@@ -41,7 +51,7 @@ def pool_panel(media_dir: Path) -> str:
                 esc(audit['unpriced_attempts']) + '. No es una factura; excluye planificación editorial y otras ejecuciones.</p>')
     return ('<aside id="media-pool-status"><h3>Biblioteca multimedia</h3>' + origin_label + '<p>Modo: ' + esc(summary['mode']) +
             '. Transcripción desactivada. Las coincidencias se respaldan en catálogo; no constituyen una verificación humana universal.</p><p>' + metrics +
-            '</p>' + cost + '<p>Fuentes: ' + esc(', '.join(summary.get('providers', [])) or 'Sin resultados') +
+            '</p>' + cost + providers + '<p>Fuentes asignadas: ' + esc(', '.join(summary.get('selected_providers', summary.get('providers', []))) or 'Sin resultados') +
             '. Espacios sin resolver: ' + esc(', '.join(map(str, unresolved)) or 'Ninguno') +
             '.</p><details><summary>Procedencia de los archivos asignados</summary><ul>' + ''.join(rows) +
             '</ul></details><p>Las alternativas permanecen en el artefacto del run; no se precargan en esta página.</p></aside>')

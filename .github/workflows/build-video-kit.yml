@@ -31,7 +31,7 @@ on:
       media_retrieval_mode:
         description: "Documentary media pool: off, isolated comparison, or assignment of verified assets"
         required: true
-        default: "off"
+        default: "integrated"
         type: choice
         options: ["off", shadow, integrated]
       promote_approved:
@@ -276,7 +276,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
-          MEDIA_RETRIEVAL_MODE: ${{ inputs.media_retrieval_mode || 'off' }}
+          MEDIA_RETRIEVAL_MODE: ${{ inputs.media_retrieval_mode || vars.MEDIA_RETRIEVAL_MODE || 'integrated' }}
           MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
@@ -545,7 +545,7 @@ jobs:
           AGENT_RETRY_BASE_SECONDS: ${{ vars.AGENT_RETRY_BASE_SECONDS || '2.0' }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}
-          MEDIA_RETRIEVAL_MODE: ${{ inputs.media_retrieval_mode || 'off' }}
+          MEDIA_RETRIEVAL_MODE: ${{ inputs.media_retrieval_mode || vars.MEDIA_RETRIEVAL_MODE || 'integrated' }}
           MEDIA_MIN_RELEVANCE_SCORE: ${{ vars.MEDIA_MIN_RELEVANCE_SCORE || '0.22' }}
           NEWS_SOURCE_MODE: ${{ steps.runtime_options.outputs.source_mode }}
           NEWS_LOOKBACK_DAYS: ${{ steps.runtime_options.outputs.lookback_days }}

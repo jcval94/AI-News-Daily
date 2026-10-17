@@ -12,11 +12,12 @@ from pydantic import ValidationError
 
 from pipeline.licenses import assess_license
 from pipeline.media_pool import Pool, normalized_license
+from pipeline.media_origin import source_origin
 from pipeline.media_sources.image_search import model, sources, run as images
 from pipeline.media_sources.video_search import run as videos
 
 IMAGE_SOURCES = ['commons', 'wikipedia', 'openverse', 'met', 'artic', 'loc']
-VIDEO_SOURCES = ['archive', 'commons', 'peertube', 'nasa', 'youtube']
+VIDEO_SOURCES = ['archive', 'commons', 'peertube', 'nasa']
 
 
 def need_description(need: dict) -> str:
@@ -24,6 +25,8 @@ def need_description(need: dict) -> str:
     description = ' | '.join(str(need[k]) for k in ('subject', 'period', 'geography') if need.get(k))
     if need.get('visual_queries'):
         description += ' | Requested depiction: ' + '; '.join(need['visual_queries'][:4])
+    if need.get("exact_required") is False:
+        description += " | Illustrative context only; never evidence of the narrated person or event."
     return description
 
 
@@ -73,6 +76,9 @@ class Acquisition:
         p = self.pool.payload
         return len(p['assets']) < p['budget']['assets'] and sum(a['size_bytes'] for a in p['assets']) < p['budget']['bytes']
 
+    def provider_count(self, provider):
+        return sum(source_origin(a)['provider'] == provider for a in self.pool.payload['assets'])
+
     def images(self, need):
         description = need_description(need)
         try:
@@ -87,13 +93,18 @@ class Acquisition:
             entity = {'status': 'unavailable', 'reason': sources.safe_error(error)}
         candidates, discovery = sources.discover(plan, [s for s in IMAGE_SOURCES if s not in self.blocked_images], entity)
         self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'image', 'plan': plan.model_dump(), 'queries': plan.queries, 'discovery': discovery})
+        self.blocked_images.update(d['source'] for d in discovery if d.get('status') == 'blocked')
         decisions, _ = model.assess(plan, candidates, entity, self.request, editorial_pack=True)
         self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'image_assessment', 'decisions': decisions})
         self.pool.save()
         accepted = 0
         # Larger catalogued variants first. Every physical file is decoded again before assignment.
-        candidates.sort(key=lambda c: (c.get('width') or 0) * (c.get('height') or 0), reverse=True)
-        for item in candidates:
+        while candidates:
+            candidates.sort(key=lambda c: (self.provider_count(source_origin({'provider': c['source']})['provider']),
+                                            -(c.get('width') or 0) * (c.get('height') or 0)))
+            item = candidates.pop(0)
+            if item['source'] in self.blocked_images:
+                continue
             if not self.room() or accepted >= self.pool.payload['budget']['images_per_need']:
                 break
             decision = decisions.get(item['key'])
@@ -105,9 +116,11 @@ class Acquisition:
             reason = images.metadata_gate(plan, item, decision)
             rights = assess_license(item['source'], normalized_license(item['metadata'].get('license', '')))
             if reason or not rights['allowed']:
-                self.error(need, reason or rights['reason'], candidate=item['key'], stage='eligibility')
+                self.error(need, reason or rights['reason'], candidate=item['key'], provider=item['source'], stage='eligibility')
                 continue
             relation = 'context' if re.search(r'\b(memorial|commemorat\w*|cenotaph)\b', item['metadata'].get('title', ''), re.I) and not re.search(r'\b(memorial|commemorat\w*|cenotaph)\b', description, re.I) else 'exact'
+            if not need.get('exact_required', True):
+                relation = 'context'
             try:
                 with tempfile.TemporaryDirectory(dir=self.pool.root, prefix='image-') as temp:
                     path = Path(temp) / 'source.img'
@@ -123,26 +136,40 @@ class Acquisition:
                         'value': item['metadata'][decision['evidence_field']], 'assessment': decision, 'visual': visual})
                     accepted += 1
             except Exception as error:
-                self.error(need, error, candidate=item['key'], stage='download')
+                self.error(need, error, candidate=item['key'], provider=item['source'], stage='download')
                 if isinstance(error, sources.Blocked):
                     self.blocked_images.add(item['source'])
 
     def videos(self, need):
         plan, _ = videos.make_plan(need_description(need), 'semantic', self.request)
         candidates, discovery = videos.discover(plan, [s for s in VIDEO_SOURCES if s not in self.blocked_videos])
+        self.blocked_videos.update({d['source']: d.get('error', 'blocked') for d in discovery if d.get('status') == 'blocked'})
         videos.assess_candidates(plan, candidates, self.request)
         self.pool.payload['diagnostics'].append({'need_id': need['need_id'], 'kind': 'video', 'plan': plan.model_dump(), 'discovery': discovery})
         attempted, successful = set(), []
         for _ in range(6):
             if not self.room() or len(successful) >= self.pool.payload['budget']['videos_per_need']:
                 break
+            candidates.sort(key=lambda c: self.provider_count(c['source']))
             item = videos.next_candidate(candidates, attempted, successful, plan.events, self.blocked_videos)
             if item is None:
                 break
             attempted.add(item['key'])
+            # Discovery indices can omit rights. Resolve authoritative metadata before bytes.
+            try:
+                if item['source'] == 'peertube':
+                    from pipeline.media_sources.video_search.alternatives import peertube_rights
+                    item['license'] = peertube_rights(item)
+                elif item['source'] == 'archive' and item.get('license', 'unknown') == 'unknown':
+                    from pipeline.media_sources.video_search.providers import archive_media
+                    _, authoritative = archive_media(item)
+                    item['license'] = authoritative['license']
+            except Exception as error:
+                self.error(need, error, provider=item['source'], candidate=item['key'], stage='rights')
+                continue
             # YouTube discovery omits rights; its downloaded metadata must supply them.
             if item['source'] != 'youtube' and not assess_license(item['source'], normalized_license(item.get('license', '')))['allowed']:
-                self.error(need, 'Missing or incompatible catalogue license', candidate=item['key'], stage='eligibility')
+                self.error(need, 'Missing or incompatible catalogue license', candidate=item['key'], provider=item['source'], stage='eligibility')
                 continue
             try:
                 with tempfile.TemporaryDirectory(dir=self.pool.root, prefix='video-') as temp:
@@ -153,12 +180,15 @@ class Acquisition:
                     row = {**item, **result}
                     evidence = {'field': 'title_description', 'quote': item['title'],
                                 'value': item['title'] + '\n' + item['description'],
-                                'assessment': {k: item.get(k) for k in ('relevant', 'events', 'relevance_reason')}}
+                                'assessment': {k: item.get(k) for k in ('relevant', 'events', 'relevance_reason')},
+                                'rights_evidence': item.get('rights_evidence', {})}
                     relation = 'context' if re.search(r'\b(memorial|commemorat\w*|cenotaph)\b', item['title'], re.I) and not re.search(r'\b(memorial|commemorat\w*|cenotaph)\b', need['subject'], re.I) else 'exact'
+                    if not need.get('exact_required', True):
+                        relation = 'context'
                     self.pool.add(output / result['path'], row, need, relation=relation, evidence=evidence)
                     successful.append(item)
             except Exception as error:
-                self.error(need, error, candidate=item['key'], stage='download')
+                self.error(need, error, candidate=item['key'], provider=item['source'], stage='download')
                 if isinstance(error, videos.ProviderBlocked):
                     self.blocked_videos[item['source']] = videos.safe_error(error)
 
@@ -169,7 +199,7 @@ class Acquisition:
             if not need['grounded']:
                 self.error(need, 'Subject not present in approved narration; acquisition refused')
                 continue
-            for kind in (self.images, self.videos):
+            for kind in (self.videos, self.images):
                 if not self.room() or self.model_disabled:
                     break
                 try:

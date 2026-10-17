@@ -22,10 +22,13 @@ from pipeline.licenses import assess_license
 from pipeline.media_dedup import _normalized_source_url
 from pipeline.media_inspection import inspect_media
 from pipeline.schema_validation import validate_payload
+from pipeline.media_origin import source_origin
 
 CRITICAL_ROLES = {"evidence", "historical_mirror"}
 DEFAULT_BUDGET = {"assets": 24, "bytes": 128 * 1024 * 1024, "seconds": 600,
-                  "model_calls": 32, "needs": 8, "images_per_need": 4, "videos_per_need": 1}
+                  "model_calls": 32, "needs": 8, "images_per_need": 2, "videos_per_need": 2}
+ACQUISITION_VERSION = 2
+TARGET_PROVIDERS = ("pexels", "commons", "archive", "peertube", "nasa")
 
 
 def sha256(path: Path) -> str:
@@ -102,14 +105,15 @@ def group_needs(segments: list[dict], script: str) -> list[dict]:
     grouped: dict[str, dict] = {}
     folded_script = ' '.join(script.casefold().split())
     for segment in segments:
-        if segment.get('mode') != 'media' or not is_specific(segment):
+        if segment.get('mode') != 'media':
             continue
+        exact = is_specific(segment)
         subject = str(segment.get('retrieval_subject') or segment.get('visual_query') or '').strip()
         # Every subject must be a grounded mention, including legacy critical queries.
-        grounded = bool(subject) and ' '.join(subject.casefold().split()) in folded_script
+        grounded = bool(subject) and (not exact or ' '.join(subject.casefold().split()) in folded_script)
         identity = {"subject": subject, "period": str(segment.get('retrieval_period', '')),
                     "geography": str(segment.get('retrieval_geography', '')),
-                    "role": segment.get('visual_role') or 'context', "exact_required": True,
+                    "role": segment.get('visual_role') or 'context', "exact_required": exact,
                     "license_policy": 'edited_public_video'}
         key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:20]
         need = grouped.setdefault(key, {**identity, 'need_id': key, 'slots': [], 'grounded': grounded})
@@ -117,7 +121,7 @@ def group_needs(segments: list[dict], script: str) -> list[dict]:
         query = str(segment.get('visual_query') or '').strip()
         if query and query not in need.setdefault('visual_queries', []):
             need['visual_queries'].append(query)
-    return list(grouped.values())
+    return sorted(grouped.values(), key=lambda n: not n['exact_required'])
 
 
 def source_identity(provider: str, provider_id: str, url: str) -> str:
@@ -142,6 +146,7 @@ class Pool:
         self.root, self.payload = root, payload
         self.used: set[str] = set()
         self.used_hashes: set[str] = set()
+        self.provider_use: dict[str, int] = {}
 
     def save(self) -> None:
         from pipeline.media_cost_audit import cost_audit
@@ -152,7 +157,8 @@ class Pool:
             'context': sum(a['relation'] == 'context' for a in assets),
             'low_resolution': sum(min(a['width'], a['height']) < 720 for a in assets),
             'bytes': sum(a['size_bytes'] for a in assets),
-            'providers': sorted({a['provider'] for a in assets}),
+            'providers': sorted({source_origin(a)['provider'] for a in assets}),
+            'purpose': self.payload.get('purpose', 'production'),
             'cost_usd': None, 'cost_note': 'See recorded model token usage; no inferred dollar total',
         }
         validate_payload(self.payload, 'asset_pool.schema.json')
@@ -192,7 +198,7 @@ class Pool:
                  'source_url': row['url'], 'title': title, 'creator': row.get('metadata', {}).get('creator') or row.get('creator', ''),
                  'license': license_name, 'license_evidence': str(raw_license),
                  'license_valid': rights['allowed'], 'requires_attribution': rights['requires_attribution'],
-                 'eligible': rights['allowed'] and relation == 'exact', 'relation': relation,
+                 'eligible': rights['allowed'] and (relation == 'exact' or not need.get('exact_required', True)), 'relation': relation,
                  'asset_type': media['kind'], 'width': width, 'height': height,
                  'source_width': width, 'source_height': height,
                  'remote_dimensions': {k: row.get(k) for k in ('width', 'height')},
@@ -214,10 +220,12 @@ class Pool:
         if not need or not need['grounded']:
             return None
         candidates = [a for a in self.payload['assets'] if a['need_id'] == need['need_id'] and a['eligible']
-                      and a['relation'] == 'exact' and a['source_asset_id'] not in self.used
+                      and (a['relation'] == 'exact' or not is_specific(segment)) and a['source_asset_id'] not in self.used
                       and a['rendition_id'] not in self.used_hashes]
         # Highest physical quality within an identity, then video preference across distinct identities.
         ranked = sorted(candidates, key=lambda a: (
+            min(a['width'], a['height']) >= 360,
+            -self.provider_use.get(source_origin(a)['provider'], 0),
             a['asset_type'] == segment.get('preferred_asset_type'),
             a['width'] * a['height'], a['size_bytes']), reverse=True)
         for asset in ranked:
@@ -234,6 +242,8 @@ class Pool:
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, destination)
                 record = {**asset, 'shot_number': int(segment['slot_number']), 'file': relative,
+                          'visual_role': segment.get('visual_role', 'context'),
+                          'retrieval_subject': segment.get('retrieval_subject', ''),
                           'visual_query': segment.get('visual_query', ''), 'errors': [],
                           'license_valid': rights['allowed'], 'requires_attribution': rights['requires_attribution']}
                 record['media_provenance'] = provenance(asset)
@@ -247,6 +257,8 @@ class Pool:
                 record['media_provenance']['sidecar_paths'] = selected_sidecars
                 self.used.add(asset['source_asset_id'])
                 self.used_hashes.add(asset['rendition_id'])
+                provider = source_origin(asset)['provider']
+                self.provider_use[provider] = self.provider_use.get(provider, 0) + 1
                 self.save()
                 return record
             except (ValueError, OSError) as error:
@@ -267,18 +279,23 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
     if mode == 'off':
         return None
     state = json.loads((episode_dir / 'run_state.json').read_text(encoding='utf-8'))
-    if state.get('status') != 'approved':
+    purpose = os.environ.get('MEDIA_ACQUISITION_PURPOSE', 'production')
+    if purpose not in {'production', 'review'}:
+        raise ValueError('Unknown media acquisition purpose')
+    if purpose == 'production' and state.get('status') != 'approved':
         raise ValueError('Media acquisition requires an approved episode')
     run_root = episode_dir.resolve().parents[1]
     # Prevent canonical mutation even when manually invoked with an opt-in flag.
     if '.pipeline-runs' not in run_root.parts or not output_dir.resolve().is_relative_to(run_root):
         raise ValueError('Opt-in media retrieval requires an isolated .pipeline-runs run')
+    if purpose == 'review' and not run_root.name.startswith('review-'):
+        raise ValueError('Review acquisition requires a dedicated review- run')
     root = run_root / 'media-pool'
     inputs = fingerprint(episode_dir)
     path = root / 'asset_pool.json'
     if path.exists():
         payload = json.loads(path.read_text(encoding='utf-8'))
-        if payload['inputs'] != inputs:
+        if payload['inputs'] != inputs or payload.get('purpose', 'production') != purpose:
             raise ValueError('Stale media pool: approved inputs or editing style changed; use a new run')
         pool = Pool(root, payload)
         if offline:
@@ -288,6 +305,7 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
         return pool
     budget = dict(DEFAULT_BUDGET)
     pool = Pool(root, {'schema_version': 1, 'inputs': inputs, 'mode': mode, 'budget': budget,
+                'purpose': purpose, 'acquisition_version': ACQUISITION_VERSION,
                 'needs': group_needs(segments, (episode_dir / 'script.txt').read_text(encoding='utf-8')),
                 'segments': segments, 'assets': [], 'diagnostics': [], 'model_calls': 0,
                 'model_usage': [], 'summary': {}, 'transcript_mode': 'off'})
@@ -298,7 +316,7 @@ def prepare_pool(episode_dir: Path, output_dir: Path, segments: list[dict], *, o
         return pool
     started = time.monotonic()
     with subprocess.Popen([sys.executable, '-m', 'pipeline.media_acquisition', '--pool', str(root)],
-                          start_new_session=True, env={**os.environ, "MEDIA_POOL_WORKER": "1"}) as worker:
+                          start_new_session=True, env={**os.environ, "MEDIA_POOL_WORKER": "1", "MEDIA_HTTP_CACHE_DIR": str(root / "http-cache")}) as worker:
         try:
             worker.wait(timeout=budget['seconds'])
         except subprocess.TimeoutExpired:
@@ -336,11 +354,50 @@ def finish_assignment(pool: Pool | None, manifest: list[dict], segments: list[di
                 by_slot[number] = {**segment, 'file': '', 'retrieval_status': 'unresolved'}
     pool.save()
     summary = {**pool.payload['summary'], 'mode': retrieval_mode(),
+               'acquisition_version': pool.payload.get('acquisition_version', 1),
                'baseline_selected': len(manifest), 'model_calls': pool.payload['model_calls'],
                'elapsed_seconds': pool.payload.get('elapsed_seconds'),
                'unresolved_slots': [n for n, s in by_slot.items() if s.get('retrieval_status') == 'unresolved'],
                'diagnostics': pool.payload['diagnostics']}
+    summary['provider_report'] = provider_report(pool.payload, manifest)
+    summary['selected_providers'] = sorted({source_origin(a)['provider'] for a in manifest if source_origin(a)['kind'] == 'external'})
+    summary['target_providers'] = list(TARGET_PROVIDERS)
+    summary['diversity_target_met'] = len(summary['selected_providers']) >= 5
     write_json(output_dir / 'media_pool_summary.json', summary)
     from pipeline.media_cost_audit import cost_audit
     write_json(output_dir / 'media_cost_audit.json', cost_audit(pool.payload))
     return sorted(by_slot.values(), key=lambda s: s['slot_number'])
+
+def provider_report(payload: dict, manifest: list[dict]) -> dict:
+    """Count stages separately; discovered candidates never count as assigned assets."""
+    report = {}
+    def row(provider):
+        return report.setdefault(provider, {'found': 0, 'downloaded': 0, 'eligible': 0,
+                                            'assigned': 0, 'reasons': []})
+    for provider in TARGET_PROVIDERS:
+        row(provider)
+    for diagnostic in payload.get('diagnostics', []):
+        for attempt in diagnostic.get('discovery', []):
+            entry = row(source_origin({'provider': attempt.get('source')})['provider'])
+            entry['found'] += int(attempt.get('count', 0))
+            if attempt.get('error'):
+                entry['reasons'].append(attempt['error'])
+        if diagnostic.get('provider') and diagnostic.get('error'):
+            row(diagnostic['provider'])['reasons'].append(diagnostic['error'])
+    for asset in payload.get('assets', []):
+        entry = row(source_origin(asset)['provider'])
+        entry['downloaded'] += 1
+        entry['eligible'] += int(asset['eligible'])
+    for asset in manifest:
+        entry = row(source_origin(asset)['provider'])
+        entry['assigned'] += 1
+        if not asset.get('media_provenance'):
+            entry['downloaded'] += 1
+            entry['eligible'] += int(bool(asset.get('license_valid')))
+    for entry in report.values():
+        entry['reasons'] = list(dict.fromkeys(entry['reasons']))[:8]
+        if not entry['assigned']:
+            entry['unselected_reason'] = ('eligible_candidates_not_selected' if entry['eligible'] else
+                                         'provider_error_or_rejection' if entry['reasons'] else
+                                         'no_eligible_result_within_budget')
+    return report
