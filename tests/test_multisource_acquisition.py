@@ -124,3 +124,65 @@ class MultisourceTests(unittest.TestCase):
             self.assertTrue(restore_cache(cache, root/'restored', 'key', 1))
             (bundle/'a.png').write_bytes(b'corrupt')
             self.assertFalse(restore_cache(cache, root/'bad', 'key', 1))
+
+    def test_discovery_portal_is_not_an_additional_origin(self):
+        origin = source_origin({'provider':'openverse','origin_provider':'commons'})
+        self.assertEqual(origin['provider'], 'commons')
+        self.assertEqual(origin['discovery_provider'], 'openverse')
+
+    def test_review_only_tree_never_becomes_production_journey(self):
+        from pipeline.run_journey import _discover_production_media
+        from pipeline.media_pool import write_json
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            episode = root/'scripts/2026-10-16'
+            episode.mkdir(parents=True)
+            media = root/'multimedia/2026-10-16'
+            write_json(media/'manifest.json', [])
+            write_json(media/'review_media_origin.json', {'kind':'review_only'})
+            self.assertIsNone(_discover_production_media(episode))
+
+    def test_fallback_acquisition_only_after_successful_but_invalid_plan(self):
+        from pipeline.review_media_acquire import acquire_after_plan_failure
+        from pipeline.media_pool import write_json
+        with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ, {'OPENAI_API_KEY':'test-not-a-key'}):
+            root = Path(temporary); media = root/'media'
+            write_json(media/'planning_trace.json', {'agent_trace':[{'status':'success'}]})
+            self.assertTrue(acquire_after_plan_failure(root, media, 1))
+            self.assertFalse(acquire_after_plan_failure(root, media, 124))
+            write_json(media/'planning_trace.json', {'agent_trace':[{'status':'error','permanent_quota_error':True}]})
+            self.assertFalse(acquire_after_plan_failure(root, media, 1))
+            write_json(media/'planning_trace.json', {'agent_trace':[{'status':'success'}]})
+            write_json(root/'media-pool/asset_pool.json', {})
+            self.assertFalse(acquire_after_plan_failure(root, media, 1))
+
+    def test_nasa_catalogue_ids_with_spaces_have_safe_local_identity(self):
+        from pipeline.media_sources.video_search.alternatives import nasa_search, direct_media
+        ident = 'Apollo 11 landing / camera 1'
+        response = {'collection':{'items':[{'data':[{'nasa_id':ident,'center':'JSC','title':'Apollo landing'}]}]}}
+        with patch('pipeline.media_sources.video_search.alternatives.api', return_value=response):
+            rows = nasa_search('Apollo', 5)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['nasa_id'], ident)
+        self.assertRegex(rows[0]['id'], r'^nasa-[a-f0-9]+$')
+        self.assertIn('%2F', rows[0]['url'])
+        with patch('pipeline.media_sources.video_search.alternatives.api', return_value={'collection':{'items':[{'href':'https://images-assets.nasa.gov/a.mp4'}]}}) as api:
+            direct_media(rows[0])
+        self.assertTrue(api.call_args.args[0].endswith('Apollo%2011%20landing%20%2F%20camera%201'))
+
+    def test_model_bundle_persists_measured_timeline_reach(self):
+        import asyncio
+        from unittest.mock import AsyncMock
+        from pipeline import review_media as media
+        from pipeline.media_pool import write_json
+        cue = {'slot_number':1,'start_seconds':90,'end_seconds':100,'mode':'media','visual_query':'laboratory','visual_role':'context'}
+        record = {'shot_number':1,'file':'a.jpg','provider':'commons','license':'CC BY 4.0','asset_type':'image'}
+        with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ, {'MEDIA_RETRIEVAL_MODE':'off'}):
+            root = Path(temporary); episode = root/'scripts'; episode.mkdir()
+            (episode/'script.txt').write_text('science '*200)
+            write_json(episode/'episode_plan.json', {'beats':[{'beat_id':'b1'}]})
+            write_json(episode/'script_sections.json', {'sections':[{'section_key':'beat:b1','word_count':200}]})
+            with patch.object(media, 'run_agent', new=AsyncMock(return_value={'multimedia_plan':{'segments':[cue]}})), patch.object(media, 'timeline_duration_seconds', return_value=100), patch.object(media, 'normalize_multimedia_plan', return_value=([cue],[])), patch.object(media, 'enforce_opening_dense_media', side_effect=lambda p,*a,**k:p), patch.object(media, 'enforce_synthesis_media', side_effect=lambda p,*a:p), patch.object(media, 'download_shot_asset', return_value=record), patch.object(media, 'deduplicate_materialized_media', side_effect=lambda m,s,**k:(m,s,[])), patch.object(media, 'write_edit_manifest'), patch.object(media, 'write_credits'), patch.object(media, 'create_zip'):
+                asyncio.run(media.build_review_media(episode_dir=episode, output_dir=root/'media', max_media_downloads=1, zip_path=root/'media.zip'))
+            plan = json.loads((root/'media/plan.json').read_text())
+            self.assertEqual(plan['coverage_ratio'], 1.)

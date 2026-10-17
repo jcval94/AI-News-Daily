@@ -208,6 +208,14 @@ class Pool:
                  'catalogue_evidence': evidence, 'sidecar_paths': sidecars,
                  'limitation': 'Catalogue-backed identity; not proof of every narrated claim. Original audio is not assigned.',
                  'transcript_mode': 'off'}
+        if provider == 'openverse':
+            host = (urlsplit(row.get('image_url', '')).hostname or '').lower()
+            for domain, origin in {'wikimedia.org': 'commons', 'staticflickr.com': 'flickr',
+                                   'metmuseum.org': 'met', 'loc.gov': 'loc'}.items():
+                if host == domain or host.endswith('.' + domain):
+                    asset['origin_provider'] = origin
+                    asset['origin_url'] = row.get('foreign_landing_url') or row.get('image_url')
+                    break
         provenance(asset)
         # Keep all unique renditions in the pool. Ranking occurs at assignment, not arrival.
         if not any(a['need_id'] == asset['need_id'] and a['rendition_id'] == digest for a in self.payload['assets']):
@@ -360,7 +368,8 @@ def finish_assignment(pool: Pool | None, manifest: list[dict], segments: list[di
                'unresolved_slots': [n for n, s in by_slot.items() if s.get('retrieval_status') == 'unresolved'],
                'diagnostics': pool.payload['diagnostics']}
     summary['provider_report'] = provider_report(pool.payload, manifest)
-    summary['selected_providers'] = sorted({source_origin(a)['provider'] for a in manifest if source_origin(a)['kind'] == 'external'})
+    summary['selected_providers'] = sorted({source_origin(a)['provider'] for a in manifest
+                                          if source_origin(a)['kind'] == 'external' and source_origin(a)['provider'] != 'openverse'})
     summary['target_providers'] = list(TARGET_PROVIDERS)
     summary['diversity_target_met'] = len(summary['selected_providers']) >= 5
     write_json(output_dir / 'media_pool_summary.json', summary)
@@ -383,7 +392,7 @@ def provider_report(payload: dict, manifest: list[dict]) -> dict:
             if attempt.get('error'):
                 entry['reasons'].append(attempt['error'])
         if diagnostic.get('provider') and diagnostic.get('error'):
-            row(diagnostic['provider'])['reasons'].append(diagnostic['error'])
+            row(source_origin({'provider': diagnostic['provider']})['provider'])['reasons'].append(diagnostic['error'])
     for asset in payload.get('assets', []):
         entry = row(source_origin(asset)['provider'])
         entry['downloaded'] += 1

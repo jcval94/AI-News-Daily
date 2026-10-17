@@ -64,7 +64,7 @@ def controls():
     root.mkdir(parents=True, exist_ok=False)
     results = []
     for provider, query in [('pexels','laboratory'), ('commons','Halifax Explosion'),
-                            ('archive','Apollo'), ('peertube','Emu War'), ('nasa','Apollo')]:
+                            ('archive','Apollo'), ('peertube','Blender conference'), ('nasa','Apollo 11 landing')]:
         row = {'provider':provider,'query':query,'success':False,'attempts':[],
                'purpose':'Connectivity, rights and decoder control; not an exact benchmark match'}
         try:
@@ -89,7 +89,8 @@ def controls():
                         output.mkdir(exist_ok=True)
                         result = run.download(item, output, 'clip', 15, transcript_mode='off')
                         attempt.update(result)
-                        row['success'] = inspect_media(output/result['path'])['ok']
+                        row['success'] = (inspect_media(output/result['path'])['ok'] and
+                                          assess_license(provider, normalized_license(result['metadata'].get('license', '')))['allowed'])
                     except Exception as error:
                         attempt['error'] = providers.safe_error(error)
                     row['attempts'].append(attempt)
@@ -99,15 +100,43 @@ def controls():
             row['error'] = providers.safe_error(error)
         results.append(row)
         write_json(root/'validation-result.json', {'controls':results,'promoted':False,'transcript':'off'})
-        print(provider, row['success'], flush=True)
+        print(json.dumps(row, ensure_ascii=False), flush=True)
+
+
+def summarize(root):
+    from collections import Counter
+    from pipeline.media_origin import source_origin
+    rows = []
+    for manifest_path in root.rglob('manifest.json'):
+        if 'review-media' not in manifest_path.parts:
+            continue
+        media = manifest_path.parent
+        manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+        summary_path = media/'media_pool_summary.json'
+        summary = json.loads(summary_path.read_text(encoding='utf-8')) if summary_path.exists() else {}
+        report = {'episode':media.name, 'assets':len(manifest),
+                  'providers':dict(Counter(source_origin(a)['provider'] for a in manifest)),
+                  'assigned_from_pool':sum(bool(a.get('media_provenance')) for a in manifest),
+                  'pool_summary':{k:v for k,v in summary.items() if k != 'diagnostics'}}
+        report['acquisition_errors'] = [d for d in summary.get('diagnostics', []) if d.get('error')][:30]
+        rows.append(report)
+    write_json(root/'multisource-summary.json', rows)
+    print(json.dumps(rows, ensure_ascii=False, indent=2))
+    return rows
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--case')
     parser.add_argument('--controls', action='store_true')
+    parser.add_argument('--summarize', type=Path)
     args = parser.parse_args()
-    controls() if args.controls else benchmark(args.case)
+    if args.summarize:
+        summarize(args.summarize)
+    elif args.controls:
+        controls()
+    else:
+        benchmark(args.case)
 
 
 if __name__ == '__main__':

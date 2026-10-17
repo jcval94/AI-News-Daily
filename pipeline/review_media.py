@@ -630,6 +630,7 @@ async def build_review_media(
     if not opening_videos:
         warnings.append("Cold open contains no actual video assets; image fallbacks were used")
 
+    coverage_ratio = 0.0
     if manifest:
         max_media_second = max(float(item.get("end_seconds", 0) or 0) for item in manifest)
         coverage_ratio = max_media_second / max(timeline_duration, 1)
@@ -649,6 +650,7 @@ async def build_review_media(
             "script_date": target_date,
             "timeline_duration_seconds": timeline_duration,
             "candidate_slot_count": len(timeline_slots),
+            "coverage_ratio": round(coverage_ratio, 4),
             "max_media_downloads": max_media_downloads,
             "opening_dense_media_seconds": OPENING_DENSE_MEDIA_SECONDS,
             "opening_min_media_slots": OPENING_MIN_MEDIA_SLOTS,

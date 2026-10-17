@@ -8,7 +8,7 @@ PROVIDERS = {
     "pexels": "Pexels", "commons": "Wikimedia Commons", "wikipedia": "Wikipedia",
     "archive": "Internet Archive", "youtube": "YouTube", "peertube": "PeerTube",
     "nasa": "NASA", "openverse": "Openverse", "met": "The Met",
-    "aic": "Art Institute of Chicago", "loc": "Library of Congress",
+    "aic": "Art Institute of Chicago", "loc": "Library of Congress", "flickr": "Flickr",
     "generated_fallback": "Respaldo local", "unknown": "Sin fuente registrada",
 }
 ALIASES = {"wikimedia": "commons", "wikimedia_commons": "commons", "archive.org": "archive", "artic": "aic", "wikipedia": "commons"}
@@ -21,6 +21,8 @@ def source_origin(asset: dict[str, Any]) -> dict[str, Any]:
     """Derive from raw metadata, not a previous label; missing evidence stays unknown."""
     raw = str(asset.get("provider") or "").strip().lower()
     provider = ALIASES.get(raw, raw)
+    if raw == 'openverse' and asset.get('origin_provider') in PROVIDERS:
+        provider = asset['origin_provider']
     basis = "provider" if raw else "unknown"
     if not provider:
         try:
@@ -34,7 +36,7 @@ def source_origin(asset: dict[str, Any]) -> dict[str, Any]:
     provenance = asset.get("media_provenance")
     acquisition = "documentary_pool" if isinstance(provenance, dict) and provenance.get("source_asset_id") else "local_fallback" if kind == "local" else "standard" if provider in {"pexels", "commons"} else "unknown"
     return {"schema_version": 1, "provider": provider, "label": PROVIDERS.get(provider, provider),
-            "kind": kind, "acquisition": acquisition, "basis": basis}
+            "kind": kind, "acquisition": acquisition, "basis": basis, "discovery_provider": raw}
 
 
 def label_manifest(manifest: list[dict[str, Any]]) -> list[dict[str, Any]]:

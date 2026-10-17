@@ -155,7 +155,8 @@ def _director_fields(*, slot: dict[str, Any], beat: dict[str, Any] | None = None
         }
 
     role_by_kind = {
-        "evidence": "evidence",
+        # A deterministic domain query is illustration, never exact evidence of a study.
+        "evidence": "explanation",
         "reveal": "explanation",
         "turn": "explanation",
         "complication": "contrast",

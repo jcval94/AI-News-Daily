@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 import json
+import hashlib
 from urllib.parse import urlencode, urlsplit, quote
 
 from pipeline.media_sources import public_media
@@ -119,10 +120,14 @@ def nasa_search(query, limit):
     for item in data.get("collection", {}).get("items", []):
         d = (item.get("data") or [{}])[0]
         ident = d.get("nasa_id", "")
-        if not re.fullmatch(r"[A-Za-z0-9_.-]{1,160}", ident):
+        if not isinstance(ident, str) or not ident or len(ident) > 512 or any(ord(c) < 32 for c in ident):
             continue
-        rows.append(row("nasa", ident, "https://images.nasa.gov/details/" + quote(ident), d.get("title"),
+        # NASA catalogue IDs legitimately contain spaces. Keep them out of local paths;
+        # the raw ID is encoded only into the fixed official API URL.
+        local_id = ident if re.fullmatch(r"[A-Za-z0-9_.-]{1,160}", ident) else 'nasa-' + hashlib.sha256(ident.encode()).hexdigest()[:32]
+        rows.append(row("nasa", local_id, "https://images.nasa.gov/details/" + quote(ident, safe=''), d.get("title"),
                         d.get("description"), d.get("center"), nasa_rights(d), query,
+                        nasa_id=ident,
                         rights_evidence={"policy_url": NASA_POLICY_URL, "catalogue": d}))
     return rows
 
@@ -162,7 +167,7 @@ def direct_media(item):
         metadata["source_duration_seconds"] = info.get("duration")
         return chosen["src"], metadata, ("upload.wikimedia.org",)
     if source == "nasa":
-        d = api("https://images-api.nasa.gov/asset/" + quote(item["id"]))
+        d = api("https://images-api.nasa.gov/asset/" + quote(item.get("nasa_id") or item["id"], safe=''))
         files = [x["href"] for x in d.get("collection", {}).get("items", [])
                  if str(x.get("href", "")).lower().endswith(".mp4")]
         if not files:

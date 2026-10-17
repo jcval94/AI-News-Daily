@@ -51,6 +51,17 @@ def restore_cache(cache: Path, destination: Path, key: str, maximum: int) -> boo
         return False
 
 
+def acquire_after_plan_failure(root: Path, media: Path, status: int) -> bool:
+    """Invalid planning is recoverable; quota/timeouts never trigger new model work."""
+    if status == 124 or not os.environ.get('OPENAI_API_KEY') or (root/'media-pool/asset_pool.json').exists():
+        return False
+    try:
+        trace = json.loads((media/'planning_trace.json').read_text(encoding='utf-8'))['agent_trace']
+        return bool(trace and trace[-1].get('status') == 'success')
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+
+
 def acquire(episode: Path, output: Path, bundle: Path, maximum: int, *, refresh=False):
     from pipeline.media_pool import retrieval_mode
     from pipeline.review_media import create_zip
@@ -82,10 +93,18 @@ def acquire(episode: Path, output: Path, bundle: Path, maximum: int, *, refresh=
             except subprocess.TimeoutExpired:
                 status = 124
         if status:
+            live_fallback = acquire_after_plan_failure(root, media, status)
+            # Preserve costs and rejected proposals even when replacing the incomplete bundle.
+            planning = root/'planning-diagnostics'
+            planning.mkdir(exist_ok=True)
+            for file in media.glob('planning_*.json'):
+                shutil.copyfile(file, planning/file.name)
             shutil.rmtree(media, ignore_errors=True)
-            # Consume a partial pool without repeating model calls after a model/timeout failure.
+            # Reuse an existing pool; acquire once only after successful-but-invalid planning.
             subprocess.run([sys.executable, '-m', 'pipeline.review_media_offline_dense', *command],
-                           env={**env, 'MEDIA_LIVE_ACQUISITION': '0'}, check=True, timeout=900)
+                           env={**env, 'MEDIA_LIVE_ACQUISITION': '1' if live_fallback else '0'}, check=True, timeout=900)
+            for file in planning.glob('*.json'):
+                shutil.copyfile(file, media/file.name)
         shutil.copytree(media, output)
     write_json(output / 'review_media_origin.json', {
         'schema_version': 1, 'kind': 'review_only', 'episode_date': episode.name,

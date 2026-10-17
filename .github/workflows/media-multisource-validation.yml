@@ -8,7 +8,23 @@ permissions:
   contents: read
   actions: read
 jobs:
+  scope:
+    runs-on: ubuntu-latest
+    outputs:
+      phase: ${{ steps.scope.outputs.phase }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: scope
+        run: |
+          python - <<'PYTHON'
+          import json, os
+          phase = json.load(open('.github/media-multisource-request.json')).get('phase', 'all')
+          assert phase in {'all', 'focused', 'audit', 'benchmark'}
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('phase=' + phase + '\n')
+          PYTHON
   contracts:
+    needs: scope
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -23,7 +39,8 @@ jobs:
           python -m unittest discover -s tests -v
 
   sources:
-    needs: contracts
+    needs: [scope, contracts]
+    if: needs.scope.outputs.phase == 'all' || needs.scope.outputs.phase == 'focused'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -38,6 +55,16 @@ jobs:
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: python -m pipeline.media_multisource_validation --controls
+      - name: Preserve compact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-${{ github.job }}-${{ strategy.job-index }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/**/*.json
+            review-media/**/*.json
+          include-hidden-files: true
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -47,7 +74,8 @@ jobs:
           retention-days: 7
 
   benchmark:
-    needs: contracts
+    needs: [scope, contracts]
+    if: needs.scope.outputs.phase == 'all' || needs.scope.outputs.phase == 'benchmark'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -69,6 +97,16 @@ jobs:
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
           CASE_ID: ${{ matrix.case }}
         run: python -m pipeline.media_multisource_validation --case "$CASE_ID"
+      - name: Preserve compact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-${{ github.job }}-${{ strategy.job-index }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/**/*.json
+            review-media/**/*.json
+          include-hidden-files: true
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -78,7 +116,8 @@ jobs:
           retention-days: 7
 
   handoff:
-    needs: contracts
+    needs: [scope, contracts]
+    if: needs.scope.outputs.phase == 'all' || needs.scope.outputs.phase == 'focused'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -93,6 +132,16 @@ jobs:
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: python -m pipeline.media_integration_staging --catalogue-replay
+      - name: Preserve compact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-${{ github.job }}-${{ strategy.job-index }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/**/*.json
+            review-media/**/*.json
+          include-hidden-files: true
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -102,7 +151,8 @@ jobs:
           retention-days: 7
 
   review-replay:
-    needs: contracts
+    needs: [scope, contracts]
+    if: needs.scope.outputs.phase == 'all' || needs.scope.outputs.phase == 'focused'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
@@ -145,8 +195,19 @@ jobs:
           python -m pipeline.review_media_acquire --episode-dir "$EPISODE_DIR" --output-dir "review-media/$TARGET_DATE" --zip-out "review-media/review.zip" --max-media-downloads 54 --refresh
           python -m pipeline.editorial_regression --episode-dir "$EPISODE_DIR" --output editorial-regression.json
           python -m pipeline.review_hub --episode-dir "$EPISODE_DIR" --media-dir "review-media/$TARGET_DATE" --media-zip review-media/review.zip --regression editorial-regression.json --cases evals/editorial/cases.json --output-dir review-site --run-id "$GITHUB_RUN_ID"
+          python -m pipeline.media_multisource_validation --summarize .
           python -m pipeline.media_density_gate --media-dir "review-media/$TARGET_DATE" --budget 54 --output review-media/density-result.json
           python -c 'from pathlib import Path; s=Path("review-site/index.html").read_text(); assert "Resultado por fuente" in s; assert "Reconstrucción para revisión" in s'
+      - name: Preserve compact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-${{ github.job }}-${{ strategy.job-index }}-${{ github.run_id }}
+          path: |
+            .pipeline-runs/**/*.json
+            review-media/**/*.json
+          include-hidden-files: true
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -157,3 +218,29 @@ jobs:
             review-site/
           include-hidden-files: true
           retention-days: 7
+
+  audit-prior:
+    needs: [scope, contracts]
+    if: needs.scope.outputs.phase == 'audit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -c requirements.lock .
+      - name: Read prior evidence without reacquisition
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 38994667486 --pattern 'multisource-review-*' --dir prior-evidence
+          python -m pipeline.media_multisource_validation --summarize prior-evidence
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prior-compact-evidence
+          path: |
+            prior-evidence/**/*.json
+          include-hidden-files: true
+          retention-days: 30
