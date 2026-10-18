@@ -35,7 +35,20 @@ class PagesUXTests(unittest.TestCase):
             _patch_episode_site(root)
             self.assertEqual(first, (root / 'index.html').read_bytes())
             self.assertEqual((root / 'run_state.json').read_text(), '{"publishable":false}')
-            self.assertIn(b'data-review-ux="1"', first)
+            self.assertIn(b'data-review-ux="2"', first)
+
+    def test_previous_presentation_version_is_replaced_without_duplicate_runtime(self):
+        document = ('<html><head><style data-review-ux="1">old-css</style></head><body>'
+                    '<div id="scriptText">Original</div><script type="application/json">{"publishable":false}</script>'
+                    '<script>(()=>{const $ = selector => document.querySelector(selector);'
+                    'const contexts={overview:[]};})();</script></body></html>')
+        upgraded = enhance_review(document)
+        self.assertNotIn('old-css', upgraded)
+        self.assertEqual(upgraded.count('const contexts={overview:'), 1)
+        self.assertEqual(upgraded.count('data-review-ux-runtime="2"'), 1)
+        self.assertIn('<div id="scriptText">Original</div>', upgraded)
+        self.assertIn('{"publishable":false}', upgraded)
+        self.assertEqual(enhance_review(upgraded), upgraded)
 
     def test_dashboard_upgrade_is_idempotent_and_keeps_evidence(self):
         document = '<html><head></head><body><table><td>Sin medir</td></table></body></html>'

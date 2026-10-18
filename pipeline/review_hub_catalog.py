@@ -54,7 +54,7 @@ function updateCatalog(value){
   document.getElementById('mobileEpisodeField').hidden=!episode;
   context.hidden=!episode;
   if(episode){
-    contextTitle.textContent=`${episode.status==='Aprobado'?'Episodio aprobado':'Intento de producción'} · ${episode.date} · ${episode.status}`;
+    contextTitle.textContent=episode.status==='Aprobado'?`Episodio aprobado · ${episode.date}`:`Intento de producción · ${episode.date} · ${episode.status}`;
     const latest=document.getElementById('latestAttemptLink');
     latest.textContent=`Último intento · ${newest.date}`;latest.href=`?episode=${encodeURIComponent(newest.id)}`;
     const canonical=document.getElementById('latestApprovedLink');canonical.hidden=!approved;
