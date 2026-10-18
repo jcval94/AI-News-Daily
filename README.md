@@ -499,3 +499,7 @@ A real model/media E2E is available through **Actions → Build AI News Video Ki
 ## Roadmap
 
 The detailed next steps live in [`ROADMAP.md`](ROADMAP.md). The current architecture intentionally favors evidence quality, bounded agent behavior, observability, and deterministic production control over adding more frameworks or agents for appearance alone.
+
+## Revisión UX de GitHub Pages
+
+[Crítica por pestaña, decisiones y evidencia visual](docs/ux-review/README.md).

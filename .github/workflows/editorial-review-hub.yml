@@ -39,6 +39,7 @@ on:
       - "news/**"
       - "pipeline/review_source.py"
       - "pipeline/pages_history.py"
+      - "pipeline/pages_ux.py"
       - "pipeline/review_hub*.py"
       - "pipeline/review_video_preview.py"
       - "pipeline/review_media_pool.py"

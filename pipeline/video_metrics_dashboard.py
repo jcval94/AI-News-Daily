@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from string import Template
 from typing import Any
+from pipeline.pages_ux import enhance_page
 
 
 SCORE_SPECS = (
@@ -444,7 +445,7 @@ if(input) input.addEventListener('input',()=>{
 </script>
 </body>
 </html>""")
-    return template.substitute(
+    return enhance_page(template.substitute(
         summary=summary,
         episode_count=str(len(rows)),
         coverage=str(coverage),
@@ -454,7 +455,7 @@ if(input) input.addEventListener('input',()=>{
         avg_cost=_fmt_cost(avg_cost),
         chart=chart,
         table=table,
-    )
+    ), "metrics")
 
 
 def build_dashboard(*, episodes_root: Path, output_dir: Path) -> Path:
