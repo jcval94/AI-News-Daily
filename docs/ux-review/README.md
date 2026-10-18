@@ -85,3 +85,7 @@ Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan 
 La versión UX v2 se comprobó en [Pages](https://github.com/jcval94/AI-News-Daily/actions/runs/39101615661): filtros locales + video sin coincidencias y reset visible recuperan los 53 recursos; proveedores tienen 44 px de alto; lectura enfocada oculta también el aviso de audio ausente sin modificar el guion. Proceso conserva las 36 etapas, con 14 filas observadas y 22 agrupadas. Los cinco beats muestran nombres narrativos legibles y conservan sus IDs.
 
 Se detectó además caché antigua dentro del iframe: el servidor ya servía UX v2, mientras el catálogo podía reutilizar UX v1. La carga de episodios incorpora ahora la versión del despliegue. Una prueba del runtime real comprueba que la URL incluye esa versión y que seleccionar otra vez el mismo episodio no recarga el frame ni interrumpe el borrador.
+
+La carga final del catálogo se comprobó con la versión del despliegue en el `src` del iframe y UX v2 presente en el intento histórico. En el mismo viewport de 1363 × 936, el encabezado de tarea pasó de 339 a 122 px. El guion mantiene su texto original; el botón de reset conserva también el estilo compartido al actualizar HTML histórico.
+
+![Guion: encabezado compacto y lectura enfocada](assets/after-script.jpg)

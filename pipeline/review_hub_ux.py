@@ -150,6 +150,11 @@ const diagnostic=$('#diagnostico details.diagnostic');if(diagnostic)diagnostic.o
 
 
 def enhance_review(document: str) -> str:
+    reset = re.search(r'<button\b[^>]*\bid="media-reset"[^>]*>', document)
+    if reset and 'ux-button' not in reset[0]:
+        tag = reset[0]
+        tag = tag.replace('class="', 'class="ux-button ', 1) if 'class="' in tag else tag.replace('<button', '<button class="ux-button"', 1)
+        document = document[:reset.start()] + tag + document[reset.end():]
     if 'data-review-ux="2"' in document:
         return document
     if 'data-review-ux="1"' in document:
