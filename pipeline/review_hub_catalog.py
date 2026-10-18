@@ -9,6 +9,90 @@ from pathlib import Path
 from typing import Any
 
 
+CATALOG_CSS = r"""
+body .catalog-shell,body .episode-sidebar,body .episode-stage{height:100dvh}
+body .episode-sidebar{--muted:#a3b3c4}
+body .sidebar-head{padding:20px 18px 14px}body .sidebar-head h1{font-size:21px;line-height:1.2}
+body .health-nav-wrap{gap:4px;padding:10px}
+body .repo-health-link{padding:10px 12px;border-radius:9px;min-height:44px;background:transparent;border-color:transparent}
+body .repo-health-link strong{font-size:14px}body .repo-health-link span,body .repo-health-link small{display:none}
+body .episode-search-wrap{border-top:1px solid var(--line);padding:12px}
+body .episode-search{font-size:14px;min-height:44px}
+body .episode-list{padding-top:0}body .episode-item{padding:12px;gap:5px 8px}
+body .episode-item strong{font-size:13px;line-height:1.45}body .episode-item small{font-size:12px}
+body .episode-cost{font-size:11px}body .episode-stage{display:grid;grid-template-rows:auto auto minmax(0,1fr)}
+body .episode-frame{height:100%;min-height:0;grid-row:3}.mobile-switcher{grid-row:1}
+.catalog-context{grid-row:2}
+.catalog-context{padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:#0d1721;font-size:13px;line-height:1.5}
+.catalog-context strong{color:#e8f5ff}.catalog-context a{color:#9ee6ff;text-underline-offset:4px}
+.catalog-context .context-links{display:flex;gap:14px;flex-wrap:wrap}
+.catalog-context[hidden]{display:none}
+.catalog-skip{position:fixed;top:8px;left:8px;z-index:100;transform:translateY(-180%);background:#7dd3fc;color:#09121c;padding:12px;border-radius:8px;font-weight:700}
+.catalog-skip:focus{transform:none}
+:where(a,button,select,input):focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
+@media(max-width:760px){
+  body .episode-stage{grid-template-rows:auto auto minmax(0,1fr)}
+  body .mobile-switcher{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:8px;padding:8px 12px}
+  body .mobile-switcher label{font-size:11px;text-transform:none;letter-spacing:0;color:#b4c7d9}
+  body .mobile-switcher select{font-size:14px;min-height:44px;width:100%;padding:8px;min-width:0}
+  .catalog-context{padding:8px 12px;font-size:12px;gap:4px}
+  .catalog-context .context-links{gap:14px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+"""
+
+CATALOG_JS = r"""
+const globalSelect=document.getElementById('globalViewSelect');
+const context=document.getElementById('catalogContext');
+const contextTitle=document.getElementById('catalogContextTitle');
+const newest=EPISODES[0];
+const approved=EPISODES.find(item=>item.status==='Aprobado');
+const validTabs=new Set(['overview','script','evidence','media','process','budget','technical']);
+function updateCatalog(value){
+  const episode=byId.get(value);
+  globalSelect.value=episode?'__episodes__':value;
+  document.getElementById('mobileEpisodeField').hidden=!episode;
+  context.hidden=!episode;
+  if(episode){
+    contextTitle.textContent=`${episode.status==='Aprobado'?'Episodio aprobado':'Intento de producción'} · ${episode.date} · ${episode.status}`;
+    const latest=document.getElementById('latestAttemptLink');
+    latest.textContent=`Último intento · ${newest.date}`;latest.href=`?episode=${encodeURIComponent(newest.id)}`;
+    const canonical=document.getElementById('latestApprovedLink');canonical.hidden=!approved;
+    if(approved){canonical.textContent=`Último aprobado · ${approved.date}`;canonical.href=`?episode=${encodeURIComponent(approved.id)}`;}
+  }
+  [healthLink,memoryLink,metricsLink,experimentsLink].forEach(link=>link?.setAttribute('aria-current',link.classList.contains('active')?'page':'false'));
+  const url=new URL(location.href);const tab=url.searchParams.get('tab');
+  if(episode&&validTabs.has(tab)){
+    const target=new URL(frame.src);target.hash=tab;frame.src=target.href;
+  }
+}
+globalSelect.addEventListener('change',()=>setSelection(globalSelect.value==='__episodes__'?DEFAULT_EPISODE:globalSelect.value));
+['latestAttemptLink','latestApprovedLink'].forEach(id=>document.getElementById(id).addEventListener('click',event=>{
+  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();const url=new URL(event.currentTarget.href);setSelection(url.searchParams.get('episode'));
+}));
+// Sync the iframe's workspace into the shareable outer URL. Same-origin only.
+frame.addEventListener('load',()=>{
+  try{
+    const child=frame.contentWindow;
+    const sync=()=>{
+      if(new URL(location.href).searchParams.has('view'))return;
+      const tab=child.document.querySelector('[data-tab].active')?.dataset.tab;
+      if(!validTabs.has(tab))return;
+      const url=new URL(location.href);url.searchParams.set('episode',select.value);
+      if(tab==='overview')url.searchParams.delete('tab');else url.searchParams.set('tab',tab);
+      history.replaceState(null,'',url);
+    };
+    child.document.addEventListener('click',()=>queueMicrotask(sync));
+    child.document.addEventListener('keydown',()=>queueMicrotask(sync));
+    child.document.addEventListener('input',()=>requestAnimationFrame(sync));
+    sync();
+  }catch(_){/* Standalone navigation remains available if embedding is restricted. */}
+});
+document.getElementById('catalogSkip').addEventListener('click',()=>frame.focus());
+"""
+
+
 RUN_RE = re.compile(r"run-(\d+)")
 STATUS_LABELS = {
     "SCRIPT_APPROVED": "Aprobado",
@@ -202,7 +286,7 @@ def catalog_document(
         current_id = str(episodes[0]["id"])
     current = next(item for item in episodes if str(item["id"]) == current_id)
     site_version = (site_version or _site_version()).strip() or "local"
-    payload = json.dumps(episodes, ensure_ascii=False, separators=(",", ":"))
+    payload = json.dumps(episodes, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     items = _episode_items(episodes, current_id)
     options = _select_options(episodes, current_id)
     frame_src = html.escape(str(current["href"]), quote=True)
@@ -230,19 +314,22 @@ body{{overflow:hidden}}.catalog-shell{{display:grid;grid-template-columns:var(--
 .mobile-switcher{{display:none;padding:10px 12px;border-bottom:1px solid var(--line);background:#0d151f}}.mobile-switcher label{{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}}.mobile-switcher select{{width:100%;padding:9px 10px;background:#0a1119;color:var(--text);border:1px solid var(--line);border-radius:10px}}
 .empty-filter{{display:none;padding:16px;color:var(--muted);font-size:12px}}.empty-filter.show{{display:block}}
 @media(max-width:760px){{body{{overflow:hidden}}.catalog-shell{{display:block;height:100vh}}.episode-sidebar{{display:none}}.episode-stage{{height:100vh;display:grid;grid-template-rows:auto 1fr}}.mobile-switcher{{display:block}}.episode-frame{{height:100%;min-height:0}}}}
+{CATALOG_CSS}
 </style>
 </head>
 <body>
+<a id="catalogSkip" class="catalog-skip" href="#episodeFrame">Saltar al contenido</a>
 <div class="catalog-shell">
   <aside class="episode-sidebar" aria-label="Selector de episodios">
-    <div class="sidebar-head"><div class="brand">AI News Daily</div><h1>Episodios</h1><p>Selecciona un episodio y conserva el mismo Review Hub.</p></div>
-    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Narrative Memory</strong><small>casos · mecanismos · uso · cooldown</small></a><a id="metricsLink" class="repo-health-link" href="?view=metrics"><span>Performance</span><strong>Histórico de métricas</strong><small>Editorial · Attention · Voice · SEO</small></a><a id="experimentsLink" class="repo-health-link" href="?view=experiments"><span>Laboratorio</span><strong>Experimentos</strong><small>historias · guiones · gates</small></a></div>
+    <div class="sidebar-head"><div class="brand">AI News Daily</div><h1>Revisión editorial</h1><p>Guiones, evidencia y producción.</p></div>
+    <div class="health-nav-wrap"><a id="repoHealthLink" class="repo-health-link" href="?view=health"><span>Observabilidad</span><strong>Salud del repo</strong><small>CI · fuentes · producción · Pages</small></a><a id="memoryLink" class="repo-health-link" href="?view=memory"><span>Editorial memory</span><strong>Memoria editorial</strong><small>casos · mecanismos · uso · cooldown</small></a><a id="metricsLink" class="repo-health-link" href="?view=metrics"><span>Performance</span><strong>Métricas</strong><small>Editorial · Attention · Voice · SEO</small></a><a id="experimentsLink" class="repo-health-link" href="?view=experiments"><span>Laboratorio</span><strong>Experimentos</strong><small>historias · guiones · gates</small></a></div>
     <div class="episode-search-wrap"><input id="episodeSearch" class="episode-search" type="search" placeholder="Buscar episodio…" aria-label="Buscar episodio"></div>
     <nav id="episodeList" class="episode-list" aria-label="Episodios disponibles">{items}<div id="emptyFilter" class="empty-filter">No hay episodios que coincidan.</div></nav>
-    <div class="sidebar-foot"><span id="episodeCount">{len(episodes)} episodio{'s' if len(episodes) != 1 else ''}</span> · artifacts disponibles</div>
+    <div class="sidebar-foot"><span id="episodeCount" role="status">{len(episodes)} episodio{'s' if len(episodes) != 1 else ''}</span> · costos en USD</div>
   </aside>
   <main class="episode-stage">
-    <div class="mobile-switcher"><label for="episodeSelect">Vista</label><select id="episodeSelect"><option value="__health__">Salud del repo</option><option value="__memory__">Narrative Memory</option><option value="__metrics__">Histórico de métricas</option><option value="__experiments__">Experimentos</option>{options}</select></div>
+    <div class="mobile-switcher"><div><label for="globalViewSelect">Sección</label><select id="globalViewSelect"><option value="__episodes__">Episodios</option><option value="__health__">Salud del repo</option><option value="__memory__">Memoria editorial</option><option value="__metrics__">Métricas</option><option value="__experiments__">Experimentos</option></select></div><div id="mobileEpisodeField"><label for="episodeSelect">Episodio o intento</label><select id="episodeSelect">{options}</select></div></div>
+    <div id="catalogContext" class="catalog-context"><strong id="catalogContextTitle">Episodio · {html.escape(current_id)}</strong><div class="context-links"><a id="latestAttemptLink" href="?episode={html.escape(str(episodes[0]['id']), quote=True)}">Último intento</a><a id="latestApprovedLink" href="?episode={html.escape(current_id, quote=True)}">Último aprobado</a></div></div>
     <iframe id="episodeFrame" class="episode-frame" src="{frame_src}" title="{frame_title}" loading="eager"></iframe>
   </main>
 </div>
@@ -378,6 +465,7 @@ function setSelection(value,options={{}}){{
   else if(value==='__metrics__') setMetrics(options);
   else if(value==='__experiments__') setExperiments(options);
   else setEpisode(value,options);
+  updateCatalog(value);
 }}
 links.forEach(link=>link.addEventListener('click',event=>{{event.preventDefault();setSelection(link.dataset.episodeId);}}));
 if(healthLink) healthLink.addEventListener('click',event=>{{event.preventDefault();setSelection('__health__');}});
@@ -395,7 +483,9 @@ if(search) search.addEventListener('input',()=>{{
     if(hit) visible+=1;
   }});
   emptyFilter.classList.toggle('show',visible===0);
+  document.getElementById('episodeCount').textContent=`${{visible}} de ${{links.length}} episodios`;
 }});
+{CATALOG_JS}
 setSelection(selectedFromUrl(),{{push:false}});
 </script>
 </body>

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.review_hub_v3 import parse_args
+from pipeline.review_hub_ux import enhance_review
 from pipeline.review_hub_v14 import build_script_structure_payload
 from pipeline.review_hub_v14 import build_site as _build_site_v14
 
@@ -161,6 +162,7 @@ def build_site(
     )
     document = index_path.read_text(encoding="utf-8")
     document = apply_voice_panel(document, episode_dir=episode_dir)
+    document = enhance_review(document)
     index_path.write_text(document, encoding="utf-8")
     return index_path
 

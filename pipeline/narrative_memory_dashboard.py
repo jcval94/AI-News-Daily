@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 
 from pipeline.narrative_memory import DEFAULT_COOLDOWN_DAYS, load_memory, load_usage_history
 from pipeline.news import parse_news_file
+from pipeline.pages_ux import enhance_page
 
 
 def _esc(value: Any) -> str:
@@ -666,7 +667,7 @@ def memory_document(report: dict[str, Any]) -> str:
         else '<div class="ok-note">Todas las filas leídas cumplen el contrato productivo.</div>'
     )
 
-    return f"""<!doctype html>
+    return enhance_page(f"""<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -754,7 +755,7 @@ button,input{{font:inherit}}button{{cursor:pointer}}main{{max-width:1500px;margi
 <script src="memory.js" defer></script>
 </body>
 </html>
-"""
+""", "memory")
 
 
 def build_dashboard(

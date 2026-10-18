@@ -14,6 +14,7 @@ from zoneinfo import ZoneInfo
 
 from pipeline.source_coverage import evaluate_source_coverage
 from pipeline.source_naming import is_supported_source, source_date
+from pipeline.pages_ux import enhance_page
 
 
 DATE_DIR_RE = re.compile(r"^20\d{2}-\d{2}-\d{2}$")
@@ -951,7 +952,7 @@ def health_document(report: dict[str, Any]) -> str:
     open_prs = metrics.get("open_pr_count")
     pages_count = metrics.get("pages_episode_count")
 
-    return f"""<!doctype html>
+    return enhance_page(f"""<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -1002,7 +1003,7 @@ input.addEventListener('input',()=>{{
 </script>
 </body>
 </html>
-"""
+""", "health")
 
 
 def write_health_outputs(report: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:

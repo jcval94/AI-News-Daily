@@ -10,6 +10,7 @@ from typing import Any
 
 from pipeline.review_hub_v12 import apply_script_editor
 from pipeline.review_hub_v13 import apply_script_productivity
+from pipeline.pages_ux import enhance_page
 
 
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
@@ -192,7 +193,7 @@ def dashboard_document(experiments: list[dict[str, Any]]) -> str:
         else ""
     )
     empty = "" if experiments else '<p class="empty">Todavía no hay resultados de experimentos publicados.</p>'
-    return f"""<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Experimentos · AI News Daily</title><style>{BASE_CSS}</style></head>
+    return enhance_page(f"""<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Experimentos · AI News Daily</title><style>{BASE_CSS}</style></head>
 <body data-experiments-page="experiments"><main><span class="eyebrow">Laboratorio editorial</span><h1>Experimentos</h1><p class="lead">Resultados reproducibles, gates y mesas de guion editables. Incluye intentos fallidos para que el aprendizaje no desaparezca.</p>
 <section class="toolbar" aria-label="Filtros de experimentos">
   <label class="search-field">Buscar<input id="experimentSearch" type="search" placeholder="Nombre, fecha, ejecución o estado…"></label>
@@ -228,7 +229,7 @@ function refresh(){{
 }}
 [search,nameFilter,statusFilter,sort].forEach(control=>control.addEventListener(control===search?'input':'change',refresh));
 refresh();
-</script></body></html>"""
+</script></body></html>""", "experiments")
 
 
 def _story_map_html(stories: list[dict[str, Any]]) -> str:
