@@ -60,7 +60,7 @@ Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da
 
 ## Validación y límites
 
-Validación determinista: **545 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico y escape de títulos en el catálogo.
+Validación determinista: **546 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico y escape de títulos en el catálogo.
 
 Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan fuera una auditoría con lector de pantalla, pruebas con usuarios y verificación en un Android físico. La vista previa local no está disponible en el navegador de esta sesión; la comprobación visual se realiza sobre el despliegue público tras CI.
 
@@ -79,3 +79,9 @@ Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan 
 | Abrir intento 2026-10-16 | Interfaz histórica actualizada y estado “No aprobado” conservado. |
 
 ![Salud: incidencias primero y filtros recuperables](assets/after-health.jpg)
+
+## Cierre de la verificación final
+
+La versión UX v2 se comprobó en [Pages](https://github.com/jcval94/AI-News-Daily/actions/runs/39101615661): filtros locales + video sin coincidencias y reset visible recuperan los 53 recursos; proveedores tienen 44 px de alto; lectura enfocada oculta también el aviso de audio ausente sin modificar el guion. Proceso conserva las 36 etapas, con 14 filas observadas y 22 agrupadas. Los cinco beats muestran nombres narrativos legibles y conservan sus IDs.
+
+Se detectó además caché antigua dentro del iframe: el servidor ya servía UX v2, mientras el catálogo podía reutilizar UX v1. La carga de episodios incorpora ahora la versión del despliegue. Una prueba del runtime real comprueba que la URL incluye esa versión y que seleccionar otra vez el mismo episodio no recarga el frame ni interrumpe el borrador.

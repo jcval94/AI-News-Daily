@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import json
 from html import escape
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -66,6 +69,33 @@ class PagesUXTests(unittest.TestCase):
         self.assertIn('\\u003c/script>', document)
         self.assertIn('id="globalViewSelect"', document)
         self.assertIn('id="episodeSelect"', document)
+
+    @unittest.skipUnless(shutil.which('node'), 'Node is optional for the browser-runtime contract')
+    def test_episode_cache_version_changes_without_reloading_the_same_selection(self):
+        episodes = [dict(id=day, date=day, title='Caso', status='Aprobado', href=f'episodes/{day}/index.html')
+                    for day in ('2026-10-16', '2026-09-25')]
+        document = catalog_document(episodes, current_id='2026-09-25', site_version='deployment-2')
+        function = document[document.index('function setEpisode('):document.index('function setHealth(')]
+        harness = r"""
+const vm=require('node:vm'),assert=require('node:assert/strict');
+let source='',writes=0;const frame={};
+Object.defineProperty(frame,'src',{get:()=>source,set:value=>{source=value;writes++;}});
+const context={URL,frame,SITE_VERSION:'deployment-2',DEFAULT_EPISODE:'2026-09-25',
+  window:{location:{href:'https://example.test/hub/'}},select:{},document:{},links:[],
+  healthLink:null,memoryLink:null,metricsLink:null,experimentsLink:null,
+  byId:new Map(['2026-10-16','2026-09-25'].map(id=>[id,{id,date:id,href:`episodes/${id}/index.html`}]))};
+vm.createContext(context);
+vm.runInContext(FUNCTION,context);
+context.setEpisode('2026-09-25',{push:false});
+assert.equal(new URL(frame.src).searchParams.get('v'),'deployment-2');
+context.setEpisode('2026-09-25',{push:false});
+assert.equal(writes,1,'Selecting the same episode must preserve its current frame/draft');
+context.setEpisode('2026-10-16',{push:false});
+assert.equal(writes,2);
+assert.equal(new URL(frame.src).pathname,'/hub/episodes/2026-10-16/index.html');
+"""
+        result = subprocess.run(['node', '-e', harness.replace('FUNCTION', json.dumps(function))], capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
 
 if __name__ == '__main__':

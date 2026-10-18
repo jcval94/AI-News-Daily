@@ -366,8 +366,10 @@ function selectedFromUrl(){{
 function setEpisode(id,{{push=true}}={{}}){{
   if(!byId.has(id)) id=DEFAULT_EPISODE;
   const episode=byId.get(id);
-  const expected=new URL(episode.href,window.location.href).href;
-  if(frame.src!==expected) frame.src=episode.href;
+  const source=new URL(episode.href,window.location.href);
+  source.searchParams.set('v',SITE_VERSION);
+  const expected=source.href;
+  if(frame.src!==expected) frame.src=expected;
   frame.title=`Review Hub — ${{episode.date}}`;
   if(select) select.value=id;
   if(healthLink) healthLink.classList.remove('active');
