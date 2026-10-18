@@ -12,10 +12,10 @@ Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da
 | 2. Resumen | El título y el buscador dominan la pantalla; la decisión editorial llega demasiado tarde. | Encabezado más breve, pestañas en español y contexto de tarea. Se mantienen estado, scores y siguiente acción. |
 | 3. Guion | El mapa, siete tarjetas y el bloque de TTS ausente desplazan el texto. Parte del mapa usa letras de 8–10 px. | Lectura enfocada, tarjetas desplegables, audio ausente plegado y tipografía mayor. Se conserva edición local, historial y descarga. |
 | 4. Evidencia → Arquitectura | Buenos contenidos, pero la jerarquía compite con el encabezado repetido. | Más espacio útil; subpestañas con roles, nombres y relaciones accesibles. |
-| 5. Evidencia → Beats | Los identificadores internos obligan a interpretar la estructura. La navegación no explicaba su función. | Contexto de evidencia y controles legibles. Los identificadores originales siguen disponibles para trazabilidad. |
+| 5. Evidencia → Beats | Los identificadores internos obligan a interpretar la estructura. La navegación no explicaba su función. | Contexto de evidencia y controles legibles. Nombres narrativos legibles; los identificadores originales siguen disponibles para trazabilidad. |
 | 6. Evidencia → Fuentes | La tabla permite verificar, pero en pantallas pequeñas necesita un contenedor navegable. | Regiones de tabla enfocables y tarjetas móviles existentes conservadas. |
-| 7. Medios | Dos bloques explicativos y múltiples filtros antes de la primera miniatura. Demasiada preparación para una tarea visual. | Proveedor, origen y tipo visibles; licencia, relación documental y explicaciones bajo desplegables. Procedencia y licencias permanecen intactas. |
-| 8. Proceso | El recorrido observado y un manual de arquitectura de 36 etapas forman una página interminable. | Recorrido real primero, arquitectura completa desplegable; secuencia observada en cuadrícula adaptable. |
+| 7. Medios | Dos bloques explicativos y múltiples filtros antes de la primera miniatura. Demasiada preparación para una tarea visual. | Proveedor, origen y tipo visibles; licencia, relación documental y explicaciones bajo desplegables. Restablecer permanece visible; procedencia y licencias permanecen intactas. |
+| 8. Proceso | El recorrido observado y un manual de arquitectura de 36 etapas forman una página interminable. | Recorrido real primero, arquitectura completa desplegable; secuencia observada en cuadrícula adaptable y etapas no ejecutadas agrupadas. |
 | 9. Costos | Las políticas de seis servicios retrasan la comparación de los pasos que consumen dinero. | Políticas de servicios desplegables; costo conocido y gráfico por paso accesibles antes. Sin recalcular ni completar cifras faltantes. |
 | 10. Diagnóstico → Jueces | Se entra para diagnosticar y se encuentra otro acordeón cerrado. | Evaluación principal abierta; historial y artefactos mantienen navegación independiente. |
 | 11. Diagnóstico → Historial / Artefactos | Tablas útiles pero densas y con poco apoyo para teclado. | Controles mayores, foco visible y regiones desplazables accesibles. |
@@ -60,6 +60,22 @@ Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da
 
 ## Validación y límites
 
-Validación determinista: **544 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico y escape de títulos en el catálogo.
+Validación determinista: **545 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico y escape de títulos en el catálogo.
 
 Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan fuera una auditoría con lector de pantalla, pruebas con usuarios y verificación en un Android físico. La vista previa local no está disponible en el navegador de esta sesión; la comprobación visual se realiza sobre el despliegue público tras CI.
+
+## Comprobación sobre Pages publicado
+
+[Primer despliegue verificado](https://github.com/jcval94/AI-News-Daily/actions/runs/39100944672). La revisión visual detectó un conflicto de contraste heredado en “Editar” y que el reset de medios quedaba dentro del desplegable avanzado; ambos se corrigieron en la pasada final. El encabezado se compacta más al entrar a una tarea distinta de Resumen.
+
+| Recorrido probado en navegador | Resultado observado |
+|---|---|
+| Navegar al Guion | La URL exterior conserva episodio y pestaña. |
+| Lectura enfocada | Oculta el mapa y conserva literalmente el texto del guion. |
+| Salud → Críticas → búsqueda sin coincidencias → Limpiar | 1/22 → estado vacío → 22/22. |
+| Memoria → teclado → Noticias → búsqueda vacía → Limpiar | Pestaña/ARIA sincronizados y noticias recuperadas. |
+| Métricas → desplegar producción | 8 columnas editoriales → 19 columnas completas; búsqueda vacía explícita. |
+| Experimentos → búsqueda vacía → Restablecer | 0 → 18 resultados. |
+| Abrir intento 2026-10-16 | Interfaz histórica actualizada y estado “No aprobado” conservado. |
+
+![Salud: incidencias primero y filtros recuperables](assets/after-health.jpg)

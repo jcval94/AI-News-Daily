@@ -11,6 +11,11 @@ body .hero{padding:20px 22px;border-radius:16px}
 body .hero h1{font-size:clamp(24px,2.6vw,32px);line-height:1.18;max-width:1000px;margin:8px 0}
 body .hero .lede{font-size:15px;line-height:1.55;margin:8px 0 12px;max-width:1000px}
 body .hero .eyebrow{font-size:11px}body .hero-actions .button{min-height:44px;font-size:13px;display:inline-flex;align-items:center;justify-content:center}
+body[data-active-workspace]:not([data-active-workspace="overview"]) .hero{padding:14px 20px}
+body[data-active-workspace]:not([data-active-workspace="overview"]) .hero h1{font-size:23px;line-height:1.25;margin:0 0 8px}
+body[data-active-workspace]:not([data-active-workspace="overview"]) .hero :is(.eyebrow,.lede,.hero-actions){display:none}
+body[data-active-workspace="overview"] .ux-panel-context{display:none}
+body #panel-overview .overview-heading h2{margin:6px 0 0}
 body .workspace-nav{top:0;margin:14px 0 18px;border-radius:12px;padding:6px 8px;box-shadow:0 6px 18px #0004}
 body .hub-tabs{padding:0;gap:4px;scrollbar-width:thin}
 body .hub-tab{font-size:14px;min-height:44px;padding:9px 13px;border-radius:8px}
@@ -30,6 +35,7 @@ body #guion{max-width:900px}body #guion h2{margin:4px 0 16px}
 body #scriptText{font-size:18px;line-height:1.85;padding:28px;max-width:78ch;margin:auto;tab-size:2}
 body .script-editor-toolbar{max-width:900px;padding:12px;gap:10px}
 body .script-editor-toolbar .button{font-size:13px;min-height:44px;padding:8px 12px}
+body .script-editor-toolbar .button.primary{color:#eaf6ff!important;background:#21455f;border-color:#5795b8}
 body .script-editor-status,body .script-editor-hint{font-size:12px;line-height:1.55}
 body .script-live-metrics,body .script-live-metrics span{font-size:13px}
 body .script-structure{max-width:900px}body .script-structure-head h3{font-size:15px}
@@ -48,6 +54,8 @@ body .voice-head h3{font-size:15px}
 body .media-origin-panel{padding:12px;margin:0 0 10px}
 body .media-origin-panel h3{font-size:15px;margin:0 0 8px}
 body .media-origin-chip,body .media-filter{font-size:13px;min-height:44px;padding:8px 11px}
+body .media-origin-options button{font-size:13px;min-height:44px;padding:8px 11px}
+body #panel-media h2{margin:12px 0}
 body .media-origin-note{font-size:12px;line-height:1.5}
 body .media-toolbar{margin:8px 0;gap:8px}
 body .media-card{border-radius:12px}body .media-card :is(p,small){font-size:13px;line-height:1.55}
@@ -64,7 +72,8 @@ body .budget{padding-top:0}body .budget-kpis{gap:8px}
 body .budget-section-heading h3{font-size:20px}body .step-cost-row small{font-size:12px;line-height:1.5}
 body .coverage-item p{font-size:13px}body .budget-kpi>span{font-size:11px}
 .ux-reading button[aria-pressed=true]{border-color:#7dd3fc;background:#21445c}
-body.ux-reading .script-structure,body.ux-reading .voice-panel,body.ux-reading .voice-benchmark,body.ux-reading .ux-script-map{display:none}
+body.ux-reading .script-structure,body.ux-reading .voice-panel,body.ux-reading .voice-benchmark,body.ux-reading .ux-script-map,body.ux-reading .ux-voice{display:none}
+.ux-beat-id{display:block;font-size:12px;color:var(--muted);overflow-wrap:anywhere;margin:6px 0}
 @media(max-width:760px){
   body .wrap{padding:14px 12px 36px}body .hero{padding:16px}
   body .hero h1{font-size:23px;line-height:1.22}body .hero .lede{font-size:14px}
@@ -108,21 +117,31 @@ $$('[data-subtab]').forEach(button=>{
 const map=disclosure([$('.script-structure-cards')],'Ver secciones, historias y noticias');
 if(map)map.classList.add('ux-script-map');
 const voice=$('.voice-panel[data-tts-status="unavailable"]');
-if(voice)disclosure([voice],'Escuchar narración · No disponible');
+if(voice){const audio=disclosure([voice],'Escuchar narración · No disponible');audio?.classList.add('ux-voice');}
 const scriptToolbar=$('.script-editor-toolbar');
 if(scriptToolbar){const tools=document.createElement('div');tools.className='ux-tools ux-reading';scriptToolbar.after(tools);
   const button=toolButton('Lectura enfocada',()=>{const active=document.body.classList.toggle('ux-reading');button.setAttribute('aria-pressed',String(active));button.textContent=active?'Mostrar mapa y audio':'Lectura enfocada';});button.setAttribute('aria-pressed','false');tools.append(button);
 }
 // Sources and type stay visible; legal/documentary refinements are optional.
+const mediaReset=$('#media-reset');if(mediaReset&&$('.media-toolbar'))$('.media-toolbar').append(mediaReset);
 disclosure([$('.media-facets')],'Licencia y relación documental');
 const pool=$('[data-media-pool-status]')||$('#media-pool-status');
-if(pool)disclosure([pool],'Detalle de adquisición multimedia');
-const intro=$('.media-origin-panel p:not([role="status"])');if(intro)disclosure([intro],'Cómo interpretar la procedencia');
+const intro=$('.media-origin-panel p:not([role="status"])');
+disclosure([pool,intro],'Adquisición y procedencia');
 const mediaHeading=$('#multimedia h2');if(mediaHeading)mediaHeading.textContent='Recursos del episodio';
+const beatLabels={scene:'Escena',reveal:'Revelación',complication:'Complicación',turn:'Giro',human_stakes:'Impacto humano',synthesis:'Síntesis',opening:'Introducción',reflection:'Reflexión',ending:'Cierre'};
+$$('#beats .beat').forEach(beat=>{
+  const heading=beat.querySelector('h3'),meta=beat.querySelector('p.muted');if(!heading||!meta)return;
+  const kind=meta.textContent.split(' · ')[0].trim(),label=beatLabels[kind];if(!label)return;
+  const id=document.createElement('code');id.className='ux-beat-id';id.textContent=heading.textContent;
+  heading.textContent=label;heading.after(id);meta.textContent=meta.textContent.replace(kind,label);
+});
 // Keep the observed run first and the complete architecture one click away.
 const toc=$('.e2e-toc');
 if(toc){const nodes=[];let node=toc;while(node){nodes.push(node);node=node.nextElementSibling;}disclosure(nodes,'Consultar arquitectura completa del sistema');}
 $$('.e2e-toc a').forEach(link=>link.addEventListener('click',()=>link.closest('details').open=true));
+const stageList=$('.run-stage-list');
+if(stageList){const inactive=[...stageList.querySelectorAll('.run-stage-card')].filter(card=>card.querySelector('.badge.neutral'));if(inactive.length){const box=disclosure(inactive,`${inactive.length} etapas no ejecutadas o sin observación`);stageList.append(box);}}
 // Spend by step precedes provider policy. No cost values are recomputed.
 const services=$('.service-grid');
 if(services){const heading=services.previousElementSibling;disclosure([heading?.classList.contains('budget-section-heading')?heading:null,services],'Servicios y políticas de costo');}
@@ -131,18 +150,26 @@ const diagnostic=$('#diagnostico details.diagnostic');if(diagnostic)diagnostic.o
 
 
 def enhance_review(document: str) -> str:
-    if 'data-review-ux="1"' in document:
+    if 'data-review-ux="2"' in document:
         return document
+    if 'data-review-ux="1"' in document:
+        # Recovered snapshots contain the old source HTML, not its mutated DOM.
+        # Replace the old enhancement instead of stacking two runtimes.
+        document = re.sub(r'<style data-review-ux="1">.*?</style>', '', document, count=1, flags=re.S)
+        for match in reversed(list(re.finditer(r'<script\b[^>]*>.*?</script>', document, re.S))):
+            if 'const contexts={overview:' in match[0] and 'const $ = selector' in match[0]:
+                document = document[:match.start()] + document[match.end():]
+                break
     labels = {"overview": "Resumen", "script": "Guion", "evidence": "Evidencia", "media": "Medios", "process": "Proceso", "budget": "Costos", "technical": "Diagnóstico"}
     for key, label in labels.items():
         document = re.sub(r'(<button\b[^>]*\bid="tab-' + key + r'"[^>]*>)[^<]*(</button>)', lambda match: match[1] + label + match[2], document, count=1)
     # Do not replace content inside the script or source evidence.
     document = document.replace('vuelve a Technical solo si necesitas', 'abre Diagnóstico si necesitas', 1)
-    style = '<style data-review-ux="1">' + COMMON_CSS + REVIEW_CSS + '</style>'
+    style = '<style data-review-ux="2">' + COMMON_CSS + REVIEW_CSS + '</style>'
     if '</head>' in document:
         document = document.replace('</head>', style + '</head>', 1)
     elif '<body>' in document:
         document = document.replace('<body>', '<body>' + style, 1)
     else:
         return document
-    return document.replace('</body>', '<script>(()=>{' + HELPERS_JS + REVIEW_JS + '})();</script></body>', 1)
+    return document.replace('</body>', '<script data-review-ux-runtime="2">(()=>{' + HELPERS_JS + REVIEW_JS + '})();</script></body>', 1)
