@@ -6,9 +6,9 @@ Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da
 
 ## Lista de tareas UX
 
-Actualizada: **2026-10-19**. Esta es la cola de Pages; las prioridades de producción y aceptación en la estación Windows siguen en [ROADMAP.md](../../ROADMAP.md). Una tarea se cierra con evidencia, no por tener CSS escrito.
+Actualizada: **2026-10-19 · 11 tareas cerradas / 3 pendientes**. Esta es la cola de Pages; las prioridades de producción y aceptación en la estación Windows siguen en [ROADMAP.md](../../ROADMAP.md). Una tarea se cierra con evidencia, no por tener CSS escrito.
 
-- [x] **UX-01 · P0 · Publicación confiable:** CI y Pages aprobados; versión del despliegue en cada iframe de episodio; interfaz histórica actualizada. Pasada actual: [Pages 39199481443](https://github.com/jcval94/AI-News-Daily/actions/runs/39199481443) y [CI 39199481446](https://github.com/jcval94/AI-News-Daily/actions/runs/39199481446), sobre `af97fe1af67d`.
+- [x] **UX-01 · P0 · Publicación confiable:** CI y Pages aprobados; versión del despliegue en cada iframe de episodio; interfaz histórica actualizada. Cierre actual: [Pages 39200389321](https://github.com/jcval94/AI-News-Daily/actions/runs/39200389321) y [CI 39200389355](https://github.com/jcval94/AI-News-Daily/actions/runs/39200389355), sobre `ebe0daf4b642`.
 - [x] **UX-02 · P1 · Decisión editorial clara:** aprobado canónico e intento reciente diferenciados; fecha, estado y accesos explícitos.
 - [x] **UX-03 · P1 · Lectura del guion:** encabezado compacto, lectura enfocada, mapa y audio ausente plegables; guion original conservado.
 - [x] **UX-04 · P1 · Navegación:** pestañas en español, enlaces compartibles a la pestaña principal, teclado y foco visible; selectores móviles de sección y episodio separados.
@@ -18,7 +18,7 @@ Actualizada: **2026-10-19**. Esta es la cola de Pages; las prioridades de produc
 - [x] **UX-08 · P1 · Memoria:** menos explicación inicial, categorías adicionales plegables y pestañas operables con teclado.
 - [x] **UX-09 · P1 · Métricas y experimentos:** resumen de 8 columnas, 19 bajo demanda; conteos, estados vacíos y recuperación de filtros comprobados.
 - [x] **UX-10 · P1 · Conservar la sesión al volver al mismo episodio:** comprobado en Pages: Guion → lectura enfocada + modo edición → dos clics en «Último aprobado» conserva ambos estados. Evidencia → Atrás restaura Guion con la sesión intacta. Cambiar a otro episodio abre directamente su pestaña y conserva su estado editorial.
-- [ ] **UX-14 · P0 · Historial coherente entre episodios:** se reprodujo un contexto del intento nuevo sobre el guion anterior al pulsar Atrás. Corrección y regresión implementadas; falta aceptación pública. Cierre: Atrás/Adelante deben mantener documento, fecha, estado y URL sincronizados, también al volver de una vista global.
+- [x] **UX-14 · P0 · Historial coherente entre episodios:** Atrás/Adelante comprobados en Pages entre aprobado e intento, y entre intento y Salud. Documento, fecha, estado y URL quedan sincronizados; se conserva el estado editorial original. La selección repetida después de volver sigue conservando lectura enfocada.
 - [ ] **UX-11 · P1 · Aceptación móvil:** probar en un teléfono físico y en anchos de 320, 390 y 768 px. Cierre: todos los selectores y pestañas alcanzables, guion legible, sin desplazamiento horizontal de página; tablas largas con su propio desplazamiento. La altura de los controles se comprobó en escritorio; esto no cierra móvil.
 - [ ] **UX-12 · P1 · Lector de pantalla:** revisar catálogo, entrada/salida del iframe, pestañas y anuncios de filtros con NVDA o VoiceOver. Cierre: nombres, orden de foco y cambios de estado comprensibles sin mirar la pantalla.
 - [ ] **UX-13 · P2 · Prueba con usuarios:** observar a tres editores al encontrar el último intento, leer el guion y verificar una fuente/recurso. Cierre: registrar bloqueos, tiempo y errores antes de priorizar comparación entre episodios u otras funciones.
@@ -79,7 +79,7 @@ Actualizada: **2026-10-19**. Esta es la cola de Pages; las prioridades de produc
 
 ## Validación y límites
 
-Validación determinista: **546 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico y escape de títulos en el catálogo.
+Validación determinista actual: **547 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico, escape de títulos, conservación de sesión e identidad del documento durante el historial del iframe.
 
 Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan fuera una auditoría con lector de pantalla, pruebas con usuarios y verificación en un Android físico. La vista previa local no está disponible en el navegador de esta sesión; la comprobación visual se realiza sobre el despliegue público tras CI.
 
@@ -126,7 +126,7 @@ La corrección resuelve versión y pestaña antes de cargar otro documento. Si e
 | Cancelar edición sin cambiar el texto | Guion original y lectura enfocada conservados. |
 | Abrir el intento del 2026-10-16 desde Guion | Carga directa de Guion; estado «No aprobado» conservado. |
 
-Esta primera pasada se comprobó sobre `af97fe1af67d-run-39199481443`. La ampliación del recorrido detectó UX-14: **10 tareas cerradas y 4 pendientes** hasta completar esa corrección. Las otras tres requieren aceptación móvil, lector de pantalla y prueba con editores.
+Esta primera pasada se comprobó sobre `af97fe1af67d-run-39199481443`. La ampliación del recorrido detectó UX-14 y se cerró en el despliegue siguiente. Permanecen abiertas aceptación móvil, lector de pantalla y prueba con editores.
 
 ![19 · Lectura enfocada conservada tras selección repetida y Atrás](assets/19-after-session.jpg)
 
@@ -137,3 +137,14 @@ En una pestaña nueva: abrir 2026-09-25/Guion → «Último intento» → Atrás
 El catálogo se reconcilia ahora con la ruta del documento realmente cargado cuando cambia el historial del iframe. Actualiza fecha, estado, selección y URL sin volver a cargar ese documento. La regresión cubre episodios, vista global y un `src` antiguo tras Atrás.
 
 ![20 · Incidencia reproducida: contexto de octubre sobre guion de septiembre](assets/20-pending-history.jpg)
+
+**UX-14 cerrada en Pages `ebe0daf4b642-run-39200389321`.** CI y despliegue aprobados; **547 pruebas**. La nueva regresión también detecta el fallo en la implementación anterior.
+
+| Aceptación final en una pestaña nueva | Resultado |
+|---|---|
+| Aprobado 2026-09-25 → intento 2026-10-16 → Atrás | Guion del aprobado, fecha 2026-09-25, estado aprobado y URL del 25 sincronizados. |
+| Adelante | Guion del intento, fecha 2026-10-16, «No aprobado» y URL del 16 sincronizados. |
+| Intento → Salud → Atrás → Adelante | Regresa al intento correcto y vuelve a Salud; contexto y URL corresponden a cada documento. |
+| Volver al aprobado → lectura enfocada → seleccionarlo dos veces | Lectura enfocada conservada y documento correcto. |
+
+![21 · Cierre: contexto y documento coherentes, lectura enfocada conservada](assets/21-after-history.jpg)
