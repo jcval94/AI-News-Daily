@@ -76,23 +76,47 @@ class PagesUXTests(unittest.TestCase):
                     for day in ('2026-10-16', '2026-09-25')]
         document = catalog_document(episodes, current_id='2026-09-25', site_version='deployment-2')
         function = document[document.index('function setEpisode('):document.index('function setHealth(')]
+        function += document[document.index('const globalSelect='):document.index("globalSelect.addEventListener")]
         harness = r"""
 const vm=require('node:vm'),assert=require('node:assert/strict');
-let source='',writes=0;const frame={};
-Object.defineProperty(frame,'src',{get:()=>source,set:value=>{source=value;writes++;}});
+let source='about:blank',writes=0,active='overview';const elements={};
+const frame={contentDocument:{querySelector:selector=>source==='about:blank'?null:selector==='[data-tab].active'
+  ? {dataset:{tab:active}} : {click:()=>{active=selector.match(/data-tab="([^"]+)"/)[1];}}}};
+Object.defineProperty(frame,'src',{get:()=>source,set:value=>{source=value;writes++;active=new URL(value).hash.slice(1)||'overview';}});
 const context={URL,frame,SITE_VERSION:'deployment-2',DEFAULT_EPISODE:'2026-09-25',
-  window:{location:{href:'https://example.test/hub/'}},select:{},document:{},links:[],
+  window:{location:{href:'https://example.test/hub/'}},select:{},
+  document:{getElementById:id=>elements[id]??=( {} )},links:[],
+  EPISODES:['2026-10-16','2026-09-25'].map(id=>({id,date:id,status:'Aprobado'})),
   healthLink:null,memoryLink:null,metricsLink:null,experimentsLink:null,
   byId:new Map(['2026-10-16','2026-09-25'].map(id=>[id,{id,date:id,href:`episodes/${id}/index.html`}]))};
 vm.createContext(context);
 vm.runInContext(FUNCTION,context);
-context.setEpisode('2026-09-25',{push:false});
+context.location=context.window.location;
+const selectEpisode=id=>{context.setEpisode(id,{push:false});context.updateCatalog(id);};
+selectEpisode('2026-09-25');
 assert.equal(new URL(frame.src).searchParams.get('v'),'deployment-2');
-context.setEpisode('2026-09-25',{push:false});
+selectEpisode('2026-09-25');
 assert.equal(writes,1,'Selecting the same episode must preserve its current frame/draft');
-context.setEpisode('2026-10-16',{push:false});
+// The src attribute can differ from the child's active tab after its own navigation.
+active='script';context.window.location.href='https://example.test/hub/?episode=2026-09-25&tab=script';
+selectEpisode('2026-09-25');
+selectEpisode('2026-09-25');
+assert.equal(writes,1,'Repeated selection with an active tab must preserve the loaded document');
+assert.equal(active,'script');
+context.window.location.href='https://example.test/hub/?episode=2026-09-25&tab=evidence';
+selectEpisode('2026-09-25');
+assert.equal(active,'evidence','History must restore the requested tab through the existing runtime');
+assert.equal(writes,1,'Restoring a tab must not reload the frame');
+selectEpisode('2026-10-16');
 assert.equal(writes,2);
 assert.equal(new URL(frame.src).pathname,'/hub/episodes/2026-10-16/index.html');
+assert.equal(new URL(frame.src).hash,'#evidence','A different episode must load directly into the requested tab');
+selectEpisode('2026-10-16');
+assert.equal(writes,2,'A src containing a deep-link hash must also be idempotent');
+context.window.location.href='https://example.test/hub/?tab=invalid';
+selectEpisode('2026-10-16');
+assert.equal(active,'overview','Invalid tab names must fall back to the summary');
+assert.equal(writes,2);
 """
         result = subprocess.run(['node', '-e', harness.replace('FUNCTION', json.dumps(function))], capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
