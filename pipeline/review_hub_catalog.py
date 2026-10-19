@@ -61,10 +61,6 @@ function updateCatalog(value){
     if(approved){canonical.textContent=`Último aprobado · ${approved.date}`;canonical.href=`?episode=${encodeURIComponent(approved.id)}`;}
   }
   [healthLink,memoryLink,metricsLink,experimentsLink].forEach(link=>link?.setAttribute('aria-current',link.classList.contains('active')?'page':'false'));
-  const url=new URL(location.href);const tab=url.searchParams.get('tab');
-  if(episode&&validTabs.has(tab)){
-    const target=new URL(frame.src);target.hash=tab;frame.src=target.href;
-  }
 }
 globalSelect.addEventListener('change',()=>setSelection(globalSelect.value==='__episodes__'?DEFAULT_EPISODE:globalSelect.value));
 ['latestAttemptLink','latestApprovedLink'].forEach(id=>document.getElementById(id).addEventListener('click',event=>{
@@ -368,8 +364,20 @@ function setEpisode(id,{{push=true}}={{}}){{
   const episode=byId.get(id);
   const source=new URL(episode.href,window.location.href);
   source.searchParams.set('v',SITE_VERSION);
+  const tab=new URL(window.location.href).searchParams.get('tab');
+  const requestedTab=validTabs.has(tab)?tab:'overview';
+  if(requestedTab!=='overview') source.hash=requestedTab;
   const expected=source.href;
-  if(frame.src!==expected) frame.src=expected;
+  const currentSource=new URL(frame.src||expected,window.location.href);
+  currentSource.hash=source.hash;
+  let activeTab;
+  try{{activeTab=frame.contentDocument?.querySelector('[data-tab].active');}}catch(_){{}}
+  if(currentSource.href!==expected||!activeTab){{
+    if(frame.src!==expected) frame.src=expected;
+  }}else if(activeTab.dataset.tab!==requestedTab){{
+    // Restore a history/deep-link tab through its existing runtime, keeping drafts.
+    frame.contentDocument.querySelector(`[data-tab="${{requestedTab}}"]`)?.click();
+  }}
   frame.title=`Review Hub — ${{episode.date}}`;
   if(select) select.value=id;
   if(healthLink) healthLink.classList.remove('active');

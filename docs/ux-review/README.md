@@ -4,6 +4,24 @@
 
 Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da7`, publicado por [Review Hub #373](https://github.com/jcval94/AI-News-Daily/actions/runs/39073953118). Capturas de esta auditoría a 1363 × 936. Episodio principal: 2026-09-25; último intento visible: 2026-10-16. No se confunde aprobación con ejecución técnica exitosa.
 
+## Lista de tareas UX
+
+Actualizada: **2026-10-19**. Esta es la cola de Pages; las prioridades de producción y aceptación en la estación Windows siguen en [ROADMAP.md](../../ROADMAP.md). Una tarea se cierra con evidencia, no por tener CSS escrito.
+
+- [x] **UX-01 · P0 · Publicación confiable:** CI y Pages aprobados; versión del despliegue en cada iframe de episodio; interfaz histórica actualizada. Último despliegue previo a esta pasada: [39171927937](https://github.com/jcval94/AI-News-Daily/actions/runs/39171927937), sobre `5f059172f103`.
+- [x] **UX-02 · P1 · Decisión editorial clara:** aprobado canónico e intento reciente diferenciados; fecha, estado y accesos explícitos.
+- [x] **UX-03 · P1 · Lectura del guion:** encabezado compacto, lectura enfocada, mapa y audio ausente plegables; guion original conservado.
+- [x] **UX-04 · P1 · Navegación:** pestañas en español, enlaces compartibles a la pestaña principal, teclado y foco visible; selectores móviles de sección y episodio separados.
+- [x] **UX-05 · P1 · Medios:** filtros combinables, opciones avanzadas plegables y reset visible; estado vacío → 53 recursos comprobado.
+- [x] **UX-06 · P1 · Proceso y costos:** recorrido observado primero, etapas no ejecutadas agrupadas y políticas de servicios plegables; datos originales conservados.
+- [x] **UX-07 · P1 · Salud:** incidencias críticas primero; búsqueda y severidad combinadas; recuperación del estado vacío comprobada.
+- [x] **UX-08 · P1 · Memoria:** menos explicación inicial, categorías adicionales plegables y pestañas operables con teclado.
+- [x] **UX-09 · P1 · Métricas y experimentos:** resumen de 8 columnas, 19 bajo demanda; conteos, estados vacíos y recuperación de filtros comprobados.
+- [ ] **UX-10 · P1 · Conservar la sesión al volver al mismo episodio:** corrección implementada y prueba del runtime ampliada; pendiente verificar en Pages. Cierre: abrir Guion, activar lectura enfocada, pulsar dos veces «Último aprobado» y conservar la lectura; restaurar pestañas sin recargar el documento.
+- [ ] **UX-11 · P1 · Aceptación móvil:** probar en un teléfono físico y en anchos de 320, 390 y 768 px. Cierre: todos los selectores y pestañas alcanzables, guion legible, sin desplazamiento horizontal de página; tablas largas con su propio desplazamiento. La altura de los controles se comprobó en escritorio; esto no cierra móvil.
+- [ ] **UX-12 · P1 · Lector de pantalla:** revisar catálogo, entrada/salida del iframe, pestañas y anuncios de filtros con NVDA o VoiceOver. Cierre: nombres, orden de foco y cambios de estado comprensibles sin mirar la pantalla.
+- [ ] **UX-13 · P2 · Prueba con usuarios:** observar a tres editores al encontrar el último intento, leer el guion y verificar una fuente/recurso. Cierre: registrar bloqueos, tiempo y errores antes de priorizar comparación entre episodios u otras funciones.
+
 ## Crítica por pestaña
 
 | Paso / pantalla | Crítica exigente | Mejora implementada |
@@ -84,8 +102,16 @@ Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan 
 
 La versión UX v2 se comprobó en [Pages](https://github.com/jcval94/AI-News-Daily/actions/runs/39101615661): filtros locales + video sin coincidencias y reset visible recuperan los 53 recursos; proveedores tienen 44 px de alto; lectura enfocada oculta también el aviso de audio ausente sin modificar el guion. Proceso conserva las 36 etapas, con 14 filas observadas y 22 agrupadas. Los cinco beats muestran nombres narrativos legibles y conservan sus IDs.
 
-Se detectó además caché antigua dentro del iframe: el servidor ya servía UX v2, mientras el catálogo podía reutilizar UX v1. La carga de episodios incorpora ahora la versión del despliegue. Una prueba del runtime real comprueba que la URL incluye esa versión y que seleccionar otra vez el mismo episodio no recarga el frame ni interrumpe el borrador.
+Se detectó además caché antigua dentro del iframe: el servidor ya servía UX v2, mientras el catálogo podía reutilizar UX v1. La carga de episodios incorpora ahora la versión del despliegue. La primera prueba comprobaba selección repetida sin fragmento de pestaña; la pasada siguiente amplía esa cobertura al recorrido completo del catálogo.
 
 La carga final del catálogo se comprobó con la versión del despliegue en el `src` del iframe y UX v2 presente en el intento histórico. En el mismo viewport de 1363 × 936, el encabezado de tarea pasó de 339 a 122 px. El guion mantiene su texto original; el botón de reset conserva también el estilo compartido al actualizar HTML histórico.
 
 ![Guion: encabezado compacto y lectura enfocada](assets/after-script.jpg)
+
+## Continuación · 2026-10-19
+
+**Fallo reproducido:** en el despliegue `5f059172f103-run-39171927937`, abrir Guion → activar lectura enfocada → pulsar dos veces «Último aprobado» desactivaba la lectura. La URL seguía indicando Guion, pero el catálogo reasignaba el iframe al quitar y reponer su fragmento. El mismo mecanismo podía interrumpir una edición sin guardar.
+
+La corrección resuelve versión y pestaña antes de cargar otro documento. Si el episodio ya está abierto, reutiliza su navegación existente para restaurar la pestaña y conserva la sesión. La prueba ejecuta las funciones generadas `setEpisode` y `updateCatalog` juntas: repetición, fragmento presente, cambio de pestaña, otro episodio y pestaña inválida.
+
+![18 · Estado de lectura usado para reproducir la recarga](assets/18-before-navigation.jpg)
