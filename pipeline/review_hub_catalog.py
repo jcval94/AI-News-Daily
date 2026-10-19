@@ -72,16 +72,27 @@ frame.addEventListener('load',()=>{
   try{
     const child=frame.contentWindow;
     const sync=()=>{
-      if(new URL(location.href).searchParams.has('view'))return;
+      const loadedPath=child.location.pathname;
+      const episode=EPISODES.find(item=>new URL(item.href,location.href).pathname===loadedPath);
+      const globalViews=[['health','__health__'],['memory','__memory__'],['metrics','__metrics__'],['experiments','__experiments__']];
+      const globalView=globalViews.find(([view])=>new URL(`${view}/index.html`,location.href).pathname===loadedPath);
+      if(!episode&&!globalView)return;
+      const selection=episode?episode.id:globalView[1];
       const tab=child.document.querySelector('[data-tab].active')?.dataset.tab;
-      if(!validTabs.has(tab))return;
-      const url=new URL(location.href);url.searchParams.set('episode',select.value);
-      if(tab==='overview')url.searchParams.delete('tab');else url.searchParams.set('tab',tab);
+      const url=new URL(location.href);
+      url.searchParams.delete('episode');url.searchParams.delete('view');url.searchParams.delete('tab');
+      if(episode){url.searchParams.set('episode',episode.id);if(validTabs.has(tab)&&tab!=='overview')url.searchParams.set('tab',tab);}
+      else url.searchParams.set('view',globalView[0]);
       history.replaceState(null,'',url);
+      // Back/Forward may navigate the iframe independently of the outer history.
+      // Reconcile metadata with the document actually loaded, without loading again.
+      if(select.value!==selection)setSelection(selection,{push:false,navigate:false});
     };
     child.document.addEventListener('click',()=>queueMicrotask(sync));
     child.document.addEventListener('keydown',()=>queueMicrotask(sync));
     child.document.addEventListener('input',()=>requestAnimationFrame(sync));
+    child.addEventListener('pageshow',sync);
+    child.addEventListener('popstate',sync);
     sync();
   }catch(_){/* Standalone navigation remains available if embedding is restricted. */}
 });
@@ -359,7 +370,7 @@ function selectedFromUrl(){{
   const value=params.get('episode');
   return byId.has(value) ? value : DEFAULT_EPISODE;
 }}
-function setEpisode(id,{{push=true}}={{}}){{
+function setEpisode(id,{{push=true,navigate=true}}={{}}){{
   if(!byId.has(id)) id=DEFAULT_EPISODE;
   const episode=byId.get(id);
   const source=new URL(episode.href,window.location.href);
@@ -368,13 +379,16 @@ function setEpisode(id,{{push=true}}={{}}){{
   const requestedTab=validTabs.has(tab)?tab:'overview';
   if(requestedTab!=='overview') source.hash=requestedTab;
   const expected=source.href;
-  const currentSource=new URL(frame.src||expected,window.location.href);
-  currentSource.hash=source.hash;
+  let currentSource=new URL(frame.src||expected,window.location.href);
   let activeTab;
-  try{{activeTab=frame.contentDocument?.querySelector('[data-tab].active');}}catch(_){{}}
-  if(currentSource.href!==expected||!activeTab){{
+  try{{
+    activeTab=frame.contentDocument?.querySelector('[data-tab].active');
+    if(activeTab&&frame.contentWindow?.location?.href)currentSource=new URL(frame.contentWindow.location.href);
+  }}catch(_){{}}
+  currentSource.hash=source.hash;
+  if(navigate&&(currentSource.href!==expected||!activeTab)){{
     if(frame.src!==expected) frame.src=expected;
-  }}else if(activeTab.dataset.tab!==requestedTab){{
+  }}else if(navigate&&activeTab.dataset.tab!==requestedTab){{
     // Restore a history/deep-link tab through its existing runtime, keeping drafts.
     frame.contentDocument.querySelector(`[data-tab="${{requestedTab}}"]`)?.click();
   }}
@@ -397,9 +411,9 @@ function setEpisode(id,{{push=true}}={{}}){{
     history.pushState({{episode:id}},'',url);
   }}
 }}
-function setHealth({{push=true}}={{}}){{
+function setHealth({{push=true,navigate=true}}={{}}){{
   const expected=cacheBustedPath('health/index.html');
-  if(frame.src!==expected) frame.src=expected;
+  if(navigate&&frame.src!==expected) frame.src=expected;
   frame.title='Salud del repositorio';
   if(select) select.value='__health__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
@@ -415,9 +429,9 @@ function setHealth({{push=true}}={{}}){{
     history.pushState({{view:'health'}},'',url);
   }}
 }}
-function setMemory({{push=true}}={{}}){{
+function setMemory({{push=true,navigate=true}}={{}}){{
   const expected=cacheBustedPath('memory/index.html');
-  if(frame.src!==expected) frame.src=expected;
+  if(navigate&&frame.src!==expected) frame.src=expected;
   frame.title='Narrative Memory';
   if(select) select.value='__memory__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
@@ -433,9 +447,9 @@ function setMemory({{push=true}}={{}}){{
     history.pushState({{view:'memory'}},'',url);
   }}
 }}
-function setMetrics({{push=true}}={{}}){{
+function setMetrics({{push=true,navigate=true}}={{}}){{
   const expected=cacheBustedPath('metrics/index.html');
-  if(frame.src!==expected) frame.src=expected;
+  if(navigate&&frame.src!==expected) frame.src=expected;
   frame.title='Histórico de métricas';
   if(select) select.value='__metrics__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});
@@ -451,9 +465,9 @@ function setMetrics({{push=true}}={{}}){{
     history.pushState({{view:'metrics'}},'',url);
   }}
 }}
-function setExperiments({{push=true}}={{}}){{
+function setExperiments({{push=true,navigate=true}}={{}}){{
   const expected=cacheBustedPath('experiments/index.html');
-  if(frame.src!==expected) frame.src=expected;
+  if(navigate&&frame.src!==expected) frame.src=expected;
   frame.title='Experimentos';
   if(select) select.value='__experiments__';
   links.forEach(link=>{{link.classList.remove('active');link.setAttribute('aria-current','false');}});

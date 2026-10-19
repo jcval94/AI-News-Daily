@@ -8,7 +8,7 @@ Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da
 
 Actualizada: **2026-10-19**. Esta es la cola de Pages; las prioridades de producción y aceptación en la estación Windows siguen en [ROADMAP.md](../../ROADMAP.md). Una tarea se cierra con evidencia, no por tener CSS escrito.
 
-- [x] **UX-01 · P0 · Publicación confiable:** CI y Pages aprobados; versión del despliegue en cada iframe de episodio; interfaz histórica actualizada. Último despliegue previo a esta pasada: [39171927937](https://github.com/jcval94/AI-News-Daily/actions/runs/39171927937), sobre `5f059172f103`.
+- [x] **UX-01 · P0 · Publicación confiable:** CI y Pages aprobados; versión del despliegue en cada iframe de episodio; interfaz histórica actualizada. Pasada actual: [Pages 39199481443](https://github.com/jcval94/AI-News-Daily/actions/runs/39199481443) y [CI 39199481446](https://github.com/jcval94/AI-News-Daily/actions/runs/39199481446), sobre `af97fe1af67d`.
 - [x] **UX-02 · P1 · Decisión editorial clara:** aprobado canónico e intento reciente diferenciados; fecha, estado y accesos explícitos.
 - [x] **UX-03 · P1 · Lectura del guion:** encabezado compacto, lectura enfocada, mapa y audio ausente plegables; guion original conservado.
 - [x] **UX-04 · P1 · Navegación:** pestañas en español, enlaces compartibles a la pestaña principal, teclado y foco visible; selectores móviles de sección y episodio separados.
@@ -17,7 +17,8 @@ Actualizada: **2026-10-19**. Esta es la cola de Pages; las prioridades de produc
 - [x] **UX-07 · P1 · Salud:** incidencias críticas primero; búsqueda y severidad combinadas; recuperación del estado vacío comprobada.
 - [x] **UX-08 · P1 · Memoria:** menos explicación inicial, categorías adicionales plegables y pestañas operables con teclado.
 - [x] **UX-09 · P1 · Métricas y experimentos:** resumen de 8 columnas, 19 bajo demanda; conteos, estados vacíos y recuperación de filtros comprobados.
-- [ ] **UX-10 · P1 · Conservar la sesión al volver al mismo episodio:** corrección implementada y prueba del runtime ampliada; pendiente verificar en Pages. Cierre: abrir Guion, activar lectura enfocada, pulsar dos veces «Último aprobado» y conservar la lectura; restaurar pestañas sin recargar el documento.
+- [x] **UX-10 · P1 · Conservar la sesión al volver al mismo episodio:** comprobado en Pages: Guion → lectura enfocada + modo edición → dos clics en «Último aprobado» conserva ambos estados. Evidencia → Atrás restaura Guion con la sesión intacta. Cambiar a otro episodio abre directamente su pestaña y conserva su estado editorial.
+- [ ] **UX-14 · P0 · Historial coherente entre episodios:** se reprodujo un contexto del intento nuevo sobre el guion anterior al pulsar Atrás. Corrección y regresión implementadas; falta aceptación pública. Cierre: Atrás/Adelante deben mantener documento, fecha, estado y URL sincronizados, también al volver de una vista global.
 - [ ] **UX-11 · P1 · Aceptación móvil:** probar en un teléfono físico y en anchos de 320, 390 y 768 px. Cierre: todos los selectores y pestañas alcanzables, guion legible, sin desplazamiento horizontal de página; tablas largas con su propio desplazamiento. La altura de los controles se comprobó en escritorio; esto no cierra móvil.
 - [ ] **UX-12 · P1 · Lector de pantalla:** revisar catálogo, entrada/salida del iframe, pestañas y anuncios de filtros con NVDA o VoiceOver. Cierre: nombres, orden de foco y cambios de estado comprensibles sin mirar la pantalla.
 - [ ] **UX-13 · P2 · Prueba con usuarios:** observar a tres editores al encontrar el último intento, leer el guion y verificar una fuente/recurso. Cierre: registrar bloqueos, tiempo y errores antes de priorizar comparación entre episodios u otras funciones.
@@ -115,3 +116,24 @@ La carga final del catálogo se comprobó con la versión del despliegue en el `
 La corrección resuelve versión y pestaña antes de cargar otro documento. Si el episodio ya está abierto, reutiliza su navegación existente para restaurar la pestaña y conserva la sesión. La prueba ejecuta las funciones generadas `setEpisode` y `updateCatalog` juntas: repetición, fragmento presente, cambio de pestaña, otro episodio y pestaña inválida.
 
 ![18 · Estado de lectura usado para reproducir la recarga](assets/18-before-navigation.jpg)
+
+**Cierre:** [PR #101](https://github.com/jcval94/AI-News-Daily/pull/101) integrada y [Pages publicado](https://github.com/jcval94/AI-News-Daily/actions/runs/39199481443). Compilación, construcción estática, sintaxis JavaScript y **546 pruebas aprobadas**; CI aprobada en Linux y Windows. La prueba ampliada falla con la implementación anterior y pasa con la corrección.
+
+| Aceptación en el navegador público | Resultado |
+|---|---|
+| Guion → lectura enfocada → Editar → «Último aprobado» dos veces | Lectura enfocada activa y `contenteditable="plaintext-only"` conservado. |
+| Evidencia → Atrás, dentro del mismo episodio | URL y pestaña Guion restauradas; lectura y edición conservadas. |
+| Cancelar edición sin cambiar el texto | Guion original y lectura enfocada conservados. |
+| Abrir el intento del 2026-10-16 desde Guion | Carga directa de Guion; estado «No aprobado» conservado. |
+
+Esta primera pasada se comprobó sobre `af97fe1af67d-run-39199481443`. La ampliación del recorrido detectó UX-14: **10 tareas cerradas y 4 pendientes** hasta completar esa corrección. Las otras tres requieren aceptación móvil, lector de pantalla y prueba con editores.
+
+![19 · Lectura enfocada conservada tras selección repetida y Atrás](assets/19-after-session.jpg)
+
+### Ampliación · Atrás entre episodios
+
+En una pestaña nueva: abrir 2026-09-25/Guion → «Último intento» → Atrás. El iframe volvía al guion del 25 de septiembre, pero el catálogo seguía indicando el intento no aprobado del 16 de octubre. La captura muestra ese desacuerdo entre el contexto exterior y el título del documento. Es una incidencia de integridad de la presentación, no un cambio en los estados editoriales originales.
+
+El catálogo se reconcilia ahora con la ruta del documento realmente cargado cuando cambia el historial del iframe. Actualiza fecha, estado, selección y URL sin volver a cargar ese documento. La regresión cubre episodios, vista global y un `src` antiguo tras Atrás.
+
+![20 · Incidencia reproducida: contexto de octubre sobre guion de septiembre](assets/20-pending-history.jpg)

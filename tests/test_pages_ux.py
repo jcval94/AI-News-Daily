@@ -117,8 +117,51 @@ context.window.location.href='https://example.test/hub/?tab=invalid';
 selectEpisode('2026-10-16');
 assert.equal(active,'overview','Invalid tab names must fall back to the summary');
 assert.equal(writes,2);
+active='script';
+context.setEpisode('2026-09-25',{push:false,navigate:false});
+assert.equal(writes,2,'Reconciling the loaded iframe must only update catalog metadata');
+assert.equal(active,'script');
+assert.equal(context.select.value,'2026-09-25');
+frame.contentWindow={location:{href:'https://example.test/hub/episodes/2026-09-25/index.html?v=deployment-2#script'}};
+context.window.location.href='https://example.test/hub/?episode=2026-09-25&tab=script';
+selectEpisode('2026-09-25');
+assert.equal(writes,2,'A stale src attribute after iframe Back must not reload the actual document');
 """
         result = subprocess.run(['node', '-e', harness.replace('FUNCTION', json.dumps(function))], capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    @unittest.skipUnless(shutil.which('node'), 'Node is optional for the browser-runtime contract')
+    def test_frame_history_reconciles_episode_identity_and_global_views(self):
+        episodes = [dict(id=day, date=day, title='Caso', status='Aprobado', href=f'episodes/{day}/index.html')
+                    for day in ('2026-10-16', '2026-09-25')]
+        document = catalog_document(episodes, current_id='2026-09-25')
+        start = document.index('const sync=()=>{')
+        function = document[start:document.index("    child.document.addEventListener", start)]
+        harness = r"""
+const vm=require('node:vm'),assert=require('node:assert/strict');
+let url='https://example.test/hub/?episode=2026-10-16&tab=script',active='script',selection;
+const context={URL,EPISODES:EPISODES,select:{value:'2026-10-16'},
+  validTabs:new Set(['overview','script','evidence']),
+  location:{href:url},history:{replaceState:(_,__,next)=>{url=String(next);context.location.href=url;}},
+  child:{location:{pathname:'/hub/episodes/2026-09-25/index.html'},
+    document:{querySelector:()=>({dataset:{tab:active}})}},
+  setSelection:(id,options)=>{selection={id,options};context.select.value=id;}};
+vm.createContext(context);vm.runInContext(FUNCTION+';this.syncFrame=sync;',context);
+context.syncFrame();
+assert.equal(new URL(url).searchParams.get('episode'),'2026-09-25','Back must label the document actually loaded');
+assert.equal(new URL(url).searchParams.get('tab'),'script');
+assert.equal(selection.id,'2026-09-25');assert.equal(selection.options.navigate,false);assert.equal(selection.options.push,false);
+context.child.location.pathname='/hub/health/index.html';context.syncFrame();
+assert.equal(new URL(url).searchParams.get('view'),'health');
+assert.equal(new URL(url).searchParams.has('episode'),false);assert.equal(new URL(url).searchParams.has('tab'),false);
+assert.equal(selection.id,'__health__');assert.equal(selection.options.navigate,false);
+context.child.location.pathname='/hub/episodes/2026-10-16/index.html';active='overview';context.syncFrame();
+assert.equal(new URL(url).searchParams.get('episode'),'2026-10-16');
+assert.equal(new URL(url).searchParams.has('view'),false);assert.equal(new URL(url).searchParams.has('tab'),false);
+const last=url;context.child.location.pathname='/unrecognized';context.syncFrame();assert.equal(url,last);
+"""
+        harness = harness.replace('EPISODES:EPISODES', 'EPISODES:' + json.dumps(episodes)).replace('FUNCTION', json.dumps(function))
+        result = subprocess.run(['node', '-e', harness], capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
 
 
