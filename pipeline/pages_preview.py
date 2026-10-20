@@ -147,7 +147,7 @@ def build_preview(output_dir: Path, *, source_sha: str = 'local') -> Path:
     index = output_dir / 'index.html'
     index.write_text(catalog_document(episodes, current_id=current_id, site_version=source_sha), encoding='utf-8')
     (output_dir / 'responsive.html').write_text(RESPONSIVE_REVIEW, encoding='utf-8')
-    provenance = dict(source=SOURCE, branch_commit=source_sha,
+    provenance = dict(preview_kind='pages-design-preview-v1', source=SOURCE, branch_commit=source_sha,
                       captured_at=datetime.now(timezone.utc).isoformat(),
                       episode_count=len(episodes), source_file_sha256=hashes,
                       media='Original public Pages resources; an internet connection is required.')

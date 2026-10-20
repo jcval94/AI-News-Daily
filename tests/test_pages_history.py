@@ -27,10 +27,65 @@ CATALOG_HTML = '''<!doctype html><html><body>
 class PagesHistoryTests(unittest.TestCase):
     def _episode_site(self, root: Path, date_value: str) -> Path:
         root.mkdir(parents=True, exist_ok=True)
+        (root / "artifacts").mkdir(exist_ok=True)
+        (root / "artifacts" / "run_state.json").write_text(
+            json.dumps({"status": "SCRIPT_NOT_APPROVED"}), encoding="utf-8"
+        )
         (root / "index.html").write_text(
             EPISODE_HTML.format(date=date_value), encoding="utf-8"
         )
         return root
+
+    def test_design_preview_is_excluded_even_with_renamed_artifact_and_complete_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            preview = self._snapshot(root / "renamed" / "nested", ["2026-09-04"])
+            (preview / "preview-provenance.json").write_text('{}')
+            self.assertEqual(discover_catalog_roots(root), [])
+            self.assertEqual(discover_episode_sites(root), [])
+            output = root / "output"
+            self.assertEqual(merge_catalog_snapshot(preview, output, set(), 8), 0)
+            self.assertFalse(output.exists())
+
+    def test_incomplete_snapshot_does_not_hide_older_complete_episode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            contaminated = self._snapshot(root / "recent", ["2026-09-04"])
+            incomplete = contaminated / "episodes" / "2026-09-04"
+            (incomplete / "artifacts" / "run_state.json").unlink()
+            # A badge is presentation, not persisted approval authority.
+            (incomplete / "index.html").write_text(EPISODE_HTML.format(date="2026-09-04") + '<span>APPROVED</span>')
+            complete = self._snapshot(root / "older", ["2026-09-04"])
+            source = complete / "episodes" / "2026-09-04"
+            (source / "media").mkdir()
+            (source / "media" / "image.jpg").write_bytes(b'original-media')
+            (source / "downloads").mkdir()
+            (source / "downloads" / "cost_snapshot.json").write_text('{"totals":{"known_direct_cost_usd":0.126}}')
+            seen = {"2026-09-25"}
+            output = root / "output"
+            self.assertEqual(merge_catalog_snapshot(contaminated, output, seen, 8), 0)
+            self.assertNotIn("2026-09-04", seen)
+            self.assertEqual(merge_catalog_snapshot(complete, output, seen, 8), 1)
+            recovered = output / "episodes" / "2026-09-04"
+            self.assertEqual((recovered / "media" / "image.jpg").read_bytes(), b'original-media')
+            from pipeline.review_hub_catalog import episode_metadata
+            metadata = episode_metadata(recovered)
+            self.assertEqual(metadata['status'], 'No aprobado')
+            self.assertEqual(metadata['known_direct_cost_usd'], .126)
+
+    def test_standalone_html_without_state_is_not_a_recovery_source(self) -> None:
+        from pipeline.pages_history import merge_episode_site
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            site = self._episode_site(root / 'site', '2026-09-04')
+            state = site / 'artifacts' / 'run_state.json'
+            output = root / 'output'
+            for invalid in ('null', '[]', '{invalid', '{}', '{"status":""}'):
+                state.write_text(invalid)
+                self.assertFalse(merge_episode_site('2026-09-04', site, output, set(), 8))
+            state.unlink()
+            (site / 'artifacts' / 'reviews.json').write_text('{"approved":false}')
+            self.assertTrue(merge_episode_site('2026-09-04', site, output, set(), 8))
 
     def _snapshot(self, root: Path, dates: list[str]) -> Path:
         root.mkdir(parents=True, exist_ok=True)
@@ -100,6 +155,11 @@ class PagesHistoryTests(unittest.TestCase):
         self.assertEqual(ranked[0].name, "pages-snapshot")
         self.assertIn("anything", [item.name for item in ranked])
 
+    def test_known_design_preview_does_not_consume_recovery_candidate_budget(self) -> None:
+        preview = ArtifactMeta(1, 'pages-design-preview', 1, 1024, '2026-10-20T01:14:38Z')
+        real = ArtifactMeta(2, 'editorial-pages-snapshot', 2, 200_000_000, '2026-10-19T23:36:34Z')
+        self.assertEqual(rank_artifacts([preview, real]), [real])
+
     def test_recover_history_accepts_renamed_snapshot_by_content(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -138,6 +198,36 @@ class PagesHistoryTests(unittest.TestCase):
                 set(report["episode_dates"]),
                 {"2026-09-05", "2026-09-04", "2026-09-01"},
             )
+
+    def test_recovery_passes_previews_and_incomplete_snapshots_to_restore_real_history(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            current = self._episode_site(root / 'current', '2026-09-25')
+            preview = self._snapshot(root / 'preview', ['2026-10-16'])
+            (preview / 'preview-provenance.json').write_text('{}')
+            contaminated = self._snapshot(root / 'incomplete', ['2026-10-16'])
+            (contaminated / 'episodes/2026-10-16/artifacts/run_state.json').unlink()
+            real = self._snapshot(root / 'real', ['2026-10-16'])
+            sources = {1: preview, 2: contaminated, 3: real}
+            payload = {'artifacts': [
+                dict(id=i, name='renamed-pages-site', size_in_bytes=1024,
+                     created_at=f'2026-10-{21-i:02d}T00:00:00Z', workflow_run={'id': i})
+                for i in sources
+            ]}
+            def download(meta, destination):
+                import shutil
+                shutil.copytree(sources[meta.artifact_id], destination)
+                return True
+            with patch('pipeline.pages_history._download_artifact', side_effect=download):
+                report = recover_history(repository='owner/repo', current_site=current,
+                    current_date='2026-09-25', output_root=root / 'output',
+                    history_limit=2, artifact_payload=payload)
+            self.assertEqual(report['candidates_considered'], 3)
+            self.assertEqual(report['episode_count'], 2)
+            from pipeline.review_hub_catalog import discover_episodes
+            episodes = discover_episodes(root / 'output/episodes')
+            self.assertEqual(episodes[0]['id'], '2026-10-16')
+            self.assertEqual(episodes[0]['status'], 'No aprobado')
 
 
 if __name__ == "__main__":

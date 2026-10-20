@@ -2,7 +2,7 @@
 
 **La herramienta sabía mostrarlo todo, pero seguía sin elegir qué debía mirar primero el editor.** Esta pasada reduce el ruido, da prioridad al guion y aplica el mismo lenguaje visual al catálogo, los episodios y las vistas globales.
 
-Revisión del 2026-10-20 UTC sobre la publicación existente y una vista previa de esta rama con sus datos reales. Las capturas de escritorio comparten viewport de 1363 × 936. El episodio de referencia es el aprobado del 2026-09-25; el intento del 2026-10-16 conserva «No aprobado». Esta propuesta se entrega en PR; no supone un despliegue a producción.
+Revisión del 2026-10-20 UTC sobre la publicación existente y una vista previa de esta rama con sus datos reales. Las capturas de escritorio comparten viewport de 1363 × 936. El episodio de referencia es el aprobado del 2026-09-25; el intento del 2026-10-16 conserva «No aprobado». [PR #102 integrada](https://github.com/jcval94/AI-News-Daily/pull/102); [primer despliegue del refinamiento](https://github.com/jcval94/AI-News-Daily/actions/runs/39360253312), con CI aprobada en Linux y Windows. La verificación pública detectó la incidencia de recuperación descrita al final.
 
 ## Crítica y decisiones
 
@@ -99,3 +99,14 @@ El arnés responsive renderiza la misma aplicación dentro de un iframe de ancho
 El artefacto aplica la presentación de la rama a una captura de Pages: incluye los ocho episodios y las cuatro vistas globales presentes en esta revisión. `preview-provenance.json` registra commit, fecha de captura y hashes del contenido de origen. No es un monitor de datos en tiempo real. Medios pesados, descargas y páginas de trabajo de experimentos permanecen en el host público original y requieren Internet. No se ejecutan agentes ni se publican o promueven episodios. El artefacto caduca a los 14 días; el comando `python -m pipeline.pages_preview --output-dir <carpeta> --source-sha <commit>` permite regenerarlo con la publicación disponible entonces.
 
 La fusión mantiene el flujo habitual de Pages del repositorio. La migración de presentación actualiza también episodios recuperados con UX v1/v2, sin apilar manejadores de eventos ni modificar contenido editorial, gates, costos o autoridad de promoción.
+
+## Continuación: recuperación de históricos
+
+**Incidencia reproducida tras publicar:** el catálogo del 2026-10-16 decía «Disponible», mientras su documento conservaba `SCRIPT_NOT_APPROVED`; faltaban costos y archivos históricos. El artefacto de vista previa introducido en #102 reunía el contrato estructural de un catálogo y era pequeño, por lo que el recuperador lo prefería a snapshots completos. Un despliegue posterior podía heredar ese HTML incompleto. El problema era la selección de la fuente de recuperación, no un cambio en el resultado editorial.
+
+![Incidencia: contexto Disponible sobre un episodio no aprobado](assets/history-state-before.jpg)
+
+- [x] **UX-17 · Fuentes de recuperación:** excluir el artefacto conocido de diseño antes de consumir el presupuesto de candidatos; rechazar por contenido cualquier árbol con `preview-provenance.json`, aunque cambie de nombre. También se bloquea su descubrimiento como episodios independientes.
+- [x] **UX-18 · Reparación del histórico incompleto:** una fecha sin estado/revisión persistidos no ocupa un lugar en el catálogo recuperado; la búsqueda puede continuar hasta una copia completa anterior. Se restauran sus archivos originales, sin inventar estados desde badges ni cifras desde texto.
+
+Validación de la corrección: **558 pruebas aprobadas**, compilación de `app`/`pipeline` y cinco regresiones nuevas que fallan contra la implementación anterior. Cubren ambos caminos de descubrimiento, snapshots ya contaminados, conservación de costos/medios y recuperación completa que atraviesa una vista previa renombrada y un snapshot incompleto. El contrato de aprobación y promoción permanece intacto. Teléfono físico, lector de pantalla y pruebas con editores siguen abiertos.
