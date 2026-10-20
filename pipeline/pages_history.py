@@ -291,21 +291,25 @@ def recover_history(
     shutil.copytree(current_site, current_destination, dirs_exist_ok=True)
     _patch_episode_site(current_destination)
     seen_dates = {current_date}
+    available_dates = {current_date}
 
     payload = artifact_payload if artifact_payload is not None else _gh_json(repository)
     ranked = rank_artifacts(parse_artifacts(payload))[:max_candidates]
     diagnostics: list[dict[str, Any]] = []
+    large_downloads = 0
 
     with tempfile.TemporaryDirectory(prefix="pages-history-") as tmp:
         temp_root = Path(tmp)
-        for position, meta in enumerate(ranked, start=1):
+        for meta in ranked:
             if len(seen_dates) >= history_limit:
                 break
-            # Large legacy bundles are allowed only in a small bounded tail. This
-            # prevents Pages rebuilds from being held hostage by multimedia archives.
-            if meta.size_bytes > max_legacy_bytes and position > 8:
-                diagnostics.append({"artifact": meta.name, "status": "skipped_too_large"})
-                continue
+            # Bound large downloads themselves. Small audits and incomplete sites
+            # must not exhaust this budget before an older complete snapshot.
+            if meta.size_bytes > max_legacy_bytes:
+                if large_downloads >= 8:
+                    diagnostics.append({"artifact": meta.name, "status": "skipped_too_large"})
+                    continue
+                large_downloads += 1
             extracted = temp_root / f"{meta.run_id}-{meta.artifact_id}"
             if not _download_artifact(meta, extracted):
                 diagnostics.append({"artifact": meta.name, "status": "download_failed"})
@@ -313,6 +317,11 @@ def recover_history(
 
             added = 0
             for catalog_root in discover_catalog_roots(extracted):
+                available_dates.update(
+                    episode.name for episode in (catalog_root / "episodes").iterdir()
+                    if episode.is_dir() and _DATE_RE.fullmatch(episode.name)
+                    and _is_episode_site(episode / "index.html")
+                )
                 added += merge_catalog_snapshot(
                     catalog_root, output_root, seen_dates, history_limit
                 )
@@ -337,6 +346,14 @@ def recover_history(
                     "episodes_added": added,
                 }
             )
+
+    required_dates = {current_date, *sorted(available_dates - {current_date}, reverse=True)[:history_limit - 1]}
+    missing_dates = required_dates - seen_dates
+    if missing_dates:
+        raise RuntimeError(
+            "Incomplete Pages history; refusing publication without complete sources for: "
+            + ", ".join(sorted(missing_dates, reverse=True))
+        )
 
     return {
         "current_date": current_date,
