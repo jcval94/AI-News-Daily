@@ -1,6 +1,6 @@
 # Revisión UX de GitHub Pages
 
-**Continuación · 2026-10-20 UTC:** [refinamiento editorial, comparativas y tareas actualizadas](refinement/README.md). Interfaz de #102 integrada y publicada; incluye también la corrección de recuperación de históricos detectada en la comprobación pública (UX-17/18). Teléfono físico, lector de pantalla y prueba con editores siguen pendientes. El historial de despliegues documentado abajo corresponde a la versión anterior.
+**Continuación · 2026-10-20 UTC:** [refinamiento editorial, comparativas y tareas actualizadas](refinement/README.md). Interfaz de #102 integrada y publicada; incluye también las correcciones de recuperación y retención de históricos detectadas en la comprobación pública (UX-17/18/19). Teléfono físico, lector de pantalla y prueba con editores siguen pendientes. El historial de despliegues documentado abajo corresponde a la versión anterior.
 
 **Veredicto: herramienta potente, experiencia pesada.** La página permite auditar el sistema, pero exige demasiado esfuerzo para encontrar el guion, entender qué ocurrió y decidir qué hacer. La interfaz había crecido al ritmo de los contratos técnicos; faltaba una jerarquía de trabajo editorial.
 

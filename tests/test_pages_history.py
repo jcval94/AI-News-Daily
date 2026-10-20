@@ -229,6 +229,60 @@ class PagesHistoryTests(unittest.TestCase):
             self.assertEqual(episodes[0]['id'], '2026-10-16')
             self.assertEqual(episodes[0]['status'], 'No aprobado')
 
+    def test_small_audits_do_not_consume_large_snapshot_download_budget(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            current = self._episode_site(root / 'current', '2026-09-25')
+            real = self._snapshot(root / 'real', ['2026-10-16'])
+            artifacts = [dict(id=i, name='pages-cost-audit', size_in_bytes=1024,
+                created_at=f'2026-10-{30-i:02d}T00:00:00Z', workflow_run={'id': i}) for i in range(1, 10)]
+            artifacts.append(dict(id=10, name='editorial-pages-snapshot', size_in_bytes=200_000_000,
+                created_at='2026-10-01T00:00:00Z', workflow_run={'id': 10}))
+            downloaded = []
+            def download(meta, destination):
+                import shutil
+                downloaded.append(meta.artifact_id)
+                destination.mkdir(parents=True)
+                if meta.artifact_id == 10:shutil.copytree(real, destination, dirs_exist_ok=True)
+                return True
+            with patch('pipeline.pages_history._download_artifact', side_effect=download):
+                report = recover_history(repository='owner/repo', current_site=current,
+                    current_date='2026-09-25', output_root=root / 'output', history_limit=2,
+                    artifact_payload={'artifacts': artifacts})
+            self.assertIn(10, downloaded)
+            self.assertEqual(report['episode_count'], 2)
+
+    def test_large_artifact_attempts_remain_bounded_to_eight(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            current = self._episode_site(root / 'current', '2026-09-25')
+            artifacts = [dict(id=i, name='editorial-pages-snapshot', size_in_bytes=200_000_000,
+                created_at=f'2026-10-{30-i:02d}T00:00:00Z', workflow_run={'id': i}) for i in range(1, 11)]
+            with patch('pipeline.pages_history._download_artifact', return_value=False) as download:
+                report = recover_history(repository='owner/repo', current_site=current,
+                    current_date='2026-09-25', output_root=root / 'output', history_limit=2,
+                    artifact_payload={'artifacts': artifacts})
+            self.assertEqual(download.call_count, 8)
+            self.assertEqual(sum(d['status']=='skipped_too_large' for d in report['diagnostics']), 2)
+
+    def test_missing_known_historical_date_blocks_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            current = self._episode_site(root / 'current', '2026-09-25')
+            incomplete = self._snapshot(root / 'incomplete', ['2026-10-16'])
+            (incomplete / 'episodes/2026-10-16/artifacts/run_state.json').unlink()
+            artifact = dict(id=1, name='editorial-pages-snapshot', size_in_bytes=1024,
+                created_at='2026-10-20T00:00:00Z', workflow_run={'id': 1})
+            def download(meta, destination):
+                import shutil
+                shutil.copytree(incomplete, destination)
+                return True
+            with patch('pipeline.pages_history._download_artifact', side_effect=download):
+                with self.assertRaisesRegex(RuntimeError, 'refusing publication.*2026-10-16'):
+                    recover_history(repository='owner/repo', current_site=current,
+                        current_date='2026-09-25', output_root=root / 'output', history_limit=8,
+                        artifact_payload={'artifacts': [artifact]})
+
 
 if __name__ == "__main__":
     unittest.main()

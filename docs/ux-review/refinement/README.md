@@ -110,3 +110,9 @@ La fusión mantiene el flujo habitual de Pages del repositorio. La migración de
 - [x] **UX-18 · Reparación del histórico incompleto:** una fecha sin estado/revisión persistidos no ocupa un lugar en el catálogo recuperado; la búsqueda puede continuar hasta una copia completa anterior. Se restauran sus archivos originales, sin inventar estados desde badges ni cifras desde texto.
 
 Validación de la corrección: **558 pruebas aprobadas**, compilación de `app`/`pipeline` y cinco regresiones nuevas que fallan contra la implementación anterior. Cubren ambos caminos de descubrimiento, snapshots ya contaminados, conservación de costos/medios y recuperación completa que atraviesa una vista previa renombrada y un snapshot incompleto. El contrato de aprobación y promoción permanece intacto. Teléfono físico, lector de pantalla y pruebas con editores siguen abiertos.
+
+**Segundo límite observado en el despliegue:** al excluir las fuentes incompletas, los ocho primeros lugares ya estaban ocupados por auditorías y snapshots recientes; la copia completa anterior se descartaba por tamaño. El catálogo publicado quedó temporalmente en un episodio. El presupuesto ahora cuenta hasta ocho intentos de descarga grande, conservando el límite global de 32 candidatos; las auditorías pequeñas no consumen esos ocho intentos.
+
+- [x] **UX-19 · Retención verificada:** si un catálogo fuente contiene fechas históricas que no se recuperan completas dentro del límite de retención, la construcción falla antes de subir o desplegar Pages. La cantidad publicada no basta como señal de éxito: deben conservarse las fechas esperadas.
+
+La ampliación añade pruebas de una copia completa después de nueve auditorías, límite de ocho descargas grandes y bloqueo ante una fecha conocida sin fuente completa. Suite total tras esta ampliación: **561 pruebas**.
