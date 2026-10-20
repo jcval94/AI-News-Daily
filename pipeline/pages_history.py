@@ -56,7 +56,7 @@ def _created_ts(value: str) -> float:
 def rank_artifacts(artifacts: Iterable[ArtifactMeta]) -> list[ArtifactMeta]:
     """Prioritize likely lightweight review sites but never require a naming convention."""
     return sorted(
-        (item for item in artifacts if not item.expired),
+        (item for item in artifacts if not item.expired and item.name != "pages-design-preview"),
         key=lambda item: (item.hint_score, _created_ts(item.created_at), -item.size_bytes),
         reverse=True,
     )
@@ -101,6 +101,35 @@ def _is_catalog_site(index: Path) -> bool:
     return bool(text) and all(marker in text for marker in _CATALOG_MARKERS)
 
 
+def _inside_design_preview(index: Path, root: Path) -> bool:
+    """A presentation-only snapshot is never a production recovery source."""
+    for directory in (index.parent, *index.parent.parents):
+        if (directory / "preview-provenance.json").exists():
+            return True
+        if directory == root:
+            break
+    return False
+
+
+def _has_persisted_editorial_status(site_root: Path) -> bool:
+    # HTML-only previews also contaminated later published snapshots. Require
+    # actual state/reviews before consuming a date, so older complete artifacts
+    # can restore status, costs, scripts and media. Never infer approval from HTML.
+    keys = ("status", "gate_status", "script_status", "final_status")
+    for name in ("run_state.json", "reviews.json"):
+        try:
+            payload = json.loads((site_root / "artifacts" / name).read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeError):
+            continue
+        if not isinstance(payload, dict):
+            continue
+        if any(isinstance(payload.get(key), str) and payload[key].strip() for key in keys):
+            return True
+        if name == "reviews.json" and isinstance(payload.get("approved"), bool):
+            return True
+    return False
+
+
 def _date_from_path_or_text(path: Path, text: str, artifact_name: str = "") -> str:
     for value in (str(path), artifact_name, text):
         match = _DATE_RE.search(value)
@@ -114,6 +143,8 @@ def discover_catalog_roots(root: Path) -> list[Path]:
     roots: list[Path] = []
     for episodes_json in root.rglob("episodes.json"):
         candidate = episodes_json.parent
+        if _inside_design_preview(candidate / "index.html", root):
+            continue
         if not (candidate / "episodes").is_dir() or not (candidate / "index.html").is_file():
             continue
         if _is_catalog_site(candidate / "index.html"):
@@ -125,6 +156,8 @@ def discover_episode_sites(root: Path, artifact_name: str = "") -> list[tuple[st
     """Find standalone episode sites by their page contract, regardless of folder names."""
     found: list[tuple[str, Path]] = []
     for index in root.rglob("index.html"):
+        if _inside_design_preview(index, root):
+            continue
         if not _is_episode_site(index):
             continue
         text = _read_text(index)
@@ -166,6 +199,8 @@ def merge_catalog_snapshot(
     episodes_root = snapshot_root / "episodes"
     if not episodes_root.is_dir():
         return 0
+    if (snapshot_root / "preview-provenance.json").exists():
+        return 0
     for episode_dir in sorted(episodes_root.iterdir(), reverse=True):
         if len(seen_dates) >= limit:
             break
@@ -174,6 +209,8 @@ def merge_catalog_snapshot(
         if episode_dir.name in seen_dates or not (episode_dir / "index.html").is_file():
             continue
         if not _is_episode_site(episode_dir / "index.html"):
+            continue
+        if not _has_persisted_editorial_status(episode_dir):
             continue
         destination = output_root / "episodes" / episode_dir.name
         shutil.copytree(episode_dir, destination, dirs_exist_ok=True)
@@ -191,6 +228,8 @@ def merge_episode_site(
     limit: int,
 ) -> bool:
     if len(seen_dates) >= limit or episode_date in seen_dates:
+        return False
+    if not _has_persisted_editorial_status(site_root):
         return False
     destination = output_root / "episodes" / episode_date
     shutil.copytree(site_root, destination, dirs_exist_ok=True)
