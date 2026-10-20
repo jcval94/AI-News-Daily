@@ -1,0 +1,35 @@
+name: Pages design preview
+
+on:
+  pull_request:
+    paths:
+      - 'pipeline/pages_ux.py'
+      - 'pipeline/pages_preview.py'
+      - 'pipeline/review_hub_ux.py'
+      - 'pipeline/review_hub_catalog.py'
+      - 'docs/ux-review/refinement/**'
+      - '.github/workflows/pages-design-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build branch presentation over published evidence
+        run: python -m pipeline.pages_preview --output-dir /tmp/pages-preview --source-sha "$(git rev-parse HEAD)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pages-design-preview
+          path: /tmp/pages-preview/
+          retention-days: 14
+          if-no-files-found: error
