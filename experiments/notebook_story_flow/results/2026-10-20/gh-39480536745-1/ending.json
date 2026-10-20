@@ -1,0 +1,38 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "La historia de LIGO/Virgo no termina en una frase bonita, sino en el sobre que por fin se abre: la inyección ciega se confirmó y, aun así, se detectaron dos errores en el software de inyección (un modelo antiguo y un signo incorrecto). Eso refuerza el conflicto abierto: que un proceso “parezca” impecable no basta si el dispositivo de prueba y el soporte de la evidencia no están validados con el mismo rigor que el análisis humano. En otras palabras, la luz verde fue útil como prueba de extremo a extremo, pero el resultado final sólo se volvió plenamente interpretable cuando se verificó el circuito completo. Y ojo: esta analogía no implica que los sistemas actuales vayan a repetir exactamente estos fallos; sólo muestra que el verificador puede tener grietas incluso en ejercicios bien intencionados.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "visual_queries": [
+        "Fondo: caja sellada tipo sobre. Aparece un checklist ‘verificado’ y dos marcas ‘bug: signo incorrecto’ / ‘modelo antiguo’"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Si queremos que una evaluación signifique “comprensión y seguridad”, no alcanza con que el sistema siga el guion y salga en verde: hay que auditar el paquete completo. Contención operativa, procedencia y trazabilidad de la evidencia, y criterios que no se rompan cuando algo “parece correcto”. Lo incómodo es que ese costo de autenticación es parte del trabajo, no un extra.\n\nSi te interesan estas preguntas —sobre todo cuando la evidencia puede volverse ambigua— sígueme y suscríbete. La próxima vez que veamos una “luz verde”, preguntaremos: ¿quién comprobó la ruta completa, no sólo el resultado?",
+      "evidence_ids": [
+        "certin-agent-eval-overreach",
+        "deepfake-auth-provenance-gap"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Semáforo vuelve a verde, pero ahora con un letrero: ‘¿Quién verificó la evidencia?’"
+      ]
+    }
+  ],
+  "seo_title": "Evaluación de agentes: por qué una luz verde no prueba cont​",
+  "seo_description": "Explora el conflicto entre aprobar un circuito de evaluación y verificar comprensión y seguridad: contención operativa, procedencia de la evidencia y autentic​",
+  "seo_keywords": [
+    "evaluación de agentes",
+    "contención operativa",
+    "procedencia de la evidencia",
+    "cadena de custodia IA/ML v​eficaci​ón de evidencias autenticación deepfakes"
+  ]
+}

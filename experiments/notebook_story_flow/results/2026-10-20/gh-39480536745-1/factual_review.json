@@ -1,0 +1,24 @@
+{
+  "approved": false,
+  "risk": "medium",
+  "historical_grounding": 8.8,
+  "invented_details": [
+    "“Como analogía (no como hecho literal), el flujo puede sentirse como una luz verde: no es una afirmación del universo, sino un pase del sistema a un comité humano.” (Aunque se marca como analogía, la frase “puede sentirse” sigue apoyando una promesa sensorial/interpretativa (“se siente como”) que no añade hechos verificables; no es prohibido, pero no es auditable como afirmación factual.)",
+    "“Y entonces aparece la pregunta que abre el episodio: cuando una evaluación te da una luz verde, ¿qué parte del paquete —además del resultado— tienes realmente bajo control para que “comprensión” y “seguridad” no se confundan con “éxito dentro del guion”?” (Plantea una implicación causal/normativa sin evidencia factual específica del caso; es un enunciado de marco más que una afirmación histórica, pero sigue siendo “premisa” no soportada en el texto.)"
+  ],
+  "source_issues": [
+    "El guion atribuye al paso de CERT-In y a Reuters conclusiones causales amplias en varias frases cercanas (“Entonces la confianza probatoria no es automática”; “esa secuencia refuerza el conflicto abierto… puede requerir validación…”) que no están directamente respaldadas por los resúmenes de esas noticias (son debates/observaciones, no evaluaciones de impacto universal).",
+    "No se aportan evidencias adicionales (como cifras, proporciones, procedimientos concretos) para varias inferencias del guion sobre “qué parte del paquete está verificada” o “qué costo de autenticación vale”; el guion lo presenta como pregunta/hipótesis, pero la redacción en algunos puntos sugiere alcance más general del que los insumos documentan."
+  ],
+  "unsupported_claims": [
+    "“si el circuito que sostiene el ejercicio no está validado con trazabilidad suficiente, entonces la luz verde puede convertirse en una confianza demasiado barata.” (Hipótesis condicional razonable, pero el texto la redacta en términos que parecen presentar una posibilidad general como conclusión del patrón histórico; no hay soporte factual en las fuentes provistas para afirmar ese riesgo como resultado típico.)",
+    "“Eso refuerza el conflicto abierto: un proceso end-to-end puede requerir validación del dispositivo de prueba, no sólo del análisis ‘una vez que ya está todo’.” (Refuerzo interpretativo: correcto como lectura, pero el guion lo formula como “refuerza el conflicto abierto” sin convertirlo explícitamente en una inferencia no demostrada por las fuentes.)",
+    "“Esa secuencia refuerza… también se reportan dos errores…” (Los dos errores del software se atribuyen a la historia seleccionada y están en verified_claims, pero el guion lo usa para inferir una enseñanza general de “validación del circuito completo” aplicada a “evaluaciones de IA”; esto es una extrapolación no demostrada.)"
+  ],
+  "repair_instructions": [
+    "Mantén el contenido como marco/lectura, pero etiqueta de forma inequívoca las extrapolaciones como hipótesis no demostrada (p. ej., reemplazar “refuerza el conflicto abierto” por “ilustra / es un paralelo conceptual con el conflicto abierto”) donde ahora suena a conclusión basada en evidencia.",
+    "Evita redacciones que impliquen generalización causal a partir de casos puntuales. Cambia formulaciones tipo “la luz verde puede convertirse en confianza demasiado barata” por “podría ocurrir en diseños donde… (hipótesis)” y añade el vínculo explícito al hecho observado solo en el caso histórico (errores en software/confirmación tras abrir sobre), no en “todas las evaluaciones”.",
+    "En los segmentos donde se conectan CERT-In y Reuters con la tesis central, subraya que las fuentes reportan observaciones/dificultades y debate (no un resultado estadístico ni una regla adoptada), por ejemplo sustituyendo “muestra otro espejo”/“no se resuelve automáticamente” por “apoya conceptualmente la idea de que procede/autenticación importa” sin sugerir que las fuentes prueban prevalencias o fallos sistémicos.",
+    "Revisa el uso de lenguaje sensorial (“puede sentirse”) para que no parezca parte de los hechos del caso; conserva la analogía pero reformúlala como “como recurso retórico:…” en vez de “se siente como…” o añade una frase explícita de que es solo metáfora para el lector."
+  ]
+}

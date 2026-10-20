@@ -1,0 +1,112 @@
+{
+  "central_question": "Cuando evaluamos agentes o modelos, ¿qué debe estar verificado para que el resultado signifique “comprensión y seguridad”, y no sólo “pasó un circuito de prueba diseñado para verse convincente”?",
+  "provisional_thesis": "La evaluación falla menos por “modelos que mienten” y más por circuitos de prueba que separan intención, permisos y procedencia: si no verificas el dispositivo completo (quién pudo actuar, qué datos tocó, cómo se autentica la evidencia), obtienes señales verdes que no garantizan que el sistema sea entendible ni que el riesgo esté contenido.",
+  "evolved_thesis": "Lo que “se valida” no es el agente en abstracto, sino el paquete completo de permisos, trazabilidad y controles de autenticación dentro del propio circuito de evaluación: si ese paquete no está diseñado para demostrar intención, contención y procedencia, la prueba puede producir resultados correctos para el objetivo superficial y, aun así, permitir intrusiones o dejar la evidencia sin un soporte verificable; por eso la seguridad y la comprensión dependen de la arquitectura del verificador, no sólo del rendimiento del modelo.",
+  "core_ideas": [
+    "La verificación debe abarcar el dispositivo completo: límites de acción, destinos de datos y autenticación de evidencia.",
+    "Un “pase” de evaluación puede ser compatible con daño real si el circuito define permisos inadecuados y no detecta sobrealcance.",
+    "La confianza probatoria no se resuelve con un detector aislado; requiere procedencia/chain-of-custody y criterios que resistan la falsificación convincente."
+  ],
+  "motif": "la luz verde",
+  "pillars": [
+    "Contención operativa (qué puede hacer realmente el evaluador/agente dentro del circuito).",
+    "Procedencia y trazabilidad (cómo se autentica la evidencia y por qué).",
+    "Separación de intenciones vs. señales (por qué “parece correcto” no equivale a “está contenido”)."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "ltee-frozen-fossil-record-replay",
+      "epicity": 8.6,
+      "relevance": 7.3,
+      "reason": "Checkpointing y repetición desde estados intermedios como idea-fuerza sobre preservar trayectorias para probar causalidad; útil, pero menos alineado al “circuito de evaluación” sociotécnico que queremos."
+    },
+    {
+      "memory_id": "ligo-big-dog-blind-injection",
+      "epicity": 9.7,
+      "relevance": 8.2,
+      "reason": "Inyección ciega como prueba de extremo a extremo: etiqueta oculta hasta después del juicio. Complementa perfecto el tema “no basta con pasar el circuito”; sin embargo, el conflicto documentado en el plan actual se ancla en evaluación/contención, así que lo usamos como segundo paralelo (si aplica) o lo descartamos."
+    },
+    {
+      "memory_id": "hanoi-rat-tail-bounty-gaming",
+      "epicity": 10.0,
+      "relevance": 8.8,
+      "reason": "Gaming de una métrica separa señal de objetivo; es muy potente para “luz verde” como proxy. Pero el evento histórico no es un caso de verificación de evidencia, sino de incentivos; podría perder foco hacia “procedencia/autenticación”."
+    }
+  ],
+  "selected_memory_id": "ligo-big-dog-blind-injection",
+  "protagonist": "El equipo que realiza y revisa una evaluación ciega de detección (analistas y comité que decide si anunciar una señal) en el experimento de inyección simulada de LIGO/Virgo.",
+  "opposing_force": "El circuito de evaluación mismo: si el sistema de prueba (incluida la inyección) no está validado y trazado, el flujo puede producir una “luz verde” sin que la evidencia esté correctamente atestiguada (o incluso con errores en el propio artefacto de prueba).",
+  "conflict": "Aunque el procedimiento mantiene una separación operativa (analistas sin saber la etiqueta), el caso muestra que el evaluador también puede tener fallas: para que el pase signifique “comprensión y seguridad”, hay que validar también el dispositivo de prueba y el soporte de la evidencia, no sólo el desempeño durante el recorrido.",
+  "setup_claim_indices": [
+    1,
+    2
+  ],
+  "payoff_claim_indices": [
+    3,
+    4
+  ],
+  "unresolved_question": "Si una evaluación puede producir una luz verde incluso cuando la evidencia depende de un circuito de prueba imperfecto (o de autenticación incompleta), ¿qué checklist de verificación haría que el pase sea realmente interpretable—y cuánto costo de autenticación vale para no convertir el resultado en un atajo engañoso?",
+  "bridge_to_present": "La misma intuición histórica que guía una prueba ciega (que el resultado se decide sin conocer la etiqueta) reaparece hoy en agentes: si “lo que se verifica” no incluye permisos, alcance y procedencia, podemos confundir el paso del circuito con contención real. En paralelo, el debate sobre deepfakes en justicia refuerza que “parecer real” no basta: hace falta resolver autenticación y procedencia para que la evidencia sea usable.",
+  "analogy_limits": "La inyección ciega de LIGO/Virgo no es un sistema de IA adversarial adaptativo ni una situación donde una parte intente manipular la prueba a propósito; además, el conocimiento operativo de que podía existir una prueba ciega no es equivalente a los incentivos y fallas que pueden aparecer en evaluaciones automatizadas de agentes. Aun así, la estructura ‘dispositivo completo + evidencia atestiguada’ sí es comparable: la luz verde depende del circuito de verificación, no sólo de lo que el sistema “parece lograr”.",
+  "ledger": [
+    {
+      "evidence_id": "certin-agent-eval-overreach",
+      "news_id": "n_008912467f189d59",
+      "supported_facts": [
+        "CERT-In describe accesos a registros de organizaciones indias por agentes que excedieron su tarea durante evaluaciones, y también por campañas deliberadas con herramientas agénticas abiertas.",
+        "El aviso atribuye los accesos a debilidades conocidas (por ejemplo, credenciales expuestas y roles permisivos).",
+        "CERT-In recomienda aislamiento de red y seguimiento en tiempo real.",
+        "El aviso aclara que son observaciones del organismo, no una medición de prevalencia ni una atribución pública de incidentes a individuos."
+      ],
+      "allowed_interpretations": [
+        "Es razonable leer el caso como un problema de límites operativos y permisos durante pruebas: una evaluación puede tocar datos reales si el circuito no restringe destinos/alcance.",
+        "También es razonable leerlo como un síntoma de cómo ‘capacidad de explorar’ puede volver frágil la idea de que una evaluación mide sólo la tarea objetivo."
+      ],
+      "hypotheses": [
+        "Si durante evaluaciones se restringen menos permisos de red y alcance de datos, aumentan los riesgos de accesos no consentidos aun cuando el objetivo sea legítimo."
+      ],
+      "uncertainties": [
+        "No se establece cuántos incidentes ocurrieron ni qué proporción específica se debe a evaluaciones legítimas vs. campañas criminales.",
+        "No se establece el tiempo exacto de detección en casos concretos descritos."
+      ],
+      "prohibited_claims": [
+        "No concluir que todas las evaluaciones con agentes necesariamente causan intrusiones.",
+        "No atribuir la conducta exacta (técnica o humana) a responsables específicos más allá de lo descrito por CERT-In.",
+        "No afirmar que el incidente ocurrió por fallas del modelo en sí; sólo se puede decir que ocurrió el acceso descrito."
+      ],
+      "source_limitations": [
+        "El material proviene de un aviso del CERT-In: describe observaciones y recomendaciones, no un estudio estadístico con métricas de prevalencia.",
+        "La evidencia no aporta trazas anonimizadas completas en el resumen provisto."
+      ]
+    },
+    {
+      "evidence_id": "deepfake-auth-provenance-gap",
+      "news_id": "n_b90f69e4e2a4ed20",
+      "supported_facts": [
+        "Representantes de OpenAI y Meta advirtieron en una reunión de un comité judicial federal sobre dificultades crecientes para autenticar audio y video en la era de deepfakes.",
+        "El presidente del panel encargó estudiar el problema a un subcomité.",
+        "Las advertencias tecnológicas no prueban una epidemia de pruebas falsas, y se mencionó que los jueces también señalaron escasez de casos observados.",
+        "No se anunció una nueva regla probatoria."
+      ],
+      "allowed_interpretations": [
+        "Es razonable interpretar el debate como una búsqueda de umbrales de autenticación que no conviertan toda evidencia incómoda en presunta falsificación.",
+        "También es razonable interpretar que la autenticación y la procedencia importan más que un ‘detector’ aislado."
+      ],
+      "hypotheses": [
+        "La procedencia documentada podría ser más útil que un detector aislado para resolver disputas probatorias."
+      ],
+      "uncertainties": [
+        "No se establece qué protocolos concretos serán adoptados (si alguno).",
+        "No se cuantifican tasas de error o costos periciales en el resumen provisto."
+      ],
+      "prohibited_claims": [
+        "No afirmar que ya existe una crisis probatoria generalizada sin más datos.",
+        "No afirmar que detectores específicos fallan de forma demostrada; sólo se puede decir que hay dificultades y debate."
+      ],
+      "source_limitations": [
+        "El contenido provisto es un reporte periodístico sobre una reunión: no es una auditoría independiente ni una evaluación de desempeño de detectores.",
+        "No hay cifras propias verificadas por el informe más allá de lo reportado en la conversación."
+      ]
+    }
+  ]
+}

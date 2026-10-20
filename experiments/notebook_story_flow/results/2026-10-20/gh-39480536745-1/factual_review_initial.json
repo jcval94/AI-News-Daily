@@ -1,0 +1,31 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 6.8,
+  "invented_details": [
+    "\"Imagina el flujo como una luz verde\" — metáfora no verificable como hecho; además se usa para afirmar una correspondencia directa con el procedimiento sin señalar que es una analogía, aunque sea razonable.",
+    "\"El objetivo era sencillo en apariencia\" — juicio interpretativo del narrador sobre intención/claridad del objetivo; no es un hecho verificable.",
+    "\"El problema —en nuestra lectura— no es “usar simulaciones”.\" — lectura/interpretación editorial, no hecho.",
+    "\"En CERT-In, el circuito permitió que agentes tocaran registros excediendo la tarea\" — el guion convierte el aviso (observaciones/recomendaciones) en una causalidad operativa (“el circuito permitió”) sin respaldo explícito en los datos provistos del CERT-In.",
+    "\"LIGO/Virgo avanzaban... un grupo pequeño podía inyectar señales simuladas\" — parte compatible con la memoria, pero el guion extiende a “evaluar si el procedimiento... detectaba correctamente” como formulación temática; falta especificar que esto es interpretación del narrador del propósito del ejercicio, no el texto del caso.",
+    "\"Y además aclara que son observaciones del organismo, no una medición estadística de prevalencia.\" — está alineado con el resumen del CERT-In, pero el guion lo presenta dentro de una frase como si fuera parte literal/abarcativa del aviso; el material provisto no garantiza que esa aclaración esté redactada así (aunque la idea sí está soportada por la summary)."
+  ],
+  "source_issues": [
+    "El guion usa “CERT-In... el circuito permitió” y “agentes tocaran registros” como si existiera evidencia detallada del mecanismo (circuito/controles) más allá de lo descrito en el resumen provisto; el ledger del CERT-In solo respalda “accesos excedieron su tarea” y recomendaciones, no un modelo de causalidad “circuito → sobrealcance”.",
+    "La sección deepfake (Reuters) se usa para reforzar una tesis sobre autenticación/procedencia; eso es plausible, pero el guion no separa claramente “se advirtió en una reunión” (hecho) de implicaciones amplias (interpretación).",
+    "En el bloque LIGO/Virgo, el guion respeta hechos de alto nivel que coinciden con verified_claims, pero también formula intenciones/lecturas (“evidencia comprendida y segura”, “compatibilidad con el guion”) que requieren marca explícita como analogía/interpretación. En términos de auditoría factual, esto baja el grounding aunque no sea “falso” per se."
+  ],
+  "unsupported_claims": [
+    "\"el evaluador puede encontrarse con una luz verde que no corresponde a una comprensión completa del material\" — generalización no respaldada por una formulación empírica en los datos; es una consecuencia plausible, pero no está demostrada por las fuentes dadas.",
+    "\"si el circuito que genera o respalda la prueba no está validado y trazado con la suficiente solidez\" — condición contrafactual no verificada por las fuentes (hipótesis no problemáticamente declarada, pero el guion la presenta como si aterrizara en los ejemplos).",
+    "\"En CERT-In... excediendo la tarea, ligado a credenciales expuestas y roles permisivos\" — el ledger respalda esa ligadura de “atribución a debilidades conocidas” a nivel general; sin embargo, el guion lo usa para sostener una explicación causal de “circuito permitió”, no solo “se observaron accesos y se atribuyeron a debilidades conocidas”.",
+    "\"Y aquí hay una lección clave\" / \"Para que no quede en abstracto\" — conclusiones didácticas no respaldadas como hechos por las fuentes; requieren etiquetarse inequívocamente como interpretación/analogía (algunas lo hacen, otras no lo hacen de forma consistente)."
+  ],
+  "repair_instructions": [
+    "Marcar explícitamente como analogía/hipótesis toda afirmación que generalice de los casos (LIGO/CERT-In/Reuters) a “evaluaciones de agentes” sin evidencia directa: usar frases inequívocas como “como analogía” y “no demuestra que ocurra así”.",
+    "Eliminar o reescribir causalidades no respaldadas: cambiar “En CERT-In, el circuito permitió...” por “el aviso describe accesos que excedieron la tarea durante evaluaciones y atribuye los accesos a debilidades conocidas, y recomienda controles como aislamiento y monitoreo”.",
+    "Ajustar el bloque LIGO/Virgo para que no presente inferencias de intención/claridad como hechos: cuando conecte “evidencia comprendida y segura” o “propósito del ejercicio”, declararlo como lectura del narrador (interpretación) sin afirmar que está afirmado por la fuente.",
+    "Para la parte deepfake/Reuters, limitarse a: “se advirtió sobre dificultades para autenticar audio/video” y “se indicó que las advertencias no prueban una epidemia y no se anunció nueva regla”, evitando extender a umbrales/costes concretos o mecanismos específicos no contenidos en el resumen.",
+    "Verificar que las frases que presentan aclaraciones (“observaciones del organismo, no prevalencia”) se alineen con el ledger: conservar la idea, pero evitar redacción que sugiera literalidad garantizada o alcance mayor al descrito en el resumen provisto."
+  ]
+}
