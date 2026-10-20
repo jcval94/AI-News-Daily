@@ -9,6 +9,16 @@ from pipeline.review_hub_catalog import build_catalog, discover_episodes
 
 
 class ReviewHubCatalogTests(unittest.TestCase):
+    def test_recovered_heading_precedes_thesis_and_keeps_full_title(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            episode = self._episode(root, '2026-09-25', title='Anterior', run_id='123', cost=None)
+            plan = {'thesis': 'Una tesis extensa que no es el título.'}
+            (episode / 'artifacts' / 'episode_plan.json').write_text(json.dumps(plan))
+            (episode / 'index.html').write_text('<html><h1>Agentes &amp; responsabilidad</h1></html>')
+            self.assertEqual(discover_episodes(root)[0]['title'], 'Agentes & responsabilidad')
+            self.assertEqual(json.loads((episode / 'artifacts' / 'episode_plan.json').read_text()), plan)
+
     def _episode(
         self,
         root: Path,

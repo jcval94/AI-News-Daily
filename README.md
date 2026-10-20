@@ -503,3 +503,5 @@ The detailed next steps live in [`ROADMAP.md`](ROADMAP.md). The current architec
 ## Revisión UX de GitHub Pages
 
 [Crítica por pestaña, decisiones y evidencia visual](docs/ux-review/README.md). La [lista de tareas UX](docs/ux-review/README.md#lista-de-tareas-ux) registra lo completado y los criterios de cierre pendientes.
+
+[Refinamiento editorial de la interfaz](docs/ux-review/refinement/README.md): comparativas antes/después, validación responsive y cómo revisar la vista previa completa del PR antes de fusionar.

@@ -10,27 +10,39 @@ from typing import Any
 
 
 CATALOG_CSS = r"""
+:root{--sidebar:252px;--bg:#0b0f14;--panel:#11171f;--line:#29333f;--text:#edf1f5;--muted:#a9b5c4;--accent:#91d9ed}
+body{-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
 body .catalog-shell,body .episode-sidebar,body .episode-stage{height:100dvh}
-body .episode-sidebar{--muted:#a3b3c4}
-body .sidebar-head{padding:20px 18px 14px}body .sidebar-head h1{font-size:21px;line-height:1.2}
-body .health-nav-wrap{gap:4px;padding:10px}
-body .repo-health-link{padding:10px 12px;border-radius:9px;min-height:44px;background:transparent;border-color:transparent}
-body .repo-health-link strong{font-size:14px}body .repo-health-link span,body .repo-health-link small{display:none}
-body .episode-search-wrap{border-top:1px solid var(--line);padding:12px}
-body .episode-search{font-size:14px;min-height:44px}
-body .episode-list{padding-top:0}body .episode-item{padding:12px;gap:5px 8px}
-body .episode-item strong{font-size:13px;line-height:1.45}body .episode-item small{font-size:12px}
-body .episode-cost{font-size:11px}body .episode-stage{display:grid;grid-template-rows:auto auto minmax(0,1fr)}
+body .episode-sidebar{background:#10161e}
+body .sidebar-head{padding:28px 20px 22px;border:0}body .sidebar-head h1{font-size:20px;font-weight:600;line-height:1.25;letter-spacing:-.03em;margin:12px 0 0}
+body .sidebar-head .brand{color:var(--muted);font-size:10px;letter-spacing:.12em;font-weight:600}
+body .sidebar-head p{display:none}
+body .health-nav-wrap{gap:2px;padding:0 12px 18px}
+body .repo-health-link{padding:10px 12px;border-radius:7px;min-height:44px;background:transparent;border-color:transparent}
+body .repo-health-link strong{font-size:13px;font-weight:500;color:#b6c2d0}body .repo-health-link span,body .repo-health-link small{display:none}
+body .repo-health-link:is(:hover,.active){background:#1b2936;border-color:transparent;box-shadow:none}body .repo-health-link.active strong{color:#d1edf8}
+body .episode-search-wrap{border-top:1px solid var(--line);padding:18px 16px 12px}
+body .episode-search{font-size:13px;min-height:44px;border-radius:8px;background:#111c26;border-color:#354657}
+body .episode-list{padding:0 10px 18px;gap:4px;scrollbar-width:thin}
+body .episode-item{padding:14px 12px;gap:7px 8px;border-radius:8px}
+body .episode-item:is(:hover,.active){background:#1b2936;border-color:transparent;box-shadow:none}
+body .episode-item.active{box-shadow:inset 2px 0 0 var(--accent)}
+body .episode-date{font-size:11px;font-weight:500;color:#a9b7c8;letter-spacing:0}
+body .episode-item strong{font-size:13px;line-height:1.5;font-weight:500}body .episode-item small{font-size:11px}
+body .episode-cost{font-size:10px;color:#a9b7c8}body .sidebar-foot{font-size:10px;padding:14px 20px}
+body .episode-stage{display:grid;grid-template-rows:auto auto minmax(0,1fr);background:var(--bg)}
 body .episode-frame{height:100%;min-height:0;grid-row:3}.mobile-switcher{grid-row:1}
 .catalog-context{grid-row:2}
-.catalog-context{padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:#0d1721;font-size:13px;line-height:1.5}
-.catalog-context strong{color:#e8f5ff}.catalog-context a{color:#9ee6ff;text-underline-offset:4px}
+.catalog-context{padding:12px 36px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--bg);font-size:12px;line-height:1.5}
+.catalog-context strong{color:#c2cddb;font-weight:500}.catalog-context a{color:#a6d5e5;text-underline-offset:4px;text-decoration:none;min-height:24px;display:inline-flex;align-items:center}.catalog-context a:hover{text-decoration:underline}
 .catalog-context .context-links{display:flex;gap:14px;flex-wrap:wrap}
 .catalog-context[hidden]{display:none}
 .catalog-skip{position:fixed;top:8px;left:8px;z-index:100;transform:translateY(-180%);background:#7dd3fc;color:#09121c;padding:12px;border-radius:8px;font-weight:700}
 .catalog-skip:focus{transform:none}
 :where(a,button,select,input):focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
-@media(max-width:760px){
+@media(max-width:960px){
+  body .catalog-shell{display:block;height:100dvh}body .episode-sidebar{display:none}
   body .episode-stage{grid-template-rows:auto auto minmax(0,1fr)}
   body .mobile-switcher{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:8px;padding:8px 12px}
   body .mobile-switcher label{font-size:11px;text-transform:none;letter-spacing:0;color:#b4c7d9}
@@ -38,6 +50,7 @@ body .episode-frame{height:100%;min-height:0;grid-row:3}.mobile-switcher{grid-ro
   .catalog-context{padding:8px 12px;font-size:12px;gap:4px}
   .catalog-context .context-links{gap:14px}
 }
+@media(pointer:coarse){.catalog-context a{min-height:44px}.catalog-context{padding-block:4px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 """
 
@@ -56,8 +69,9 @@ function updateCatalog(value){
   if(episode){
     contextTitle.textContent=episode.status==='Aprobado'?`Episodio aprobado · ${episode.date}`:`Intento de producción · ${episode.date} · ${episode.status}`;
     const latest=document.getElementById('latestAttemptLink');
+    latest.hidden=newest.id===episode.id;
     latest.textContent=`Último intento · ${newest.date}`;latest.href=`?episode=${encodeURIComponent(newest.id)}`;
-    const canonical=document.getElementById('latestApprovedLink');canonical.hidden=!approved;
+    const canonical=document.getElementById('latestApprovedLink');canonical.hidden=!approved||approved.id===episode.id;
     if(approved){canonical.textContent=`Último aprobado · ${approved.date}`;canonical.href=`?episode=${encodeURIComponent(approved.id)}`;}
   }
   [healthLink,memoryLink,metricsLink,experimentsLink].forEach(link=>link?.setAttribute('aria-current',link.classList.contains('active')?'page':'false'));
@@ -141,26 +155,30 @@ def _first_text(payload: Any, keys: tuple[str, ...]) -> str:
 
 def _episode_title(episode_dir: Path) -> str:
     plan = _read_json(episode_dir / "artifacts" / "episode_plan.json", {})
-    title = _first_text(
-        plan,
-        (
-            "episode_title",
-            "title",
-            "topic",
-            "angle",
-            "thesis",
-            "central_thesis",
-        ),
-    )
+    title = _first_text(plan, ("episode_title", "title", "topic"))
     if title:
-        return title[:130]
+        return title
+    # Recovered episodes often have no plan title. Prefer their rendered heading
+    # over a clipped thesis, so the catalog names the page the reader will open.
+    try:
+        document = (episode_dir / "index.html").read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        document = ""
+    heading = re.search(r'<h1\b[^>]*>(.*?)</h1>', document, re.S | re.I)
+    if heading:
+        title = html.unescape(re.sub(r'<[^>]*>', '', heading[1])).strip()
+        if title:
+            return title
+    title = _first_text(plan, ("angle", "thesis", "central_thesis"))
+    if title:
+        return title
 
     selected = _read_json(episode_dir / "artifacts" / "selected_news.json", [])
     if isinstance(selected, list) and selected:
         first = selected[0] if isinstance(selected[0], dict) else {}
         title = _first_text(first, ("title", "titulo", "headline"))
         if title:
-            return title[:130]
+            return title
     return "AI News Daily"
 
 
@@ -257,7 +275,7 @@ def _episode_items(episodes: list[dict[str, Any]], current_id: str) -> str:
         meta = " · ".join(part for part in (status, f"run {run_id}" if run_id else "") if part)
         items.append(
             f'<a class="episode-item{" active" if active else ""}" href="?episode={html.escape(episode_id, quote=True)}" '
-            f'data-episode-id="{html.escape(episode_id, quote=True)}" aria-current="{"page" if active else "false"}">'
+            f'data-episode-id="{html.escape(episode_id, quote=True)}" title="{html.escape(title, quote=True)}" aria-current="{"page" if active else "false"}">'
             f'<span class="episode-date">{html.escape(episode_id)}</span>'
             f'<strong>{html.escape(title)}</strong>'
             f'<small>{html.escape(meta)}</small>'

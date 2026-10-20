@@ -1,5 +1,7 @@
 # Revisión UX de GitHub Pages
 
+**Continuación en PR · 2026-10-20 UTC:** [refinamiento editorial, comparativas y tareas actualizadas](refinement/README.md). Incluye la nueva interfaz y vista previa descargable antes de fusionar. UX-15, UX-16 y comprobación de anchos UX-11a completadas en la rama; teléfono físico, lector de pantalla y prueba con editores siguen pendientes. El historial de despliegues documentado abajo corresponde a la versión anterior.
+
 **Veredicto: herramienta potente, experiencia pesada.** La página permite auditar el sistema, pero exige demasiado esfuerzo para encontrar el guion, entender qué ocurrió y decidir qué hacer. La interfaz había crecido al ritmo de los contratos técnicos; faltaba una jerarquía de trabajo editorial.
 
 Fuente: [Pages](https://jcval94.github.io/AI-News-Daily/), snapshot `c1b139778da7`, publicado por [Review Hub #373](https://github.com/jcval94/AI-News-Daily/actions/runs/39073953118). Capturas de esta auditoría a 1363 × 936. Episodio principal: 2026-09-25; último intento visible: 2026-10-16. No se confunde aprobación con ejecución técnica exitosa.
@@ -81,7 +83,7 @@ Actualizada: **2026-10-19 · 11 tareas cerradas / 3 pendientes**. Esta es la col
 
 Validación determinista actual: **547 pruebas aprobadas**, compilación de `app`/`pipeline`, suite completa de unittest, sintaxis del JavaScript generado y construcción estática con el episodio canónico. Las pruebas adicionales comprueban preservación literal del guion/estado, actualización idempotente del histórico, escape de títulos, conservación de sesión e identidad del documento durante el historial del iframe.
 
-Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan fuera una auditoría con lector de pantalla, pruebas con usuarios y verificación en un Android físico. La vista previa local no está disponible en el navegador de esta sesión; la comprobación visual se realiza sobre el despliegue público tras CI.
+Las capturas permiten evaluar jerarquía y densidad, no certificar WCAG. Quedan fuera una auditoría con lector de pantalla, pruebas con usuarios y verificación en un Android físico. Esta primera auditoría se comprobó sobre el despliegue público; el [refinamiento posterior](refinement/README.md) incorpora comprobación visual de la rama antes de fusionar.
 
 ## Comprobación sobre Pages publicado
 

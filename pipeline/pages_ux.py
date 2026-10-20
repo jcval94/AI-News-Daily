@@ -1,37 +1,48 @@
 """Shared presentation improvements. Never changes persisted production evidence."""
 from __future__ import annotations
 
+import re
+
 COMMON_CSS = r"""
-/* Pages UX: reuse the existing dark palette, with readable controls and less chrome. */
-:root{--muted:#a3b3c4}
-html{scroll-padding-top:120px}body{overflow-wrap:break-word}
+/* One quiet surface system across the existing editorial tools. */
+:root{--bg:#0b0f14;--panel:#11171f;--panel-2:#161e28;--line:#29333f;--text:#edf1f5;--muted:#a9b5c4;--accent:#91d9ed}
+html{scroll-padding-top:100px}body{overflow-wrap:break-word;background:var(--bg);color:var(--text);background-image:none;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
-:where(button,a,input,select,summary):focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
+:where(button,a,input,select,summary):focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 :where(button,input,select){font:inherit}
 button,summary,select{touch-action:manipulation}
 button,summary{cursor:pointer}
 button,input,select{min-height:44px}
 summary{padding:12px;line-height:1.5}
-.ux-disclosure{border:1px solid var(--line);border-radius:12px;margin:12px 0;background:var(--panel)}
-.ux-disclosure>summary{font-size:14px;font-weight:700;color:var(--text)}
+.ux-disclosure{border:1px solid var(--line);border-radius:10px;margin:12px 0;background:transparent}
+.ux-disclosure>summary{font-size:13px;font-weight:600;color:var(--muted)}
+.ux-disclosure[open]>summary{color:var(--text)}
 .ux-disclosure>.ux-disclosure-body{padding:0 14px 14px}
 .ux-tools{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0}
-.ux-tools button,.ux-button{border:1px solid #3a5168;border-radius:9px;padding:9px 13px;background:#122231;color:#dff3ff;font-size:14px}
-.ux-tools button[aria-pressed=true]{background:#20445a;border-color:#7dd3fc}
+.ux-tools button,.ux-button{border:1px solid #3c4c5e;border-radius:8px;padding:9px 13px;background:#161f29;color:#e5edf5;font-size:13px}
+.ux-tools button[aria-pressed=true]{background:#203745;border-color:var(--accent)}
 .ux-result{font-size:13px;color:var(--muted);margin:10px 0}
 .ux-empty{border:1px dashed #465b70;border-radius:12px;padding:22px;color:var(--muted)}
-body main{min-width:0}body h1{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.025em}
-body .hero{padding:20px;border-radius:16px}body .hero p{font-size:14px;line-height:1.55}
+body main{min-width:0}body h1{font-size:clamp(28px,3vw,40px);line-height:1.15;letter-spacing:-.035em;font-weight:650}
+body h2,body h3{letter-spacing:-.02em}
+body .hero{padding:22px 0 24px;border-radius:0;border:0;border-bottom:1px solid var(--line);background:transparent;box-shadow:none}body .hero p{font-size:15px;line-height:1.65;max-width:78ch}
+body :is(.memory-card,.news-card,.check-card,.experiment-card,.media-card,.source-card,.summary-card){background:var(--panel);border-color:var(--line);border-radius:12px;box-shadow:none}
+body :is(.kpi,.summary-card){background:var(--panel);box-shadow:none}
+body :is(input[type=search],select){background:#111923;color:var(--text);border-color:#3c4c5e;border-radius:8px}
+body :is(.filter-chip,.sort-chip,.media-filter,.media-origin-chip){box-shadow:none;background:#141c26;border-color:#334152;color:#c5d0dc}
+body :is(.filter-chip,.sort-chip,.media-filter,.media-origin-chip):is(.active,[aria-pressed=true]){background:#203745;border-color:#7098aa;color:#e8f6fc;box-shadow:none}
+body .media-origin-options button[aria-pressed=true]{background:#203745;border-color:#7098aa;box-shadow:none}
+body .eyebrow{color:var(--muted);letter-spacing:.11em;font-weight:600}
 body .kpi span,body .kpi small,body .eyebrow{font-size:11px}
 body .kpi strong{font-size:20px;overflow-wrap:anywhere}
-body .shell,body main.wrap,body>main{padding-top:22px}
+body .shell,body main.wrap,body>main{padding-top:26px}
 body .table-wrap{max-width:100%;overscroll-behavior-x:contain}
 .table-wrap:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
 @media(max-width:760px){
   html{scroll-padding-top:110px}
   body .kpis,body .kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   body .kpi{padding:12px;min-width:0}
-  body .hero{padding:16px}
+  body .hero{padding:16px 0 20px}
   body .hero h1{font-size:26px}
   body main.wrap,body>main{padding:18px 14px 48px}
   body .topbar{flex-direction:row;align-items:center}
@@ -101,7 +112,8 @@ body .tab-button{font-size:13px;white-space:nowrap;padding:10px 12px;min-height:
 body .controls{position:static;padding:10px 0;margin:0 0 12px;box-shadow:none;background:none}
 body .sort-chip,body .filter-chip,body .reset-button{font-size:13px;padding:8px 11px;min-height:44px}
 body .control-label,body .results-count{font-size:12px}
-body .section-intro{padding:12px 14px;margin:0 0 8px}body .section-intro h2{font-size:18px}
+body .section-intro{padding:4px 0 12px;margin:0 0 8px;border:0;border-radius:0;background:none;box-shadow:none}body .section-intro h2{font-size:18px}
+body .section-intro:is(.story,.news,.coverage){background:none;border:0}
 body .section-intro p{font-size:13px}body .memory-card h3,body .news-card h3{font-size:18px;line-height:1.4}
 body .memory-card .one-liner,body .news-card>p{font-size:14px;line-height:1.6}
 body .chip{font-size:11px;overflow-wrap:anywhere;white-space:normal}
@@ -179,13 +191,19 @@ if(toolbar){
 
 def enhance_page(document: str, kind: str) -> str:
     """Apply once, keeping original tables, links, evidence and fallback markup."""
-    if 'data-pages-ux="1"' in document:
+    if 'data-pages-ux="2"' in document:
         return document
+    if 'data-pages-ux="1"' in document:
+        document = re.sub(r'<style data-pages-ux="1">.*?</style>', '', document, count=1, flags=re.S)
+        for match in reversed(list(re.finditer(r'<script\b[^>]*>.*?</script>', document, re.S))):
+            if match[0].startswith('<script>(()=>{\nconst $ = selector') and 'function tabSemantics(' in match[0]:
+                document = document[:match.start()] + document[match.end():]
+                break
     css, js = {
         "memory": (MEMORY_CSS, MEMORY_JS),
         "health": ("body .check-card p{font-size:14px}body .detail{font-size:12px}body .check-card:has(.critical){border-color:#a85660}", HEALTH_JS),
         "metrics": (METRICS_CSS, METRICS_JS),
         "experiments": ("body .experiment-card{margin:0}body .grid{gap:14px}body dt{font-size:12px}", EXPERIMENTS_JS),
     }[kind]
-    document = document.replace('</head>', '<style data-pages-ux="1">' + COMMON_CSS + css + '</style></head>', 1)
-    return document.replace('</body>', '<script>(()=>{' + HELPERS_JS + js + '})();</script></body>', 1)
+    document = document.replace('</head>', '<style data-pages-ux="2">' + COMMON_CSS + css + '</style></head>', 1)
+    return document.replace('</body>', '<script data-pages-ux-runtime="2">(()=>{' + HELPERS_JS + js + '})();</script></body>', 1)

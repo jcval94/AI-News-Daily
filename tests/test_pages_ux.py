@@ -38,7 +38,7 @@ class PagesUXTests(unittest.TestCase):
             _patch_episode_site(root)
             self.assertEqual(first, (root / 'index.html').read_bytes())
             self.assertEqual((root / 'run_state.json').read_text(), '{"publishable":false}')
-            self.assertIn(b'data-review-ux="2"', first)
+            self.assertIn(b'data-review-ux="3"', first)
 
     def test_previous_presentation_version_is_replaced_without_duplicate_runtime(self):
         document = ('<html><head><style data-review-ux="1">old-css</style></head><body>'
@@ -48,10 +48,36 @@ class PagesUXTests(unittest.TestCase):
         upgraded = enhance_review(document)
         self.assertNotIn('old-css', upgraded)
         self.assertEqual(upgraded.count('const contexts={overview:'), 1)
-        self.assertEqual(upgraded.count('data-review-ux-runtime="2"'), 1)
+        self.assertEqual(upgraded.count('data-review-ux-runtime="3"'), 1)
         self.assertIn('<div id="scriptText">Original</div>', upgraded)
         self.assertIn('{"publishable":false}', upgraded)
         self.assertEqual(enhance_review(upgraded), upgraded)
+
+    def test_version_two_history_replaces_only_the_presentation_runtime(self):
+        document = ('<html><head><style data-review-ux="2">old-style</style></head><body>'
+                    '<div id="scriptText">Texto &amp; hechos originales</div>'
+                    '<script data-review-ux-runtime="2">old-runtime()</script>'
+                    '<script type="application/json">{"publishable":false,"cost":null}</script>'
+                    '<script>original_application_runtime()</script></body></html>')
+        upgraded = enhance_review(document)
+        self.assertNotIn('old-style', upgraded)
+        self.assertNotIn('old-runtime()', upgraded)
+        self.assertIn('<div id="scriptText">Texto &amp; hechos originales</div>', upgraded)
+        self.assertIn('{"publishable":false,"cost":null}', upgraded)
+        self.assertIn('original_application_runtime()', upgraded)
+        self.assertEqual(upgraded.count('data-review-ux-runtime="3"'), 1)
+        self.assertEqual(enhance_review(upgraded), upgraded)
+
+    def test_dashboard_previous_version_does_not_stack_filter_handlers(self):
+        source = '<html><head></head><body><table><td>Sin medir</td></table></body></html>'
+        for kind in ('health', 'memory', 'metrics', 'experiments'):
+            with self.subTest(kind=kind):
+                legacy = enhance_page(source, kind).replace('data-pages-ux="2"', 'data-pages-ux="1"').replace(' data-pages-ux-runtime="2"', '')
+                upgraded = enhance_page(legacy, kind)
+                self.assertEqual(upgraded.count('function tabSemantics('), 1)
+                self.assertEqual(upgraded.count('data-pages-ux-runtime="2"'), 1)
+                self.assertIn('<td>Sin medir</td>', upgraded)
+                self.assertEqual(enhance_page(upgraded, kind), upgraded)
 
     def test_dashboard_upgrade_is_idempotent_and_keeps_evidence(self):
         document = '<html><head></head><body><table><td>Sin medir</td></table></body></html>'
