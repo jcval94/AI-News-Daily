@@ -1,0 +1,443 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-10-23",
+  "window": {
+    "from": "2026-10-17",
+    "to": "2026-10-23"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "Las mejoras aisladas de RAG no se suman de forma fiable.",
+      "why_it_matters": "Un barrido de 450 configuraciones muestra que técnicas fuertes por separado pueden interferir, optimizar retrieval puede perjudicar faithfulness y la mejor composición cambia con el tamaño del corpus."
+    },
+    {
+      "summary": "La evaluación de retrieval agentic necesita lineage, no sólo métricas de ranking.",
+      "why_it_matters": "La evidencia de producción separa calidad de retrieval, engagement/outcome y éxito de producto porque la generación rompe la atribución directa entre un resultado recuperado y la acción posterior del usuario."
+    },
+    {
+      "summary": "La seguridad de memoria se está moviendo al harness y al control plane.",
+      "why_it_matters": "PerMIT y ClawMMU hacen explícitos provenance, autoridad y gates, mientras un stress test independiente muestra que corromper sólo el estado de validez puede reducir fuertemente la calidad aunque el contenido almacenado no cambie."
+    },
+    {
+      "summary": "Las skills pasan de ser recursos recuperables a abstracciones de ejecución recuperables.",
+      "why_it_matters": "El routing dinámico entre macros y tools primitivas, con fallback verificable, evita que la eficiencia de una macro se convierta en fragilidad cuando no encaja."
+    },
+    {
+      "summary": "El serving real usa una superficie de configuración pequeña, diversa y poco estandarizada.",
+      "why_it_matters": "Miles de repositorios muestran pocos parámetros explícitos por integración pero combinaciones muy dispersas; a la vez, el contexto largo local sigue limitado por gestión de KV cache y subutilización de GPU."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2610.29722",
+      "title": "Retrieval Augmented Generation Compositionality",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-21",
+      "updated_at": null,
+      "authors": [
+        "Ido Levy",
+        "Segev Shlomov",
+        "Leshem Choshen"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.29722",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.29722",
+        "arxiv": "2610.29722"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Introduce LASAGNA, un framework abierto para evaluar composiciones completas de RAG mediante 450 configuraciones en ocho benchmarks y corpus de 5 mil a 200 mil documentos.",
+      "what_changed": "En lugar de medir chunking, retrieval, reranking, augmentation o compresión por separado, pre-registra hipótesis y prueba sus interacciones dentro de stacks completos y a distintas escalas.",
+      "why_it_matters": "Obliga a validar una mejora dentro del pipeline real: una ganancia local puede desaparecer al combinarse, favorecer retrieval pero dañar faithfulness o dejar de ser óptima al crecer el corpus.",
+      "evidence": [
+        "Tres técnicas de retrieval que predecían una mejora combinada de 47% entregaron sólo 17% al componerse.",
+        "El estudio cubre 450 configuraciones, ocho benchmarks y corpus entre 5K y 200K documentos.",
+        "Las configuraciones ganadoras difieren entre objetivos de retrieval y faithfulness y cambian con la escala del corpus."
+      ],
+      "limitations": [
+        "Es un preprint y el espacio de 450 configuraciones sigue siendo una fracción del diseño posible de RAG.",
+        "Los resultados no garantizan que la misma composición gane en un corpus, generador o distribución de consultas propios."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "retrieval"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.30423",
+      "title": "When Agentic Retrieval Fails Silently: Framework and Production Evidence from a Creative AI Assistant",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-21",
+      "updated_at": null,
+      "authors": [
+        "Yan (Fergie) Liang",
+        "Anuj Agarwal",
+        "Aditya Reddy Cheruku"
+      ],
+      "organization": "Adobe",
+      "url": "https://arxiv.org/abs/2610.30423",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.30423",
+        "arxiv": "2610.30423"
+      },
+      "topics": [
+        "retrieval",
+        "agents",
+        "evaluation",
+        "observability",
+        "llm_production"
+      ],
+      "summary": "Define LARA, una evaluación por capas que separa calidad de retrieval, engagement y outcome, y éxito de producto, unidos mediante un esquema de lineage de cuatro campos.",
+      "what_changed": "Formaliza el attribution gap de asistentes agentic: el modelo consume los resultados antes que el usuario, la acción puede ocurrir turnos después y el outcome mezcla recuperación con conocimiento paramétrico.",
+      "why_it_matters": "CTR, MRR o NDCG conductual pueden parecer saludables aunque la capa generativa ignore, distorsione o sustituya lo recuperado; el lineage hace observable esa ruptura sin exigir un modelo nuevo.",
+      "evidence": [
+        "El análisis compara una superficie de galería con un asistente de Adobe Express que comparte infraestructura de retrieval.",
+        "Los usuarios de chat reformulan más que los de galería, 44.4% frente a 33.1%, y la interpretación de esa señal cambia porque la reformulación refina contenido generado.",
+        "El framework conserva tres capas independientes en vez de colapsarlas en una sola métrica proxy."
+      ],
+      "limitations": [
+        "La evidencia de producción proviene de un único producto creativo y el paper tiene sólo cinco páginas.",
+        "El lineage mejora atribución observacional, pero no identifica por sí solo causalidad ni sustituye experimentos controlados."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "observability",
+        "retrieval",
+        "deployment"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.28987",
+      "title": "PerMIT: Securing Persistent Memory for LLM Agents via Machine-Checked Integrity Theorems and Scalable Community Trust",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-20",
+      "updated_at": null,
+      "authors": [
+        "Tanqiu Jiang",
+        "Min Bai",
+        "Sadat Shahriar",
+        "Wanyu Du",
+        "Sandesh Swamy"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.28987",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.28987",
+        "arxiv": "2610.28987"
+      },
+      "topics": [
+        "agents",
+        "memory",
+        "safety",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Propone una interfaz finita para memoria persistente donde entradas del usuario y valores confirmados son confiables, y todo valor derivado del entorno debe pasar por un gate auditable antes de influir acciones sensibles.",
+      "what_changed": "Convierte la defensa de memoria en invariantes de arquitectura: dos teoremas de integridad comprobados en Lean 4 reducen los ataques del threat model a una decisión explícita de confirmación.",
+      "why_it_matters": "Ofrece un patrón implementable para compartir y reutilizar memoria sin confiar en que el modelo detecte inyección por contenido; además permite acumular endorsements para amortizar verificación.",
+      "evidence": [
+        "Los dos teoremas de integridad están acompañados por artefactos machine-checked en Lean 4.",
+        "Reporta cero ataques observados exitosos en Trojan Hippo con self-verification y verificadores ligeros.",
+        "En tau²-bench, comunidades de hasta 90 agentes construyen memoria compartida sin promover inyección directa y mejoran tareas held-out."
+      ],
+      "limitations": [
+        "Las garantías dependen de la frontera de confianza, la interfaz finita y el threat model declarados.",
+        "Cero éxitos observados no prueba ausencia de ataques fuera del benchmark ni elimina errores del gate o verificadores correlacionados."
+      ],
+      "practical_applications": [
+        "design",
+        "safety",
+        "agents",
+        "deployment"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.28093",
+      "title": "ClawMMU: Protection-Coherent Virtual Memory for Stateful LLM Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-20",
+      "updated_at": null,
+      "authors": [
+        "Jinhao Hu",
+        "Bardia Mohammadi",
+        "Mofasshara Binte Rafique",
+        "Lars Henning Klein",
+        "Akhil Arora",
+        "Ashvin Goel",
+        "Laurent Bindschaedler"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.28093",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.28093",
+        "arxiv": "2610.28093"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "memory",
+        "safety",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Aplica una analogía de memoria virtual: etiqueta cada fragmento con owner, scope, origen y autoridad, y verifica esas etiquetas al entrar al contexto, persistirse, recuperarse o conducir una tool call.",
+      "what_changed": "Desplaza la detección desde el contenido hacia provenance y autoridad con una regla de no auto-elevación: la información puede recibir autoridad, pero no elevarse por sí misma.",
+      "why_it_matters": "Hace que una inyección oculta en web o resultados de tools sea un fallo de protección bloqueable por el harness incluso si el modelo obedece el texto malicioso.",
+      "evidence": [
+        "El enforcement cubre los cuatro bordes críticos: ingreso al contexto, write, read y uso para tool calls.",
+        "La política se basa en metadatos de origen y autoridad, no en clasificar semánticamente texto potencialmente adversarial.",
+        "El trabajo fue aceptado en el workshop AgenticOS de NeurIPS 2026 y expone una arquitectura compacta de seis páginas."
+      ],
+      "limitations": [
+        "Es un paper corto de workshop con evidencia empírica limitada.",
+        "La utilidad depende de propagación correcta de labels y mediación completa; adapters o tools fuera del enforcement reabren la superficie."
+      ],
+      "practical_applications": [
+        "design",
+        "safety",
+        "agents",
+        "deployment"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.30698",
+      "title": "Governance-State Corruption in Long-Term Memory for LLM Agents: A Cross-Model Stress Test",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-22",
+      "updated_at": null,
+      "authors": [
+        "Bowen Liu",
+        "Youting Wang",
+        "Bonan Shen",
+        "Dingyan Shang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.30698",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.30698",
+        "arxiv": "2610.30698"
+      },
+      "topics": [
+        "agents",
+        "memory",
+        "evaluation",
+        "observability",
+        "safety"
+      ],
+      "summary": "Aísla governance-state corruption: alterar qué registros retenidos son válidos para el contexto, manteniendo fijos contenido y tareas, y mide el daño y la recuperación en varios sistemas de memoria.",
+      "what_changed": "Distingue integridad del control plane frente a precisión de retrieval o poisoning del contenido y construye pares y tripletas matched para medir el efecto de esa capa por separado.",
+      "why_it_matters": "Un memory eval puede reportar recuperación correcta mientras el agente usa registros revocados o excluye registros vigentes; se necesitan tests del estado de validez y su enforcement.",
+      "evidence": [
+        "Se estudian seis proveedores, 731 bases de benchmark y 2,080 pares matched.",
+        "La corrupción cambia la proyección operativa en 96.25% de los pares; enforcement con oracle la restaura en 100% en checks offline.",
+        "En el panel downstream, clean menos corrupted cae 40.54 puntos en LongMemEval y 30.60 puntos en Memora FAMA, con recuperación posterior."
+      ],
+      "limitations": [
+        "El panel downstream es una selección determinista no probabilística de 300 tripletas, no una muestra representativa.",
+        "Los efectos full-cohort con scorer congelado se presentan como proxies descriptivos, no como efectos semánticos poblacionales validados."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "observability",
+        "safety",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.31461",
+      "title": "Adaptive Skill Granularity for Coding Agents: Runtime Routing and Macro-to-Micro Recovery",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-22",
+      "updated_at": null,
+      "authors": [
+        "Dingxuan Zhang",
+        "Yanhui Jiang",
+        "Jun Wang",
+        "Hefeng Zhou"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.31461",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.31461",
+        "arxiv": "2610.31461"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Trata la granularidad de una skill como una política runtime: elegir tools primitivas, una macro o ejecución híbrida y caer de macro a micro cuando falla.",
+      "what_changed": "Amplía la discusión de skills desde retrieval y composición previa hacia control durante la ejecución, con un router basado en features y un executor de recuperación como máquina de estados finita.",
+      "why_it_matters": "Permite aprovechar macros baratas sin quedar atrapado en su brittleness; además vuelve medibles la elección de ruta, transiciones, recuperación y coste total.",
+      "evidence": [
+        "La evaluación usa éxito definido por verifier, coste total y métricas de proceso como adopción de macro, recuperación, route match y corrección de transición.",
+        "Las macros fijas son eficientes cuando aplican pero frágiles ante mismatch.",
+        "El routing runtime y el fallback macro-to-micro recuperan fallos controlados que la ejecución fija deja sin resolver."
+      ],
+      "limitations": [
+        "La evidencia usa un protocolo determinista de coding agent y fallos controlados; falta validación en entornos más abiertos.",
+        "El router por features añade políticas y estados que también requieren mantenimiento y evaluación."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.27945",
+      "title": "How Developers Configure LLM Inference: A Large-Scale Study of Real-World Practices",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-20",
+      "updated_at": null,
+      "authors": [
+        "Nada Zine",
+        "Matias Martinez",
+        "Romain Rouvoy",
+        "Clément Quinton"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.27945",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.27945",
+        "arxiv": "2610.27945"
+      },
+      "topics": [
+        "llm_production",
+        "serving",
+        "inference",
+        "observability"
+      ],
+      "summary": "Estudio empírico de 5,398 repositorios que usan Transformers, vLLM u OpenAI API para caracterizar qué opciones de inferencia se configuran explícitamente y en qué combinaciones.",
+      "what_changed": "Sustituye intuiciones sobre la configuración de serving por una medición de 345,117 ocurrencias, diferenciando backends y contextos de aplicación.",
+      "why_it_matters": "Sugiere dónde concentrar defaults, documentación, telemetría y tests de configuración: pocas opciones dominan el uso, pero las firmas combinadas son muy heterogéneas.",
+      "evidence": [
+        "Analiza 5,398 repositorios y 345,117 ocurrencias de opciones explícitas.",
+        "Aunque 98.8% de las opciones documentadas aparece alguna vez, 78.9% se configura en como máximo 10% de los repositorios del backend.",
+        "La mediana es dos opciones para Transformers y cuatro para vLLM y OpenAI; 56.8–61.6% de las firmas multi-opción aparece en un único repositorio."
+      ],
+      "limitations": [
+        "Mide configuración explícita en código abierto, no valores efectivos heredados de defaults, flags externos o infraestructura privada.",
+        "Frecuencia de uso no demuestra importancia, calidad ni optimalidad de una opción."
+      ],
+      "practical_applications": [
+        "design",
+        "deployment",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.28223",
+      "title": "Local Inference of LLMs on Long Contexts: A Data Systems Perspective",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-20",
+      "updated_at": null,
+      "authors": [
+        "Mattias Dürrmeier",
+        "Alberto Lerner"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.28223",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.28223",
+        "arxiv": "2610.28223"
+      },
+      "topics": [
+        "llm_production",
+        "serving",
+        "inference",
+        "memory",
+        "architecture"
+      ],
+      "summary": "Caracteriza inferencia local de contexto largo en varias generaciones de GPU y replantea sus cuellos de botella como problemas de sistemas de datos, no sólo de capacidad o cuantización.",
+      "what_changed": "Muestra que self-attention domina a contextos largos pero deja recursos clave subutilizados, incluso con peor ajuste relativo en la GPU más nueva, y señala paging, cache locality y sincronización del KV cache.",
+      "why_it_matters": "Para cargas privadas o single-user, comprar hardware más nuevo o cuantizar no garantiza buen rendimiento; el layout y movimiento de datos del KV cache pueden ser la palanca principal.",
+      "evidence": [
+        "Compara varios modelos a través de varias generaciones de GPU en lugar de un único stack.",
+        "Confirma que self-attention domina el runtime al crecer el contexto.",
+        "Observa subutilización material de recursos y formula recomendaciones sobre paging, cache utilization y sincronización."
+      ],
+      "limitations": [
+        "El resumen no cuantifica aquí una ganancia de una implementación nueva; es principalmente caracterización y agenda de sistemas.",
+        "Los resultados dependen de modelos, kernels, drivers y GPUs evaluados y pueden cambiar con runtimes posteriores."
+      ],
+      "practical_applications": [
+        "design",
+        "deployment",
+        "serving"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Evalúa stacks RAG completos y a la escala final del corpus; no presupuestes la suma de gains medidos por componente.",
+      "Modela memoria como un recurso protegido: provenance, owner, scope, autoridad y validity state deben viajar con cada registro y ser verificados en cada boundary.",
+      "Diseña skills macro con ruta de escape explícita a tools primitivas y una máquina de estados observable para la recuperación."
+    ],
+    "evaluation": [
+      "Separa retrieval, engagement/outcome y éxito de producto, enlazándolos con lineage por evento para evitar métricas proxy sin atribución.",
+      "Añade fault injection al control plane de memoria: revocaciones, expiración, promoción y filtros deben probarse manteniendo fijo el contenido.",
+      "En RAG mide tanto retrieval como faithfulness y repite el sweep cuando cambien corpus, generador o volumen; la mejor composición no es estable por defecto."
+    ],
+    "deployment": [
+      "Haz enforcement de autoridad fuera del modelo y registra cada gate o elevación; una clasificación semántica no sustituye provenance estructural.",
+      "Telemetriza los pocos parámetros de inferencia que realmente se configuran y conserva la firma efectiva completa para reproducibilidad y rollback.",
+      "Para contexto largo local, perfila atención, paging y locality del KV cache antes de atribuir el límite sólo a VRAM o recurrir automáticamente a cuantización."
+    ]
+  }
+}
