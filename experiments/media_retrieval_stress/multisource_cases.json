@@ -1,0 +1,202 @@
+[
+  {
+    "id": "khan-baba",
+    "label": "Khan Baba",
+    "description": "Khan Baba (Arbab Khizer Hayat), el pakistaní conocido como Pakistani Hulk.",
+    "kind": "person",
+    "evidence_groups": [
+      [
+        "khan baba",
+        "arbab khizer",
+        "arbab khizar"
+      ]
+    ],
+    "reference": "https://tribune.com.pk/story/1276326/man-claims-pakistans-answer-hulk"
+  },
+  {
+    "id": "juliane-koepcke",
+    "label": "Juliane Koepcke",
+    "description": "Juliane Koepcke, superviviente del vuelo LANSA 508 en Perú en 1971.",
+    "kind": "person",
+    "evidence_groups": [
+      [
+        "juliane koepcke",
+        "juliane diller"
+      ]
+    ],
+    "reference": "https://www.abc.net.au/news/2022-10-02/the-girl-who-fell-3km-into-the-amazon-and-survived/101413154"
+  },
+  {
+    "id": "tsutomu-yamaguchi",
+    "label": "Tsutomu Yamaguchi",
+    "description": "Tsutomu Yamaguchi, superviviente de Hiroshima y Nagasaki.",
+    "kind": "person",
+    "evidence_groups": [
+      [
+        "tsutomu yamaguchi"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Tsutomu_Yamaguchi"
+  },
+  {
+    "id": "vesna-vulovic",
+    "label": "Vesna Vulović",
+    "description": "Vesna Vulović, azafata que sobrevivió al accidente del vuelo JAT 367 en 1972.",
+    "kind": "person",
+    "evidence_groups": [
+      [
+        "vesna vulovic"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Vesna_Vulovic"
+  },
+  {
+    "id": "vasili-arkhipov",
+    "label": "Vasili Arkhipov",
+    "description": "Vasili Arkhipov, oficial soviético del submarino B-59 durante la crisis de 1962.",
+    "kind": "person",
+    "evidence_groups": [
+      [
+        "vasili arkhipov",
+        "vasily arkhipov",
+        "vasili alexandrovich arkhipov",
+        "vasiliy arkhipov"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Vasily_Arkhipov"
+  },
+  {
+    "id": "stanislav-petrov",
+    "label": "Stanislav Petrov",
+    "description": "Stanislav Petrov, oficial soviético de la falsa alarma nuclear de 1983.",
+    "kind": "person",
+    "evidence_groups": [
+      [
+        "stanislav petrov",
+        "stanislav yevgrafovich petrov"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Stanislav_Petrov"
+  },
+  {
+    "id": "toyota-war",
+    "label": "Guerra de los Toyota",
+    "description": "La Guerra de los Toyota de 1987 en Chad, entre Chad y Libia.",
+    "kind": "event",
+    "evidence_groups": [
+      [
+        "toyota war",
+        "guerre des toyota",
+        "guerra de los toyota"
+      ],
+      [
+        "1987",
+        "chad",
+        "libya",
+        "libia"
+      ]
+    ],
+    "reference": "https://digitallibrary.un.org/record/153475/files/S_19400-ES.pdf"
+  },
+  {
+    "id": "emu-war",
+    "label": "Guerra del Emú",
+    "description": "La Guerra del Emú de 1932 en Australia Occidental.",
+    "kind": "event",
+    "evidence_groups": [
+      [
+        "emu war",
+        "guerra del emu",
+        "guerre des emeus"
+      ],
+      [
+        "1932",
+        "australia"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Emu_War"
+  },
+  {
+    "id": "lake-nyos",
+    "label": "Desastre del lago Nyos",
+    "description": "El desastre del lago Nyos de 1986 en Camerún, causado por la liberación de gas.",
+    "kind": "event",
+    "evidence_groups": [
+      [
+        "nyos"
+      ],
+      [
+        "1986",
+        "disaster",
+        "disastre",
+        "catastrophe",
+        "degassing",
+        "gas",
+        "desastre"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Lake_Nyos_disaster"
+  },
+  {
+    "id": "molasses-flood",
+    "label": "Inundación de melaza",
+    "description": "La gran inundación de melaza de Boston del 15 de enero de 1919.",
+    "kind": "event",
+    "evidence_groups": [
+      [
+        "molasses",
+        "melaza"
+      ],
+      [
+        "flood",
+        "disaster",
+        "inundacion"
+      ],
+      [
+        "boston",
+        "1919"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Great_Molasses_Flood"
+  },
+  {
+    "id": "halifax-explosion",
+    "label": "Explosión de Halifax",
+    "description": "La explosión de Halifax del 6 de diciembre de 1917, por la colisión del Mont-Blanc.",
+    "kind": "event",
+    "evidence_groups": [
+      [
+        "halifax"
+      ],
+      [
+        "explosion"
+      ],
+      [
+        "1917",
+        "mont blanc"
+      ]
+    ],
+    "reference": "https://en.wikipedia.org/wiki/Halifax_Explosion"
+  },
+  {
+    "id": "tanganyika-laughter",
+    "label": "Epidemia de risa de Tanganica",
+    "description": "La epidemia de risa de Tanganica de 1962, iniciada en Kashasha.",
+    "kind": "event",
+    "evidence_groups": [
+      [
+        "tanganyika",
+        "tanganica",
+        "kashasha"
+      ],
+      [
+        "laughter",
+        "risa"
+      ],
+      [
+        "1962"
+      ]
+    ],
+    "reference": "https://www.degruyterbrill.com/document/doi/10.1515/HUMOR.2007.003/html"
+  }
+]

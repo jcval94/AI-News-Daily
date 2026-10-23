@@ -15,6 +15,9 @@ def reuse_media(episode_dir: Path, output_dir: Path, zip_path: Path, *, minimum=
     source_root = episode_dir.resolve().parents[1]
     source = source_root / 'multimedia' / episode_dir.name
     try:
+        origin_path = source / 'review_media_origin.json'
+        if origin_path.is_file() and json.loads(origin_path.read_text(encoding='utf-8')).get('kind') == 'review_only':
+            return False
         state = json.loads((episode_dir/'run_state.json').read_text(encoding='utf-8'))
         if state.get('status') != 'approved': return False
         manifest = json.loads((source/'manifest.json').read_text(encoding='utf-8'))
@@ -30,7 +33,7 @@ def reuse_media(episode_dir: Path, output_dir: Path, zip_path: Path, *, minimum=
             if not keys or seen & keys: return False
             seen.update(keys)
             provenance = asset.get('media_provenance')
-            if provenance and (provenance.get('relation') != 'exact' or sha256(file) != provenance.get('rendition_id')):
+            if provenance and ((asset.get('retrieval_subject') or asset.get('visual_role') in {'evidence', 'historical_mirror'}) and provenance.get('relation') != 'exact' or sha256(file) != provenance.get('rendition_id')):
                 return False
         readiness_path = episode_dir/'asset_readiness.json'
         if readiness_path.is_file() and not json.loads(readiness_path.read_text(encoding='utf-8'))['gate']['ready_to_record']:

@@ -218,11 +218,18 @@ jobs:
           echo "Backfill episode status: $STATUS"
           test "$STATUS" = "approved"
 
+      - name: Install media retrieval adapters
+        run: python -m pip install -c requirements.lock '.[media-retrieval]'
+
       - name: Build deterministic dense multimedia handoff
         env:
           TARGET_DATE: ${{ steps.target.outputs.target_date }}
           RUN_ROOT: ${{ steps.workspace.outputs.run_root }}
           MAX_MEDIA: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4-nano' }}
+          MEDIA_RETRIEVAL_MODE: ${{ vars.MEDIA_RETRIEVAL_MODE || 'integrated' }}
+          MEDIA_LIVE_ACQUISITION: '1'
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           MEDIA_HTTP_MAX_ATTEMPTS: ${{ vars.MEDIA_HTTP_MAX_ATTEMPTS || '3' }}
           MEDIA_HTTP_RETRY_BASE_SECONDS: ${{ vars.MEDIA_HTTP_RETRY_BASE_SECONDS || '1.0' }}

@@ -63,7 +63,7 @@ class Redirect(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
-def fetch(url, *, domains, max_bytes, timeout=30, body=None, headers=None):
+def fetch(url, *, domains, max_bytes, timeout=30, body=None, headers=None, raw_errors=False):
     validate_url(url, domains)
     request = urllib.request.Request(url, data=None if body is None else json.dumps(body).encode(),
                                      headers={"User-Agent": USER_AGENT,
@@ -78,13 +78,24 @@ def fetch(url, *, domains, max_bytes, timeout=30, body=None, headers=None):
             raise ValueError("Remote file exceeds size budget")
         return data
     except urllib.error.HTTPError as error:
+        if raw_errors:
+            raise
         if error.code in (401, 403, 429):
             raise Blocked(f"Provider denied access or rate limited (HTTP {error.code})") from None
         raise RuntimeError(f"Provider HTTP {error.code}") from None
 
 
 def request_json(url, **kwargs):
-    data = json.loads(fetch(url, domains=API_HOSTS, max_bytes=8 * 1024 * 1024, **kwargs))
+    from pipeline.media_http import public_json
+    if kwargs.get('body') is not None or kwargs.get('headers'):
+        data = json.loads(fetch(url, domains=API_HOSTS, max_bytes=8 * 1024 * 1024, **kwargs))
+    else:
+        try:
+            data = public_json(url, lambda: fetch(url, domains=API_HOSTS, max_bytes=8 * 1024 * 1024, raw_errors=True, **kwargs))
+        except urllib.error.HTTPError as error:
+            if error.code in (401, 403, 429):
+                raise Blocked(f'Provider denied access or rate limited (HTTP {error.code})') from None
+            raise RuntimeError(f'Provider HTTP {error.code}') from None
     if not isinstance(data, dict):
         raise ValueError("API returned a non-object")
     if data.get("error"):

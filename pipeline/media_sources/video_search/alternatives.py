@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 import json
+import hashlib
 from urllib.parse import urlencode, urlsplit, quote
 
 from pipeline.media_sources import public_media
@@ -12,11 +13,17 @@ from pipeline.media_sources.video_search.plan import normalize
 
 def api(base, **params):
     from pipeline.media_sources.image_search.sources import fetch, Blocked
+    from pipeline.media_http import public_json
+    from urllib.error import HTTPError
     url = base + ("?" + urlencode(params) if params else "")
     fixed = ("commons.wikimedia.org", "search.joinpeertube.org", "images-api.nasa.gov")
     try:
-        data = (json.loads(fetch(url, domains=fixed, max_bytes=8 * 1024 * 1024))
+        data = (public_json(url, lambda: fetch(url, domains=fixed, max_bytes=8 * 1024 * 1024, raw_errors=True))
                 if urlsplit(base).hostname in fixed else public_media.json_get(url))
+    except HTTPError as error:
+        if error.code in (401, 403, 429):
+            raise ProviderBlocked(f"Provider HTTP {error.code}") from None
+        raise RuntimeError(f"Provider HTTP {error.code}") from None
     except (public_media.AccessDenied, Blocked) as error:
         raise ProviderBlocked(str(error)) from None
     if not isinstance(data, dict) or data.get("error"):
@@ -81,16 +88,47 @@ def peertube_search(query, limit):
     return rows
 
 
+NASA_EDITORIAL_LICENSE = "NASA media usage guidelines (editorial use)"
+NASA_POLICY_URL = "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+
+
+def nasa_rights(metadata):
+    # NASA permits factual editorial use; third-party media are explicitly excluded.
+    # Require a government NASA centre and retain the complete source record as evidence.
+    if metadata.get('center') not in {'HQ', 'JSC', 'KSC', 'GSFC', 'MSFC', 'ARC', 'GRC', 'LARC', 'AFRC', 'SSC'}:
+        return 'unknown'
+    text = json.dumps(metadata, ensure_ascii=False)
+    if re.search(r'©|copyright|courtesy|all rights|third.party|Getty|Reuters|Associated Press|ESA/|SpaceX|Caltech|JPL', text, re.I):
+        return 'unknown'
+    creator = str(metadata.get('secondary_creator') or metadata.get('photographer') or '')
+    if creator and not creator.upper().startswith('NASA'):
+        return 'unknown'
+    return NASA_EDITORIAL_LICENSE
+
+
+def peertube_rights(item):
+    host = public_media.validate_url(item['url']).hostname
+    detail = api(f"https://{host}/api/v1/videos/{item['id']}")
+    if detail.get('uuid') != item['id'] or detail.get('privacy', {}).get('id') != 1 or detail.get('downloadEnabled') is not True:
+        raise ValueError('PeerTube item is not the selected public downloadable recording')
+    return (detail.get('licence') or detail.get('license') or {}).get('label', 'unknown')
+
+
 def nasa_search(query, limit):
     data = api("https://images-api.nasa.gov/search", q=query, media_type="video", page_size=min(limit, 15))
     rows = []
     for item in data.get("collection", {}).get("items", []):
         d = (item.get("data") or [{}])[0]
         ident = d.get("nasa_id", "")
-        if not re.fullmatch(r"[A-Za-z0-9_.-]{1,160}", ident):
+        if not isinstance(ident, str) or not ident or len(ident) > 512 or any(ord(c) < 32 for c in ident):
             continue
-        rows.append(row("nasa", ident, "https://images.nasa.gov/details/" + quote(ident), d.get("title"),
-                        d.get("description"), d.get("center"), "consult NASA media usage guidelines", query))
+        # NASA catalogue IDs legitimately contain spaces. Keep them out of local paths;
+        # the raw ID is encoded only into the fixed official API URL.
+        local_id = ident if re.fullmatch(r"[A-Za-z0-9_.-]{1,160}", ident) else 'nasa-' + hashlib.sha256(ident.encode()).hexdigest()[:32]
+        rows.append(row("nasa", local_id, "https://images.nasa.gov/details/" + quote(ident, safe=''), d.get("title"),
+                        d.get("description"), d.get("center"), nasa_rights(d), query,
+                        nasa_id=ident,
+                        rights_evidence={"policy_url": NASA_POLICY_URL, "catalogue": d}))
     return rows
 
 
@@ -116,6 +154,7 @@ def direct_media(item):
         if not files:
             raise ValueError("No public self-contained MP4 under 256 MiB; HLS/P2P is not downloaded")
         chosen = min(files, key=lambda f: (f.get("resolution", {}).get("id", 9999) > 360, int(f["size"])))
+        metadata["license"] = (d.get("licence") or d.get("license") or {}).get("label", "unknown")
         metadata.update(source_duration_seconds=d.get("duration"), source_size_bytes=chosen["size"],
                         source_has_audio=chosen.get("hasAudio"))
         return chosen["fileUrl"], metadata, None
@@ -128,7 +167,7 @@ def direct_media(item):
         metadata["source_duration_seconds"] = info.get("duration")
         return chosen["src"], metadata, ("upload.wikimedia.org",)
     if source == "nasa":
-        d = api("https://images-api.nasa.gov/asset/" + quote(item["id"]))
+        d = api("https://images-api.nasa.gov/asset/" + quote(item.get("nasa_id") or item["id"], safe=''))
         files = [x["href"] for x in d.get("collection", {}).get("items", [])
                  if str(x.get("href", "")).lower().endswith(".mp4")]
         if not files:
