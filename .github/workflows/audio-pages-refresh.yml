@@ -1,0 +1,140 @@
+name: Audio Library Pages Refresh
+
+# Safely patch /audio/ into a previous COMPLETE, successfully deployed site.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "catalog/audio/index.json"
+      - "pipeline/audio_library.py"
+      - "pipeline/audio_library_pages.py"
+      - "pipeline/audio_pages_refresh.py"
+      - "config/audio_library.schema.json"
+      - ".github/workflows/audio-pages-refresh.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+# Single deployment lock, shared with Editorial Review Hub.
+concurrency:
+  group: editorial-review-hub-main
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install metadata validator only
+        run: python -m pip install -c requirements.lock "jsonschema>=4.23,<5.0"
+      - name: Validate audio catalog and safety tests
+        run: |
+          python -m pipeline.audio_library --catalog catalog/audio/index.json
+          python -m unittest tests.test_audio_library tests.test_audio_library_pages tests.test_audio_pages_refresh -v
+
+      - name: Restore last successful full Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/audio-pages-restore
+          restored=0
+          gh run list --workflow editorial-review-hub.yml --branch main \
+            --status success --limit 40 --json databaseId \
+            --jq '.[].databaseId' > /tmp/audio-pages-restore/runs.txt
+          while IFS= read -r run; do
+            [ -n "$run" ] || continue
+            # Watchdog-only runs may have successful overall status but no deploy.
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run/jobs?per_page=100" \
+              > /tmp/audio-pages-restore/jobs.json
+            deployed="$(jq '[.jobs[] | select(.name == "deploy" and .conclusion == "success")] | length' \
+              /tmp/audio-pages-restore/jobs.json)"
+            [ "$deployed" -gt 0 ] || continue
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run/artifacts?per_page=100" \
+              > /tmp/audio-pages-restore/artifacts.json
+            artifact="$(jq -r --arg run "$run" \
+              '[.artifacts[] | select(.expired == false and
+                (.name | startswith("editorial-pages-snapshot-")) and
+                (.name | endswith("-" + $run)))] | .[0].name // empty' \
+              /tmp/audio-pages-restore/artifacts.json)"
+            [ -n "$artifact" ] || continue
+            gh run download "$run" --name "$artifact" --dir pages-site
+            echo "Restored deployed Pages run $run ($artifact)"
+            restored=1
+            break
+          done < /tmp/audio-pages-restore/runs.txt
+          if [ "$restored" -ne 1 ]; then
+            echo "::error::No eligible, deployed Pages snapshot. Run full Review Hub first."
+            exit 1
+          fi
+
+      - name: Check snapshot against live root
+        env:
+          PAGES_ROOT_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if curl -fsSL --max-time 25 "$PAGES_ROOT_URL" -o /tmp/audio-pages-restore/live-index.html \
+              && cmp -s /tmp/audio-pages-restore/live-index.html pages-site/index.html; then
+              echo "Trusted snapshot matches current live root"; exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Snapshot stale or Pages unreachable; refusing to overwrite." 
+          exit 1
+
+      - name: Patch only audio and verify other files unchanged
+        run: |
+          set -euo pipefail
+          python -m pipeline.audio_pages_refresh \
+            --pages-root pages-site --catalog catalog/audio/index.json
+          test -s pages-site/audio/index.html
+          test -s pages-site/audio/audio.js
+          node --check pages-site/audio/audio.js
+          grep -q 'data-audio-library="v1"' pages-site/audio/index.html
+          grep -q 'href="audio/index.html"' pages-site/index.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload entire preserved site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: pages-site
+      - name: Deploy patched site
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify public audio and preserved root
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          root="$(printf '%s' "$PAGE_URL" | sed 's:/*$::')/"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsSL --max-time 20 "$root" -o /tmp/live-site.html \
+              && cmp -s /tmp/live-site.html pages-site/index.html \
+              && curl -fsSL --max-time 20 "$(printf '%s' "$root")audio/" -o /tmp/live-audio.html \
+              && grep -q 'data-audio-library="v1"' /tmp/live-audio.html \
+              && curl -fsSL --max-time 20 "$(printf '%s' "$root")audio/audio.js" -o /tmp/live-audio.js \
+              && node --check /tmp/live-audio.js; then
+              echo "Audio refreshed and published root unchanged"; exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Public audio/root verification failed"; exit 1

@@ -20,4 +20,15 @@ node --check /tmp/pages-site/audio/audio.js
 
 ## Actualización
 
-La primera publicación se ejecuta al fusionar este PR porque cambia el workflow de Pages. Las ediciones posteriores del catálogo **sí disparan CI de validación**, pero no inician por sí solas una producción multimedia costosa: aparecen en la siguiente reconstrucción ordinaria de Pages o en un `workflow_dispatch` solicitado expresamente.
+La publicación canónica sigue siendo `Editorial Review Hub`, que genera episodios y construye todo el sitio. La publicación incremental usa el workflow `.github/workflows/audio-pages-refresh.yml`:
+
+1. Se ejecuta automáticamente tras cambios en `catalog/audio/index.json`, el contrato o código de la biblioteca, y también manualmente.
+2. Examina hasta 40 ejecuciones recientes del Review Hub en `main`, seleccionando un run con **job deploy exitoso** y artefacto completo `editorial-pages-snapshot-...` no expirado (retención 30 días).
+3. Compara los bytes de `index.html` del artefacto contra los de la página pública actual para rechazar una base desactualizada o inaccesible.
+4. Valida la integridad del sitio (raíz, navegación, episodios, salud, memoria, métricas, laboratorio); genera **únicamente** un nuevo directorio `audio/` y comprueba hashes de los archivos críticos del sitio y de cada página de episodio, sin modificar ningún otro directorio.
+5. Despliega **el sitio completo recuperado**, no una carpeta parcial, usando las mismas acciones oficiales de Pages; prueba la URL pública de la biblioteca, el JavaScript y la raíz tras el despliegue.
+6. Comparte el lock `editorial-review-hub-main` con el publicador pesado para evitar desplegar simultáneamente.
+
+**Fail closed:** si no hay artefacto desplegado confiable, el sitio es inaccesible, falta alguna sección, el catálogo es inválido o la base pública es diferente, la acción falla y **no despliega**. En ese caso ejecutar el Review Hub completo; nunca sustituirlo por un Pages parcial. No descarga audios, no ejecuta modelos ni reconstruye multimedia.
+
+La primera ejecución automática de este workflow al fusionarlo en main solo debe considerarse confirmada si GitHub Actions reporta despliegue y pruebas HTTP exitosos. La existencia del código o CI verde no prueba que la página pública se haya actualizado.
