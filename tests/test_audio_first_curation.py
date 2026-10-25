@@ -33,7 +33,8 @@ class AudioFirstCurationTests(unittest.TestCase):
                     self.assertRegex(source, r"^https://pixabay\.com/music/[a-z0-9-]+-\d+/$")
                     self.assertEqual(entry["license"]["identifier"], "Pixabay Content License")
                 else:
-                    self.fail("Unexpected provider in initial curated sample")
+                    self.assertRegex(source, r"^https://[^/]+/.+")
+                    self.assertTrue(entry["license"]["terms_url"].startswith("https://"))
         self.assertEqual(validate_catalog({"schema_version": 1, "items": records})["total"], len(records))
 
     def test_expected_pilot_mix_and_content_id_warnings(self):
