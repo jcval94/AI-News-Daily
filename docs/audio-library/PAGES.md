@@ -25,7 +25,7 @@ La publicación canónica sigue siendo `Editorial Review Hub`, que genera episod
 1. Se ejecuta automáticamente tras cambios en `catalog/audio/index.json`, el contrato o código de la biblioteca, y también manualmente.
 2. Examina hasta 40 ejecuciones recientes del Review Hub en `main`, seleccionando un run con **job deploy exitoso** y artefacto completo `editorial-pages-snapshot-...` no expirado (retención 30 días).
 3. Compara los bytes de `index.html` del artefacto contra los de la página pública actual para rechazar una base desactualizada o inaccesible.
-4. Valida la integridad del sitio (raíz, navegación, episodios, salud, memoria, métricas, laboratorio); genera **únicamente** un nuevo directorio `audio/` y preserva hash de todos los archivos de control y portadas de episodios.
+4. Valida la integridad del sitio (raíz, navegación, episodios, salud, memoria, métricas, laboratorio); genera **únicamente** un nuevo directorio `audio/` y comprueba hashes de los archivos críticos del sitio y de cada página de episodio, sin modificar ningún otro directorio.
 5. Despliega **el sitio completo recuperado**, no una carpeta parcial, usando las mismas acciones oficiales de Pages; prueba la URL pública de la biblioteca, el JavaScript y la raíz tras el despliegue.
 6. Comparte el lock `editorial-review-hub-main` con el publicador pesado para evitar desplegar simultáneamente.
 
