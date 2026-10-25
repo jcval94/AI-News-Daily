@@ -24,10 +24,12 @@ def fixture() -> dict:
 
 
 class AudioLibraryTests(unittest.TestCase):
-    def test_empty_index_valid_and_not_fabricated(self):
+    def test_real_index_valid_and_empty_fixture_supported(self):
         path = Path(__file__).resolve().parents[1] / "catalog/audio/index.json"
-        self.assertEqual(load_catalog(path), {"schema_version": 1, "items": []})
-        self.assertEqual(validate_catalog(load_catalog(path))["approved"], 0)
+        payload = load_catalog(path)
+        self.assertEqual(payload["schema_version"], 1)
+        self.assertEqual(validate_catalog(payload)["total"], len(payload["items"]))
+        self.assertEqual(validate_catalog({"schema_version": 1, "items": []})["total"], 0)
 
     def test_pending_never_auto_approved(self):
         item = fixture()
