@@ -53,8 +53,6 @@ on:
       - "editorial/narrative_memory.jsonl"
       - "pipeline/video_metrics_dashboard.py"
       - "pipeline/experiments_dashboard.py"
-      - "pipeline/audio_library*.py"
-      - "catalog/audio/**"
       - "tests/test_e2e_failure_paths.py"
       - "tests/fixtures/e2e_narrative_memory.jsonl"
       - "tests/test_repo_health.py"
