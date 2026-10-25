@@ -19,7 +19,6 @@ class AudioLibraryPagesTests(unittest.TestCase):
             body = page.read_text(encoding="utf-8")
             self.assertIn('data-audio-library="v1"', body)
             self.assertIn('id="audioSearch"', body)
-            self.assertIn("Sin", "Sin")
             self.assertIn('src="audio.js"', body)
             self.assertNotIn("<audio", body.lower())
             self.assertTrue((root / "audio/audio.js").is_file())
