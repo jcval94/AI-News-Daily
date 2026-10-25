@@ -115,6 +115,10 @@
               "attribution_text": {
                 "type": "string",
                 "maxLength": 2000
+              },
+              "evidence_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
               }
             }
           },
@@ -202,6 +206,10 @@
               },
               "share_alike_obligations_acknowledged": {
                 "type": "boolean"
+              },
+              "permission_record_url": {
+                "type": "string",
+                "pattern": "^https://"
               }
             },
             "allOf": [
