@@ -1,4 +1,832 @@
 {
   "schema_version": 1,
-  "items": []
+  "items": [
+    {
+      "id": "pixabay-495888",
+      "title": "Ambient Background",
+      "creator": "NastelBom",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/ambient-ambient-background-495888/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/ambient-ambient-background-495888/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "calm",
+      "intensity": "low",
+      "tags": [
+        "fondo",
+        "concentracion",
+        "narracion",
+        "sintetizador"
+      ],
+      "duration_seconds": 142
+    },
+    {
+      "id": "pixabay-535980",
+      "title": "Ambient - Ambient Background",
+      "creator": "everything_is_dead",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/ambient-ambient-ambient-background-535980/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/ambient-ambient-ambient-background-535980/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "tense",
+      "intensity": "low",
+      "tags": [
+        "atmosfera",
+        "reflexion",
+        "desarrollo",
+        "minimalismo"
+      ],
+      "duration_seconds": 358
+    },
+    {
+      "id": "pixabay-348229",
+      "title": "Hopeful Cinematic Music",
+      "creator": "Tunetank",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/ambient-hopeful-cinematic-music-348229/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/ambient-hopeful-cinematic-music-348229/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "hopeful",
+      "intensity": "medium",
+      "tags": [
+        "descubrimiento",
+        "cierre",
+        "cine",
+        "inspiracion"
+      ],
+      "duration_seconds": 140
+    },
+    {
+      "id": "pixabay-477143",
+      "title": "Inspiring - Inspiration",
+      "creator": "Watermello",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/adventure-inspiring-inspiration-477143/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/adventure-inspiring-inspiration-477143/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "hopeful",
+      "intensity": "medium",
+      "tags": [
+        "motivacion",
+        "revelacion",
+        "documental",
+        "avance"
+      ],
+      "duration_seconds": 161
+    },
+    {
+      "id": "pixabay-504395",
+      "title": "Hopeful - Hopeful Music",
+      "creator": "andriig",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/acoustic-group-hopeful-hopeful-music-504395/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/acoustic-group-hopeful-hopeful-music-504395/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "hopeful",
+      "intensity": "low",
+      "tags": [
+        "acustico",
+        "humanidad",
+        "cierre",
+        "emotivo"
+      ],
+      "duration_seconds": 120
+    },
+    {
+      "id": "pixabay-248601",
+      "title": "Hopeful Cinematic",
+      "creator": "Sonican",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/build-up-scenes-hopeful-cinematic-248601/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/build-up-scenes-hopeful-cinematic-248601/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "hopeful",
+      "intensity": "medium",
+      "tags": [
+        "piano",
+        "esperanza",
+        "cierre",
+        "transicion"
+      ],
+      "duration_seconds": 89
+    },
+    {
+      "id": "pixabay-496938",
+      "title": "Investigation Music - Detective Music",
+      "creator": "everything_is_dead",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/horror-scene-investigation-music-detective-music-496938/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/horror-scene-investigation-music-detective-music-496938/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "tense",
+      "intensity": "low",
+      "tags": [
+        "investigacion",
+        "misterio",
+        "evidencia",
+        "subrayado"
+      ],
+      "duration_seconds": 210
+    },
+    {
+      "id": "pixabay-462758",
+      "title": "Investigation Puzzle",
+      "creator": "Magiksolo",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/introoutro-investigation-puzzle-462758/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/introoutro-investigation-puzzle-462758/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "curious",
+      "intensity": "medium",
+      "tags": [
+        "investigacion",
+        "acertijo",
+        "problema",
+        "analisis"
+      ],
+      "duration_seconds": 163
+    },
+    {
+      "id": "pixabay-612835",
+      "title": "Technology Ambient",
+      "creator": "BerryDeep",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/ambient-technology-ambient-612835/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/ambient-technology-ambient-612835/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "curious",
+      "intensity": "low",
+      "tags": [
+        "tecnologia",
+        "futuro",
+        "ia",
+        "desarrollo"
+      ]
+    },
+    {
+      "id": "pixabay-499582",
+      "title": "Technology - Tech Technology",
+      "creator": "BombinSound",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/corporate-technology-tech-technology-499582/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/corporate-technology-tech-technology-499582/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha individual identificada; pendiente de escucha y de comprobar Content ID, derechos de la grabación, uso en YouTube y condiciones vigentes antes de aprobar."
+      },
+      "mood": "curious",
+      "intensity": "medium",
+      "tags": [
+        "tecnologia",
+        "innovacion",
+        "avance",
+        "datos"
+      ],
+      "duration_seconds": 140
+    },
+    {
+      "id": "pixabay-115669",
+      "title": "Cinematic Documentary",
+      "creator": "Lexin_Music",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/beautiful-plays-cinematic-documentary-115669/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/beautiful-plays-cinematic-documentary-115669/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "La ficha pública muestra «Content ID Registered». Riesgo de reclamación y posible afectación de monetización: revisar la licencia, conservar certificado si se obtiene, escuchar y evaluar manualmente antes de aprobar."
+      },
+      "mood": "hopeful",
+      "intensity": "medium",
+      "tags": [
+        "documental",
+        "naturaleza",
+        "historia",
+        "apertura"
+      ],
+      "duration_seconds": 132
+    },
+    {
+      "id": "pixabay-578410",
+      "title": "Suspense",
+      "creator": "leberch",
+      "kind": "music",
+      "provider": "Pixabay",
+      "source_url": "https://pixabay.com/music/suspense-suspense-578410/",
+      "license": {
+        "identifier": "Pixabay Content License",
+        "terms_url": "https://pixabay.com/service/terms/",
+        "evidence_url": "https://pixabay.com/music/suspense-suspense-578410/",
+        "checked_on": "2026-10-25"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "La ficha pública muestra «Content ID Registered». Riesgo de reclamación y posible afectación de monetización: revisar la licencia, conservar certificado si se obtiene, escuchar y evaluar manualmente antes de aprobar."
+      },
+      "mood": "tense",
+      "intensity": "medium",
+      "tags": [
+        "suspenso",
+        "riesgo",
+        "investigacion",
+        "giro"
+      ],
+      "duration_seconds": 128
+    },
+    {
+      "id": "freesound-332711",
+      "title": "Glitch",
+      "creator": "AmicaSys",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/AmicaSys/sounds/332711/",
+      "duration_seconds": 2,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/AmicaSys/sounds/332711/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Glitch — AmicaSys (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "tense",
+      "intensity": "high",
+      "tags": [
+        "error",
+        "sistema",
+        "disrupcion",
+        "computadora"
+      ]
+    },
+    {
+      "id": "freesound-645485",
+      "title": "Sci-Fi Transition.wav",
+      "creator": "AudioPapkin",
+      "kind": "transition",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/AudioPapkin/sounds/645485/",
+      "duration_seconds": 3.887,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/AudioPapkin/sounds/645485/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Sci-Fi Transition.wav — AudioPapkin (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "dramatic",
+      "intensity": "high",
+      "tags": [
+        "transicion",
+        "revelacion",
+        "impacto",
+        "ciencia-ficcion"
+      ]
+    },
+    {
+      "id": "freesound-151221",
+      "title": "Page Turn (2)",
+      "creator": "OwlStorm",
+      "kind": "transition",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/OwlStorm/sounds/151221/",
+      "duration_seconds": 1.809,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/OwlStorm/sounds/151221/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Page Turn (2) — OwlStorm (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "curious",
+      "intensity": "low",
+      "tags": [
+        "papel",
+        "historia",
+        "documentos",
+        "cambio-escena"
+      ]
+    },
+    {
+      "id": "freesound-256116",
+      "title": "Click.wav",
+      "creator": "kwahmah_02",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/kwahmah_02/sounds/256116/",
+      "duration_seconds": 0.045,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/kwahmah_02/sounds/256116/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Click.wav — kwahmah_02 (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "neutral",
+      "intensity": "low",
+      "tags": [
+        "interfaz",
+        "seleccion",
+        "datos",
+        "click"
+      ]
+    },
+    {
+      "id": "freesound-721502",
+      "title": "Button_Click1",
+      "creator": "BaggoNotes",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/BaggoNotes/sounds/721502/",
+      "duration_seconds": 0.5,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/BaggoNotes/sounds/721502/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Button_Click1 — BaggoNotes (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "playful",
+      "intensity": "low",
+      "tags": [
+        "interfaz",
+        "boton",
+        "confirmacion",
+        "datos"
+      ]
+    },
+    {
+      "id": "freesound-840614",
+      "title": "Simple Impact (processed)",
+      "creator": "SoundEffectsForAll",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/SoundEffectsForAll/sounds/840614/",
+      "duration_seconds": 3.616,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/SoundEffectsForAll/sounds/840614/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Simple Impact (processed) — SoundEffectsForAll (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "dramatic",
+      "intensity": "high",
+      "tags": [
+        "impacto",
+        "revelacion",
+        "punto-clave",
+        "golpe"
+      ]
+    },
+    {
+      "id": "freesound-507528",
+      "title": "quick static glitches.mp3",
+      "creator": "Rvgerxini",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/Rvgerxini/sounds/507528/",
+      "duration_seconds": 5.677,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/Rvgerxini/sounds/507528/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "quick static glitches.mp3 — Rvgerxini (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "tense",
+      "intensity": "medium",
+      "tags": [
+        "interferencia",
+        "fallo",
+        "corte",
+        "electrónico"
+      ]
+    },
+    {
+      "id": "freesound-489424",
+      "title": "Typing on a keyboard",
+      "creator": "SamsterBirdies",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/SamsterBirdies/sounds/489424/",
+      "duration_seconds": 94.992,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/SamsterBirdies/sounds/489424/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Typing on a keyboard — SamsterBirdies (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "neutral",
+      "intensity": "medium",
+      "tags": [
+        "teclado",
+        "programacion",
+        "oficina",
+        "software"
+      ]
+    },
+    {
+      "id": "freesound-615200",
+      "title": "sci-fi transition.wav",
+      "creator": "freesoundadmin2",
+      "kind": "transition",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/freesoundadmin2/sounds/615200/",
+      "duration_seconds": 10.982,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/freesoundadmin2/sounds/615200/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "sci-fi transition.wav — freesoundadmin2 (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "El autor indica procesamiento de rasgueos de guitarra; la ficha muestra CC0, pero se requiere comprobar origen del audio y conveniencia de su uso antes de aprobar."
+      },
+      "mood": "curious",
+      "intensity": "medium",
+      "tags": [
+        "transicion",
+        "futurista",
+        "cambio-escena",
+        "guitarra-procesada"
+      ]
+    },
+    {
+      "id": "freesound-475691",
+      "title": "Click with big reverb.mp3",
+      "creator": "Rvgerxini",
+      "kind": "sfx",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/Rvgerxini/sounds/475691/",
+      "duration_seconds": 15.623,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/Rvgerxini/sounds/475691/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Click with big reverb.mp3 — Rvgerxini (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "dramatic",
+      "intensity": "low",
+      "tags": [
+        "reverberacion",
+        "clic",
+        "transicion",
+        "pausa"
+      ]
+    },
+    {
+      "id": "freesound-564436",
+      "title": "Forest Ambience 1.wav",
+      "creator": "Fester993",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/Fester993/sounds/564436/",
+      "duration_seconds": 181.18,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/Fester993/sounds/564436/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Forest Ambience 1.wav — Fester993 (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "calm",
+      "intensity": "low",
+      "tags": [
+        "bosque",
+        "naturaleza",
+        "documental",
+        "aire-libre"
+      ]
+    },
+    {
+      "id": "freesound-862604",
+      "title": "Office Ambience",
+      "creator": "BeaconStudio",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/BeaconStudio/sounds/862604/",
+      "duration_seconds": 65.801,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/BeaconStudio/sounds/862604/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Office Ambience — BeaconStudio (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "neutral",
+      "intensity": "low",
+      "tags": [
+        "oficina",
+        "computadora",
+        "trabajo",
+        "interior"
+      ]
+    },
+    {
+      "id": "freesound-607228",
+      "title": "Raining In the City Ambience",
+      "creator": "RyanKingArt",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/RyanKingArt/sounds/607228/",
+      "duration_seconds": 98.615,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/RyanKingArt/sounds/607228/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Raining In the City Ambience — RyanKingArt (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "tense",
+      "intensity": "low",
+      "tags": [
+        "lluvia",
+        "ciudad",
+        "autos",
+        "noche"
+      ]
+    },
+    {
+      "id": "freesound-795760",
+      "title": "City Ambience - Mexico City",
+      "creator": "EduardoNajera",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/EduardoNajera/sounds/795760/",
+      "duration_seconds": 62.061,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/EduardoNajera/sounds/795760/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "City Ambience - Mexico City — EduardoNajera (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Registro CC0 con grabación de cinco canales cerca de Bellas Artes; requiere verificación de downmix y derechos de sonidos incidentales al editar."
+      },
+      "mood": "neutral",
+      "intensity": "medium",
+      "tags": [
+        "cdmx",
+        "ciudad",
+        "trafico",
+        "documental"
+      ]
+    },
+    {
+      "id": "freesound-423314",
+      "title": "Wind ambience",
+      "creator": "haniebal",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/haniebal/sounds/423314/",
+      "duration_seconds": 176.86,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/haniebal/sounds/423314/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Wind ambience — haniebal (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "tense",
+      "intensity": "low",
+      "tags": [
+        "viento",
+        "atmosfera",
+        "paisaje",
+        "naturaleza"
+      ]
+    },
+    {
+      "id": "freesound-860933",
+      "title": "Room Tone Small Apartment",
+      "creator": "artemditkovsky",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/artemditkovsky/sounds/860933/",
+      "duration_seconds": 110.43,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/artemditkovsky/sounds/860933/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Room Tone Small Apartment — artemditkovsky (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "neutral",
+      "intensity": "low",
+      "tags": [
+        "silencio",
+        "interior",
+        "tono-sala",
+        "dialogo"
+      ]
+    },
+    {
+      "id": "freesound-221566",
+      "title": "machine hum",
+      "creator": "AlaskaRobotics",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/AlaskaRobotics/sounds/221566/",
+      "duration_seconds": 14.832,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/AlaskaRobotics/sounds/221566/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "machine hum — AlaskaRobotics (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "tense",
+      "intensity": "medium",
+      "tags": [
+        "maquinaria",
+        "industria",
+        "sistema",
+        "tension"
+      ]
+    },
+    {
+      "id": "freesound-735359",
+      "title": "Rain Ambience",
+      "creator": "bbrownmuse",
+      "kind": "ambience",
+      "provider": "Freesound",
+      "source_url": "https://freesound.org/people/bbrownmuse/sounds/735359/",
+      "duration_seconds": 61.628,
+      "license": {
+        "identifier": "CC0 1.0",
+        "terms_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "evidence_url": "https://freesound.org/people/bbrownmuse/sounds/735359/",
+        "checked_on": "2026-10-25",
+        "attribution_text": "Rain Ambience — bbrownmuse (Freesound; CC0 1.0; crédito opcional)"
+      },
+      "rights_review": {
+        "status": "pending",
+        "notes": "Ficha del sonido con CC0 visible; confirmar autoría, material de origen, términos y realizar escucha/QA local antes de aprobación."
+      },
+      "mood": "calm",
+      "intensity": "low",
+      "tags": [
+        "lluvia",
+        "naturaleza",
+        "reflexion",
+        "ventana"
+      ]
+    }
+  ]
 }
