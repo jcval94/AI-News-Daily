@@ -17,3 +17,7 @@ node --check /tmp/pages-site/audio/audio.js
 ```
 
 **Integración**: esta rama depende del PR de contratos del catálogo. Fusionar primero dicho PR; no se debe promover la UI si el validador base no está presente.
+
+## Actualización
+
+La primera publicación se ejecuta al fusionar este PR porque cambia el workflow de Pages. Las ediciones posteriores del catálogo **sí disparan CI de validación**, pero no inician por sí solas una producción multimedia costosa: aparecen en la siguiente reconstrucción ordinaria de Pages o en un `workflow_dispatch` solicitado expresamente.
