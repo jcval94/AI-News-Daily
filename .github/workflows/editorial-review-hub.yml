@@ -464,6 +464,19 @@ jobs:
           grep -q 'data-script-productivity-runtime="v1"' "$EDITABLE_RUN"
           grep -q 'Mapa de historias' "$EDITABLE_RUN"
 
+      - name: Build curated audio browser (metadata only)
+        run: |
+          set -euo pipefail
+          python -m pipeline.audio_library --catalog catalog/audio/index.json
+          python -m pipeline.audio_library_pages \
+            --catalog catalog/audio/index.json \
+            --output-dir pages-site/audio
+          test -s pages-site/audio/index.html
+          test -s pages-site/audio/audio.js
+          node --check pages-site/audio/audio.js
+          grep -q 'data-audio-library="v1"' pages-site/audio/index.html
+          grep -q 'href="audio/index.html"' pages-site/index.html
+
       - name: Upload lightweight Pages catalog snapshot
         uses: actions/upload-artifact@v4
         with:
