@@ -153,6 +153,55 @@
               "notes": {
                 "type": "string",
                 "maxLength": 2000
+              },
+              "rights_basis": {
+                "enum": [
+                  "creative_commons",
+                  "provider_specific",
+                  "direct_permission"
+                ]
+              },
+              "usage_platforms": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "youtube",
+                    "instagram",
+                    "tiktok",
+                    "podcast",
+                    "other"
+                  ]
+                }
+              },
+              "track_specific_evidence_confirmed": {
+                "type": "boolean"
+              },
+              "evidence_description": {
+                "type": "string",
+                "minLength": 25,
+                "maxLength": 800
+              },
+              "attribution_required": {
+                "type": "boolean"
+              },
+              "content_id_review": {
+                "enum": [
+                  "unchecked",
+                  "no_known_claim",
+                  "possible_claim",
+                  "active_claim"
+                ]
+              },
+              "content_id_risk_accepted": {
+                "type": "boolean"
+              },
+              "preview_redistribution_allowed": {
+                "type": "boolean"
+              },
+              "share_alike_obligations_acknowledged": {
+                "type": "boolean"
               }
             },
             "allOf": [
@@ -173,7 +222,14 @@
                     "reviewed_on",
                     "commercial_use_confirmed",
                     "synchronization_confirmed",
-                    "edits_confirmed"
+                    "edits_confirmed",
+                    "rights_basis",
+                    "usage_platforms",
+                    "track_specific_evidence_confirmed",
+                    "evidence_description",
+                    "attribution_required",
+                    "content_id_review",
+                    "preview_redistribution_allowed"
                   ],
                   "properties": {
                     "commercial_use_confirmed": {
@@ -184,6 +240,14 @@
                     },
                     "edits_confirmed": {
                       "const": true
+                    },
+                    "track_specific_evidence_confirmed": {
+                      "const": true
+                    },
+                    "usage_platforms": {
+                      "contains": {
+                        "const": "youtube"
+                      }
                     }
                   }
                 }
