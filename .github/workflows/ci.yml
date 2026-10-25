@@ -62,6 +62,12 @@ jobs:
       - run: python -m compileall app pipeline
       - run: python -c "import app.agent, pipeline.run; print('runtime imports ok')"
       - run: python -m unittest discover -s tests -v
+      - name: Smoke test audio catalog and browser
+        run: |
+          python -m pipeline.audio_library --catalog catalog/audio/index.json
+          python -m pipeline.audio_library_pages --catalog catalog/audio/index.json --output-dir /tmp/audio-library-pages
+          test -s /tmp/audio-library-pages/index.html
+          node --check /tmp/audio-library-pages/audio.js
       - run: python -m pipeline.editorial_calibration --cases evals/editorial/cases.json --output /tmp/editorial-calibration.json
 
   windows-local-harness:
