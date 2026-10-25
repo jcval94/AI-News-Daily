@@ -189,6 +189,17 @@
                 }
               }
             ]
+          },
+          "mood": {
+            "enum": [
+              "calm",
+              "curious",
+              "tense",
+              "hopeful",
+              "playful",
+              "dramatic",
+              "neutral"
+            ]
           }
         }
       }
