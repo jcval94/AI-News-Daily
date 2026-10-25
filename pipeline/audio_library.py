@@ -13,12 +13,6 @@ from urllib.parse import urlsplit
 from pipeline.schema_validation import validate_payload
 
 DEFAULT_CATALOG = Path("catalog/audio/index.json")
-BLOCKED = re.compile(
-    r"all rights reserved|fair use|non[- ]commercial|\bcc[- ]?by[- ]?nc\b|"
-    r"\bno derivatives\b|\bcc[- ]?by[- ]?nd\b|\bunknown\b",
-    re.IGNORECASE,
-)
-
 
 def _https_url(value: str) -> bool:
     try:
@@ -41,7 +35,7 @@ def _license_traits(identifier: str) -> dict[str, bool]:
     words = re.sub(r"[^a-z0-9]+", " ", normalized).strip()
     forbidden = bool(re.search(
         r"\b(?:nc|nd|noncommercial|non commercial|non monetized|"
-        r"not for commercial use|no derivatives?|no derivs?|"
+        r"not for commercial use|no derivatives?|noderivatives?|no derivs?|noderivs?|"
         r"all rights reserved|fair use|unlicensed|no license|"
         r"unknown|unspecified|no restrictions)\b", words,
     ))
