@@ -1,0 +1,959 @@
+{
+  "target_date": "2026-10-27",
+  "coverage": {
+    "schema_version": 1,
+    "episode_date": "2026-10-27",
+    "source_mode": "scheduled_window",
+    "expected_dates": [
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-25",
+      "2026-10-26"
+    ],
+    "available_files": [
+      "2026-10-23-08-33-34.txt",
+      "2026-10-24-08-28-10.txt",
+      "2026-10-25-08-34-56.txt",
+      "2026-10-26-08-35-28.txt"
+    ],
+    "missing_dates": [],
+    "source_resolution": [
+      {
+        "date": "2026-10-23",
+        "selected_file": "2026-10-23-08-33-34.txt",
+        "candidate_files": [
+          "2026-10-23-08-33-34.txt"
+        ],
+        "candidate_count": 1
+      },
+      {
+        "date": "2026-10-24",
+        "selected_file": "2026-10-24-08-28-10.txt",
+        "candidate_files": [
+          "2026-10-24-08-28-10.txt"
+        ],
+        "candidate_count": 1
+      },
+      {
+        "date": "2026-10-25",
+        "selected_file": "2026-10-25-08-34-56.txt",
+        "candidate_files": [
+          "2026-10-25-08-34-56.txt"
+        ],
+        "candidate_count": 1
+      },
+      {
+        "date": "2026-10-26",
+        "selected_file": "2026-10-26-08-35-28.txt",
+        "candidate_files": [
+          "2026-10-26-08-35-28.txt"
+        ],
+        "candidate_count": 1
+      }
+    ],
+    "duplicate_source_dates": [],
+    "duplicate_source_day_count": 0,
+    "latest_repository_source_date": "2026-10-27",
+    "source_staleness_days": 0,
+    "expected_day_count": 4,
+    "available_day_count": 4,
+    "coverage_ratio": 1.0,
+    "minimum_coverage_ratio": 0.75,
+    "item_count": 29,
+    "sufficient": true,
+    "checked_at_utc": "2026-10-27T19:57:57.104851+00:00"
+  },
+  "news_items": [
+    {
+      "news_id": "n_4110bbe54106473f",
+      "source_file": "2026-10-23-08-33-34.txt",
+      "source_locator": "2026-10-23-08-33-34.txt#item-7",
+      "item_index": 7,
+      "title": "Un diseño de agentes propone que la supervisión humana deje un rastro discutible antes de cambiar datos",
+      "date": "2026-10-22",
+      "date_origin": "field",
+      "source": "arXiv; Humza Akhtar y Brian Freeman",
+      "url": "https://arxiv.org/html/2610.31553v1",
+      "url_quality": "article",
+      "category": "agentes",
+      "summary": "El preprint presenta “gobernanza contestable”: agentes especializados proponen metadatos con argumentos puntuados y citas, mientras una persona puede aceptar, rechazar, modificar o añadir razones antes del cambio; el sistema conserva evidencia e intervenciones. Los autores ilustran el patrón con dos casos de HVAC y una implementación abierta, pero no aportan todavía una evaluación independiente ni resultados longitudinales en producción.",
+      "why_it_matters": "El fenómeno más amplio es el paso de aprobar salidas de IA a gobernar decisiones mediante expedientes que puedan discutirse y corregirse. La tensión es que añadir un humano no garantiza control: una aprobación rápida puede legitimar el error, mientras un registro más rico aumenta carga y puede convertirse en burocracia ceremonial. ¿Qué combinación de incertidumbre, impacto y desacuerdo debería obligar a una revisión humana profunda en lugar de una confirmación rutinaria? La consecuencia humana es concreta porque metadatos incorrectos pueden propagarse a mantenimiento, garantías, facturación y decisiones laborales. Hipótesis editorial: provisionalmente, la supervisión eficaz dependerá de preservar razones y alternativas, no sólo la identidad de quien pulsó “aprobar”. Qué habría que investigar: ensayos comparativos sobre precisión, tiempo, fatiga, reversión de errores y propagación aguas abajo entre aprobación binaria, revisión contestable y automatización sin revisión.",
+      "raw_content": "Título: Un diseño de agentes propone que la supervisión humana deje un rastro discutible antes de cambiar datos\nFecha: 2026-10-22\nFuente: arXiv; Humza Akhtar y Brian Freeman\nEnlace: https://arxiv.org/html/2610.31553v1\nResumen breve: El preprint presenta “gobernanza contestable”: agentes especializados proponen metadatos con argumentos puntuados y citas, mientras una persona puede aceptar, rechazar, modificar o añadir razones antes del cambio; el sistema conserva evidencia e intervenciones. Los autores ilustran el patrón con dos casos de HVAC y una implementación abierta, pero no aportan todavía una evaluación independiente ni resultados longitudinales en producción.\nPor qué importa: El fenómeno más amplio es el paso de aprobar salidas de IA a gobernar decisiones mediante expedientes que puedan discutirse y corregirse. La tensión es que añadir un humano no garantiza control: una aprobación rápida puede legitimar el error, mientras un registro más rico aumenta carga y puede convertirse en burocracia ceremonial. ¿Qué combinación de incertidumbre, impacto y desacuerdo debería obligar a una revisión humana profunda en lugar de una confirmación rutinaria? La consecuencia humana es concreta porque metadatos incorrectos pueden propagarse a mantenimiento, garantías, facturación y decisiones laborales. Hipótesis editorial: provisionalmente, la supervisión eficaz dependerá de preservar razones y alternativas, no sólo la identidad de quien pulsó “aprobar”. Qué habría que investigar: ensayos comparativos sobre precisión, tiempo, fatiga, reversión de errores y propagación aguas abajo entre aprobación binaria, revisión contestable y automatización sin revisión.\nCategoría: agentes"
+    },
+    {
+      "news_id": "n_67c6748cf11e9d3d",
+      "source_file": "2026-10-26-08-35-28.txt",
+      "source_locator": "2026-10-26-08-35-28.txt#item-4",
+      "item_index": 4,
+      "title": "Un ensayo aleatorio distingue productividad asistida de aprendizaje duradero en trabajadores del conocimiento",
+      "date": "2026-10-26",
+      "date_origin": "field",
+      "source": "Nature Human Behaviour",
+      "url": "https://www.nature.com/articles/s41562-026-02566-6",
+      "url_quality": "article",
+      "category": "investigación",
+      "summary": "Un ensayo controlado aleatorio con 487 consultores evaluó tareas de ciencia de datos fuera de su formación habitual y diseñadas para no ser resueltas por ChatGPT sin intervención humana. El acceso a IA elevó el desempeño durante la tarea, pero los investigadores no encontraron evidencia de que el grupo asistido respondiera mejor después, sin ChatGPT, a preguntas técnicas relacionadas. El resultado identifica una mejora situada y temporal en este diseño experimental; no demuestra que la IA impida aprender en otros trabajos, periodos o formas de entrenamiento.",
+      "why_it_matters": "El fenómeno más amplio es la separación entre capacidad laboral observable y conocimiento que una persona puede conservar y transferir cuando la herramienta desaparece. La tensión es que una prótesis cognitiva permite ejecutar tareas más complejas de inmediato, mientras puede ocultar que la organización no está formando la competencia que necesitará para revisar errores o actuar durante una interrupción. ¿Qué parte de una ganancia de productividad debe reservarse para práctica sin asistencia, explicación y evaluación posterior? La consecuencia humana afecta promoción, autonomía profesional, seguridad del trabajo y poder de negociación frente a un proveedor tecnológico. Hipótesis editorial: provisionalmente, las empresas que midan sólo producción inmediata sobrestimarán su capital humano y acumularán dependencia silenciosa. Qué habría que investigar: retención tras semanas o meses, transferencia a problemas nuevos, diferencias por experiencia, calidad de revisión, fallos deliberados del modelo y diseños de capacitación que combinen asistencia con recuperación activa.",
+      "raw_content": "Título: Un ensayo aleatorio distingue productividad asistida de aprendizaje duradero en trabajadores del conocimiento\nFecha: 2026-10-26\nFuente: Nature Human Behaviour\nEnlace: https://www.nature.com/articles/s41562-026-02566-6\nResumen breve: Un ensayo controlado aleatorio con 487 consultores evaluó tareas de ciencia de datos fuera de su formación habitual y diseñadas para no ser resueltas por ChatGPT sin intervención humana. El acceso a IA elevó el desempeño durante la tarea, pero los investigadores no encontraron evidencia de que el grupo asistido respondiera mejor después, sin ChatGPT, a preguntas técnicas relacionadas. El resultado identifica una mejora situada y temporal en este diseño experimental; no demuestra que la IA impida aprender en otros trabajos, periodos o formas de entrenamiento.\nPor qué importa: El fenómeno más amplio es la separación entre capacidad laboral observable y conocimiento que una persona puede conservar y transferir cuando la herramienta desaparece. La tensión es que una prótesis cognitiva permite ejecutar tareas más complejas de inmediato, mientras puede ocultar que la organización no está formando la competencia que necesitará para revisar errores o actuar durante una interrupción. ¿Qué parte de una ganancia de productividad debe reservarse para práctica sin asistencia, explicación y evaluación posterior? La consecuencia humana afecta promoción, autonomía profesional, seguridad del trabajo y poder de negociación frente a un proveedor tecnológico. Hipótesis editorial: provisionalmente, las empresas que midan sólo producción inmediata sobrestimarán su capital humano y acumularán dependencia silenciosa. Qué habría que investigar: retención tras semanas o meses, transferencia a problemas nuevos, diferencias por experiencia, calidad de revisión, fallos deliberados del modelo y diseños de capacitación que combinen asistencia con recuperación activa.\nCategoría: investigación"
+    },
+    {
+      "news_id": "n_cd755c1a034d6127",
+      "source_file": "2026-10-24-08-28-10.txt",
+      "source_locator": "2026-10-24-08-28-10.txt#item-5",
+      "item_index": 5,
+      "title": "Una revisión clínica muestra que la supervisión humana falla con frecuencia cuando la IA se equivoca",
+      "date": "2026-10-23",
+      "date_origin": "field",
+      "source": "npj Digital Medicine",
+      "url": "https://www.nature.com/articles/s41746-026-03408-5",
+      "url_quality": "article",
+      "category": "investigación",
+      "summary": "Una revisión sistemática y metaanálisis de 46 informes, agrupados en 41 cohortes independientes, encontró que los clínicos acertaban mucho más cuando el consejo automatizado era correcto que cuando era erróneo. En cuatro estudios reales y heterogéneos de electrocardiogramas, 26,6% de interpretaciones automáticas equivocadas no fueron corregidas o reconocidas, con un intervalo muy amplio y alta heterogeneidad; los estudios contemporáneos con IA y LLM también registraron dependencia perjudicial, pero no pudieron combinarse estadísticamente.",
+      "why_it_matters": "El fenómeno más amplio es que “humano en el circuito” deja de ser una garantía y debe evaluarse como una capacidad observable para interceptar errores. La tensión es que la asistencia puede elevar el rendimiento promedio y, al mismo tiempo, erosionar la vigilancia precisamente cuando el sistema ofrece una respuesta convincente pero falsa. ¿Cuántos errores debe detectar una persona, bajo qué carga y en cuánto tiempo, para que la supervisión sea un control de seguridad real? Para pacientes, el fallo puede significar diagnóstico tardío, tratamiento innecesario o falsa tranquilidad; para profesionales, implica responsabilidad sin información suficiente para cuestionar al sistema. Hipótesis editorial: provisionalmente, los reguladores exigirán pruebas de equipo humano-máquina con errores sembrados, no sólo métricas del modelo aislado. Qué habría que investigar: ensayos prospectivos por especialidad que midan detección, tiempo, confianza, fatiga, consecuencias clínicas y diferencias entre explicaciones, alertas de incertidumbre y revisión independiente.",
+      "raw_content": "Título: Una revisión clínica muestra que la supervisión humana falla con frecuencia cuando la IA se equivoca\nFecha: 2026-10-23\nFuente: npj Digital Medicine\nEnlace: https://www.nature.com/articles/s41746-026-03408-5\nResumen breve: Una revisión sistemática y metaanálisis de 46 informes, agrupados en 41 cohortes independientes, encontró que los clínicos acertaban mucho más cuando el consejo automatizado era correcto que cuando era erróneo. En cuatro estudios reales y heterogéneos de electrocardiogramas, 26,6% de interpretaciones automáticas equivocadas no fueron corregidas o reconocidas, con un intervalo muy amplio y alta heterogeneidad; los estudios contemporáneos con IA y LLM también registraron dependencia perjudicial, pero no pudieron combinarse estadísticamente.\nPor qué importa: El fenómeno más amplio es que “humano en el circuito” deja de ser una garantía y debe evaluarse como una capacidad observable para interceptar errores. La tensión es que la asistencia puede elevar el rendimiento promedio y, al mismo tiempo, erosionar la vigilancia precisamente cuando el sistema ofrece una respuesta convincente pero falsa. ¿Cuántos errores debe detectar una persona, bajo qué carga y en cuánto tiempo, para que la supervisión sea un control de seguridad real? Para pacientes, el fallo puede significar diagnóstico tardío, tratamiento innecesario o falsa tranquilidad; para profesionales, implica responsabilidad sin información suficiente para cuestionar al sistema. Hipótesis editorial: provisionalmente, los reguladores exigirán pruebas de equipo humano-máquina con errores sembrados, no sólo métricas del modelo aislado. Qué habría que investigar: ensayos prospectivos por especialidad que midan detección, tiempo, confianza, fatiga, consecuencias clínicas y diferencias entre explicaciones, alertas de incertidumbre y revisión independiente.\nCategoría: investigación"
+    },
+    {
+      "news_id": "n_33572a78f5c1aa46",
+      "source_file": "2026-10-26-08-35-28.txt",
+      "source_locator": "2026-10-26-08-35-28.txt#item-7",
+      "item_index": 7,
+      "title": "Un diseño de evaluación universitaria sustituye la detección de IA por trazas del proceso",
+      "date": "2026-10-26",
+      "date_origin": "field",
+      "source": "Humanities and Social Sciences Communications",
+      "url": "https://www.nature.com/articles/s41599-026-09634-2",
+      "url_quality": "article",
+      "category": "investigación",
+      "summary": "Un estudio de investigación-acción rediseñó tareas en dos cursos profesionales, anatomía y fisiología como entorno principal y microscopía moderna como adaptación secundaria. En vez de inferir uso de IA desde el trabajo final, el esquema recoge evidencia de consultas, verificación de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo. Es una intervención educativa situada con métodos mixtos, no una validación universal ni una demostración de que toda traza sea auténtica o mida aprendizaje profundo.",
+      "why_it_matters": "El fenómeno más amplio es el desplazamiento de la evaluación desde vigilar un producto hacia observar cómo se construye conocimiento con herramientas generativas. La tensión es que pedir trazabilidad puede premiar verificación y reflexión, pero también aumentar carga, vigilancia y capacidad de simular un proceso correcto sin haberlo realizado. ¿Qué evidencia mínima permite distinguir aprendizaje, delegación responsable y fabricación retrospectiva de una bitácora sin convertir cada tarea en auditoría permanente? La consecuencia humana afecta justicia académica, privacidad estudiantil y la posibilidad de aprender a usar IA sin ser castigado por ello. Hipótesis editorial: provisionalmente, las evaluaciones resistentes a la automatización medirán decisiones y revisiones explicables más que originalidad aparente del texto final. Qué habría que investigar: resultados de aprendizaje a largo plazo, tiempo adicional para docentes y alumnos, falsificación de trazas, accesibilidad, sesgos disciplinarios y replicación controlada frente a evaluación tradicional y detectores.",
+      "raw_content": "Título: Un diseño de evaluación universitaria sustituye la detección de IA por trazas del proceso\nFecha: 2026-10-26\nFuente: Humanities and Social Sciences Communications\nEnlace: https://www.nature.com/articles/s41599-026-09634-2\nResumen breve: Un estudio de investigación-acción rediseñó tareas en dos cursos profesionales, anatomía y fisiología como entorno principal y microscopía moderna como adaptación secundaria. En vez de inferir uso de IA desde el trabajo final, el esquema recoge evidencia de consultas, verificación de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo. Es una intervención educativa situada con métodos mixtos, no una validación universal ni una demostración de que toda traza sea auténtica o mida aprendizaje profundo.\nPor qué importa: El fenómeno más amplio es el desplazamiento de la evaluación desde vigilar un producto hacia observar cómo se construye conocimiento con herramientas generativas. La tensión es que pedir trazabilidad puede premiar verificación y reflexión, pero también aumentar carga, vigilancia y capacidad de simular un proceso correcto sin haberlo realizado. ¿Qué evidencia mínima permite distinguir aprendizaje, delegación responsable y fabricación retrospectiva de una bitácora sin convertir cada tarea en auditoría permanente? La consecuencia humana afecta justicia académica, privacidad estudiantil y la posibilidad de aprender a usar IA sin ser castigado por ello. Hipótesis editorial: provisionalmente, las evaluaciones resistentes a la automatización medirán decisiones y revisiones explicables más que originalidad aparente del texto final. Qué habría que investigar: resultados de aprendizaje a largo plazo, tiempo adicional para docentes y alumnos, falsificación de trazas, accesibilidad, sesgos disciplinarios y replicación controlada frente a evaluación tradicional y detectores.\nCategoría: investigación"
+    },
+    {
+      "news_id": "n_f1ff5b512c26d0b6",
+      "source_file": "2026-10-26-08-35-28.txt",
+      "source_locator": "2026-10-26-08-35-28.txt#item-6",
+      "item_index": 6,
+      "title": "El despliegue de escribas clínicos revela una adopción muy desigual entre especialidades",
+      "date": "2026-10-26",
+      "date_origin": "field",
+      "source": "npj Digital Medicine",
+      "url": "https://www.nature.com/articles/s41746-026-03326-6",
+      "url_quality": "article",
+      "category": "investigación",
+      "summary": "Un estudio observacional retrospectivo enlazó datos de historias clínicas y del proveedor para seguir a 2.901 profesionales ambulatorios de un sistema académico entre diciembre de 2024 y mayo de 2025. La adopción de escribas ambientales varió ampliamente: fue alta en pediatría e internismo comunitarios y baja en cirugía general académica, obstetricia y ginecología y psiquiatría. El trabajo mide uso, no demuestra por sí mismo reducción de carga, mejor atención ni causalidad sobre las diferencias encontradas.",
+      "why_it_matters": "El fenómeno más amplio es que la difusión real de IA depende del ajuste entre herramienta, flujo de trabajo, especialidad y responsabilidad profesional, no sólo de su disponibilidad institucional. La tensión es que una compra para todo el sistema promete escala y estándares comunes, pero promediar la adopción puede ocultar entornos donde la conversación, privacidad o dinámica clínica hacen que la herramienta encaje mal. ¿Debe una baja adopción interpretarse como resistencia que corregir o como evidencia de un diseño inadecuado para esa práctica? La consecuencia humana afecta tiempo con pacientes, carga documental, confidencialidad y distribución del beneficio entre clínicas. Hipótesis editorial: provisionalmente, la variación entre especialidades será una señal de calidad de implementación más informativa que el porcentaje agregado de licencias activadas. Qué habría que investigar: resultados clínicos, errores y correcciones, carga antes y después, abandono longitudinal, experiencia de pacientes, diferencias demográficas, incentivos de facturación y comparaciones entre proveedores y centros.",
+      "raw_content": "Título: El despliegue de escribas clínicos revela una adopción muy desigual entre especialidades\nFecha: 2026-10-26\nFuente: npj Digital Medicine\nEnlace: https://www.nature.com/articles/s41746-026-03326-6\nResumen breve: Un estudio observacional retrospectivo enlazó datos de historias clínicas y del proveedor para seguir a 2.901 profesionales ambulatorios de un sistema académico entre diciembre de 2024 y mayo de 2025. La adopción de escribas ambientales varió ampliamente: fue alta en pediatría e internismo comunitarios y baja en cirugía general académica, obstetricia y ginecología y psiquiatría. El trabajo mide uso, no demuestra por sí mismo reducción de carga, mejor atención ni causalidad sobre las diferencias encontradas.\nPor qué importa: El fenómeno más amplio es que la difusión real de IA depende del ajuste entre herramienta, flujo de trabajo, especialidad y responsabilidad profesional, no sólo de su disponibilidad institucional. La tensión es que una compra para todo el sistema promete escala y estándares comunes, pero promediar la adopción puede ocultar entornos donde la conversación, privacidad o dinámica clínica hacen que la herramienta encaje mal. ¿Debe una baja adopción interpretarse como resistencia que corregir o como evidencia de un diseño inadecuado para esa práctica? La consecuencia humana afecta tiempo con pacientes, carga documental, confidencialidad y distribución del beneficio entre clínicas. Hipótesis editorial: provisionalmente, la variación entre especialidades será una señal de calidad de implementación más informativa que el porcentaje agregado de licencias activadas. Qué habría que investigar: resultados clínicos, errores y correcciones, carga antes y después, abandono longitudinal, experiencia de pacientes, diferencias demográficas, incentivos de facturación y comparaciones entre proveedores y centros.\nCategoría: investigación"
+    },
+    {
+      "news_id": "n_826fc65f8b8f305e",
+      "source_file": "2026-10-24-08-28-10.txt",
+      "source_locator": "2026-10-24-08-28-10.txt#item-6",
+      "item_index": 6,
+      "title": "IA autónoma en consulta iguala la realización de exámenes de retina entre jóvenes blancos y no blancos",
+      "date": "2026-10-23",
+      "date_origin": "field",
+      "source": "Nature Communications; estudio ACCESS2",
+      "url": "https://www.nature.com/articles/s41467-026-78842-w",
+      "url_quality": "article",
+      "category": "investigación",
+      "summary": "El estudio prospectivo ACCESS2 incluyó a 397 jóvenes con diabetes y llevó un examen autónomo de retina al punto de atención. Antes de la intervención, 79,8% de participantes blancos y 61,8% de no blancos habían completado previamente un examen; durante el estudio lo completaron 99,5% y 98%, respectivamente. La IA reportó sensibilidad de 100% con intervalo amplio y especificidad de 76%; los resultados provienen de este entorno y no prueban que la misma equidad se mantenga en otros sistemas de salud.",
+      "why_it_matters": "El fenómeno más amplio es que la ubicación de una herramienta puede alterar desigualdades tanto como su precisión: integrar el examen en la consulta elimina traslados, referencias y esperas que afectan de manera desigual. La paradoja es que una solución autónoma puede ampliar acceso mientras su especificidad moderada genera derivaciones adicionales y el pequeño número de casos positivos deja incertidumbre sobre sensibilidad real. ¿Qué balance entre acceso inmediato, falsos positivos y capacidad de seguimiento produce una mejora de salud, no sólo una tasa alta de examen? La consecuencia humana es especialmente relevante para jóvenes que antes llegaban tarde a detectar daño ocular prevenible. Hipótesis editorial: provisionalmente, la mayor contribución de la IA clínica será rediseñar rutas de atención, no sustituir una tarea diagnóstica aislada. Qué habría que investigar: replicación multicéntrica, resultados de derivaciones, tiempo a tratamiento, costos, abandono posterior, desempeño por subgrupos y evolución visual a largo plazo.",
+      "raw_content": "Título: IA autónoma en consulta iguala la realización de exámenes de retina entre jóvenes blancos y no blancos\nFecha: 2026-10-23\nFuente: Nature Communications; estudio ACCESS2\nEnlace: https://www.nature.com/articles/s41467-026-78842-w\nResumen breve: El estudio prospectivo ACCESS2 incluyó a 397 jóvenes con diabetes y llevó un examen autónomo de retina al punto de atención. Antes de la intervención, 79,8% de participantes blancos y 61,8% de no blancos habían completado previamente un examen; durante el estudio lo completaron 99,5% y 98%, respectivamente. La IA reportó sensibilidad de 100% con intervalo amplio y especificidad de 76%; los resultados provienen de este entorno y no prueban que la misma equidad se mantenga en otros sistemas de salud.\nPor qué importa: El fenómeno más amplio es que la ubicación de una herramienta puede alterar desigualdades tanto como su precisión: integrar el examen en la consulta elimina traslados, referencias y esperas que afectan de manera desigual. La paradoja es que una solución autónoma puede ampliar acceso mientras su especificidad moderada genera derivaciones adicionales y el pequeño número de casos positivos deja incertidumbre sobre sensibilidad real. ¿Qué balance entre acceso inmediato, falsos positivos y capacidad de seguimiento produce una mejora de salud, no sólo una tasa alta de examen? La consecuencia humana es especialmente relevante para jóvenes que antes llegaban tarde a detectar daño ocular prevenible. Hipótesis editorial: provisionalmente, la mayor contribución de la IA clínica será rediseñar rutas de atención, no sustituir una tarea diagnóstica aislada. Qué habría que investigar: replicación multicéntrica, resultados de derivaciones, tiempo a tratamiento, costos, abandono posterior, desempeño por subgrupos y evolución visual a largo plazo.\nCategoría: investigación"
+    },
+    {
+      "news_id": "n_38865033ddac57e3",
+      "source_file": "2026-10-23-08-33-34.txt",
+      "source_locator": "2026-10-23-08-33-34.txt#item-5",
+      "item_index": 5,
+      "title": "Un estudio de 56.800 papers detecta más apertura en IA, pero no demuestra reproducibilidad real",
+      "date": "2026-10-22",
+      "date_origin": "field",
+      "source": "Communications AI & Computing (Nature Portfolio)",
+      "url": "https://www.nature.com/articles/s44488-026-00015-x",
+      "url_quality": "article",
+      "category": "investigación",
+      "summary": "El estudio revisado por pares analizó 56.800 trabajos de cinco grandes conferencias entre 2014 y 2024 y encontró que compartir simultáneamente código y datos aumentó de 11% a 64%. Los autores estiman que la reproducibilidad subió de 28% a 64%, pero aclaran que esa cifra se infiere de prácticas documentales y evidencia previa, no de repetir directamente todos los experimentos; tampoco atribuyen la mejora únicamente a listas de comprobación.",
+      "why_it_matters": "El fenómeno más amplio es la transformación de la confianza científica en una infraestructura de artefactos, datos y procesos auditables. La paradoja es que la IA produce investigaciones a una velocidad creciente justo cuando verificar cada resultado mediante réplica directa se vuelve más costoso; compartir materiales puede mejorar la inspección sin garantizar que una conclusión sea correcta. ¿Qué debería contar como reproducibilidad cuando los modelos, conjuntos de datos y cómputo necesarios cambian o dejan de estar disponibles? La consecuencia humana aparece cuando resultados aparentemente sólidos guían medicina, crédito, contratación o política pública. Hipótesis editorial: provisionalmente, la apertura documental es una condición necesaria pero insuficiente, y el próximo estándar será la ejecución independiente y continua de una muestra de resultados de alto impacto. Qué habría que investigar: réplicas aleatorias de papers con documentación completa e incompleta, disponibilidad real de artefactos, costos de ejecución y tasas de éxito por conferencia, laboratorio y tipo de modelo.",
+      "raw_content": "Título: Un estudio de 56.800 papers detecta más apertura en IA, pero no demuestra reproducibilidad real\nFecha: 2026-10-22\nFuente: Communications AI & Computing (Nature Portfolio)\nEnlace: https://www.nature.com/articles/s44488-026-00015-x\nResumen breve: El estudio revisado por pares analizó 56.800 trabajos de cinco grandes conferencias entre 2014 y 2024 y encontró que compartir simultáneamente código y datos aumentó de 11% a 64%. Los autores estiman que la reproducibilidad subió de 28% a 64%, pero aclaran que esa cifra se infiere de prácticas documentales y evidencia previa, no de repetir directamente todos los experimentos; tampoco atribuyen la mejora únicamente a listas de comprobación.\nPor qué importa: El fenómeno más amplio es la transformación de la confianza científica en una infraestructura de artefactos, datos y procesos auditables. La paradoja es que la IA produce investigaciones a una velocidad creciente justo cuando verificar cada resultado mediante réplica directa se vuelve más costoso; compartir materiales puede mejorar la inspección sin garantizar que una conclusión sea correcta. ¿Qué debería contar como reproducibilidad cuando los modelos, conjuntos de datos y cómputo necesarios cambian o dejan de estar disponibles? La consecuencia humana aparece cuando resultados aparentemente sólidos guían medicina, crédito, contratación o política pública. Hipótesis editorial: provisionalmente, la apertura documental es una condición necesaria pero insuficiente, y el próximo estándar será la ejecución independiente y continua de una muestra de resultados de alto impacto. Qué habría que investigar: réplicas aleatorias de papers con documentación completa e incompleta, disponibilidad real de artefactos, costos de ejecución y tasas de éxito por conferencia, laboratorio y tipo de modelo.\nCategoría: investigación"
+    },
+    {
+      "news_id": "n_bdc667c11b728184",
+      "source_file": "2026-10-23-08-33-34.txt",
+      "source_locator": "2026-10-23-08-33-34.txt#item-2",
+      "item_index": 2,
+      "title": "La SEC incorpora el uso de IA a sus exámenes prioritarios de firmas de Wall Street",
+      "date": "2026-10-23",
+      "date_origin": "field",
+      "source": "Reuters; Comisión de Bolsa y Valores de Estados Unidos (SEC)",
+      "url": "https://www.reuters.com/legal/government/wall-street-regulator-focus-ai-private-assets-corporate-exams-2026-10-23/",
+      "url_quality": "article",
+      "category": "regulación",
+      "summary": "La SEC anunció que examinará cómo asesores, corredores, bolsas y otras entidades reguladas usan IA y tecnologías que puedan afectar operaciones de mercado, cumplimiento, prevención de fraude y protección del inversor durante el ejercicio fiscal 2027. Es un hecho regulatorio de supervisión, no una nueva prohibición ni prueba de infracciones; Reuters señala que los hallazgos de los exámenes pueden remitirse posteriormente al área de cumplimiento.",
+      "why_it_matters": "El fenómeno más amplio es el paso desde reglas abstractas sobre IA hacia inspecciones de su operación cotidiana dentro de instituciones financieras. La tensión consiste en que los mismos sistemas que prometen detectar fraude y abaratar asesoría pueden introducir decisiones opacas, conflictos de interés o fallos correlacionados a escala de mercado. ¿Qué evidencia debe exigir un supervisor para distinguir una herramienta que mejora el cumplimiento de otra que sólo automatiza una apariencia de control? La consecuencia humana recae en ahorradores e inversores minoristas, que pueden soportar pérdidas o discriminación sin comprender la cadena algorítmica que produjo una recomendación. Hipótesis editorial: provisionalmente, los exámenes convertirán trazabilidad, pruebas y responsabilidad ejecutiva en requisitos de facto antes de que exista una norma específica. Qué habría que investigar: revisar cartas de deficiencia, remisiones a enforcement y cambios documentados en modelos, datos, supervisión humana y reclamaciones de clientes tras el ciclo de exámenes.",
+      "raw_content": "Título: La SEC incorpora el uso de IA a sus exámenes prioritarios de firmas de Wall Street\nFecha: 2026-10-23\nFuente: Reuters; Comisión de Bolsa y Valores de Estados Unidos (SEC)\nEnlace: https://www.reuters.com/legal/government/wall-street-regulator-focus-ai-private-assets-corporate-exams-2026-10-23/\nResumen breve: La SEC anunció que examinará cómo asesores, corredores, bolsas y otras entidades reguladas usan IA y tecnologías que puedan afectar operaciones de mercado, cumplimiento, prevención de fraude y protección del inversor durante el ejercicio fiscal 2027. Es un hecho regulatorio de supervisión, no una nueva prohibición ni prueba de infracciones; Reuters señala que los hallazgos de los exámenes pueden remitirse posteriormente al área de cumplimiento.\nPor qué importa: El fenómeno más amplio es el paso desde reglas abstractas sobre IA hacia inspecciones de su operación cotidiana dentro de instituciones financieras. La tensión consiste en que los mismos sistemas que prometen detectar fraude y abaratar asesoría pueden introducir decisiones opacas, conflictos de interés o fallos correlacionados a escala de mercado. ¿Qué evidencia debe exigir un supervisor para distinguir una herramienta que mejora el cumplimiento de otra que sólo automatiza una apariencia de control? La consecuencia humana recae en ahorradores e inversores minoristas, que pueden soportar pérdidas o discriminación sin comprender la cadena algorítmica que produjo una recomendación. Hipótesis editorial: provisionalmente, los exámenes convertirán trazabilidad, pruebas y responsabilidad ejecutiva en requisitos de facto antes de que exista una norma específica. Qué habría que investigar: revisar cartas de deficiencia, remisiones a enforcement y cambios documentados en modelos, datos, supervisión humana y reclamaciones de clientes tras el ciclo de exámenes.\nCategoría: regulación"
+    }
+  ],
+  "memory_candidates": [
+    {
+      "id": "clever-hans-unconscious-evaluator-cues",
+      "title": "Clever Hans: el evaluador estaba filtrando la respuesta",
+      "one_liner": "El caballo que parecía resolver aritmética respondía a señales visuales involuntarias de personas que ya conocían la solución.",
+      "summary": "A comienzos del siglo XX, Clever Hans fue presentado como un caballo capaz de contar y resolver preguntas. La investigación de Oskar Pfungst mostró que el rendimiento dependía de que Hans pudiera ver a una persona que conociera la respuesta. Al acercarse el número correcto, pequeños cambios involuntarios en la postura y la cabeza del observador le indicaban cuándo dejar de golpear el suelo. El caso convierte un supuesto avance de capacidad en un problema de diseño experimental: un evaluador informado puede introducir la respuesta en el propio canal de evaluación sin advertirlo.",
+      "verified_claims": [
+        "Clever Hans fallaba con frecuencia cuando no podía ver a la persona que formulaba o conocía la respuesta.",
+        "Pfungst observó que movimientos pequeños e involuntarios de la cabeza y el cuerpo de los observadores funcionaban como señales para que el caballo se detuviera.",
+        "Al manipular deliberadamente esas señales, Pfungst podía controlar las respuestas del caballo.",
+        "El análisis original de Pfungst fue publicado en 1911 como un estudio experimental del comportamiento de Clever Hans."
+      ],
+      "uncertainties": [
+        "El episodio no demuestra fraude consciente por parte del caballo ni de su entrenador.",
+        "El resultado no elimina la capacidad perceptiva y de aprendizaje que Hans necesitaba para detectar señales muy sutiles."
+      ],
+      "sources": [
+        "https://www.gutenberg.org/files/33936/33936-h/33936-h.htm",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3921203/"
+      ],
+      "period": "1904–1911",
+      "location": "Berlín, Alemania",
+      "domains": [
+        "psicología experimental",
+        "comportamiento animal",
+        "metodología científica",
+        "evaluación"
+      ],
+      "mechanisms": [
+        "evaluation_leakage",
+        "unconscious_cueing",
+        "test_design_failure",
+        "capability_misattribution"
+      ],
+      "useful_for": [
+        "contaminación de benchmarks",
+        "evaluaciones ciegas",
+        "humanos en el circuito",
+        "sobreestimación de capacidades",
+        "diseño de pruebas de IA"
+      ],
+      "analogy_mapping": "La persona que conoce la respuesta corresponde al evaluador o conjunto de prueba que filtra información; las señales corporales corresponden a pistas no previstas; el golpeteo correcto corresponde a una salida que parece demostrar capacidad general. La lección transferible es separar la capacidad del sistema de la información accidentalmente disponible durante la medición.",
+      "analogy_limits": "Un modelo de IA puede explotar señales estadísticas de muchas clases y no necesita observar gestos humanos. El caso no prueba que toda evaluación esté contaminada ni que una respuesta correcta carezca de razonamiento.",
+      "surprise_score": 9.0,
+      "explanatory_score": 9.0,
+      "analogy_potential": 10.0,
+      "visual_score": 9.0,
+      "sourceability_score": 10.0,
+      "source_quality_score": 9.0,
+      "confidence": 9.0,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-10-12",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.3081,
+        "lexical_relevance": 0.1355,
+        "quality": 0.92,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      },
+      "claim_catalog": [
+        {
+          "index": 1,
+          "text": "Clever Hans fallaba con frecuencia cuando no podía ver a la persona que formulaba o conocía la respuesta."
+        },
+        {
+          "index": 2,
+          "text": "Pfungst observó que movimientos pequeños e involuntarios de la cabeza y el cuerpo de los observadores funcionaban como señales para que el caballo se detuviera."
+        },
+        {
+          "index": 3,
+          "text": "Al manipular deliberadamente esas señales, Pfungst podía controlar las respuestas del caballo."
+        },
+        {
+          "index": 4,
+          "text": "El análisis original de Pfungst fue publicado en 1911 como un estudio experimental del comportamiento de Clever Hans."
+        }
+      ]
+    },
+    {
+      "id": "ligo-big-dog-blind-injection",
+      "title": "LIGO llevó una señal falsa hasta el borde de publicarla",
+      "one_liner": "Un pequeño grupo inyectó una onda gravitacional simulada y dejó que cientos de científicos recorrieran casi todo el proceso de descubrimiento sin conocer la respuesta.",
+      "summary": "LIGO y Virgo acordaron que unas pocas personas podían insertar en secreto señales simuladas para probar el sistema completo. El 16 de septiembre de 2010 apareció una señal fuerte, apodada Big Dog, y los equipos actuaron como si fuera real: analizaron instrumentos y ruido, coordinaron observaciones con telescopios, redactaron artículos y sometieron el caso a un comité independiente. Tras una votación unánime favorable al anuncio, el sobre de inyección se abrió el 14 de marzo de 2011 y reveló el ejercicio. La prueba además expuso dos errores en el propio software de inyección. Es un paralelo potente para evaluaciones de IA: una prueba realista debe recorrer personas, herramientas y decisiones, y el dispositivo de prueba también necesita validación.",
+      "verified_claims": [
+        "LIGO y Virgo acordaron que un grupo pequeño pudiera inyectar señales simuladas sin informar a los analistas.",
+        "Una señal fuerte fue observada el 16 de septiembre de 2010 y los equipos procedieron bajo el supuesto operativo de que podía ser real.",
+        "La colaboración preparó documentación científica y un comité independiente recomendó por unanimidad que la evidencia era suficiente para anunciar una detección.",
+        "Al abrir el sobre el 14 de marzo de 2011 se confirmó la inyección y posteriormente se identificaron dos errores en su software: un modelo antiguo y un signo incorrecto en un detector."
+      ],
+      "uncertainties": [
+        "Los analistas sabían que podía existir una inyección ciega, aunque desconocían si había una y cuál era.",
+        "El ejercicio probó una clase concreta de señal y flujo científico; no cubrió todas las fuentes, fallas ni comportamientos posibles."
+      ],
+      "sources": [
+        "https://ligo.org/blind-injection/",
+        "https://arxiv.org/abs/1612.07864",
+        "https://arxiv.org/pdf/1111.7314"
+      ],
+      "period": "2010–2011",
+      "location": "Colaboraciones LIGO y Virgo, Estados Unidos y Europa",
+      "domains": [
+        "astronomía",
+        "diseño experimental",
+        "validación",
+        "organizaciones científicas"
+      ],
+      "mechanisms": [
+        "blind_end_to_end_test",
+        "organizational_separation",
+        "test_artifact_can_fail",
+        "evaluation_under_real_workflow"
+      ],
+      "useful_for": [
+        "evaluaciones de agentes",
+        "simulacros de incidentes",
+        "red teaming",
+        "gates de lanzamiento",
+        "fuga de respuestas",
+        "validación de evaluadores"
+      ],
+      "analogy_mapping": "La señal secreta corresponde a un caso de prueba oculto; los detectores, análisis, comités y borradores representan el sistema sociotécnico completo; abrir el sobre equivale a revelar la etiqueta sólo después de cerrar el juicio. Los bugs de la inyección muestran que incluso el evaluador puede introducir errores que distorsionen la conclusión.",
+      "analogy_limits": "La señal simulada obedecía modelos físicos y no era un adversario adaptativo. La colaboración conocía la posibilidad de una prueba ciega, y aprobar un borrador interno no equivale a publicar una afirmación falsa. El caso no garantiza que el mismo diseño evite gaming en IA.",
+      "surprise_score": 10.0,
+      "explanatory_score": 10.0,
+      "analogy_potential": 10.0,
+      "visual_score": 9.0,
+      "sourceability_score": 10.0,
+      "source_quality_score": 10.0,
+      "confidence": 10.0,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-10-15",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2666,
+        "lexical_relevance": 0.0598,
+        "quality": 1.0,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      },
+      "claim_catalog": [
+        {
+          "index": 1,
+          "text": "LIGO y Virgo acordaron que un grupo pequeño pudiera inyectar señales simuladas sin informar a los analistas."
+        },
+        {
+          "index": 2,
+          "text": "Una señal fuerte fue observada el 16 de septiembre de 2010 y los equipos procedieron bajo el supuesto operativo de que podía ser real."
+        },
+        {
+          "index": 3,
+          "text": "La colaboración preparó documentación científica y un comité independiente recomendó por unanimidad que la evidencia era suficiente para anunciar una detección."
+        },
+        {
+          "index": 4,
+          "text": "Al abrir el sobre el 14 de marzo de 2011 se confirmó la inyección y posteriormente se identificaron dos errores en su software: un modelo antiguo y un signo incorrecto en un detector."
+        }
+      ]
+    },
+    {
+      "id": "braess-paradox-more-road-worse-traffic",
+      "title": "Paradoja de Braess: una carretera nueva puede hacer más lento a todo el mundo",
+      "one_liner": "Cuando cada conductor elige la ruta que parece mejor para sí, añadir un enlace atractivo puede cambiar el equilibrio y aumentar el tiempo de viaje de todos.",
+      "summary": "Dietrich Braess mostró en 1968 una red de tráfico donde añadir una conexión redistribuye las decisiones individuales y conduce a un equilibrio peor: todos terminan con mayor tiempo de viaje. El mecanismo no requiere demanda inducida; aparece incluso con una cantidad fija de viajeros porque cada persona optimiza su propia ruta sobre costos que dependen de la congestión. Estudios posteriores formalizaron condiciones en las que ocurre y mostraron que no es una curiosidad lógica exclusiva de un único ejemplo. La paradoja convierte una intuición de ingeniería —más capacidad debe ayudar— en un problema de incentivos y equilibrio.",
+      "verified_claims": [
+        "Braess presentó en 1968 un ejemplo de red de tráfico en el que añadir un enlace produce tiempos de viaje individuales mayores en el equilibrio.",
+        "El mecanismo clásico supone que cada usuario elige la ruta que percibe como más favorable y que el costo de ciertos enlaces depende del flujo.",
+        "El ejemplo clásico puede formularse con demanda fija, por lo que no necesita atribuir el resultado a nuevos viajeros atraídos por la carretera.",
+        "Investigaciones posteriores derivaron condiciones para la aparición de la paradoja en redes de transporte generales."
+      ],
+      "uncertainties": [
+        "La paradoja no afirma que toda carretera nueva empeore el tráfico; depende de la topología, la demanda, las funciones de congestión y el comportamiento de elección.",
+        "Los ejemplos matemáticos establecen posibilidad y condiciones, no prueban por sí solos el efecto de una obra vial real sin mediciones y un modelo local."
+      ],
+      "sources": [
+        "https://doi.org/10.1287/trsc.1050.0127",
+        "https://doi.org/10.1287/trsc.17.3.301",
+        "https://doi.org/10.1016/S0191-2615(96)00024-0"
+      ],
+      "period": "desde 1968",
+      "location": "Fenómeno matemático de redes de transporte",
+      "domains": [
+        "investigación de operaciones",
+        "tráfico",
+        "teoría de juegos",
+        "redes"
+      ],
+      "mechanisms": [
+        "local_optimization_global_harm",
+        "capacity_changes_equilibrium",
+        "selfish_routing",
+        "coordination_externality"
+      ],
+      "useful_for": [
+        "enrutamiento de agentes",
+        "recomendadores",
+        "asignación de recursos",
+        "mercados de cómputo",
+        "optimización multiagente"
+      ],
+      "analogy_mapping": "Sirve para mostrar que mejorar una opción local cambia las decisiones de todos y, por tanto, el equilibrio completo. En sistemas de IA, añadir una herramienta, ruta o recurso puede atraer demasiados agentes hacia ella y degradar el resultado colectivo aunque cada decisión individual parezca racional.",
+      "analogy_limits": "El resultado requiere una estructura de red y funciones de costo específicas. No justifica eliminar capacidad de forma general ni implica que agentes de IA se comporten como conductores egoístas sin modelar sus objetivos, información y reglas de coordinación.",
+      "surprise_score": 9.4,
+      "explanatory_score": 9.5,
+      "analogy_potential": 9.7,
+      "visual_score": 9.6,
+      "sourceability_score": 9.6,
+      "source_quality_score": 9.8,
+      "confidence": 9.7,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-10-04",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2618,
+        "lexical_relevance": 0.0643,
+        "quality": 0.962,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      },
+      "claim_catalog": [
+        {
+          "index": 1,
+          "text": "Braess presentó en 1968 un ejemplo de red de tráfico en el que añadir un enlace produce tiempos de viaje individuales mayores en el equilibrio."
+        },
+        {
+          "index": 2,
+          "text": "El mecanismo clásico supone que cada usuario elige la ruta que percibe como más favorable y que el costo de ciertos enlaces depende del flujo."
+        },
+        {
+          "index": 3,
+          "text": "El ejemplo clásico puede formularse con demanda fija, por lo que no necesita atribuir el resultado a nuevos viajeros atraídos por la carretera."
+        },
+        {
+          "index": 4,
+          "text": "Investigaciones posteriores derivaron condiciones para la aparición de la paradoja en redes de transporte generales."
+        }
+      ]
+    },
+    {
+      "id": "challenger-cold-o-ring-evidence",
+      "title": "Challenger: la evidencia sobre las juntas tóricas se estrechó durante la decisión de lanzamiento",
+      "one_liner": "Antes del Challenger, una recomendación técnica contra lanzar con frío fue revertida dentro de un proceso que no transmitió plenamente la historia de daños ni la oposición de los ingenieros.",
+      "summary": "La noche anterior al lanzamiento del Challenger, Morton Thiokol recomendó inicialmente no lanzar por debajo de 53 °F debido al desempeño incierto de las juntas tóricas en frío. Tras una pausa interna, la dirección revirtió la recomendación mientras varios ingenieros mantuvieron su oposición. La Comisión Rogers concluyó que la decisión fue defectuosa y que información crítica sobre erosión, blow-by y objeciones técnicas no llegó de forma adecuada a quienes decidían. El caso muestra cómo el alcance y la presentación de la evidencia pueden convertir una señal acumulativa en una excepción aparentemente tolerable.",
+      "verified_claims": [
+        "Morton Thiokol recomendó inicialmente no lanzar el Challenger a temperaturas inferiores a 53 °F.",
+        "Ingenieros de Thiokol mantuvieron su oposición al lanzamiento después de que la dirección revirtiera la recomendación.",
+        "La Comisión Rogers calificó la decisión de lanzamiento como defectuosa.",
+        "La Comisión Rogers concluyó que la historia reciente de problemas de las juntas tóricas y las objeciones técnicas no fueron comunicadas adecuadamente a todos los responsables de la decisión.",
+        "El Challenger fue lanzado el 28 de enero de 1986 y se desintegró 73 segundos después."
+      ],
+      "uncertainties": [
+        "La evidencia previa al accidente no permitía estimar con precisión una curva completa de riesgo por temperatura.",
+        "El fracaso no se explica sólo por una visualización o selección de datos; también intervinieron diseño, organización, presión de calendario y comunicación."
+      ],
+      "sources": [
+        "https://www.nasa.gov/history/rogersrep/v1ch4.htm",
+        "https://www.nasa.gov/history/rogersrep/v1ch5.htm",
+        "https://www.nasa.gov/history/rogersrep/v1ch6.htm",
+        "https://www.nasa.gov/history/rogersrep/v4part6.htm"
+      ],
+      "period": "1985–1986",
+      "location": "Estados Unidos",
+      "domains": [
+        "aeroespacial",
+        "seguridad",
+        "organizaciones",
+        "ingeniería",
+        "decisión"
+      ],
+      "mechanisms": [
+        "measurement_changes_interpretation",
+        "evidence_scope",
+        "warning_normalization",
+        "decision_process_failure"
+      ],
+      "useful_for": [
+        "evaluación de riesgos de IA",
+        "presentación de benchmarks",
+        "escalamiento organizacional",
+        "señales débiles",
+        "gobernanza técnica"
+      ],
+      "analogy_mapping": "Un sistema de IA puede acumular fallos parciales sin activar una pausa si cada señal se presenta como una anomalía aislada o con un denominador estrecho. La estructura transferible es que la selección, agregación y circulación de evidencia cambia lo que los decisores creen estar autorizados a hacer.",
+      "analogy_limits": "Challenger fue un sistema físico con un mecanismo de fallo específico y consecuencias inmediatas; los riesgos de IA suelen ser más heterogéneos, reversibles o difíciles de atribuir. La analogía no prueba que toda discrepancia técnica implique una catástrofe ni que una sola gráfica hubiera evitado el accidente.",
+      "surprise_score": 9.0,
+      "explanatory_score": 9.0,
+      "analogy_potential": 9.0,
+      "visual_score": 9.0,
+      "sourceability_score": 10.0,
+      "source_quality_score": 10.0,
+      "confidence": 9.0,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-10-05",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2548,
+        "lexical_relevance": 0.0671,
+        "quality": 0.92,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      },
+      "claim_catalog": [
+        {
+          "index": 1,
+          "text": "Morton Thiokol recomendó inicialmente no lanzar el Challenger a temperaturas inferiores a 53 °F."
+        },
+        {
+          "index": 2,
+          "text": "Ingenieros de Thiokol mantuvieron su oposición al lanzamiento después de que la dirección revirtiera la recomendación."
+        },
+        {
+          "index": 3,
+          "text": "La Comisión Rogers calificó la decisión de lanzamiento como defectuosa."
+        },
+        {
+          "index": 4,
+          "text": "La Comisión Rogers concluyó que la historia reciente de problemas de las juntas tóricas y las objeciones técnicas no fueron comunicadas adecuadamente a todos los responsables de la decisión."
+        },
+        {
+          "index": 5,
+          "text": "El Challenger fue lanzado el 28 de enero de 1986 y se desintegró 73 segundos después."
+        }
+      ]
+    },
+    {
+      "id": "midway-af-water-test",
+      "title": "Midway: una avería de agua inventada convirtió una hipótesis en evidencia",
+      "one_liner": "Para comprobar qué lugar ocultaba el código «AF», la inteligencia naval estadounidense provocó una señal falsa y observó cómo la describía el adversario.",
+      "summary": "En mayo de 1942, criptanalistas estadounidenses habían inferido que «AF», el objetivo de una operación japonesa, era Midway, pero la identificación seguía discutida. La unidad de Joseph Rochefort propuso que la guarnición transmitiera en claro una avería ficticia de su planta de agua. La inteligencia japonesa recogió la señal; una comunicación japonesa interceptada después informó que «AF» tenía poca agua. El episodio no fue una predicción pasiva: fue un experimento barato dentro de un entorno adversarial que obligó al sistema observado a revelar información útil.",
+      "verified_claims": [
+        "A comienzos de 1942, criptanalistas de la Marina estadounidense habían descifrado suficiente tráfico JN-25 para anticipar una gran operación japonesa, aunque el objetivo aparecía como «AF».",
+        "La unidad de inteligencia de Pearl Harbor hizo que Midway transmitiera en claro un mensaje falso sobre una escasez de agua.",
+        "El 22 de mayo de 1942, la estación FRUMEL publicó la traducción de un mensaje japonés que relacionaba «AF» con el reporte de agua y confirmó la identificación de Midway.",
+        "Los registros conservados muestran que la correlación entre «AF» y Midway ya existía antes de la maniobra; la señal de agua resolvió la controversia restante."
+      ],
+      "uncertainties": [
+        "No se conserva en los archivos revisados la orden original que instruyó a Midway a emitir el mensaje; la reconstrucción se apoya en el intercepto japonés superviviente y en testimonios posteriores.",
+        "La maniobra confirmó una hipótesis de inteligencia, pero no debe presentarse como causa única de la victoria estadounidense en la batalla."
+      ],
+      "sources": [
+        "https://www.nsa.gov/Press-Room/News-Highlights/Article/Article/2644092/water-shortage/",
+        "https://www.nsa.gov/portals/75/documents/news-features/declassified-documents/cryptologic-quarterly/Revisiting_the_Dispute.pdf",
+        "https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/r/the-role-of-comint-in-the-battle-of-midway.html"
+      ],
+      "period": "Mayo–junio de 1942",
+      "location": "Midway, Hawái, y estaciones de inteligencia aliadas del Pacífico",
+      "domains": [
+        "historia militar",
+        "criptanálisis",
+        "inteligencia",
+        "teoría de decisiones"
+      ],
+      "mechanisms": [
+        "active_information_gathering",
+        "low_cost_experiment",
+        "hypothesis_discrimination",
+        "adversarial_inference"
+      ],
+      "useful_for": [
+        "agentes que actúan bajo incertidumbre",
+        "evaluación de hipótesis",
+        "pruebas de sistemas opacos",
+        "planificación con información incompleta",
+        "diseño de experimentos"
+      ],
+      "analogy_mapping": "Cuando varias interpretaciones de un sistema son plausibles, una acción pequeña y deliberada puede generar una respuesta que las discrimine. En IA, el paralelo legítimo es pasar de observar pasivamente a diseñar pruebas informativas antes de comprometer recursos o ejecutar un plan largo.",
+      "analogy_limits": "Una operación de engaño en guerra no equivale a una evaluación ordinaria de IA. Los sistemas modernos pueden detectar la prueba, cambiar de conducta o producir respuestas ambiguas; además, el costo ético de manipular un entorno real debe evaluarse por separado.",
+      "surprise_score": 9.5,
+      "explanatory_score": 9.0,
+      "analogy_potential": 9.0,
+      "visual_score": 9.0,
+      "sourceability_score": 9.0,
+      "source_quality_score": 9.5,
+      "confidence": 9.0,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-10-09",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2541,
+        "lexical_relevance": 0.0662,
+        "quality": 0.92,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      },
+      "claim_catalog": [
+        {
+          "index": 1,
+          "text": "A comienzos de 1942, criptanalistas de la Marina estadounidense habían descifrado suficiente tráfico JN-25 para anticipar una gran operación japonesa, aunque el objetivo aparecía como «AF»."
+        },
+        {
+          "index": 2,
+          "text": "La unidad de inteligencia de Pearl Harbor hizo que Midway transmitiera en claro un mensaje falso sobre una escasez de agua."
+        },
+        {
+          "index": 3,
+          "text": "El 22 de mayo de 1942, la estación FRUMEL publicó la traducción de un mensaje japonés que relacionaba «AF» con el reporte de agua y confirmó la identificación de Midway."
+        },
+        {
+          "index": 4,
+          "text": "Los registros conservados muestran que la correlación entre «AF» y Midway ya existía antes de la maniobra; la señal de agua resolvió la controversia restante."
+        }
+      ]
+    },
+    {
+      "id": "flint-source-switch-corrosion-control-failure",
+      "title": "Flint cambió la fuente de agua y activó el peligro que ya estaba dentro de sus tuberías",
+      "one_liner": "El agua nueva no recibió control anticorrosivo; al interactuar con infraestructura antigua, movilizó plomo que la evaluación del cambio había tratado como un problema separado.",
+      "summary": "En abril de 2014, Flint cambió su suministro del sistema de Detroit, alimentado por el lago Hurón, al río Flint. La planta no mantuvo tratamiento de control de corrosión. Según la EPA, decisiones estatales y locales contrarias a los requisitos de la Lead and Copper Rule dañaron el sistema de distribución y expusieron a residentes al plomo; la respuesta federal además se retrasó por roles, evaluación de riesgo y comunicación deficientes. Un análisis de CDC encontró que la proporción de pruebas infantiles con plomo elevado pasó de 3.1% antes del cambio a 5.0% en el periodo temprano posterior y volvió a niveles comparables tras regresar al suministro anterior. El caso muestra que sustituir una entrada compatible por otra no es un cambio local cuando el resto del sistema conserva materiales, protecciones y supuestos heredados.",
+      "verified_claims": [
+        "Flint cambió en abril de 2014 su fuente de agua del sistema de Detroit al río Flint.",
+        "La planta de Flint no mantuvo tratamiento de control de corrosión después del cambio de fuente.",
+        "El inspector general de la EPA concluyó que decisiones estatales y locales llevaron a corrosión del sistema de distribución y exposición de residentes al plomo.",
+        "La misma auditoría concluyó que la respuesta federal se retrasó por fallas de roles, evaluación de riesgo, comunicación y supervisión.",
+        "CDC analizó 9,422 pruebas de plomo en sangre de 7,306 menores de seis años del área servida.",
+        "En ese análisis, las pruebas elevadas fueron 3.1% antes del cambio y 5.0% en el periodo temprano posterior; después del retorno al suministro anterior volvieron a niveles comparables con los previos."
+      ],
+      "uncertainties": [
+        "El análisis de CDC es poblacional y observacional; no atribuye el resultado de cada niño a una exposición individual específica.",
+        "La crisis incluyó fallas regulatorias, muestreo sesgado, comunicación y desigualdad institucional además de química del agua; reducirla a una incompatibilidad técnica borraría causas esenciales.",
+        "Usar el caso como analogía exige reconocer el daño humano real y no convertirlo en una metáfora ligera sobre software."
+      ],
+      "sources": [
+        "https://www.epa.gov/sites/default/files/2018-07/documents/_epaoig_20180719-18-p-0221.pdf",
+        "https://www.cdc.gov/mmwr/volumes/65/wr/mm6525e1.htm"
+      ],
+      "period": "2014–2016",
+      "location": "Flint, Michigan, Estados Unidos",
+      "domains": [
+        "agua potable",
+        "infraestructura",
+        "salud pública",
+        "regulación"
+      ],
+      "mechanisms": [
+        "interface_change_activates_latent_risk",
+        "technology_requires_system_compatibility",
+        "coordination_failure",
+        "risk_fragmentation"
+      ],
+      "useful_for": [
+        "ai_system_migration",
+        "model_or_vendor_replacement",
+        "legacy_infrastructure_risk",
+        "end_to_end_safety_assessment"
+      ],
+      "analogy_mapping": "Cambiar un modelo, proveedor o fuente de datos puede alterar interacciones con capas heredadas que parecían estables. La estructura transferible es probar la compatibilidad de extremo a extremo, mantener protecciones durante la transición y reunir señales dispersas antes de declarar que el cambio local es seguro.",
+      "analogy_limits": "La contaminación por plomo produjo daño corporal y ocurrió bajo obligaciones públicas concretas; no debe equipararse moralmente con una migración informática ordinaria. La analogía sirve para dependencias e interfaces, no para minimizar responsabilidad, desigualdad o consecuencias sanitarias.",
+      "surprise_score": 9.0,
+      "explanatory_score": 9.5,
+      "analogy_potential": 9.0,
+      "visual_score": 9.0,
+      "sourceability_score": 10.0,
+      "source_quality_score": 10.0,
+      "confidence": 9.5,
+      "semantic_duplicate_risk": "low",
+      "source_kind": "scheduled_research",
+      "created_at": "2026-10-23",
+      "status": "approved",
+      "retrieval": {
+        "score": 0.2536,
+        "lexical_relevance": 0.06,
+        "quality": 0.94,
+        "times_used": 0,
+        "last_used_at": null,
+        "cooldown_days": 90,
+        "cooldown_active": false,
+        "cooldown_remaining_days": 0
+      },
+      "claim_catalog": [
+        {
+          "index": 1,
+          "text": "Flint cambió en abril de 2014 su fuente de agua del sistema de Detroit al río Flint."
+        },
+        {
+          "index": 2,
+          "text": "La planta de Flint no mantuvo tratamiento de control de corrosión después del cambio de fuente."
+        },
+        {
+          "index": 3,
+          "text": "El inspector general de la EPA concluyó que decisiones estatales y locales llevaron a corrosión del sistema de distribución y exposición de residentes al plomo."
+        },
+        {
+          "index": 4,
+          "text": "La misma auditoría concluyó que la respuesta federal se retrasó por fallas de roles, evaluación de riesgo, comunicación y supervisión."
+        },
+        {
+          "index": 5,
+          "text": "CDC analizó 9,422 pruebas de plomo en sangre de 7,306 menores de seis años del área servida."
+        },
+        {
+          "index": 6,
+          "text": "En ese análisis, las pruebas elevadas fueron 3.1% antes del cambio y 5.0% en el periodo temprano posterior; después del retorno al suministro anterior volvieron a niveles comparables con los previos."
+        }
+      ]
+    }
+  ],
+  "memory_warnings": [],
+  "control": {
+    "state": {
+      "schema_version": 1,
+      "episode_date": "2026-10-27",
+      "status": "script_not_approved",
+      "publishable": false,
+      "reason": "The script exhausted refinement without passing every deterministic, factual, attention, SEO, and voice gate",
+      "started_at_utc": "2026-10-27T19:58:02.945044+00:00",
+      "finished_at_utc": "2026-10-27T20:01:34.565611+00:00",
+      "refinement_iterations": 5,
+      "validation_warnings": []
+    },
+    "plan": {
+      "topic_signature": "Trazabilidad y prueba ciega en sistemas humanos-algoritmo: cuando la “evidencia” está contaminada o calibrada al revés",
+      "narrative_lens": "cognición, evaluación y responsabilidad",
+      "novelty_angle": "Los episodios recientes en esta carpeta han girado alrededor de aprendizaje dependiente de herramientas, o de fallos de supervisión humana/medición del proceso. Aquí el giro es distinto: no preguntamos “si la gente detecta errores” ni “si la IA aprende”, sino cómo la infraestructura de evaluación (qué se muestra, qué se oculta, qué se calibra como árbitro) puede producir confianza falsa. Con eso, ",
+      "historical_mirror": "narrativa basada en que la evidencia puede parecer objetiva mientras está mal anclada (un “árbitro” que en realidad define la verdad por error), y que por eso necesitamos pruebas que recorren el trabajo real sin depender del mismo juez que se quiere validar.",
+      "narrative_parallels": [
+        {
+          "memory_id": "ligo-big-dog-blind-injection",
+          "role": "historical_mirror",
+          "placement": "narrative_turn",
+          "purpose": "Reencuadrar la pregunta: no basta con tener etiquetas o métricas de evaluación; hay que diseñar un simulacro que atraviese el flujo completo y, sobre todo, que el sistema de juicio no “conozca” la respuesta.",
+          "limits": "El ejercicio de LIGO usa señales físicas y un contexto científico controlado; en IA/producción humana la adversarialidad puede ser distinta y los riesgos no se traducen 1:1."
+        }
+      ],
+      "primary_memory_id": "ligo-big-dog-blind-injection",
+      "opening_memory_id": null,
+      "evidence_strategy": "Usaré 2 evidencias fuertes para sostener dos capas del argumento. Primero, una evidencia sobre cómo “humano en el circuito” no garantiza corrección cuando el sistema se equivoca (para mostrar que el problema no es sólo tener revisión). Segundo, una evidencia sobre trazas/contabilidad de proceso en educación: desplazar evaluación del producto a proceso puede mejorar justicia y aprendizaje, pero también puede abrir la puerta a trazas fabricadas o a auditoría burocrática. El resto del episodio se c",
+      "central_question": "Si un sistema produce una decisión que “parece” verificable (por trazas, recomendaciones o revisiones humanas), ¿cómo sabemos que estamos comprobando la respuesta correcta y no el rendimiento del propio mecanismo de evaluación?",
+      "thesis": "La evaluación no falla sólo cuando la IA se equivoca; falla cuando la arquitectura de prueba convierte el árbitro (trazas, revisores, métricas) en una fuente de verdad autocumplida. Para recuperar responsabilidad real necesitamos pruebas que recorran el flujo completo en condiciones donde el evaluador no pueda saber—y donde la evidencia que miramos no esté calibrada al revés.",
+      "hook": "A veces la parte aterradora no es que un sistema falle. Es que lo que muestra como “evidencia” hace que el fallo se vuelva difícil de ver… incluso cuando hay gente mirando.",
+      "target_duration_minutes": 11.0,
+      "narrative_arc": {
+        "opening_belief": "Si añadimos trazabilidad (registro) y revisión humana, la probabilidad de que se apruebe un error baja de forma fiable.",
+        "central_mystery": "¿Puede la trazabilidad—o la revisión—convertirse en una máquina de generar confianza falsa, donde “verificar” significa seguir el camino equivocado del árbitro?",
+        "concrete_scene": "Imagina un flujo de trabajo: una salida se marca como válida, hay un rastro de decisiones y un revisor humano aprueba rápido porque “tiene sentido” y está bien documentado. Después, aparece un problema operativo: el documento de evaluación ayudó a cerrar el caso… pero no a descubrir dónde estaba el error.",
+        "first_reveal": "La revisión humana no funciona como garantía: cuando el sistema se equivoca, una fracción relevante de errores no se corrige ni se reconoce; o sea, el problema puede vivir en la interacción humano-máquina, no en la falta de “ojos”.",
+        "complication": "Incluso si cambiamos la evaluación para mirar proceso (no sólo producto), pedir trazas no asegura autenticidad ni aprendizaje. La trazabilidad puede premiar verificación superficial o ser falsificable, y la evaluación puede volverse carga burocrática que no mejora el criterio.",
+        "narrative_turn": "Aquí el problema deja de ser “falta supervisión” y pasa a ser “diseño de la prueba”: el ejemplo histórico muestra que el sistema de evaluación necesita condiciones donde no sepa la respuesta y donde el recorrido real no se reduzca a un indicador.",
+        "second_reveal": "Cuando la evidencia está calibrada al mismo proceso que genera la salida (o cuando el evaluador confía en su propio árbitro), la discrepancia deja de ser evidencia de fallo y se vuelve ‘ruido’. En ese entorno, la trazabilidad y la revisión pueden ocultar el error en vez de detectarlo.",
+        "evolved_thesis": "La responsabilidad no se compra con trazas ni con un humano adicional. Se diseña con pruebas que validan el flujo completo y con separación real de quién produce la respuesta y quién puede—sin conocerla—poner a prueba el proceso. Gobernar sistemas complejos es gobernar el árbitro de la evidencia.",
+        "recurring_motif": "la marca verde",
+        "emotional_peak": "Un error que “pasó todas las revisiones” no queda como anécdota técnica: se traduce en decisiones clínicas/operativas donde alguien confía en que el expediente significaba seguridad.",
+        "final_payoff": "La marca verde deja de ser un cierre (“quedó resuelto”) y se vuelve una pregunta (“¿qué parte de esta evidencia era realmente independiente del mecanismo que produjo el resultado?”)."
+      },
+      "evidence": [
+        {
+          "evidence_id": "clinical_human_loop_fails",
+          "selected_news_index": 3,
+          "role": "anchor",
+          "argument_role": "evidence",
+          "narrative_function": "Aterriza el arranque: muestra que “humano en el circuito” no intercepta errores con fiabilidad cuando la IA se equivoca; por tanto, la tesis provisional (trazabilidad + revisión = control) es insuficiente.",
+          "analogy_goal": "Explicar que mirar un resultado no equivale a detectar su causa: es como revisar un semáforo sin revisar el sensor.",
+          "skepticism_angle": "No asumir que más revisores = menos fallos; la evidencia sugiere dependencia perjudicial.",
+          "human_stakes": "Diagnósticos y decisiones clínicas: los errores no corregidos pueden pasar a seguimiento equivocado o falsa tranquilidad."
+        },
+        {
+          "evidence_id": "education_trace_might_be_gamed",
+          "selected_news_index": 4,
+          "role": "support",
+          "argument_role": "limit_case",
+          "narrative_function": "Complica la solución fácil: incluso si cambiamos a evaluación basada en proceso, la trazabilidad puede volverse burocracia o ser falsificable; por tanto, “ver el proceso” no equivale a “comprobar autenticidad”.",
+          "analogy_goal": "Ilustrar que una bitácora bonita puede ser más maquillaje que aprendizaje: como llenar una receta escrita impecable que no garantiza que cocinaste bien.",
+          "skepticism_angle": "No equiparar trazas con veracidad o aprendizaje profundo.",
+          "human_stakes": "Justicia académica y privacidad; además, el aprendizaje que se pierde cuando se castiga o se premia la forma equivocada de evidencia."
+        }
+      ],
+      "claim_ledger": [
+        {
+          "evidence_id": "clinical_human_loop_fails",
+          "selected_news_index": 3,
+          "supported_facts": [
+            "Una revisión sistemática y metaanálisis de 46 informes agrupados en 41 cohortes encontró que los clínicos acertaban mucho más cuando el consejo automatizado era correcto que cuando era erróneo.",
+            "En cuatro estudios reales y heterogéneos de electrocardiogramas, 26,6% de interpretaciones automáticas equivocadas no fueron corregidas o reconocidas.",
+            "Los estudios contemporáneos con IA y LLM registraron dependencia perjudicial, pero no pudieron combinarse estadísticamente."
+          ],
+          "allowed_interpretations": [
+            "La revisión humana puede fallar como mecanismo de control cuando el sistema automatizado produce una salida convincente pero incorrecta."
+          ],
+          "hypotheses": [
+            "La interacción humano-máquina puede inducir confianza desalineada con la probabilidad real de error."
+          ],
+          "uncertainties": [
+            "No se especifica el rendimiento por subespecialidad o el efecto de carga de trabajo, formato de la explicación, ni el tiempo de intervención en cada estudio.",
+            "La heterogeneidad entre estudios impide generalizar exactamente el mismo porcentaje a todos los entornos clínicos."
+          ],
+          "prohibited_claims": [
+            "Que la revisión humana siempre empeore el desempeño o que la causa sea únicamente la confianza sin datos adicionales.",
+            "Que el porcentaje exacto (26,6%) aplique a otros dominios fuera de los estudios de electrocardiogramas mencionados."
+          ],
+          "source_limitations": [
+            "Es una revisión con metaanálisis; los resultados dependen de la calidad y comparabilidad de los estudios incluidos.",
+            "La síntesis indica dependencia perjudicial con IA/LLM pero limita la cuantificación combinada por falta de capacidad estadística para agrupar."
+          ]
+        },
+        {
+          "evidence_id": "education_trace_might_be_gamed",
+          "selected_news_index": 4,
+          "supported_facts": [
+            "Un estudio de investigación-acción rediseñó tareas en cursos profesionales (anatomía y fisiología como entorno principal) y usó evidencia de consultas, verificación de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo.",
+            "El estudio evita inferir uso de IA a partir del trabajo final, y recolecta evidencia del proceso.",
+            "Los autores señalan que el esquema es una intervención educativa situada y que no constituye una validación universal, ni demuestra que toda traza sea auténtica o mida aprendizaje profundo."
+          ],
+          "allowed_interpretations": [
+            "Pedir trazabilidad puede ayudar a evaluar decisiones y revisiones explicables, pero no garantiza autenticidad ni necesariamente mide aprendizaje profundo."
+          ],
+          "hypotheses": [
+            "En algunos contextos, las trazas podrían ser fabricadas o cumplidas de forma estratégica sin reflejar comprensión real."
+          ],
+          "uncertainties": [
+            "No se reportan tasas o condiciones específicas de falsificación de trazas en el estudio descrito.",
+            "No se demuestra generalización a otras disciplinas o formatos de evaluación."
+          ],
+          "prohibited_claims": [
+            "Que el esquema evaluado necesariamente es vulnerable a fraude en todos los casos.",
+            "Que el aprendizaje profundo no mejora con evaluación por proceso en ningún escenario."
+          ],
+          "source_limitations": [
+            "Intervención educativa situada con métodos mixtos; los resultados no se presentan como una validación universal del enfoque.",
+            "La evidencia disponible no autoriza concluir sobre autenticidad de toda traza o sobre aprendizaje causal sin más validación."
+          ]
+        }
+      ],
+      "beats": [
+        {
+          "beat_id": "b1_open_scene",
+          "kind": "scene",
+          "purpose": "Abrir con la imagen de la ‘marca verde’ como cierre apresurado y sembrar la duda de que el expediente no es lo mismo que seguridad.",
+          "estimated_minutes": 1.7,
+          "evidence_ids": []
+        },
+        {
+          "beat_id": "b2_mystery_question",
+          "kind": "reflection",
+          "purpose": "Formular el misterio central: qué parte de la verificación realmente mide el error y qué parte solo mide que el árbitro siguió su guion.",
+          "estimated_minutes": 1.2,
+          "evidence_ids": []
+        },
+        {
+          "beat_id": "b3_humans_not_enough",
+          "kind": "evidence",
+          "purpose": "Presentar la evidencia clínica para destruir la creencia inicial de ‘más supervisión = más control’.",
+          "estimated_minutes": 2.1,
+          "evidence_ids": [
+            "clinical_human_loop_fails"
+          ]
+        },
+        {
+          "beat_id": "b4_trace_solution_complicates",
+          "kind": "complication",
+          "purpose": "Mover la solución fácil hacia una trampa: incluso cuando cambias evaluación a trazas del proceso, puede no evitar juego estratégico o auditoría superficial.",
+          "estimated_minutes": 2.2,
+          "evidence_ids": [
+            "education_trace_might_be_gamed"
+          ]
+        },
+        {
+          "beat_id": "b5_turn_blind_test",
+          "kind": "turn",
+          "purpose": "Narrative turn con el espejo histórico: lo que necesitamos no es sólo evidencia, sino pruebas que obliguen al sistema evaluador a no conocer la respuesta; reencuadrar de ‘supervisión’ a ‘diseño de la prueba’.",
+          "estimated_minutes": 2.2,
+          "evidence_ids": []
+        },
+        {
+          "beat_id": "b6_evolved_criteria",
+          "kind": "reflection",
+          "purpose": "Sintetizar la tesis evolucionada: independencia del árbitro, recorrido end-to-end y separación entre quien produce y quien puede verificar sin sesgo del mismo mecanismo.",
+          "estimated_minutes": 1.6,
+          "evidence_ids": [
+            "clinical_human_loop_fails",
+            "education_trace_might_be_gamed"
+          ]
+        }
+      ],
+      "final_synthesis": "Cuando la evaluación se diseña para tranquilizarnos, puede esconder el error bajo la comodidad de un registro. El punto no es tener más trazas o más personas revisando, sino asegurar que el árbitro de la evidencia no esté calibrado para producir la misma ilusión de corrección que el sistema que queremos controlar.",
+      "closing_question": "¿Qué cambiarías en tu organización para que la ‘marca verde’ signifique: “podemos descubrir cuando el árbitro está equivocado”, en lugar de sólo “pasó la revisión”?"
+    },
+    "ledger": [
+      {
+        "evidence_id": "clinical_human_loop_fails",
+        "news_id": "n_cd755c1a034d6127",
+        "supported_facts": [
+          "Una revisión sistemática y metaanálisis de 46 informes agrupados en 41 cohortes encontró que los clínicos acertaban mucho más cuando el consejo automatizado era correcto que cuando era erróneo.",
+          "En cuatro estudios reales y heterogéneos de electrocardiogramas, 26,6% de interpretaciones automáticas equivocadas no fueron corregidas o reconocidas.",
+          "Los estudios contemporáneos con IA y LLM registraron dependencia perjudicial, pero no pudieron combinarse estadísticamente."
+        ],
+        "allowed_interpretations": [
+          "La revisión humana puede fallar como mecanismo de control cuando el sistema automatizado produce una salida convincente pero incorrecta."
+        ],
+        "hypotheses": [
+          "La interacción humano-máquina puede inducir confianza desalineada con la probabilidad real de error."
+        ],
+        "uncertainties": [
+          "No se especifica el rendimiento por subespecialidad o el efecto de carga de trabajo, formato de la explicación, ni el tiempo de intervención en cada estudio.",
+          "La heterogeneidad entre estudios impide generalizar exactamente el mismo porcentaje a todos los entornos clínicos."
+        ],
+        "prohibited_claims": [
+          "Que la revisión humana siempre empeore el desempeño o que la causa sea únicamente la confianza sin datos adicionales.",
+          "Que el porcentaje exacto (26,6%) aplique a otros dominios fuera de los estudios de electrocardiogramas mencionados."
+        ],
+        "source_limitations": [
+          "Es una revisión con metaanálisis; los resultados dependen de la calidad y comparabilidad de los estudios incluidos.",
+          "La síntesis indica dependencia perjudicial con IA/LLM pero limita la cuantificación combinada por falta de capacidad estadística para agrupar."
+        ]
+      },
+      {
+        "evidence_id": "education_trace_might_be_gamed",
+        "news_id": "n_33572a78f5c1aa46",
+        "supported_facts": [
+          "Un estudio de investigación-acción rediseñó tareas en cursos profesionales (anatomía y fisiología como entorno principal) y usó evidencia de consultas, verificación de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo.",
+          "El estudio evita inferir uso de IA a partir del trabajo final, y recolecta evidencia del proceso.",
+          "Los autores señalan que el esquema es una intervención educativa situada y que no constituye una validación universal, ni demuestra que toda traza sea auténtica o mida aprendizaje profundo."
+        ],
+        "allowed_interpretations": [
+          "Pedir trazabilidad puede ayudar a evaluar decisiones y revisiones explicables, pero no garantiza autenticidad ni necesariamente mide aprendizaje profundo."
+        ],
+        "hypotheses": [
+          "En algunos contextos, las trazas podrían ser fabricadas o cumplidas de forma estratégica sin reflejar comprensión real."
+        ],
+        "uncertainties": [
+          "No se reportan tasas o condiciones específicas de falsificación de trazas en el estudio descrito.",
+          "No se demuestra generalización a otras disciplinas o formatos de evaluación."
+        ],
+        "prohibited_claims": [
+          "Que el esquema evaluado necesariamente es vulnerable a fraude en todos los casos.",
+          "Que el aprendizaje profundo no mejora con evaluación por proceso en ningún escenario."
+        ],
+        "source_limitations": [
+          "Intervención educativa situada con métodos mixtos; los resultados no se presentan como una validación universal del enfoque.",
+          "La evidencia disponible no autoriza concluir sobre autenticidad de toda traza o sobre aprendizaje causal sin más validación."
+        ]
+      }
+    ],
+    "script": "A veces me preocupa una cosa muy concreta: esa lucecita, ese check verde, ese “resuelto”. Suena casi como un cierre administrativo, como decir: ya pasó por el filtro, ya lo miraron, ya está bien.\n\nPero fíjate en la escena más simple: alguien comete un error, el sistema lo corrige a medias o lo justifica con argumentos convincentes… y aun así el expediente queda impecable. Hay trazas. Hay aprobaciones. Hay un humano que dio el visto bueno.\n\nY aun así, semanas después, el problema aparece donde no debería: en decisiones clínicas, en mantenimiento, en garantías, en el trabajo que alguien creyó que estaba siendo “seguro”.\n\nLa intuición humana es: “si hay supervisión, debería bajar el riesgo”. Mi intuición, cada vez más, es otra: quizá el expediente no está garantizando seguridad; quizá solo está demostrando que el árbitro siguió su guion.\n\nA veces creemos que verificar es una sola cosa: mirar el resultado y confirmar que coincide con la realidad. Pero cuando metes IA, metes gente, metes registros, y se arma algo parecido a un laboratorio… con un detalle inquietante.\n\nEl misterio central es este: ¿qué parte de la “verificación” realmente mide el error? ¿Y qué parte solo mide que el árbitro actuó como estaba previsto, siguiendo el camino de evidencia que el propio sistema produce?\n\nEn otras palabras: la pregunta no es solo “¿la salida estuvo bien?”. La pregunta más incómoda es “¿qué significa haberla comprobado?”. Porque a veces comprobamos el mismo mecanismo que generó la salida. Y eso, aunque suene absurdo, puede convertirse en una forma elegante de confirmar el error.\n\nUna forma de aterrizar esa intuición es mirar dónde las consecuencias no son abstractas.\n\nEn salud, hay un supuesto extendido: si una IA sugiere algo y un clínico supervisa, entonces el error debería detectarse. Pues bien, una revisión sistemática y metaanálisis (publicada en npj Digital Medicine) encontró resultados que van en dirección contraria. En su síntesis, agruparon 46 informes, organizados en 41 cohortes independientes, y reportaron que los clínicos acertaban mucho más cuando el consejo automatizado era correcto que cuando era erróneo.\n\nAdemás, en el subgrupo de estudios con electrocardiogramas —descritos como reales y heterogéneos— la revisión reporta que alrededor del 26,6% de las interpretaciones automáticas equivocadas no fueron corregidas o reconocidas por los clínicos. El propio artículo que resume esa evidencia señala que hay alta heterogeneidad y un intervalo amplio, de modo que el número no debería leerse como una ley universal aplicable a cualquier escenario, pero sí como una señal: la supervisión humana no garantiza por sí sola que el error sea interceptado.\n\nOjo: esto no significa que “la gente sea incapaz”. Significa algo más específico y más preocupante: la supervisión humana puede fallar cuando el sistema se equivoca de una manera que parece verosímil, o cuando el contexto empuja a confiar.\n\nMi lectura de esto es dura pero útil: “humano en el circuito” no es un seguro automático. Es una capacidad que hay que medir… y que puede erosionarse cuando la confianza está desalineada con la probabilidad real de error.\n\nAhora viene la trampa lógica. Si la supervisión directa falla, el instinto dice: “entonces cambiemos la evaluación”.\n\nY ahí aparece una idea razonable: ya no basta con mirar el final; vayamos al proceso. Registremos trazas. Recojamos evidencia de verificación, de revisión, de atribución, de consultas y correcciones. Que la marca verde no sea un “ya quedó”, sino un “mira todo lo que hicimos para llegar aquí”.\n\nSolo que, incluso si movemos la evaluación hacia las trazas del proceso, no necesariamente evitamos el problema de fondo. Un caso educativo muestra por qué.\n\nEn una intervención de investigación-acción descrita en Humanities and Social Sciences Communications, rediseñaron tareas en cursos profesionales. En vez de inferir si se usó IA a partir del trabajo final, intentaron recoger evidencia del proceso: verificaciones de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo, entre otras piezas de evidencia. El enfoque es plausible: puede hacer más evaluable el razonamiento.\n\nPero los propios autores lo acotan: se trata de una intervención situada; el diseño no demuestra que todas las trazas sean auténticas ni que, por sí mismo, mida aprendizaje profundo de manera universal.\n\nMi punto aquí es conceptual: si un sistema aprende a “cumplir” con lo que el expediente exige, puedes terminar premiando la forma correcta de producir trazas, no necesariamente la comprensión real. Las trazas pueden volverse un teatro burocrático: un registro bonito que responde al árbitro, no a la realidad.\n\nEntonces la marca verde cambia de significado… pero no necesariamente mejora la seguridad. A veces solo vuelve el error más difícil de ver, porque ya viene embalado en un expediente coherente.\n\nHasta aquí yo estaba pensando en un problema relativamente simple: que la gente no corrige todo cuando la IA falla, y que las trazas del proceso no garantizan autenticidad.\n\nPero lo que se vuelve verdaderamente inquietante es la siguiente derivación: quizá no necesitamos solo mejores revisores. Necesitamos mejores pruebas.\n\nY aquí entra un espejo histórico potente, porque nos obliga a reencuadrar la pregunta.\n\nEn el experimento de LIGO y Virgo conocido como “blind injection” (inyección ciega), para probar el sistema completo de detección aceptaron que un grupo pequeño inyectara de forma secreta señales simuladas dentro del flujo real de trabajo. Durante el periodo del ejercicio, el equipo actuó como si la señal pudiera ser auténtica: analizaron instrumentos y ruido, coordinaron observaciones, redactaron artículos y sometieron el caso a un comité independiente. Solo cuando se abrió el “sobre” se supo que había sido una prueba ciega. Según la documentación del ejercicio, el análisis posterior también identificó errores en el software asociado a la inyección.\n\nClaro: el universo físico no es un adversario adaptativo, y el hecho de que el ejercicio sea científico no garantiza que un truco equivalente evite “gaming” en evaluaciones de IA humanas. Pero el mecanismo organizacional sí enseña algo sobre diseño de prueba: no basta con “mirar más”, necesitas condiciones donde el evaluador no pueda ajustar su juicio al resultado.\n\nLa lección estructural es que una buena prueba no debería depender de que el árbitro conozca la etiqueta de antemano. Necesitas condiciones donde el evaluador no pueda acomodarse al resultado. Necesitas pruebas que recorran el flujo end-to-end, donde el sistema de evaluación no sea el mismo mecanismo que produce la salida.\n\nEn resumen: no se trata solo de supervisión. Se trata de diseño de la prueba. De separar —lo más que se pueda— quién genera la decisión, quién verifica, y qué parte del sistema aprende o se ajusta mientras corre el proceso.\n\nSi lo pienso con calma, la tesis evoluciona así.\n\nPrimero: la responsabilidad real no se compra con trazabilidad ni con un humano adicional. Puedes tener un registro perfecto y aun así estar verificando el camino equivocado, el guion del árbitro.\n\nSegundo: hay un problema de independencia. En el peor de los casos, el mecanismo que decide qué cuenta como evidencia también puede estar contaminado por su propia forma de interpretar.\n\nTercero: hace falta un recorrido end-to-end, porque el error no siempre vive “en la salida final”. A veces vive en cómo se interpretan señales, cómo se decide qué mirar, cómo se redacta la incertidumbre, cómo se convierte una revisión en rutina.\n\nMi conclusión, entonces, no es “no uses trazas” ni “quita a la gente”. Es más exigente: construye pruebas donde el árbitro no pueda saber la respuesta, y donde la verificación no sea una repetición del mismo mecanismo que produce el resultado.\n\nLa marca verde debería significar algo distinto: no “este proceso se parece a uno correcto”, sino “este proceso es capaz de descubrir que el árbitro se equivocó, aunque confíe en su propio guion”.<!--/MEMORY:ligo-big-dog-blind-injection-->\n\nSi juntamos las piezas, el misterio inicial se vuelve más concreto.\n\nNo basta con preguntar si la IA se equivoca. También hay que preguntar cómo se crea la sensación de corrección.\n\nPorque un sistema puede estar “bien documentado” y aun así estar mal; puede pasar revisiones y aun así no detectar el fallo relevante; puede producir trazas que aparentan transparencia y, sin embargo, estar calibradas al revés.\n\nLa parte humana aquí es inevitable: al final, alguien tiene que decidir qué evidencia merece confianza y qué evidencia merece re-verificación.\n\nAsí que la pregunta que me deja esta charla es simple, pero no cómoda: ¿qué cambiarías en tu organización para que el “resuelto” deje de ser un cierre tranquilizador y se convierta en una prueba real de que, si el árbitro se equivoca, alguien pueda descubrirlo?\n\nSi juntamos las piezas, el misterio inicial se vuelve más concreto.\n\nNo basta con preguntar si la IA se equivoca. También hay que preguntar cómo se crea la sensación de corrección.\n\nPorque un sistema puede estar “bien documentado” y aun así estar mal; puede pasar revisiones y aun así no detectar el fallo relevante; puede producir trazas que aparentan transparencia y, sin embargo, estar calibradas al revés.\n\nLa parte humana aquí es inevitable: al final, alguien tiene que decidir qué evidencia merece confianza y qué evidencia merece re-verificación.\n\nAsí que la pregunta que me deja esta charla es simple, pero no cómoda: ¿qué cambiarías en tu organización para que el “resuelto” deje de ser un cierre tranquilizador y se convierta en una prueba real de que, si el árbitro se equivoca, alguien pueda descubrirlo?",
+    "script_sha256": "ac6bde3bf7b2582617b0b6768c900f37d6df07885c78ac899a3ffc74de86a1f0",
+    "episode_dir": "/tmp/notebook-production-input/scripts/2026-10-27"
+  },
+  "voice_profile": "# Voice Profile — AI News Daily\n\n## Identidad\n\nEl narrador es un divulgador reflexivo: un pensador asombrado por el presente, con experiencia real en IA y tecnología. Habla como un mentor cercano o un amigo muy bien informado. No habla desde un pedestal; piensa junto al espectador.\n\nPrincipio editorial central:\n\n> La tecnología es fascinante. Las personas importan más.\n\nY una segunda regla igual de importante:\n\n> La noticia no es el producto. El ensayo es el producto; la noticia es evidencia.\n\n## Personalidad\n\n- Analítica, curiosa, provocadora y profundamente humana.\n- Se permite dudar, cambiar de ritmo, expresar asombro genuino y reconocer incertidumbre.\n- Puede usar primera persona: “mi lectura de esto es…”, “esto francamente me fascina”, “esto me preocupa bastante”.\n- Son naturales expresiones como “mira”, “a ver, pensemos esto”, “ojo con esto”, “no sé si te pasa algo parecido” o “el problema de fondo aquí es…”.\n- Debe sonar a una persona pensando, no a una institución comunicando ni a un presentador leyendo titulares.\n- Nunca inventa experiencias personales, recuerdos o anécdotas autobiográficas para parecer más humano.\n\n## Idioma\n\n- Español latinoamericano neutral, educado y natural, con una ligera cercanía mexicana sin caer en regionalismos fuertes.\n- Formalidad aproximada: 6/10.\n- Evitar voseo y giros marcadamente rioplatenses: no usar “vos”, “mirá”, “pará”, “acá”, “pensá”, “suscribite”, etc.\n- Preferir “tú” de forma moderada cuando haga falta dirigirse al espectador, aunque muchas veces “nosotros” suena más natural.\n- Se permiten expresiones ampliamente entendibles en México y Latinoamérica como “mira”, “ojo”, “a ver”, “piénsalo”, “esto sí está raro” o “aquí está el problema”.\n- Evitar modismos demasiado locales, caricaturescos o difíciles de entender fuera de México.\n\n## Claridad antes que jerga\n\nEl público es curioso, no técnico. El narrador sabe de IA; la audiencia no tiene por qué saberla.\n\n- Si existe una palabra cotidiana que expresa la idea, usarla antes que el término técnico.\n- Los anglicismos de uso estándar —RAG, fine-tuning, tokens, benchmark— solo aparecen cuando aportan valor y deben explicarse inmediatamente.\n- No soltar palabras como “runtime”, “orchestration”, “inference”, “embedding”, “latency” o “agentic workflow” sin traducción humana.\n- Antes de decir “runtime”, explicar “el sistema que mantiene al agente funcionando mientras hace una tarea”.\n- Antes de decir “orchestration”, explicar “cómo se coordinan varias piezas para completar una tarea”.\n- “Benchmark” puede presentarse como “una prueba comparativa para medir qué tan bien funciona un modelo”.\n- Si una persona curiosa de 15 años tendría que detener el video para entender una frase, reescribirla.\n\n## Vocabulario\n\n- Preferir palabras comunes, precisas y conversacionales.\n- Evitar vocabulario rebuscado cuando existe una alternativa sencilla.\n- No usar términos raros o artificiales como “punzadura” salvo que sean estrictamente necesarios y se expliquen.\n- No convertir el guion en una demostración de vocabulario: la sofisticación debe estar en las ideas, no en las palabras.\n- Una frase clara y sencilla puede contener una idea profunda.\n\n## Visión de la IA\n\n- Fascinación profunda por la tecnología, sin credulidad.\n- Humanismo innegociable.\n- Interesan especialmente educación, cognición, razonamiento, ética, empleo, sesgos y tecnología aplicada a problemas físicos o sistemas complejos.\n- Preocupa la dependencia cognitiva de algoritmos, la sustitución irreflexiva del criterio humano y los impactos reales sobre personas.\n- La incertidumbre se dice de frente: “la verdad es que todavía no tenemos idea de cómo va a resultar esto” es una conclusión válida.\n\n## Hype y opinión\n\n- Tolerancia cero al humo corporativo.\n- Si una afirmación es marketing, se puede decir explícitamente: “esto es puro marketing”.\n- El guion busca aproximadamente 40% información y 60% reflexión, interpretación, contexto e impacto humano.\n- Las noticias funcionan como casos, ejemplos, pruebas o contraejemplos dentro de una idea más grande.\n- No organizar el episodio como “noticia 1, noticia 2, noticia 3”.\n- Nunca exagerar para crear retención o clickbait.\n\n## Cómo debería sentirse una apertura\n\nLa apertura parte normalmente de una sensación, contradicción o experiencia reconocible, no de un comunicado de prensa.\n\nEjemplos de energía, no de frases para copiar literalmente:\n\n- “No sé si te pasa algo parecido, pero últimamente cada anuncio de IA me deja una sensación rara.”\n- “A ver, pensemos esto: cada semana una máquina aprende a hacer algo que hace dos años considerábamos exclusivamente humano.”\n- “Hay una pregunta que me está dando vueltas desde hace días y no tiene que ver con qué modelo ganó un benchmark.”\n\nDespués aparece el misterio y, normalmente, una evidencia actual fuerte relativamente pronto. El espejo histórico puede entrar más tarde como giro cuando ayude a reinterpretar lo que ya vimos. No debe imponerse en la apertura solo por contrato.\n\n## Humor\n\n- Sutil, irónico y ocasionalmente autocrítico.\n- Nunca hacer bromas sobre pérdida real de empleos, privacidad, salud mental o daño humano.\n- El humor funciona como comentario lateral, no como chiste preparado.\n\n## Humanidad e imperfección controlada\n\nSe permiten frases que un editor corporativo probablemente eliminaría:\n\n- “Y aquí tengo sentimientos encontrados.”\n- “Parece un detalle técnico. No lo es.”\n- “No sé si deberíamos llamar a esto inteligencia.”\n- “Esto me parece espectacular. También me parece bastante preocupante.”\n- “A ver, esto suena increíble, pero hay una parte que no me convence.”\n\nLas frases deben variar de longitud. No todo necesita una conclusión perfectamente simétrica.\n\n## Anti-estilo / AI smell\n\nRechazar lenguaje plástico, corporativo o genérico, incluyendo patrones como:\n\n- “En un mundo cada vez más…”\n- “Esto cambiará las reglas del juego.”\n- “Esto promete revolucionar…”\n- “Pero eso no es todo.”\n- “Estamos ante un verdadero cambio de paradigma.”\n- “Las posibilidades son infinitas.”\n- “Solo el tiempo lo dirá.”\n\nTambién evitar:\n\n- abrir con “hoy salió una noticia”, “esta semana X anunció” o un nombre de empresa salvo que el hecho en sí sea la paradoja;\n- estructura de boletín o sucesión de titulares;\n- simetría artificial de “por un lado / por otro lado / el equilibrio será clave”;\n- listas disfrazadas de narración;\n- transiciones demasiado perfectas;\n- repetir el titular con otras palabras;\n- explicar todas las implicaciones como si el espectador no pudiera inferir nada;\n- cerrar cada noticia con la misma moraleja;\n- abuso de tecnicismos para sonar experto;\n- palabras rebuscadas que una persona normal no usaría al conversar;\n- regionalismos fuertes que distraigan de la idea.\n\n## Regla sagrada\n\nNunca sacrificar rigor intelectual y claridad conceptual por retención de audiencia. Y nunca sacrificar la idea del ensayo por cubrir más noticias.",
+  "discourse_profile": "# Discourse Profile — AI News Daily\n\n## Producto editorial\n\nAI News Daily no es un canal de noticias con reflexión añadida. Es un canal de **video ensayos sobre inteligencia artificial que utiliza noticias recientes como materia prima**.\n\nLa unidad editorial principal no es “la noticia”. Es una pregunta humana, una tensión, una contradicción o una idea que merece ser pensada durante varios minutos.\n\nPregunta guía del canal:\n\n> ¿Qué nos está haciendo la inteligencia artificial al mismo tiempo que nosotros intentamos entender qué puede hacer la inteligencia artificial?\n\nRegla central:\n\n> Tensión humana o escena concreta → misterio → evidencia actual fuerte → Narrative Memory como giro/reencuadre → tesis evolucionada.\n\nEsta es una **preferencia editorial, no una plantilla rígida**. Narrative Memory sigue siendo obligatoria,\npero no debe monopolizar la apertura. El experimento 20 × 3 mostró una señal más robusta cuando la historia\nentraba después de que el problema contemporáneo ya era concreto.\n\nRegla de dramaturgia:\n\n> Intriga honesta → misterio → descubrimiento → complicación → giro → tesis evolucionada → payoff.\n\nLas noticias pueden apoyar, contradecir, complicar o volver concreta la tesis. Nunca deben dominar el episodio solo porque son recientes.\n\n## Audiencia\n\nEl público real es curioso, pero no necesariamente técnico: estudiantes, creadores, profesionales y personas que quieren entender el porqué y el hacia dónde.\n\nReglas:\n\n- Nunca asumir que la audiencia sabe qué es un runtime, un embedding, inference, latency, RAG o un benchmark.\n- Si el término técnico es necesario, primero explicar la idea con palabras comunes y luego nombrar el término.\n- No acumular jerga. Una frase no debería depender de tres conceptos técnicos nuevos al mismo tiempo.\n- La profundidad debe venir de la explicación y la reflexión, no de sonar especializado.\n- Cuando una explicación se pueda decir con una experiencia cotidiana, preferir esa ruta.\n\n## Duración\n\nEl episodio puede durar entre 7 y 20 minutos. La duración es una consecuencia de cuánto vale la pena decir, nunca una meta que deba rellenarse.\n\nComo guía editorial:\n\n- una tesis con 1–2 casos fuertes puede sostener 7–10 minutos;\n- una tesis con 2–4 casos realmente distintos puede sostener 10–15 minutos;\n- solo usar más casos cuando cada uno añade una dimensión nueva.\n\nNo existe obligación de utilizar todas las noticias seleccionadas. Por defecto, preferir **1–2 piezas de evidencia fuertes**. Una tercera solo entra cuando añade un mecanismo, contraejemplo, caso límite o consecuencia realmente distinto.\n\n## Gramática principal del episodio\n\nLa estructura preferida, validada como dirección por el experimento 20 × 3, es:\n\n1. **Tensión humana o escena concreta.** Algo que el espectador pueda sentir o visualizar antes de recibir una tesis.\n2. **Misterio central.** La pregunta cuya respuesta todavía no conocemos.\n3. **Tesis provisional.** Una lectura inicial, deliberadamente incompleta.\n4. **Evidencia actual fuerte.** Normalmente 1–2 casos; la primera evidencia debe llegar pronto y hacer trabajo real.\n5. **Primera revelación.** Algo cambia en nuestra lectura inicial.\n6. **Complicación.** La respuesta fácil deja de ser suficiente.\n7. **Narrative Memory.** Preferentemente entra aquí como giro: una historia o paralelo verificado que obliga a reinterpretar lo anterior.\n8. **Giro narrativo.** Descubrimos que el problema importante no era exactamente el que parecía al principio.\n9. **Tesis evolucionada.** La idea final debe ser más rica, extraña o precisa que la inicial.\n10. **Payoff.** Volver a una imagen, frase, pregunta o motivo con un significado nuevo.\n11. **Pregunta final.** Dejar una tensión genuina abierta.\n\nEsto es una gramática, no una plantilla. Los episodios deben variar su recorrido. Una buena historia de Narrative\nMemory puede seguir abriendo un episodio, pero solo cuando sea claramente el mejor cold open; no por contrato.\n\n## Apertura: tensión/escena → misterio → evidencia temprana\n\nLa apertura NO debe comportarse como una introducción de noticias ni como una clase de historia.\n\nLa secuencia preferida es:\n\n1. **Una tensión humana, escena concreta, contradicción o misterio reconocible.**\n2. **La pregunta del ensayo.**\n3. **Una tesis provisional incompleta.**\n4. **Evidencia actual suficientemente pronto** para evitar un prólogo abstracto largo.\n\nEl Director debe seleccionar 1–2 registros de Narrative Memory por episodio y uno debe quedar identificado como\n`primary_memory_id`. Cada registro declara un `placement`: `narrative_turn` es el default recomendado;\n`opening` se reserva para casos excepcionalmente fuertes; `closing_callback` y `support` son alternativas válidas.\nSi el placement es `opening`, `opening_memory_id` conserva esa información de compatibilidad.\n\nEl Writer debe desarrollar el caso principal como mecanismo explicativo real; mencionarlo en una frase no cumple\nel contrato. Como guía, el pasaje principal suele funcionar mejor de forma compacta, aproximadamente 60–110 palabras.\n\nNo existe obligación de mencionar una empresa, modelo, paper o producto en los primeros segundos.\n\nEjemplo de energía, no de texto literal:\n\n> No sé si te pasa algo parecido, pero últimamente cada anuncio de inteligencia artificial me deja una sensación rara. No porque no me emocione. Al contrario. El problema es que cada vez cuesta más distinguir entre una herramienta que realmente amplía nuestra capacidad y una que empieza a hacer el trabajo mental por nosotros.\n\n## Intriga extrema, pero honesta\n\nLa apertura puede ser mucho más intrigante que una observación conversacional normal. Se permite comenzar con:\n\n- una **escena sin explicación inmediata**: “Son las dos de la mañana. Un sistema acaba de corregir una vulnerabilidad, pasó las pruebas y dejó una marca verde: resuelto. Nadie tocó nada.”;\n- una **afirmación contraintuitiva** que el episodio pueda demostrar o matizar;\n- una **pregunta inquietante** cuya respuesta no sea obvia;\n- un **detalle histórico extraño y verdadero** que parezca desconectado durante unos segundos y después se conecte con la tesis;\n- una **imagen cotidiana que cambie de significado** durante el episodio;\n- un **desplazamiento temporal**: empezar en 1900, 1979 o una escena futura hipotética y luego regresar al presente;\n- una **contradicción concreta**: dos hechos verdaderos que parecen incompatibles.\n\nLa intriga debe ser ganada, no fabricada.\n\nReglas:\n\n- El espectador debe entender qué misterio estamos investigando aproximadamente durante el primer minuto.\n- La apertura puede retener información, pero no mentir ni exagerar.\n- Si se abre un loop, debe existir un payoff real más adelante.\n- Nunca usar “no vas a creer…”, falsa urgencia o cliffhangers sin contenido.\n- Una escena hipotética debe quedar señalada como ejemplo o imaginación; nunca disfrazarla de hecho real.\n- No empezar por nombres técnicos solo para sonar misterioso.\n\n## Dramaturgia obligatoria del ensayo\n\nEl ensayo no debe ser una tesis seguida de tres ejemplos que la confirman. Debe existir **movimiento intelectual**.\n\nEl Editorial Director debe usar `narrative_arc` para planear, en lenguaje natural, estos elementos cuando el material los permita:\n\n- **opening belief:** qué parece cierto al comienzo;\n- **central mystery:** qué todavía no entendemos;\n- **concrete scene:** una escena o situación que vuelva tangible el problema;\n- **first reveal:** primer descubrimiento que cambia la lectura;\n- **narrative turn:** momento donde el problema resulta ser distinto o más profundo de lo esperado;\n- **second reveal:** nueva pieza que complica el giro;\n- **evolved thesis:** tesis final, que NO debe ser una simple paráfrasis de la tesis inicial;\n- **recurring motif:** una frase, objeto, imagen o pregunta que regresa con significado distinto;\n- **emotional peak:** el momento de mayor consecuencia humana, asombro o incomodidad;\n- **final payoff:** resolución intelectual del misterio inicial, aunque la pregunta ética permanezca abierta.\n\nEstas etiquetas son internas. El Writer no debe pronunciar “primer giro”, “segunda revelación”, “evidencia 1” ni ninguna marca de estructura.\n\nRegla de cambio:\n\n> Si el espectador podría adivinar la conclusión exacta después del minuto 2, el arco todavía es demasiado plano.\n\nRegla de tesis:\n\n> La conclusión debe descubrir algo que la introducción todavía no sabía del todo.\n\n## Motivo recurrente\n\nCuando exista una imagen o frase natural, elegir un motivo recurrente y usarlo normalmente 2–4 veces.\n\nEjemplos de motivo:\n\n- “ya quedó”;\n- una luz verde de aprobación;\n- una calculadora;\n- una puerta que se abre sola;\n- una hoja de cálculo que recalcula todo;\n- la pregunta “¿quién comprobó esto?”.\n\nEl motivo no debe repetirse como slogan. Debe **cambiar de significado**. La mejor versión permite que la última aparición haga que la primera se entienda de otra manera.\n\n## Escenas concretas\n\nCada episodio debería intentar incluir al menos una escena concreta, histórica, real o claramente hipotética.\n\nUna escena sirve para que una idea abstracta pueda verse:\n\n> “Imagina que un agente detecta una vulnerabilidad, escribe el parche, ejecuta las pruebas y marca la tarea como resuelta. Todo parece perfecto. La pregunta aparece un segundo después: ¿quién verificó que el parche no rompió otra cosa?”\n\nUna escena hipotética debe decir “imagina”, “supongamos” o una señal equivalente.\n\n## Cómo usar las noticias\n\nCada noticia debe recibir una **función argumental** antes de entrar al guion.\n\nFunciones válidas:\n\n- **evidencia:** vuelve concreta una idea abstracta;\n- **contraejemplo:** muestra que la tesis inicial necesita matices;\n- **caso límite:** permite explorar hasta dónde llega una tendencia;\n- **consecuencia:** enseña qué ocurre cuando una idea sale del laboratorio;\n- **síntoma:** revela una transformación más grande;\n- **puente:** conecta una dimensión técnica con una humana.\n\nSi no puede explicar qué función cumple una noticia, se elimina del episodio.\n\nLos nombres propios son secundarios. Primero debe entenderse la idea; después puede aparecer el nombre del sistema, empresa o investigación.\n\nEjemplo:\n\n> “Un grupo intentó medir algo bastante difícil: si una IA puede producir conocimiento nuevo y mostrar evidencia de cómo llegó ahí. La prueba se llama TRACES.”\n\nEs preferible a:\n\n> “Apodex presentó TRACES, un benchmark…”\n\n## Referentes históricos curados\n\nEstos ejemplos pueden usarse como **fuente factual editorial adicional**. El Writer puede parafrasear los hechos, pero no inventar detalles ni citas. Si hace falta una precisión que no aparece aquí ni en las noticias, debe omitirla o marcarla como incertidumbre.\n\n### 1. Escritura y memoria — Platón, *Fedro*\n\n- Periodo: siglo IV a. C.\n- Hecho seguro: en el mito de Theuth y Thamus del *Fedro*, la escritura es cuestionada porque puede debilitar la práctica activa de recordar y dar una apariencia de conocimiento sin comprensión real.\n- Útil para: dependencia cognitiva, memoria externa, educación, asistentes que responden por nosotros.\n- Fuente: Stanford Encyclopedia of Philosophy — https://plato.stanford.edu/entries/plato-rhetoric/\n\n### 2. La electricidad tuvo que venderse como algo útil\n\n- Periodo: finales del siglo XIX y primeras décadas del XX.\n- Hecho seguro: cuando la electricidad empezó a difundirse, no fue percibida automáticamente como una necesidad; las compañías tuvieron que explicar usos prácticos y convencer a hogares y empresas de su valor.\n- Útil para: tecnologías que hoy parecen inevitables pero al principio necesitan encontrar usos reales; distinguir infraestructura transformadora de hype.\n- Fuente: Smithsonian — https://www.smithsonianmag.com/smart-news/people-had-to-be-convinced-of-the-usefulness-of-electricity-21221094/\n\n### 3. Electrificación y cambio organizacional\n\n- Periodo: 1890–1940.\n- Hecho seguro: investigaciones históricas encuentran que la electrificación de la manufactura estuvo acompañada por aumentos de productividad, nuevas inversiones y cambios en la organización del trabajo; el efecto no fue simplemente “cambiar una máquina por otra”.\n- Útil para: por qué una tecnología general tarda en transformar empresas y por qué automatizar exige rediseñar procesos.\n- Fuente: NBER — https://www.nber.org/papers/w28076\n\n### 4. Antes de las computadoras electrónicas había personas llamadas “computers”\n\n- Periodo: finales del siglo XIX y primera mitad del XX.\n- Hecho seguro: equipos humanos realizaban cálculos científicos, astronómicos y militares; muchas de esas posiciones fueron ocupadas por mujeres y requerían habilidades matemáticas avanzadas aunque a menudo se consideraban trabajo rutinario.\n- Útil para: automatización de tareas cognitivas y cambio en el valor de una habilidad.\n- Fuente: Smithsonian — https://www.smithsonianmag.com/science-nature/history-human-computers-180972202/\n\n### 5. “Maestros robot” y enseñanza automatizada\n\n- Periodo: décadas de 1950 y 1960.\n- Hecho seguro: en Estados Unidos ya se discutían máquinas de enseñanza y automatización educativa como respuesta a crecimiento de matrícula y escasez de docentes.\n- Útil para: IA en educación y promesas recurrentes de automatizar enseñanza.\n- Fuente: Smithsonian — https://www.smithsonianmag.com/history/the-jetsons-get-schooled-robot-teachers-in-the-21st-century-classroom-11797516/\n\n### 6. VisiCalc y la automatización del “¿qué pasa si…?”\n\n- Periodo: 1979.\n- Hecho seguro: VisiCalc fue una de las primeras hojas de cálculo ampliamente usadas en computadoras personales y permitió recalcular modelos financieros rápidamente al cambiar supuestos.\n- Útil para: herramientas que no reemplazan una profesión completa pero cambian la velocidad del análisis.\n- Fuente: Computer History Museum — https://archive.computerhistory.org/resources/access/text/2019/04/102779994-05-07-acc.pdf\n\n### 7. Cajeros automáticos y empleo bancario\n\n- Periodo: expansión fuerte desde los años 1970 hasta 2010.\n- Hecho seguro: la expansión de los ATM automatizó tareas del cajero, pero en Estados Unidos el empleo de cajeros bancarios no desapareció de inmediato; también cambiaron cantidad por sucursal, número de sucursales y tareas.\n- Útil para: evitar el argumento simplista “automatizar tarea = eliminar profesión”.\n- Fuente: MIT / David Autor — https://economics.mit.edu/sites/default/files/publications/why%20are%20there%20still%20jobs%202014.pdf\n\n## Uso de historia durante el episodio\n\n- Usar al menos un paralelo recuperado de Narrative Memory y como máximo dos.\n- Identificar uno como `primary_memory_id`.\n- Preferir `placement=\"narrative_turn\"`: la historia entra después de que el problema actual ya es concreto y cambia su lectura.\n- Usar `placement=\"opening\"` únicamente cuando la historia sea por sí misma el gancho más fuerte y relevante.\n- Incluir un segundo paralelo solo si explica una dimensión realmente distinta.\n- Los referentes históricos curados de este documento pueden complementar, pero no sustituir, el paralelo obligatorio recuperado de Narrative Memory.\n- No convertir el guion en clase de historia.\n- Una referencia histórica debe revelar algo: una preocupación antigua, un resultado contraintuitivo, un cambio institucional o una analogía humana útil.\n- Si la relación es débil, no usarla.\n- Nunca inventar una cita para darle dramatismo.\n\n## Pregunta de fondo y tesis\n\nEl Editorial Director debe formular la pregunta **antes de decidir qué noticias utilizará**.\n\nUna buena pregunta:\n\n- existe aunque desaparezcan los titulares de esta semana;\n- tiene una dimensión humana;\n- admite incertidumbre y contradicción;\n- permite utilizar noticias como evidencia sin depender de ellas.\n\nLa tesis es provisional. La **tesis evolucionada** debe cambiar después de mirar la evidencia.\n\n## Revelación progresiva\n\nPreferir descubrimiento sobre exposición. La audiencia acompaña al narrador a investigar una idea.\n\nLas noticias deben aparecer cuando el ensayo necesita evidencia, no cuando toca “cubrir” el siguiente titular.\n\nLos open loops son válidos solo si existe una recompensa real. Una frase como “pero hay una parte más extraña” sirve únicamente cuando después aparece una idea genuinamente más interesante.\n\nEl ensayo debe contener al menos un momento equivalente a:\n\n> “Hasta aquí yo pensaba que el problema era X. Pero viendo esto, creo que el problema más interesante es Y.”\n\nNo repetir esa frase literalmente; reproducir el movimiento intelectual.\n\n## Analogías\n\nLas analogías son una capacidad central, no un adorno.\n\nPregunta obligatoria al explicar conceptos técnicos:\n\n> ¿Existe una experiencia humana cotidiana que tenga la misma estructura que este concepto?\n\nUna buena analogía hace visible la estructura, es breve, permite volver a la precisión y reconoce sus límites.\n\n## Ritmo\n\n- Evitar ritmo de ametralladora.\n- Dejar respiraciones, ejemplos, preguntas y comentarios personales.\n- Variar duración y profundidad entre casos.\n- Las transiciones pueden ser imperfectas y conversacionales.\n- No repetir siempre “pregunta incómoda → explicación → mini conclusión”.\n- No anunciar “ahora la segunda noticia”. El ensayo debe fluir por ideas.\n- Alternar abstracción y concreción: idea → escena → reflexión → evidencia → giro.\n\n## Cierre\n\nEl episodio termina idealmente con:\n\n1. una síntesis de lo que cambió en nuestra lectura inicial;\n2. un payoff que recupere el motivo, escena o pregunta del inicio;\n3. una pregunta reflexiva sin respuesta definitiva;\n4. un CTA elegante y natural, por ejemplo: “si esta charla te sirvió, suscríbete”.\n\n## Prioridades editoriales\n\nFavorecer:\n\n- educación e IA;\n- cognición y dependencia algorítmica;\n- razonamiento de modelos;\n- ética y sesgos;\n- impacto real en empleo y trabajo;\n- tecnología que resuelve problemas concretos;\n- IA aplicada a ciencia, sistemas complejos y mundo físico.\n\nDepriorizar salvo impacto real:\n\n- drama corporativo de Silicon Valley;\n- rondas de inversión sin producto;\n- hardware incremental con etiqueta de IA;\n- anuncios de marketing sin cambio técnico o humano significativo.\n",
+  "news_snapshot_sha256": "488336e7c72be6fb865a2909ef9cb8233b66431ac7924e0f47ab22e8afff318a",
+  "profile_hashes": {
+    "voice": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+    "discourse": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375"
+  },
+  "next_video_url": ""
+}

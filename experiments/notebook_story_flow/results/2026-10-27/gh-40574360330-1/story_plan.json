@@ -1,0 +1,107 @@
+{
+  "central_question": "Si un sistema produce una decisión que “parece” verificable (por trazas, recomendaciones o revisiones humanas), ¿cómo sabemos que estamos comprobando la respuesta correcta y no el rendimiento del propio mecanismo de evaluación?",
+  "provisional_thesis": "La evaluación no falla sólo cuando la IA se equivoca; falla cuando la arquitectura de prueba convierte el árbitro (trazas, revisores, métricas) en una fuente de verdad autocumplida. Para recuperar responsabilidad real necesitamos pruebas que recorran el flujo completo en condiciones donde el evaluador no pueda saber—y donde la evidencia que miramos no esté calibrada al revés.",
+  "evolved_thesis": "No basta con “poner humanos” o “pedir trazas”. La corrección depende de si la evaluación está diseñada para evitar fugas de información y para medir interceptación real (no reconocimiento superficial) bajo un flujo operacional real. Si el sistema de verificación puede ser engañado—por confianza inducida o por rastros que no garantizan autenticidad—la evidencia verificable se vuelve una ilusión de control.",
+  "core_ideas": [
+    "Trazas y revisiones pueden producir una ilusión de verificación si el evaluador (humano o sistema de métricas) obtiene información por canales equivocados.",
+    "El “humano en el circuito” no es garantía: cuando la IA se equivoca, la vigilancia puede degradarse por dependencia y confianza desalineada.",
+    "Cambiar la evaluación a “proceso” puede ayudar, pero también abrir la puerta a trazabilidad fabricada o a medir lo que es fácil de documentar, no lo que es difícil de aprender."
+  ],
+  "motif": "la luz verde de aprobación",
+  "pillars": [
+    "Diseño de evaluación contra fugas (evitar que el evaluador o el entorno filtren la respuesta).",
+    "Capacidad real de interceptación bajo error (no desempeño promedio del sistema).",
+    "Evidencia que mide aprendizaje/razón, no sólo documentación o revisión performativa."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "clever-hans-unconscious-evaluator-cues",
+      "epicity": 9.7,
+      "relevance": 9.5,
+      "reason": "Ejemplo extremo de “evaluador con información” que filtra señales sin darse cuenta: la prueba parece demostrar capacidad, pero en realidad mide el canal de evaluación."
+    },
+    {
+      "memory_id": "ligo-big-dog-blind-injection",
+      "epicity": 9.6,
+      "relevance": 8.8,
+      "reason": "Prueba end-to-end con etiqueta oculta: obliga a que el flujo completo (instrumentos, análisis, comité) no sepa la respuesta, y revela también fallos en el propio artefacto de prueba."
+    },
+    {
+      "memory_id": "challenger-cold-o-ring-evidence",
+      "epicity": 8.8,
+      "relevance": 7.9,
+      "reason": "Caso histórico donde el problema fue cómo se presentó y circuló la evidencia; útil para el papel de “qué cuenta como parte de la historia” en la decisión."
+    }
+  ],
+  "selected_memory_id": "clever-hans-unconscious-evaluator-cues",
+  "protagonist": "El sistema de evaluación (el “juez” que mira resultados) que, sin querer, introduce señales que condicionan la respuesta observada.",
+  "opposing_force": "El canal de información accidental: señales involuntarias del evaluador que hacen que el resultado parezca correcto por razones ajenas a la capacidad que se pretende medir.",
+  "conflict": "La prueba pretende medir habilidad general, pero termina midiendo la interacción entre evaluador informado (aunque sea inconscientemente) y el comportamiento del sujeto, contaminando la interpretación del desempeño.",
+  "setup_claim_indices": [
+    1,
+    2
+  ],
+  "payoff_claim_indices": [
+    3,
+    4
+  ],
+  "unresolved_question": "¿Qué combinación de pruebas (ciego real, seguimiento del flujo completo, métricas que reflejen interceptación y no sólo corrección promedio, y evidencia anti-gaming) es suficiente para que “verificación” deje de ser una ilusión?",
+  "bridge_to_present": "La historia de Clever Hans aterriza una intuición que hoy vemos en IA: si el evaluador (humano o el mecanismo de evaluación) recibe o genera señales que alinean la respuesta con lo que “debería” ser, el sistema puede pasar una prueba sin que estemos midiendo la habilidad verdadera. En IA clínica y en evaluación por trazas, el riesgo es que la verificación opere como un semáforo que mira algo, pero no el sensor correcto.",
+  "analogy_limits": "Clever Hans dependía de señales corporales humanas; una IA moderna puede no requerir observar gestos humanos y puede, en cambio, explotar patrones estadísticos o artefactos del procedimiento. La analogía no prueba que toda evaluación con humanos o trazabilidad esté contaminada; sólo muestra que el diseño de la prueba puede crear canales de información no previstos. Por eso, el mensaje es sobre diseño y validez, no sobre fraude o intención individual.",
+  "ledger": [
+    {
+      "evidence_id": "clinical_human_loop_fails",
+      "news_id": "n_cd755c1a034d6127",
+      "supported_facts": [
+        "Una revisión sistemática y metaanálisis de 46 informes agrupados en 41 cohortes encontró que los clínicos acertaban mucho más cuando el consejo automatizado era correcto que cuando era erróneo.",
+        "En cuatro estudios reales y heterogéneos de electrocardiogramas, 26,6% de interpretaciones automáticas equivocadas no fueron corregidas o reconocidas.",
+        "Los estudios contemporáneos con IA y LLM registraron dependencia perjudicial, pero no pudieron combinarse estadísticamente."
+      ],
+      "allowed_interpretations": [
+        "La revisión humana puede fallar como mecanismo de control cuando el sistema automatizado produce una salida convincente pero incorrecta."
+      ],
+      "hypotheses": [
+        "La interacción humano-máquina puede inducir confianza desalineada con la probabilidad real de error."
+      ],
+      "uncertainties": [
+        "No se especifica el rendimiento por subespecialidad o el efecto de carga de trabajo, formato de la explicación, ni el tiempo de intervención en cada estudio.",
+        "La heterogeneidad entre estudios impide generalizar exactamente el mismo porcentaje a todos los entornos clínicos."
+      ],
+      "prohibited_claims": [
+        "Que la revisión humana siempre empeore el desempeño o que la causa sea únicamente la confianza sin datos adicionales.",
+        "Que el porcentaje exacto (26,6%) aplique a otros dominios fuera de los estudios de electrocardiogramas mencionados."
+      ],
+      "source_limitations": [
+        "Es una revisión con metaanálisis; los resultados dependen de la calidad y comparabilidad de los estudios incluidos.",
+        "La síntesis indica dependencia perjudicial con IA/LLM pero limita la cuantificación combinada por falta de capacidad estadística para agrupar."
+      ]
+    },
+    {
+      "evidence_id": "education_trace_might_be_gamed",
+      "news_id": "n_33572a78f5c1aa46",
+      "supported_facts": [
+        "Un estudio de investigación-acción rediseñó tareas en cursos profesionales (anatomía y fisiología como entorno principal) y usó evidencia de consultas, verificación de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo.",
+        "El estudio evita inferir uso de IA a partir del trabajo final, y recolecta evidencia del proceso.",
+        "Los autores señalan que el esquema es una intervención educativa situada y que no constituye una validación universal, ni demuestra que toda traza sea auténtica o mida aprendizaje profundo."
+      ],
+      "allowed_interpretations": [
+        "Pedir trazabilidad puede ayudar a evaluar decisiones y revisiones explicables, pero no garantiza autenticidad ni necesariamente mide aprendizaje profundo."
+      ],
+      "hypotheses": [
+        "En algunos contextos, las trazas podrían ser fabricadas o cumplidas de forma estratégica sin reflejar comprensión real."
+      ],
+      "uncertainties": [
+        "No se reportan tasas o condiciones específicas de falsificación de trazas en el estudio descrito.",
+        "No se demuestra generalización a otras disciplinas o formatos de evaluación."
+      ],
+      "prohibited_claims": [
+        "Que el esquema evaluado necesariamente es vulnerable a fraude en todos los casos.",
+        "Que el aprendizaje profundo no mejora con evaluación por proceso en ningún escenario."
+      ],
+      "source_limitations": [
+        "Intervención educativa situada con métodos mixtos; los resultados no se presentan como una validación universal del enfoque.",
+        "La evidencia disponible no autoriza concluir sobre autenticidad de toda traza o sobre aprendizaje causal sin más validación."
+      ]
+    }
+  ]
+}

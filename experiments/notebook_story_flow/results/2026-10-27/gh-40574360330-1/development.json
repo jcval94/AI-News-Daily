@@ -1,0 +1,109 @@
+{
+  "sections": [
+    {
+      "id": "step10_reconexion",
+      "text": "Vale, regresemos a esa idea incómoda: si el evaluador “sabe” algo (o si su atención, confianza o modo de mirar cambian la interacción), la prueba puede volverse un espejo de señales, no un examen de la habilidad.\nAhora imagina que el evaluador no es una persona mirando un caballo, sino un flujo con métricas, revisiones y trazas. Y la luz verde de aprobación… sigue siendo la misma, solo que más rápida.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Luz verde de aprobación como semáforo",
+        "Diagrama simple: evaluador → canal de información → decisión"
+      ]
+    },
+    {
+      "id": "hook_problema",
+      "text": "Aquí está el nudo: mucha gente cree que la verificación funciona “porque hay un juez”. Pero cuando el juez (humano o sistema) recibe información por canales equivocados, el juez puede aprobar el resultado correcto… por razones incorrectas, o incluso aprobar un resultado incorrecto con mucha seguridad. ¿Cómo sabemos si estamos comprobando la respuesta correcta o el rendimiento del mecanismo que la evalúa?",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pregunta en pantalla: ¿quién comprueba a quién?",
+        "Doble flecha: respuesta ↔ señales del evaluador"
+      ]
+    },
+    {
+      "id": "hook_cita",
+      "text": "Hay una intuición que se repite en distintos contextos: si puedes “pasar” la prueba sin mostrar lo que dice medir, la prueba se vuelve un juego. Y hoy, con IA, el juego puede ser muy silencioso.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Citas en pizarra sin atribución falsa (solo como reflexión visual)"
+      ]
+    },
+    {
+      "id": "idea_A",
+      "text": "Primer pilar: “humanos en el circuito” no es lo mismo que control real del error. Suena bien: agregas una revisión humana y, automáticamente, reduces el riesgo.\nEl problema es que la revisión humana también está dentro de un sistema de incentivos, tiempo y confianza. Si la IA emite una recomendación convincente, el humano no solo detecta errores: también decide cuánto esfuerzo vale la pena invertir en cuestionarlos.\n\nPiénsalo como si el caballo hubiera aprendido un patrón no del mundo, sino de la interacción. En el fondo, el “juez humano” podría estar respondiendo a señales que no garantizan autenticidad: el formato, la seguridad con la que se expresa, la facilidad de justificar lo que se ve, o simplemente la fatiga del día.\n\nEntonces el pilar queda así: para que la verificación sea algo más que un ritual, necesitas evidencia de que el humano intercepta fallos cuando la recomendación es errónea, y que ese rendimiento de interceptación se mantiene bajo condiciones reales. No basta con medir si el equipo completo “acierta más que antes”; también hay que mirar qué pasa cuando se equivoca el sistema.\n\nY aquí la tesis se afila: el riesgo no es solo que la IA falle. El riesgo es que el circuito de evaluación absorba el fallo como si fuera una característica aceptable del proceso. La luz verde sigue encendiendo, pero ya no ilumina lo que creíamos que iluminaba.",
+      "evidence_ids": [
+        "clinical_human_loop_fails"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Diagrama humano-en-circuito: confianza → tiempo → revisión",
+        "Analogía: el juez cambia su mirada según la señal"
+      ]
+    },
+    {
+      "id": "dato_1",
+      "text": "En una revisión sistemática y metaanálisis (46 informes, 41 cohortes), los clínicos acertaron mucho más cuando el consejo automatizado era correcto que cuando era erróneo; en cuatro estudios de electrocardiogramas, 26,6% de interpretaciones automáticas equivocadas no fueron corregidas o reconocidas.",
+      "evidence_ids": [
+        "clinical_human_loop_fails"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Gráfica comparando: consejo correcto vs erróneo",
+        "% de errores no corregidos (con intervalo y heterogeneidad como etiqueta)"
+      ]
+    },
+    {
+      "id": "idea_B_explica",
+      "text": "Segundo pilar: incluso si intentas “medir el proceso” con trazas, consultas y revisiones, puedes terminar midiendo algo distinto a aprendizaje o autenticidad.\n\nLa tentación es comprensible. Si hoy nos preocupa que un sistema produzca una respuesta “verificable” (con trazas, pasos o explicaciones), entonces vamos a pedir el rastro: bitácoras, evidencias de verificación, atribución, revisiones tras retroalimentación… Todo eso suena a honestidad metodológica.\n\nPero hay una diferencia crucial entre “tener evidencia del procedimiento” y “tener evidencia de que el procedimiento ocurrió de forma fiable”. Pedir trazabilidad puede cambiar comportamientos: hace que la gente registre más, redacte mejor, o cumpla la forma. Y, si no diseñaste la evaluación para que el evaluador no pueda ser engañado, el sistema (o la persona) puede aprender a producir rastros que se ven correctos sin que el conocimiento subyacente sea el que la prueba pretende medir.\n\nAquí el enfoque se desplaza: no basta con que haya trazas. Necesitas pensar como arquitecto de evaluación: ¿qué información llega al evaluador? ¿qué puede filtrarse o inventarse? ¿qué señales del proceso son difíciles de fabricar y a la vez útiles para predecir desempeño real cuando el contexto cambia?\n\nEn resumen: el “proceso trazado” puede volverse otro canal de ilusión de verificación. Así que la verificación se vuelve un problema de diseño de información: quién sabe qué, cuándo, y qué parte del camino completo realmente está bajo control.",
+      "evidence_ids": [
+        "education_trace_might_be_gamed"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pipeline de evaluación por trazas: consulta → verificación → registro",
+        "Señal visual de “bitácora” vs “comprensión real”"
+      ]
+    },
+    {
+      "id": "idea_B_desafio",
+      "text": "El desafío práctico es este: ¿cómo evitas que el rastro sea teatro? Sin caer en paranoia total, necesitas pruebas que distingan entre “documentar que se verificó” y “demostrar que se verificó de verdad”. Lo seguro es exigir que el esquema no sea una validación universal: debe ser, al menos en condiciones especificadas, resistente a desviaciones.\n\nY ojo con otra trampa: si haces el rastro demasiado fácil de copiar o demasiado dependiente de qué se ve, la evaluación puede premiar exactamente lo que es barato. En el peor caso, el evaluador termina aprobando la calidad del reporte, no la calidad del razonamiento que intentaba detectar.",
+      "evidence_ids": [
+        "education_trace_might_be_gamed"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Casilla: “proceso documentado” tachada y “proceso real” marcada",
+        "Pregunta: ¿qué parte del proceso no se puede falsificar?"
+      ]
+    },
+    {
+      "id": "dato_2",
+      "text": "Un estudio de investigación-acción en cursos profesionales (anatomía y fisiología) rediseñó tareas y recolectó evidencia del proceso (consultas, verificación de afirmaciones, atribución, revisión tras retroalimentación y juicio reflexivo). Los autores señalan que es una intervención situada y que no constituye una validación universal; tampoco demuestra que toda traza sea auténtica o mida aprendizaje profundo.",
+      "evidence_ids": [
+        "education_trace_might_be_gamed"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Infografía: trazas de proceso (como íconos)",
+        "Nota visual: “intervención situada, no universal”"
+      ]
+    },
+    {
+      "id": "idea_C",
+      "text": "Tercer pilar: pasar de “aprobar resultados” a diseñar evaluaciones que midan interceptación real bajo flujo operacional, con anti-fugas.\n\nHasta aquí tenemos dos mecanismos de ilusión: (1) la vigilancia humana puede degradarse cuando la IA se equivoca pero su salida parece convincente; y (2) pedir trazas puede desplazar la medición hacia lo documentable, no hacia lo verdadero.\n\nEntonces, ¿qué cambia si tomamos en serio el canal de información? La idea no es solo “usar humanos” o “pedir bitácoras”, sino construir pruebas donde el evaluador no pueda aprovechar atajos.\n\nAquí entra la noción de “recorrer el flujo completo” con condiciones que reduzcan fugas: que el evaluador (o el sistema de métricas) no tenga acceso a señales que alineen la respuesta con lo esperado. Y, cuando eso no sea posible, al menos diseña pruebas que estresen la capacidad de interceptación: errores sembrados, contextos cambiantes, y escenarios donde el rastro no sea suficiente.\n\nAhora lo importante: lo que buscamos medir no es “corrección promedio” del sistema aislado; buscamos evidencia de que el circuito de verificación corta el camino cuando la respuesta es falsa. Es decir, que la luz verde depende de señales que realmente corresponden a autenticidad y razonamiento, no a formato, seguridad o cumplimiento.\n\nY si nos ponemos incómodos (pero es el punto): incluso el acto de supervisar puede convertirse en una herramienta para auto-confirmación. No por mala intención, sino porque los humanos—y las métricas—están adaptados a lo que parece coherente.\n\nPara cerrar el círculo con lo de Clever Hans: el problema no era “el caballo”, ni siquiera “el entrenador”. Era el acoplamiento entre evaluador y resultado. Hoy el acoplamiento puede venir de la confianza inducida, de las explicaciones que parecen razonables o de las trazas que se sienten completas. Por eso, la pregunta de hoy no se responde con un requisito (“pon trazas”) sino con una arquitectura de validez: ¿qué rutas de información quedan abiertas y qué rutas están bloqueadas?",
+      "evidence_ids": [
+        "clinical_human_loop_fails",
+        "education_trace_might_be_gamed"
+      ],
+      "memory_claim_indices": [
+        1,
+        2
+      ],
+      "visual_queries": [
+        "Arquitectura de evaluación: rutas de información bloqueadas",
+        "Flujo operacional con “errores sembrados” y “anti-fugas”"
+      ]
+    }
+  ]
+}

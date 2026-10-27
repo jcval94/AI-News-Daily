@@ -1,0 +1,110 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 16.391,
+    "usage": {
+      "prompt_tokens": 21644,
+      "output_tokens": 1782,
+      "total_tokens": 23426
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 4.243,
+    "usage": {
+      "prompt_tokens": 2540,
+      "output_tokens": 555,
+      "total_tokens": 3095
+    }
+  },
+  {
+    "step": "development",
+    "agent": "notebook_development",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 14.921,
+    "usage": {
+      "prompt_tokens": 11244,
+      "output_tokens": 2143,
+      "total_tokens": 13387
+    }
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 1,
+    "status": "error",
+    "elapsed_seconds": 62.873,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedEndingDraft\n  Invalid JSON: EOF while parsing a string at line 2 column 19163 [type=json_invalid, input_value='{\"sections\":[{\"id\":\"stor...}]}]}]}]}]}]}]}]}]}]}]}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid",
+    "usage": {}
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 2,
+    "status": "success",
+    "elapsed_seconds": 5.657,
+    "usage": {
+      "prompt_tokens": 14292,
+      "output_tokens": 533,
+      "total_tokens": 14825
+    }
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "error",
+    "elapsed_seconds": 23.566,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\n  Value error, Repair must preserve the complete structural contract: payoff omits the reserved historical outcome; closing lacks subscription CTA [type=value_error, input_value={'sections': [{'id': 'ste...eanálisis de errores']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 2,
+    "status": "error",
+    "elapsed_seconds": 20.779,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\n  Value error, Repair must preserve the complete structural contract: payoff omits the reserved historical outcome [type=value_error, input_value={'sections': [{'id': 'ste...eanálisis de errores']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "structure_repair",
+    "agent": "notebook_structure_repair",
+    "iteration": null,
+    "attempt": 3,
+    "status": "error",
+    "elapsed_seconds": 22.535,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\n  Value error, Repair must preserve the complete structural contract: payoff omits the reserved historical outcome [type=value_error, input_value={'sections': [{'id': 'ste...eanálisis de errores']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  }
+]

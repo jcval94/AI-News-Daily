@@ -1,0 +1,38 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En el laboratorio de Clever Hans, la “luz verde” no significaba que el caballo entendiera aritmética; significaba que el evaluador estaba, sin querer, filtrando señales que disparaban el momento de detenerse. En paralelo, los estudios clínicos sobre IA muestran que el “humano en el circuito” no garantiza control: cuando la recomendación automatizada está mal, una parte relevante de los errores no se corrige ni se reconoce. Y cuando intentamos blindar la verificación con trazas, también aparece otra falla: que el rastro documente el proceso… no que refleje autenticidad o aprendizaje profundo. El resultado práctico del conflicto es este: la verificación sólo deja de ser ilusión cuando diseñas evaluaciones para bloquear fugas de información y medir interceptación real, no sólo corrección promedio o cumplimiento del reporte. La analogía ayuda, pero no prueba el mismo mecanismo en cada sistema.",
+      "evidence_ids": [
+        "clinical_human_loop_fails",
+        "education_trace_might_be_gamed"
+      ],
+      "memory_claim_indices": [
+        1,
+        2
+      ],
+      "visual_queries": [
+        "Luz verde de aprobación tachada y reemplazada por ‘anti-fuga’",
+        "Comparación: juez humano vs evaluador con canal filtrante"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Si algo nos deja esta cadena de casos es que “verificado” no es una propiedad del resultado: es una propiedad del diseño del sistema que mira. No basta con sumar revisión humana ni con pedir trazas; hay que garantizar que el evaluador (persona o métricas) no reciba atajos que vuelvan fácil acertar… o fácil aparentar que se entendió. ¿Qué cambiarías en tus pruebas —o en tu forma de confiar en una recomendación— para que la evidencia no sea una ilusión de control? Si te gustó este enfoque, suscríbete y seguimos pensando cómo evaluar lo que de verdad importa.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pregunta final en pantalla: ‘¿Quién comprobó esto?’",
+        "Semáforo: de luz verde automática a verificación con condiciones"
+      ]
+    }
+  ],
+  "seo_title": "Cierre: por qué la verificación puede ser una ilusión (human",
+  "seo_description": "Resumen final sobre cómo “verificar” decisiones con humanos o trazas puede fallar por fugas de información y por medir lo documentable en vez de la interceptión",
+  "seo_keywords": [
+    "verificación",
+    "evaluación",
+    "fugas de información",
+    "humanos en el circuito AI clínica reanálisis de errores"
+  ]
+}
