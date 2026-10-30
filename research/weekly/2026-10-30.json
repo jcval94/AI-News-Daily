@@ -1,0 +1,462 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-10-30",
+  "window": {
+    "from": "2026-10-24",
+    "to": "2026-10-30"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "La verificación independiente emerge como una palanca eficiente de test-time scaling para agentes.",
+      "why_it_matters": "Comparada con recordatorios o gates de finalización, una revisión separada mejora precisión con incrementos de coste pequeños y generaliza a artefactos visuales."
+    },
+    {
+      "summary": "La memoria dedicada debe justificar su valor contra una baseline RAG simple.",
+      "why_it_matters": "Memory Tax encuentra que resumir, reordenar o estructurar historial también puede ocultar evidencia; AgentMemRec muestra que una cascada clásica de recomendación puede superar sistemas con muchas llamadas LLM."
+    },
+    {
+      "summary": "Tool-use escala mejor con diversidad de herramientas y bases que con más tareas casi repetidas.",
+      "why_it_matters": "Un estudio de 458,752 tareas y 849 modelos deriva una ley de escala donde, al crecer el presupuesto, la diversidad del entorno y la complejidad aportan más que inflar el conteo de ejemplos."
+    },
+    {
+      "summary": "El control determinista alrededor de RAG ya muestra valor en producción pública.",
+      "why_it_matters": "Un despliegue soberano en Tlaxcala combina plantillas, clarificación, abstención y verificación numérica para reservar generación libre sólo a los casos que la necesitan."
+    },
+    {
+      "summary": "Serving y seguridad empiezan a adaptar la arquitectura por request y por frontera de confianza.",
+      "why_it_matters": "Morph selecciona layouts híbridos por solicitud y Heads of Security aprende gates de atención entre tokens confiables y no confiables, moviendo decisiones críticas dentro del runtime o modelo."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2610.34577",
+      "title": "Rethinking Verification in Agent Harnesses",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-25",
+      "updated_at": null,
+      "authors": [
+        "Zhengxin Zhang",
+        "Erkang Zhu",
+        "Yin Lin",
+        "Claire Cardie",
+        "Bolin Ding",
+        "Jingren Zhou"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.34577",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.34577",
+        "arxiv": "2610.34577"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Estudia la verificación como test-time scaling en cuatro capas del ciclo del agente: instrucciones iniciales, recordatorios durante ejecución, gates de finalización y revisión independiente.",
+      "what_changed": "Compara 17 diseños con siete modelos frontier en Terminal-Bench y SWE-bench Verified, y añade VisualBench para artefactos visuales e interactivos; aísla cuándo intervenir, quién revisa y cómo se revisa.",
+      "why_it_matters": "Da una regla práctica para harnesses: un critic independiente suele ofrecer mejor relación precisión-coste que cargar el loop principal con recordatorios o gates de revisión extensos.",
+      "evidence": [
+        "La revisión independiente mejora en promedio 5.9–9.5 puntos porcentuales en Terminal-Bench con 1.13–1.25 veces el coste base.",
+        "En SWE-bench Verified mejora 3.9–6.6 puntos con 1.00–1.04 veces el coste base.",
+        "En VisualBench obtiene preferencias netas de 13.2–23.8 puntos y rondas o críticos adicionales agregan hasta 3.5 puntos en Terminal-Bench."
+      ],
+      "limitations": [
+        "Los resultados se concentran en coding agents y artefactos evaluados por VisualBench; otros dominios pueden tener distintas curvas coste-beneficio.",
+        "Un critic independiente puede compartir sesgos o fallos con el agente si usa modelos, contexto o herramientas demasiado similares."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.36471",
+      "title": "When to Intervene? An Empirical Study of Errors and Self-Recovery in LLM Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-27",
+      "updated_at": null,
+      "authors": [
+        "Chiming Duan",
+        "Tong Jia",
+        "Yingxi Chen",
+        "Minghua He",
+        "Lingzhe Zhang",
+        "Ying Li"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.36471",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.36471",
+        "arxiv": "2610.36471"
+      },
+      "topics": [
+        "agents",
+        "evaluation",
+        "observability",
+        "architecture"
+      ],
+      "summary": "Construye ReInBench para medir cuándo un error de computer-use o Web se corrige solo y propone ReCoF para decidir si conviene intervenir o dejar continuar al agente.",
+      "what_changed": "Separa error observado de fracaso definitivo y cuantifica frecuencia, velocidad y efecto downstream de la autorrecuperación sobre 1,259 trazas y 1,403 eventos.",
+      "why_it_matters": "Un monitor que reinicia o escala cada error puede destruir recuperaciones útiles y elevar coste; la intervención debe priorizar fallos con baja probabilidad de recuperación.",
+      "evidence": [
+        "ReInBench contiene 1,259 trazas y 1,403 eventos de error en tareas Web y computer-use.",
+        "725 eventos se recuperan de forma autónoma, a menudo en pocos pasos.",
+        "ReCoF mejora Macro-F1 en 9.02% relativo frente al baseline más fuerte para predecir autorrecuperación."
+      ],
+      "limitations": [
+        "La distribución de errores depende de los execution LLMs, sitios y harnesses observados.",
+        "Predecir recuperación no sustituye límites duros para acciones irreversibles o de alto riesgo."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "observability",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.34073",
+      "title": "Memory Tax: Dissecting the Net Value of Agent Memory",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-25",
+      "updated_at": null,
+      "authors": [
+        "Xuan He",
+        "Sining Zhoubian",
+        "Ruozhen Yang",
+        "Yuhao Wen",
+        "Zhineng Wang",
+        "Yuyang Hu",
+        "Ke Yang",
+        "Yuyu Zhang",
+        "Ping Nie",
+        "Jiawei Han",
+        "ChengXiang Zhai"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.34073",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.34073",
+        "arxiv": "2610.34073"
+      },
+      "topics": [
+        "agents",
+        "retrieval",
+        "memory",
+        "evaluation"
+      ],
+      "summary": "Define el valor neto de memoria frente a recuperación directa del historial como beneficio menos memory tax: ganancias y pérdidas introducidas al transformar la evidencia original.",
+      "what_changed": "Usa RAG ingenuo como control y muestra que varios sistemas de memoria dedicados quedan por debajo de esa baseline en múltiples benchmarks y backbones.",
+      "why_it_matters": "Evita acreditar mejoras a una memoria compleja sin medir qué evidencia elimina, distorsiona u oculta y cuánto cuesta construirla y consultarla.",
+      "evidence": [
+        "La evaluación cubre múltiples benchmarks y backbones y encuentra casos frecuentes de valor neto negativo frente a RAG directo.",
+        "La descomposición atribuye beneficio y tax a desviaciones concretas respecto del historial bruto.",
+        "El análisis examina tanto causas del sistema como artefactos de evaluación que pueden inflar o esconder el impuesto de memoria."
+      ],
+      "limitations": [
+        "El abstract no ofrece una única cifra agregada que generalice a todos los sistemas o tareas.",
+        "RAG ingenuo tampoco es una referencia universal; su fuerza depende de chunking, retriever y presupuesto de contexto."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "retrieval",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.34673",
+      "title": "Agent Memory as Recommendation: Recommender-System Design for Long-Term Memory of LLM Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-26",
+      "updated_at": null,
+      "authors": [
+        "Xinyu Zhang",
+        "Weiwei Sun"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.34673",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.34673",
+        "arxiv": "2610.34673"
+      },
+      "topics": [
+        "agents",
+        "retrieval",
+        "memory",
+        "serving",
+        "architecture"
+      ],
+      "summary": "Formaliza la selección de memoria como recomendación de slate bajo presupuesto: la consulta es el usuario, los recuerdos son ítems y el contexto disponible es la lista.",
+      "what_changed": "AgentMemRec combina candidate generation, learning-to-rank y slate construction sin llamadas LLM, haciendo comparable cada etapa y su contribución a la completitud de evidencia.",
+      "why_it_matters": "Importa patrones maduros de recommender systems a una operación que ocurre en cada request y reduce dependencia de resúmenes o rerankers LLM caros.",
+      "evidence": [
+        "Supera A-Mem, HippoRAG 2, DynamicRAG y T-Mem por 10–31 puntos de accuracy en preguntas multi-sesión de LongMemEval.",
+        "Iguala un reranker LLM de 64 llamadas por query con 3.2 veces menor coste de serving.",
+        "En LoCoMo supera Mem0 y Zep sin ninguna llamada LLM durante el write path."
+      ],
+      "limitations": [
+        "Los resultados dependen de LongMemEval y LoCoMo y no prueban superioridad en todos los tipos de memoria procedural o episódica.",
+        "El ranking sin LLM reduce coste, pero requiere features, entrenamiento y mantenimiento de la cascada."
+      ],
+      "practical_applications": [
+        "design",
+        "retrieval",
+        "agents",
+        "serving"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.37648",
+      "title": "Scaling Laws for Tool-Use Agents via Controllable Environment Synthesis",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-27",
+      "updated_at": null,
+      "authors": [
+        "Andrew Szot",
+        "Samira Abnar",
+        "Omar Attia",
+        "Abbas Kazerouni",
+        "Michael Kirchhof",
+        "Cheng-Yu Hsieh",
+        "Raviteja Vemulapalli",
+        "Alexander Toshev"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.37648",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.37648",
+        "arxiv": "2610.37648"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Introduce SynthAPI para controlar diversidad de tools, tareas y bases de datos en entornos sintéticos y deriva una ley de escala para generalización de agentes tool-use.",
+      "what_changed": "En vez de tratar volumen de ejemplos como única variable, entrena 849 modelos de cuatro tamaños sobre 458,752 tareas y mide separadamente escala, composición y complejidad del entorno.",
+      "why_it_matters": "Para generar datos de entrenamiento, diversificar herramientas y estados subyacentes puede rendir más que producir muchas variaciones superficiales de la misma tarea.",
+      "evidence": [
+        "El estudio cubre 458,752 tareas, 849 modelos y cuatro tamaños de modelo.",
+        "Al crecer el presupuesto, la diversidad de tools y bases supera el beneficio de aumentar sólo el número de tareas.",
+        "La receta derivada supera datos de trabajos previos en cuatro benchmarks de tool-use."
+      ],
+      "limitations": [
+        "Las leyes se estiman sobre la familia de entornos SynthAPI y pueden cambiar con herramientas reales, ruido operacional o tareas no representadas.",
+        "Mayor diversidad sintética no garantiza fidelidad a permisos, fallos y semántica de APIs de producción."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.36561",
+      "title": "Governed Sovereign RAG for Public Administration: Tripartite Epistemic Routing, Facet-Guided Clarification, and Deterministic Numeric Verification in Citizen Services",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-27",
+      "updated_at": null,
+      "authors": [
+        "Andres Cruz Degante"
+      ],
+      "organization": "Universidad Autónoma de Occidente; Gobierno del Estado de Tlaxcala",
+      "url": "https://arxiv.org/abs/2610.36561",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.36561",
+        "arxiv": "2610.36561"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "llm_production",
+        "evaluation",
+        "observability",
+        "safety",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Documenta un RAG soberano desplegado en el portal oficial de Tlaxcala que enruta entre respuesta, clarificación y abstención y verifica determinísticamente cifras fiscales.",
+      "what_changed": "Integra 1,143 trámites y 924 oficinas con templates de nivel cero, un gate epistemológico, clarificación por facetas, generación condicionada y verificación numérica con invalidación de caché por SHA-256.",
+      "why_it_matters": "Es evidencia rara de una arquitectura RAG gobernada en producción real, incluyendo latencia, drop-off de usuarios, precisión y límites estadísticos de alucinación.",
+      "evidence": [
+        "Evalúa 380 trazas orgánicas de ocho semanas y un benchmark estratificado de 200 queries.",
+        "89.47% del tráfico se resuelve con templates deterministas sin generación libre; p50 global es 0.665 segundos.",
+        "Obtiene 86.50% Top-1 estricto, 10 puntos sobre un gate binario, y observa 0/40 alucinaciones de montos fiscales en Level 1, con límite superior 95% de 8.81%."
+      ],
+      "limitations": [
+        "Cuarenta casos fiscales no permiten concluir tasa cero; el propio intervalo admite hasta 8.81%.",
+        "El p95 de 30.412 segundos bajo colas CPU y 53.33% de abandono en menús de clarificación muestran costes operativos y de UX relevantes."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "retrieval",
+        "safety",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.37432",
+      "title": "Request-Adaptive Execution for Efficient Hybrid LLM Inference",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-27",
+      "updated_at": null,
+      "authors": [
+        "Fahao Chen",
+        "Xuzhe Yan",
+        "Qi Zhang",
+        "Peng Li",
+        "Dongxiao Yu",
+        "Song Guo"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.37432",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.37432",
+        "arxiv": "2610.37432"
+      },
+      "topics": [
+        "llm_production",
+        "serving",
+        "inference",
+        "architecture"
+      ],
+      "summary": "Morph co-diseña un modelo híbrido Attention-SSM y su runtime para seleccionar durante prefill un layout específico por request que permanece fijo en decoding.",
+      "what_changed": "Rompe con layouts híbridos estáticos e introduce selective batching y caching de contexto consciente de la mezcla de capas para conservar batching y prefix reuse.",
+      "why_it_matters": "Las solicitudes no necesitan la misma dependencia contextual; adaptar ejecución por request puede reducir coste sin fragmentar completamente el serving.",
+      "evidence": [
+        "Evalúa calidad y eficiencia en seis datasets.",
+        "Reporta hasta 3.87 veces más throughput que baselines híbridos estáticos.",
+        "El runtime soporta decisiones de capas divergentes con selective batching y prefix caching correcto."
+      ],
+      "limitations": [
+        "Requiere una arquitectura entrenada para gating y un runtime especializado; no es una optimización drop-in para modelos existentes.",
+        "El beneficio depende de distribución de requests, calidad del gate y estabilidad del layout elegido durante decoding."
+      ],
+      "practical_applications": [
+        "design",
+        "deployment",
+        "serving"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2610.37657",
+      "title": "Heads of Security: Learned Attention Gates Improve Prompt Injection Robustness",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-27",
+      "updated_at": null,
+      "authors": [
+        "Igor Shilov",
+        "Xiaoxue Yang",
+        "Alexander Panfilov",
+        "Evgenii Kortukov",
+        "Matthieu Meeus",
+        "Peter Romov",
+        "Wojciech Samek",
+        "Jonas Geiping",
+        "Yves-Alexandre de Montjoye"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2610.37657",
+      "external_ids": {
+        "doi": "10.48550/arXiv.2610.37657",
+        "arxiv": "2610.37657"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "safety",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Heads of Security aprende gates de atención por head para separar instrucciones confiables de datos no confiables sin impedir que el modelo razone sobre estos últimos.",
+      "what_changed": "Inserta la frontera instruction-data dentro del mecanismo de atención y la compara con finetuning defensivo y una arquitectura alternativa bajo ataques estáticos y adaptativos.",
+      "why_it_matters": "Ofrece una defensa de prompt injection que preserva utilidad y tool use mejor que bloquear contenido o depender sólo de detectores externos.",
+      "evidence": [
+        "RL-Hammer alcanza 97% de attack success contra GPT-OSS-20B y 85% contra SecAlign, pero 10% contra HoS.",
+        "Un ataque white-box reforzado requiere tres veces más FLOPs para alcanzar el mismo ASR contra HoS.",
+        "HoS conserva utilidad base en benchmarks y prompting few-shot, mientras ASIDE obtiene sólo 10% de utilidad en tool use."
+      ],
+      "limitations": [
+        "La evaluación se limita a Llama-3.3-70B-Instruct y GPT-OSS-20B y a los ataques incluidos.",
+        "Es una modificación del modelo; no reemplaza provenance, permisos ni enforcement externo para acciones sensibles."
+      ],
+      "practical_applications": [
+        "design",
+        "safety",
+        "agents",
+        "deployment"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Coloca un critic independiente después del agente principal y reserva gates caros para tareas donde el coste de error lo justifique.",
+      "Diseña memoria como una cascada medible de candidate generation, ranking y slate construction; compara siempre contra RAG directo del historial.",
+      "Para RAG regulado, enruta explícitamente entre template, respuesta generativa, clarificación y abstención, y verifica de forma determinista campos críticos."
+    ],
+    "evaluation": [
+      "Mide errores recuperables por separado de fallos finales y evalúa políticas de intervención con coste, riesgo y tiempo hasta recuperación.",
+      "En tool-use sintético, reporta diversidad de tools, bases y complejidad además del número bruto de tareas.",
+      "Para memoria, mide completitud de evidencia y net value contra una baseline simple; para seguridad, incluye ataques adaptativos y utilidad real de tools."
+    ],
+    "deployment": [
+      "Instrumenta lineage, latencia por nivel, abandono en clarificaciones y verificación de valores críticos; no escondas la cola larga detrás del p50.",
+      "Si adoptas layouts adaptativos, observa decisiones del gate, fragmentación de batches y validez de prefix caches por configuración.",
+      "Combina defensas internas de atención con provenance, permisos y controles externos; ninguna capa única cubre toda la superficie de prompt injection."
+    ]
+  }
+}
