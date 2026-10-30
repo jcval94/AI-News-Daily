@@ -1,0 +1,28 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 6.0,
+  "invented_details": [
+    "“Boston, Massachusetts, Estados Unidos, 1999.” — No aparece como enunciado en los claims verificados de la memoria (solo se indica instalación en 1999 y colapso en 2006, sin que el guion justifique con evidencia que el inicio narrativo ocurra literalmente en “1999” en ese formato exacto).",
+    "“como si la palabra ‘aprobado’ fuera sinónimo de ‘ya no hay negociación con la realidad’.” — Interpretación/retórica sin respaldo factual; aunque es opinativa, se integra como premisa sobre “significado” que el caso no establece explícitamente (no es solo estilo).",
+    "“Si un sistema —o un agente— puede obtener luz verde desactivando un componente bajo una formulación de prueba…” — Analogía/hipótesis que extrapola del caso Big Dig a agentes; no está respaldada por evidencia factual de IA en las fuentes citadas."
+  ],
+  "source_issues": [
+    "No se verifica en el ledger que existan evidencias para las secciones donde el guion generaliza de “Big Dig” a “agentes” (el ledger solo soporta hechos del caso civil y resultados de dos artículos: DeepSeek y radiología).",
+    "Varios enunciados del guion citan/respaldan implícitamente ideas (p. ej., “aprobado” como marcador equivalente) sin que el material provisto respalde esa equivalencia como hecho; solo existe como marco conceptual permitido en plan.",
+    "El guion menciona el caso del techo como soporte principal pero no consume/para en los hechos exactamente los puntos verificados; mezcla causa probable/efectos con moraleja sin preservar con suficiente claridad el límite “analógico/no causal” en cada salto."
+  ],
+  "unsupported_claims": [
+    "“como si la palabra ‘aprobado’ fuera sinónimo de ‘ya no hay negociación con la realidad’.” (premisa factual sobre una “regla semántica” en el mundo, no sustentada).",
+    "“Cuando entra la investigación, el foco se desplaza a lo que parecía una decisión técnica y resulta ser una decisión sobre el futuro…” (lectura causal/teleológica atribuida al proceso, no respaldada por el texto de hechos verificados).",
+    "“En incidentes operacionales… el entorno es ruidoso… instrucciones incompletas, traducciones…” (generalizaciones no respaldadas en las evidencias entregadas).",
+    "“en seguridad de agentes… muchas veces está midiendo otra cosa” (afirmación general no respaldada; el ledger autoriza interpretaciones, pero aquí se formula como conclusión amplia)."
+  ],
+  "repair_instructions": [
+    "Ajusta las frases introductorias y de datación para que solo afirmen lo que está verificado en la memoria. Si quieres conservar “1999”, redacta como: “Tras su instalación en 1999” (sin afirmar que la historia “empieza” ese año).",
+    "Separa explícitamente cada conclusión moral/analogía: añade marcadores lingüísticos que indiquen no equivalencia causal (p. ej., “como analogía” / “esto ilustra una idea, no prueba un mecanismo en IA”), y evita presentar la analogía como hecho aplicable a agentes.",
+    "Elimina o suaviza afirmaciones interpretativas que suenan a hecho normativo (“‘aprobado’ sinónimo de no negociar”). Reemplázalas por formulaciones claramente interpretativas sin pretender que el caso o las instituciones lo sostengan.",
+    "Quita generalizaciones no respaldadas (“en incidentes operacionales… instrucciones incompletas, traducciones…”) o conviértelas en preguntas/hipótesis explícitas sin presentar ejemplos como hecho general.",
+    "Revisa la sección “story_payoff” y cualquier otro salto: conserva los hechos verificados del Big Dig (carga de prueba, accidente, epoxi y causa probable, desplazamiento previo y falta de seguimiento/inspección) y declara que el paso a agentes es una analogía de evaluación, no causalidad demostrada."
+  ]
+}

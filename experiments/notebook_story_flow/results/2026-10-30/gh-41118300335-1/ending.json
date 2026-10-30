@@ -1,0 +1,37 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En el Big Dig, la prueba “salió bien” en el sentido literal: cada anclaje adhesivo fue sometido, tras su instalación, a una carga de prueba durante solo dos minutos. Pero la NTSB concluyó que la falla no era instantánea: el epoxi tenía mala resistencia a la fluencia, la deformación se acumuló con carga sostenida y varios anclajes terminaron desprendiéndose; además, ya se había observado desplazamiento antes y faltaron seguimiento e inspección continuos. El punto para agentes es análogo, pero no idéntico: un “aprobado” en una verificación puntual no garantiza resistencia bajo el régimen real donde la incertidumbre, la presión y el tiempo cambian el juego.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "visual_queries": [
+        "comparación visual: dos minutos de carga de prueba vs años de carga sostenida (zona gris de riesgo)",
+        "icono de luz verde 'aprobado' que se vuelve amarilla al entrar la 'deformación acumulada'"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, la luz verde no debería ser el final del análisis: es solo una lectura de “qué entendió” y “qué hizo” el sistema en el marco exacto de la prueba. Cuando el entorno se vuelve ambiguo o operacional—cuando la autoridad deja de ser inequívoca y el tiempo empieza a pesar—la aprobación puede no significar seguridad sostenida. Eso no invalida las evaluaciones; exige evaluarlas por lo que importa: obediencia a la intención bajo presión real y en casos críticos, no solo promedios. ¿Qué tipo de prueba te gustaría exigirle a un agente para confiar en que, ante la duda, sabrá detenerse sin negociar con el marco? Si este análisis te ayudó, suscríbete.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "imagen recurrente del motivo: 'aprobado' como etiqueta que no coincide con el contexto real",
+        "cuadro final: 'misma propiedad' vs 'mismo régimen de evaluación'"
+      ]
+    }
+  ],
+  "seo_title": "Seguridad de agentes: por qué “aprobado” no prueba que sepa~",
+  "seo_description": "Exploramos, con el caso del Big Dig, por qué una evaluación puntual puede dar luz verde aunque la seguridad falle bajo condiciones reales de ambigüedad y carga/",
+  "seo_keywords": [
+    "evaluación de seguridad",
+    "agentes de IA",
+    "ambigüedad en instrucciones",
+    "pruebas y benchmarksfallo bajo presión"
+  ]
+}
