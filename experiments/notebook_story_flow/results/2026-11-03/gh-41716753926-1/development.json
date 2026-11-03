@@ -1,0 +1,122 @@
+{
+  "sections": [
+    {
+      "id": "step10_reconexion",
+      "text": "Vale, regresemos a la pregunta grande, pero sin abandonar la luz verde. Si una IA o un servicio cambia “por dentro” y el usuario no lo nota, ¿qué tiene que existir para que podamos atribuir responsabilidad, reproducir evaluaciones y, cuando haga falta, reparar? Mi hipótesis provisional es que no alcanza con métricas bonitas: necesitamos trazabilidad operacional, y también una lectura honesta de lo que una capa de “seguridad” sí—y no—garantiza.",
+      "evidence_ids": [
+        "versionado_identificable"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Escena rápida: un semáforo en verde con el rótulo “aprobado”, y un fondo donde se actualiza un sistema sin cambiar su placa."
+      ]
+    },
+    {
+      "id": "hook_problema",
+      "text": "El problema humano no es que la IA “mienta” todo el tiempo. Es más sutil y más injusto: a veces el sistema no se equivoca; lo que cambia es el sistema. Su conducta puede moverse con una actualización de modelo, datos, salvaguardas o integraciones… mientras para ti la marca, el nombre y la interfaz siguen siendo la misma. Y entonces, cuando algo sale mal, aparece una pregunta casi filosófica, pero con consecuencias reales: “¿qué versión tomó parte en esta decisión?”",
+      "evidence_ids": [
+        "versionado_identificable"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Texto en pantalla: “mismo nombre ≠ misma versión”."
+      ]
+    },
+    {
+      "id": "hook_cita",
+      "text": "No es una cita famosa, pero sí una idea operativa: si no puedes identificar el “qué” cambió, tu promesa de seguridad queda como una luz verde sin la pista de auditoría. Y eso vuelve frágil la responsabilidad.",
+      "evidence_ids": [
+        "versionado_identificable"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Ícono de lupa sobre un archivo de versión “sin etiquetas”."
+      ]
+    },
+    {
+      "id": "idea_A",
+      "text": "Vamos con el primer pilar. Si quieres responsabilidad real (no solo confianza), necesitas reproducibilidad. Y reproducibilidad no es “salió bien una vez”: es poder repetir la evaluación y reconstruir el contexto que hizo posible el resultado. En sistemas de IA como servicio, el punto incómodo es que el proveedor puede actualizar no solo el modelo, sino también datos, salvaguardas e integraciones… y aun así mantener identificadores públicos que no reflejan con precisión esos cambios.\n\nMira la estructura del problema: tu institución, tu equipo o tú dependéis de una luz verde. “Verde” significa: “estamos razonablemente seguros con esta configuración”. Pero si esa configuración no está etiquetada de forma verificable, el verde se vuelve una especie de fe retrospectiva. Puedes decir “este sistema es el mismo”, pero cuando alguien intenta auditar, comparar o defender un uso, te topas con un muro: no sabes con exactitud qué sistema—en sentido operativo—produjo el resultado.\n\nLo fascinante (y frustrante) es que esto no exige que haya mala intención. Basta con que el sistema sea convenientemente actualizable: actualizaciones que arreglan fallos, mejoran seguridad o afinan desempeño. El choque viene cuando esa mejora se integra sin un versionado significativo que permita distinguir cambios relevantes y reproducir evaluaciones.\n\nAquí es donde la “identidad pública estable” se convierte en trampa narrativa: parece que el sistema permanece, pero las piezas internas pueden moverse como engranes. En un conflicto—por ejemplo, una denuncia o una investigación interna—la pregunta deja de ser “¿estaba bien calibrado?” y pasa a ser “¿estaba esa versión, en ese momento, usando esas salvaguardas?”\n\nAsí que el pilar A queda así: responsabilidad exige trazabilidad verificable de cambios relevantes. No para castigar por deporte, sino para que la reparación sea más que un remiendo: para que podamos aprender, comparar, y sostener decisiones con evidencia reconstruible.",
+      "evidence_ids": [
+        "versionado_identificable"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Diagrama: Interfaz estable (logo) + “cambios internos” (módulos) sin versionado público."
+      ]
+    },
+    {
+      "id": "dato_1",
+      "text": "En un comentario académico en Nature Machine Intelligence se sostiene que proveedores actualizan modelos, datos, salvaguardas e integraciones sin modificar siempre sus identificadores públicos, lo que impide saber con precisión qué sistema produjo un resultado; proponen versionado significativo para distinguir cambios relevantes y permitir reproducir evaluaciones. Limitación: es un argumento normativo/diagnóstico, no una auditoría empírica de prácticas concretas.",
+      "evidence_ids": [
+        "versionado_identificable"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Captura estilizada de un paper: “versionado significativo”."
+      ]
+    },
+    {
+      "id": "idea_B_explica",
+      "text": "Ok, pilar B. Hasta aquí habíamos hablado de “qué versión fue”. Pero hay otra clase de ambigüedad: aun con el mejor versionado imaginable, una capa de seguridad puede ser parcial. Y esto cambia la manera en que interpretamos el silencio del sistema.\n\nPiensa en una segunda capa que no decide diagnósticos, sino que vigila discrepancias operativas: por ejemplo, detectar que alguien pretendía derivar a un especialista pero el circuito administrativo no completó la orden. Suena como red de seguridad: “si algo se queda a medias, lo detectamos”. Pero el desempeño típico de una red de seguridad es inevitablemente un compromiso entre evitar falsas alarmas y capturar casos reales.\n\nAsí que el punto B no es “la IA falló”. Es más fino: si la sensibilidad (la capacidad de detectar casos) no es alta, entonces no puedes interpretar “no hubo alerta” como “no había riesgo”. El silencio puede significar “no detectado”, no “ausencia de problema”. Y ahí es donde la responsabilidad se vuelve doble: por un lado, la trazabilidad de versión; por otro, reglas claras de interpretación de límites.\n\nA nivel humano, esto es clave para la vida diaria en clínicas y en procesos laborales: cuando el sistema no alerta, los humanos pueden acomodarse y concluir—equivocadamente—que todo está bien. Y cuando la capa es operativa pero incompleta, el sistema puede aumentar la carga de revisión y aun así no cerrar completamente la brecha.\n\nPor eso, el pilar B dice: incluso si la seguridad “funciona” en términos de especificidad, la responsabilidad exige comprender la sensibilidad y el significado del no-alcance. Si no, una luz verde termina pareciéndose a un semáforo que solo mira una dirección del cruce.",
+      "evidence_ids": [
+        "seguridad_parcial_sensibilidad"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Gráfico simple: sensibilidad ~ 50% y especificidad ~ 100% (conceptual)."
+      ]
+    },
+    {
+      "id": "idea_B_desafio",
+      "text": "Microexperimento mental (y es fácil equivocarse): supongamos que un equipo usa una herramienta que solo “avisa” a veces. Semana 1: casi no hay alertas. ¿Qué concluyes? Si tu formación—o tu procedimiento—trata el silencio como prueba de ausencia, tú ya estás interpretando mal el sistema.\n\nAhora complica el mundo real: la herramienta no es perfecta, pero además opera en un flujo con humanos que verifican parte de lo que se alerta. En esa combinación, un sistema puede reducir ciertos olvidos, aumentar detecciones, y aun así omitir un subconjunto relevante. La pregunta operativa entonces ya no es “¿alerta o no alerta?”, sino “¿qué fracción de los casos reales estamos dejando pasar, y cómo eso se traduce en riesgo tolerable?”.\n\nEste microexperimento encaja con el conflicto original: cuando la trazabilidad de versión falla, nadie sabe qué reglas estaban activas; y cuando la lectura de límites falla, nadie sabe qué significa el silencio. Juntas, ambas fallas vuelven la responsabilidad difícil de sostener.",
+      "evidence_ids": [
+        "seguridad_parcial_sensibilidad"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Animación: panel que muestra alertas vs. casos reales “no visibles” (sombreado)."
+      ]
+    },
+    {
+      "id": "dato_2",
+      "text": "Un estudio cuasiexperimental en siete clínicas de atención primaria de Singapur evaluó MR-AI y encontró, en una comparación ciega de una semana, 99,9% de especificidad pero 48,8% de sensibilidad; reportó que hubo 428 alertas y 225 fueron verificadas por clínicos, y estimó un aumento de siete veces en la detección semanal revisando unas 25.000 notas semanales. Limitación: no prueba generalización ni prevención de daño clínico, y el diseño no cierra el “efecto” sobre resultados de pacientes.",
+      "evidence_ids": [
+        "seguridad_parcial_sensibilidad"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Tarjetas: “99,9% especificidad” y “48,8% sensibilidad” con una nota “no es lo mismo no-alerta ≠ no-riesgo”."
+      ]
+    },
+    {
+      "id": "idea_C",
+      "text": "Aquí viene la transformación que reencuadra el Therac-25—sin decir que sea lo mismo. Lo que aprendimos de aquel caso (y lo uso solo como espejo conceptual) es que la seguridad en sistemas complejos no puede depender de que el “control” sea invisible para quien necesita confiar. Cuando partes del sistema son actualizables u opacas, la defensa en profundidad se vuelve, en la práctica, una promesa difícil de verificar.\n\nEntonces, si juntamos los pilares A y B, la tesis evoluciona así: la responsabilidad no se sostiene solo con métricas de desempeño ni con un nombre fijo del sistema. Necesita trazabilidad operacional (qué cambió y cómo afecta decisiones) y una lectura disciplinada de los límites de cualquier “capa de seguridad”.\n\nOjo con el matiz: incluso con alta especificidad, el sistema puede omitir casos; y si además no sabemos qué versión estaba corriendo, el “no ocurrió nada” puede ser una conclusión incompleta. En otras palabras: el silencio puede ser informativo, pero de manera parcial. Puede significar “no detectado bajo esas reglas”, no “no existe riesgo bajo ninguna regla”.\n\nY aquí aparece el umbral que nos interesa: ¿qué tipo de cambio debería obligar a un nuevo identificador y a reevaluación independiente? No estamos hablando solo de “cualquier actualización”. Estamos hablando de cambios que afectan cómo se interpreta la luz verde: cambios de comportamiento, de salvaguardas o de datos que impactan sensibilidad, umbrales o reglas de decisión.\n\nSin embargo, también hay que ser honestos con el segundo miedo humano: que el versionado se vuelva burocracia inmanejable. No todo cambio puede disparar re-auditorías costosas; el reto es diseñar reglas de interpretación y “cambio relevante” que sean verificables sin paralizar la mejora. La ruta no es perfecta, pero el principio sí: si tu seguridad depende de la precisión con la que puedes reconstruir el pasado, el versionado debe sobrevivir al ciclo de actualización.\n\nEn el mundo real, esto se traduce en decisiones casi aburridas pero cruciales: logs firmados, identificadores con semántica de cambio, políticas de reevaluación por categorías de modificación y, sobre todo, capacitación en cómo interpretar límites (por ejemplo, que alta especificidad no convierte el silencio en prueba de ausencia).\n\nAsí, la luz verde deja de ser un objeto mágico: se vuelve un resultado derivado de reglas, versiones y umbrales. Y cuando esa derivación es reconstruible, la reparación deja de ser un acto de fe y pasa a ser un procedimiento verificable.",
+      "evidence_ids": [
+        "versionado_identificable",
+        "seguridad_parcial_sensibilidad"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Motivo recurrente: una “luz verde” con una etiqueta de trazabilidad y, debajo, una barra de incertidumbre/sensibilidad."
+      ]
+    }
+  ]
+}

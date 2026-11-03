@@ -1,0 +1,39 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "Volvemos a la luz verde y al punto que la vuelve frágil. En el caso del Therac-25, la investigación documentó accidentes de sobredosis masiva asociados al periodo 1985–1987, y no lo redujo a un solo “bug”: señaló cómo el software terminó concentrando funciones de seguridad que antes estaban más apoyadas en interlocks físicos, además de fallas de ingeniería, evaluación de riesgo y manejo de incidentes. La lección para nuestro conflicto abierto no es “software malo”, sino que si dependes de una defensa difícil de observar y tampoco tienes trazas claras de qué versión/reglas estaban activas, la atribución y la reparación se vuelven opacas. Y la analogía no prueba que una IA moderna sea igual de peligrosa; solo muestra por qué la trazabilidad importa cuando el sistema puede cambiar sin que lo veas.",
+      "evidence_ids": [
+        "versionado_identificable"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Motivo: la luz verde ahora tiene una etiqueta “versión + reglas activas” y, debajo, un ícono de “trazabilidad” que falta (texto en rojo)."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, ¿qué debe existir para que la responsabilidad sea algo más que un eslogan? Trazabilidad operacional verificable de cambios relevantes, y reglas disciplinadas para interpretar límites: incluso una seguridad con alta especificidad no convierte “no alertó” en “no había riesgo”. Si además el sistema puede actualizarse sin que sepamos qué cambió, la reparación deja de ser un procedimiento y regresa a ser fe. Si te gustó este enfoque, suscríbete: la próxima vez que veas una “luz verde” en una decisión asistida por IA, vale la pena preguntarse quién comprobó la versión y bajo qué reglas.",
+      "evidence_ids": [
+        "versionado_identificable",
+        "seguridad_parcial_sensibilidad"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Pantalla final: “Luz verde ≠ prueba de ausencia de riesgo” con una barra de incertidumbre en segundo plano."
+      ]
+    }
+  ],
+  "seo_title": "Trazabilidad y responsabilidad en IA: por qué la luz verde y",
+  "seo_description": "Cómo la falta de versionado verificable y la interpretación incompleta de límites vuelven frágil la responsabilidad en sistemas de IA que cambian sin que el us.",
+  "seo_keywords": [
+    "trazabilidad verificable",
+    "versionado de modelos",
+    "responsabilidad en IA",
+    "seguridad por capas por qué no basta el no-alerta','sensibilidad y especificidad','auditoría y reproducibilidad']}]}]} // Please ignore this trailing note; it's not part of the required contract. ఇ\n{"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "central_question": "Cuando una IA cambia su comportamiento sin que sea evidente para el usuario, ¿qué debe existir para que podamos atribuir responsabilidad, reproducir evaluaciones y ejercer reparación—un ‘buen resultado’ o una trazabilidad verificable?",
+  "provisional_thesis": "No basta con que la IA “sea buena”: para que exista responsabilidad real necesitamos trazas y versionado que sobrevivan a las actualizaciones. Sin identificación verificable de cambios y sin registros interpretables, la promesa de seguridad se vuelve frágil y nadie puede reconstruir qué versión decidió qué.",
+  "evolved_thesis": "La responsabilidad no se sostiene solo con métricas de desempeño ni con un nombre fijo del sistema: necesita trazabilidad operacional (qué cambió y cómo afecta decisiones) y lectura disciplinada de los límites de cualquier “capa de seguridad”. Incluso con alta especificidad, el ‘silencio’ puede ser informativo de manera incompleta; por eso, versionado verificable y reglas de interpretación de incertidumbre deben convivir.",
+  "core_ideas": [
+    "El problema de fondo no es que la IA mienta: es que puede cambiar por dentro mientras conserva una identidad pública.",
+    "Sin versionado verificable, las auditorías y las evaluaciones se vuelven difíciles de reproducir, impugnAR y aprender.",
+    "Incluso con “seguridad” por capas, la incertidumbre (p. ej., sensibilidad) significa que el sistema no garantiza ausencia de riesgo."
+  ],
+  "motif": "una luz verde de aprobación",
+  "pillars": [
+    "Atribución y reproducibilidad: si no sabes qué versión hizo qué, no hay rendición de cuentas efectiva.",
+    "Trazas interpretables de cambio: la responsabilidad requiere registros que sobrevivan al ciclo de actualización.",
+    "Lectura honesta de límites: una capa con alta especificidad no convierte el ‘no alerta’ en seguridad total."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "braess-paradox-more-road-worse-traffic",
+      "epicity": 7.6,
+      "relevance": 7.2,
+      "reason": "Una ‘mejora local’ (añadir una conexión/capacidad) altera el equilibrio colectivo; sirve para visualizar cómo cambios aparentemente positivos (actualizaciones, guardrails, integración) pueden redistribuir decisiones y complicar la atribución o la seguridad global. Requiere cuidado para no sobrepasar el paralelismo."
+    },
+    {
+      "memory_id": "therac-25-software-single-point-safety",
+      "epicity": 9.2,
+      "relevance": 8.4,
+      "reason": "Ejemplo de seguridad concentrada en software y debilitamiento de defensas independientes: ayuda a pensar trazabilidad y ‘defensa en profundidad’ cuando la operación depende de componentes opacos/actualizables."
+    },
+    {
+      "memory_id": "clever-hans-unconscious-evaluator-cues",
+      "epicity": 8.6,
+      "relevance": 8.0,
+      "reason": "Caso de evaluación contaminada por señales del evaluador: encaja con la idea de que sin condiciones de prueba reproducibles (y sin trazas de versión), la medición puede inducir conclusiones falsas sobre “qué hace” el sistema."
+    }
+  ],
+  "selected_memory_id": "therac-25-software-single-point-safety",
+  "protagonist": "Un sistema de IA/servicio que se actualiza sin que el usuario pueda saber qué cambió entre evaluaciones y uso",
+  "opposing_force": "La arquitectura de responsabilidad fragmentada: identidad pública estable, pero cambios internos (modelos, datos, salvaguardas, integraciones) que rompen la trazabilidad",
+  "conflict": "Una decisión respaldada por IA se toma con ‘una luz verde’ basada en supuestas garantías, pero cuando ocurre una falla o una disputa, nadie puede reconstruir con precisión qué versión cambió, qué evidencia aplicaba y cómo interpretar los límites de seguridad (p. ej., que el ‘no detectado’ no equivale a ‘no existe riesgo’).",
+  "setup_claim_indices": [
+    1,
+    3
+  ],
+  "payoff_claim_indices": [
+    2,
+    4
+  ],
+  "unresolved_question": "¿Qué umbral de cambio debería obligar un nuevo identificador y una reevaluación independiente: el cambio de comportamiento, de salvaguardas o de datos de entrenamiento, y cómo se formaliza eso sin convertirlo en burocracia inmanejable?",
+  "bridge_to_present": "Conectamos el caso de seguridad concentrada en software (riesgo en componentes difíciles de observar) con la discusión normativa sobre versionado verificable: si las actualizaciones se realizan sin identificación suficiente, la ‘defensa’ deja de ser verificable para usuarios, investigadores y reguladores. Luego complicamos la lectura de seguridad mostrando que incluso sistemas con buena especificidad pueden tener sensibilidad limitada, así que el silencio del sistema no basta como prueba de ausencia de riesgo.",
+  "analogy_limits": "El caso Therac-25 trata un contexto de seguridad crítica con dinámica física inmediata y permite discutir concentración del riesgo y defensas independientes; no demuestra que una IA moderna sea análoga en peligrosidad ni que un solo bug explique fallas complejas. La analogía solo sugiere el papel de la trazabilidad y la ‘defensa en profundidad’ cuando partes del sistema son opacas u actualizables.",
+  "ledger": [
+    {
+      "evidence_id": "versionado_identificable",
+      "news_id": "n_92c4597e80ddf06c",
+      "supported_facts": [
+        "Un comentario académico en Nature Machine Intelligence sostiene que los proveedores actualizan modelos, datos, salvaguardas e integraciones sin modificar siempre sus identificadores públicos.",
+        "El comentario argumenta que eso impide saber con precisión qué sistema produjo un resultado.",
+        "Los autores proponen un versionado significativo para que investigadores y reguladores distingan cambios relevantes y puedan reproducir evaluaciones."
+      ],
+      "allowed_interpretations": [
+        "La trazabilidad puede ser una condición necesaria para auditorías y evaluaciones reproducibles en sistemas de servicio que cambian con el tiempo."
+      ],
+      "hypotheses": [
+        "Si no existe versionado verificable, las garantías y consentimientos basados en una versión previa pueden volverse inestables con el tiempo."
+      ],
+      "uncertainties": [
+        "El comentario no proporciona una medición de cuántos proveedores incumplen una práctica concreta.",
+        "No prueba la eficacia de un esquema específico de versionado; su valor depende de cómo se implemente y qué se considere ‘cambio relevante’."
+      ],
+      "prohibited_claims": [
+        "No afirmar que la mayoría de proveedores incumplen por completo o que es un estándar industrial establecido no cumplir.",
+        "No afirmar que sin versionado identificable siempre habrá daño; sólo que se dificulta la atribución y la reproducibilidad."
+      ],
+      "source_limitations": [
+        "Es un comentario académico con carácter normativo y diagnóstico; no es una auditoría empírica de despliegues."
+      ]
+    },
+    {
+      "evidence_id": "seguridad_parcial_sensibilidad",
+      "news_id": "n_38f8147b6e4b9cb0",
+      "supported_facts": [
+        "Un estudio cuasiexperimental evaluó MR-AI en siete clínicas de atención primaria de Singapur para identificar derivaciones médicas omitidas revisando unas 25.000 notas semanales.",
+        "En una comparación ciega de una semana, MR-AI mostró 99,9% de especificidad, 48,8% de sensibilidad y 61,8% de valor predictivo positivo, con 428 alertas donde 225 fueron verificadas por clínicos.",
+        "El estudio estima un aumento de siete veces en la detección semanal, pero no prueba generalización, rentabilidad ni prevención de daño clínico."
+      ],
+      "allowed_interpretations": [
+        "Incluso con una especificidad muy alta, una sensibilidad cercana a la mitad impide interpretar el ‘no hay alerta’ como ausencia de riesgo."
+      ],
+      "hypotheses": [
+        "Una red de seguridad parcial puede funcionar mejor como apoyo operativo que como sustituto de responsabilidad clínica, especialmente cuando el sistema no detecta una proporción relevante de casos."
+      ],
+      "uncertainties": [
+        "No se establece cuánto daño se evita o se genera; el estudio no demuestra prevención de daño clínico.",
+        "El desempeño puede no trasladarse a otras clínicas, prevalencias u otros sistemas de documentación."
+      ],
+      "prohibited_claims": [
+        "No afirmar que el sistema omitió siempre casos importantes ni que habría ocurrido daño en cada omitido.",
+        "No generalizar que todas las capas de seguridad con alta especificidad fallan por igual."
+      ],
+      "source_limitations": [
+        "Diseño cuasiexperimental y alcance geográfico/sistémico limitado; no evidencia de efectos sobre resultados de pacientes."
+      ]
+    }
+  ]
+}
