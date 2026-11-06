@@ -1,0 +1,541 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-11-06",
+  "window": {
+    "from": "2026-10-31",
+    "to": "2026-11-06"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "La evaluación de agentes se desplaza del resultado final a los mecanismos que producen el resultado",
+      "why_it_matters": "RECEIPT, MemUse y ServerBench muestran fallos invisibles para las métricas finales: comandos que terminan con código 0 sin ejecutar, memorias entregadas pero no usadas y optimizaciones de serving que sólo son válidas si se verifican sus rutas de ejecución."
+    },
+    {
+      "summary": "Los entornos de herramientas empiezan a sintetizarse desde trazas ejecutables y dependencias reales",
+      "why_it_matters": "ToolSpace sustituye escenarios inventados por grafos de composición extraídos de llamadas observadas y tareas que deben reproducirse desde un estado inicial, una base más fuerte para entrenar y evaluar agentes de horizonte largo."
+    },
+    {
+      "summary": "La defensa frente a prompt injection se mueve hacia controlar qué evidencia entra al contexto",
+      "why_it_matters": "SearchInject reduce de forma drástica la exposición de páginas portadoras con pérdida casi nula de calidad de recuperación, mientras una nueva taxonomía de nueve dimensiones revela que los benchmarks actuales cubren sólo una fracción del espacio de ataques."
+    },
+    {
+      "summary": "El serving se vuelve un problema de búsqueda y verificación bajo carga real",
+      "why_it_matters": "InferaSim recorta órdenes de magnitud la exploración de configuraciones, LayerLoom usa holgura por capa para coexistir con fine-tuning y ServerBench convierte el diseño del sistema de serving en una tarea agentic verificable."
+    },
+    {
+      "summary": "El escalado en inferencia para agentes puede aplicarse por turno, no sólo por trayectoria completa",
+      "why_it_matters": "El best-of-N con un selector independiente mejora entre 5 y 10 puntos la resolución de tareas terminales largas y reduce intentos, aunque multiplica el costo de generación por turno."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2611.06841",
+      "title": "ServerBench: How can your coding agents design specialized LLM serving systems?",
+      "type": "benchmark",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-04",
+      "updated_at": null,
+      "authors": [
+        "Xinrui Zhong",
+        "Zhiming Wang",
+        "Yongqi Liu",
+        "Zhaohui Wang",
+        "Shanglin Yang",
+        "Zikun Li",
+        "Zhuoming Chen",
+        "Beidi Chen"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.06841",
+      "external_ids": {
+        "arxiv": "2611.06841"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "serving",
+        "llm_production"
+      ],
+      "summary": "ServerBench evalúa si agentes de código pueden construir sistemas completos de serving especializados para un objetivo económico y de latencia. Usa replay con estado, costo de GPU y verificación independiente del sistema entregado.",
+      "what_changed": "Frente a benchmarks que puntúan cambios de código o microoptimizaciones aisladas, introduce una tarea de diseño operacional end-to-end: implementación, selección de carga, configuración y verificación de rutas de ejecución bajo dependencias de sesión.",
+      "why_it_matters": "Permite probar agentes como ingenieros de rendimiento, pero también evidencia que una mejora de throughput no es aceptable sin comprobar corrección y caminos introducidos por la optimización.",
+      "evidence": [
+        "Evalúa 11 modelos de agentes de código en tres despliegues.",
+        "22 de 33 ejecuciones produjeron sistemas verificados y 13 superaron la mejor línea base.",
+        "Claude Sonnet 5.5 obtuvo 2.97 unidades de valor por dólar en Gemma E4B, 4.87 veces la referencia vLLM."
+      ],
+      "limitations": [
+        "Sólo cubre tres despliegues y un objetivo agregado definido por los autores.",
+        "Los resultados dependen de modelos, precios de GPU y cargas que pueden cambiar rápidamente.",
+        "El mejor resultado reportado procede de un modelo concreto y no demuestra generalización a otros stacks."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "agents",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.06868",
+      "title": "On Turn-Level Best-of-N Sampling for Scaling LLM Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-04",
+      "updated_at": null,
+      "authors": [
+        "Jalaj Bhandari",
+        "Dhawal Gupta",
+        "Hongli Zhan",
+        "Zhenting Wang",
+        "Varad Pimpalkhute",
+        "Zhengzhong Liu",
+        "Eric Xing",
+        "Rupesh Srivastava"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.06868",
+      "external_ids": {
+        "arxiv": "2611.06868"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "inference",
+        "evaluation"
+      ],
+      "summary": "Un generador propone N acciones en cada turno y un segundo LLM selecciona cuál ejecutar. El método usa modelos abiertos sin entrenamiento adicional para escalar la calidad de agentes en tareas terminales de horizonte largo.",
+      "what_changed": "Lleva el best-of-N al nivel de cada interacción con el entorno y muestra que un selector directo puede mejorar trayectorias largas sin un crítico especializado ni búsqueda completa de árboles.",
+      "why_it_matters": "Es un patrón de arquitectura sencillo para gastar cómputo selectivamente en decisiones irreversibles o costosas, y ofrece una separación clara entre diversidad de propuestas y control de acción.",
+      "evidence": [
+        "Reporta mejoras de exactitud de 5 a 10 puntos en tareas terminales largas.",
+        "Reduce el número de intentos y mejora seguimiento de instrucciones, depuración y pruebas.",
+        "La consistencia entre repeticiones también mejora frente a una sola muestra."
+      ],
+      "limitations": [
+        "Generar N opciones y consultar un selector aumenta latencia y costo en cada turno.",
+        "La evidencia se concentra en tareas terminales y no establece beneficio en herramientas heterogéneas o acciones físicas.",
+        "La calidad depende de que el selector discrimine acciones mejores que las del generador."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.05036",
+      "title": "ToolSpace: Scaling Tool-Centric Environment Synthesis for Long-Horizon Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-03",
+      "updated_at": null,
+      "authors": [
+        "Guanting Dong",
+        "Zhichao Sun",
+        "Xinyu Yang",
+        "Rui Wang",
+        "Xin Deng",
+        "Jiajie Jin",
+        "Zhixiong Yang",
+        "Junhao Huang",
+        "Han Han",
+        "Mingyu Ma",
+        "Xiaotao Wang",
+        "Yuyang Hu",
+        "Xiaoshuai Song",
+        "Xiaoxi Li",
+        "Jiejun Tan",
+        "Zhecan Wang",
+        "Shihan Dou",
+        "Honglin Guo",
+        "Zhiheng Xi",
+        "Tao Gui",
+        "Tao Ji",
+        "Qi Zhang",
+        "Yutao Zhu",
+        "Ji-Rong Wen",
+        "Zhicheng Dou"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.05036",
+      "external_ids": {
+        "arxiv": "2611.05036"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "ToolSpace construye entornos y tareas de herramientas desde dependencias de datos, estado y reintentos observadas en trazas MCP. Genera recorridos con rollback y conserva sólo tareas que se reproducen con aserciones desde el estado inicial.",
+      "what_changed": "Invierte el enfoque habitual de sintetizar primero una base de datos y luego inventar interfaces. Las composiciones nacen de aristas presenciadas en ejecución y pueden abarcar múltiples entornos.",
+      "why_it_matters": "Reduce la brecha entre benchmarks sintéticos y workflows reales, y ofrece un método para escalar entrenamiento sin depender de un LLM juez para decidir qué herramientas combinan.",
+      "evidence": [
+        "Las versiones Pro de AutomationBench y tau3-Bench Banking reducen hasta 38.2 puntos el desempeño de siete modelos de frontera.",
+        "Qwen3.6-35B-A3B pasa de 23.0 a 41.0 de media, y a 43.2 con aprendizaje por refuerzo.",
+        "GLM-5.2 pasa de 44.6 a 56.6; las aristas observadas en ejecución superan claramente a las juzgadas por LLM."
+      ],
+      "limitations": [
+        "El manuscrito se declara trabajo en progreso.",
+        "La calidad depende de la cobertura y representatividad de las trazas fuente.",
+        "Replay de respuestas para herramientas de consulta puede omitir dinámicas temporales de servicios reales."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.04672",
+      "title": "The Devil is in the Context: Nine Dimensions of Prompt Injection Attacks",
+      "type": "analysis",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-03",
+      "updated_at": null,
+      "authors": [
+        "Jiamin Chang",
+        "Kristina Nikolić",
+        "Rishi Sharma",
+        "Giovanni Cherubin",
+        "Vasilios Mavroudis",
+        "Jose Sanchez Vicarte",
+        "Arnav Garg",
+        "Hammond Pearce",
+        "Andrew Paverd",
+        "Ahmed Salem"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.04672",
+      "external_ids": {
+        "arxiv": "2611.04672"
+      },
+      "topics": [
+        "safety",
+        "guardrails",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "El trabajo propone nueve dimensiones para describir prompt injections según la instrucción, su relación con la tarea del usuario y su manifestación en el sistema. Aplica la taxonomía a vulnerabilidades reales y benchmarks.",
+      "what_changed": "Sustituye la categoría binaria de prompt injection por un espacio contextual que permite mapear cobertura, comparar defensas y generar casos dirigidos donde faltan combinaciones.",
+      "why_it_matters": "Un porcentaje agregado de bloqueo puede ocultar clases enteras de riesgo. La taxonomía permite que equipos de seguridad definan un threat model y una matriz de cobertura vinculados a su arquitectura concreta.",
+      "evidence": [
+        "Caracteriza seis vulnerabilidades reales y nueve benchmarks de prompt injection.",
+        "La mayoría de los benchmarks cubre sólo una región pequeña del espacio definido.",
+        "Incluso combinando benchmarks, 13% de las combinaciones binarias de categorías queda sin probar."
+      ],
+      "limitations": [
+        "La taxonomía no es por sí misma una defensa ni estima riesgo operacional.",
+        "La cobertura se calcula sobre nueve benchmarks seleccionados y puede cambiar con suites nuevas.",
+        "La anotación automatizada y la generación de casos heredan errores del modelo usado."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "safety"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.04032",
+      "title": "ROCm InferaSim: Cut LLM Serving Trial Costs and Deploy the Best Configuration",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-02",
+      "updated_at": null,
+      "authors": [
+        "Anshu Raina",
+        "Yao Fu",
+        "Zhang Jiejing",
+        "Peyman Razaghi",
+        "Shiksha Patel",
+        "Ravi Gupta",
+        "Deval Shah",
+        "Adeem Jassani",
+        "Subhajit Dutta Chowdhury",
+        "Lorri Rao",
+        "Kailash Gogineni",
+        "Zhenyu Gu",
+        "Onil Gunawardana",
+        "Emad Barsoum"
+      ],
+      "organization": "AMD",
+      "url": "https://arxiv.org/abs/2611.04032",
+      "external_ids": {
+        "arxiv": "2611.04032"
+      },
+      "topics": [
+        "serving",
+        "inference",
+        "llm_production",
+        "observability"
+      ],
+      "summary": "ROCm InferaSim combina mediciones ancla por conjunto de kernels, leyes analíticas, replay de tráfico multivuelta y un agente de tuning para predecir configuraciones de serving sin medirlas todas.",
+      "what_changed": "Convierte una exploración que requeriría unas 25,000 GPU-horas en un problema de pocas mediciones y simulación, incluyendo despliegues multinodo y prefill-decode desagregado.",
+      "why_it_matters": "Ofrece un patrón práctico para seleccionar engine, paralelismo, precisión y políticas de scheduler contra un SLO antes de reservar un experimento exhaustivo en hardware caro.",
+      "evidence": [
+        "Once mediciones ancla consumieron 9.1 GPU-horas frente a 204 GPU-horas para las 226 configuraciones de longitud fija cubiertas.",
+        "En 172 configuraciones, el error mediano de tiempo por token de salida fue 8.1%.",
+        "Predijo throughput con error inferior a 8% en carga de código multivuelta y 5.5% en 159 despliegues desagregados no usados como ancla.",
+        "Una lista corta de cinco candidatos incluyó una configuración a menos de 12% de la mejor combinación factible."
+      ],
+      "limitations": [
+        "La evaluación se realiza en AMD Instinct MI355X y puede no transferirse a otras arquitecturas.",
+        "Las leyes suponen equivalencia de kernels y pueden degradarse con kernels, engines o cargas nuevas.",
+        "La precisión de simulación no sustituye una prueba final de SLO en producción."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "deployment",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.02643",
+      "title": "SearchInject: Retrieval Exposure Control for Indirect Prompt Injection in Language-Model Search",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-02",
+      "updated_at": null,
+      "authors": [
+        "Kainan Zhou",
+        "Gangzhen Qian",
+        "Janet Sung",
+        "Zhi Jing",
+        "Rong Bao",
+        "Qianru Lao"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.02643",
+      "external_ids": {
+        "arxiv": "2611.02643"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "safety",
+        "guardrails",
+        "evaluation"
+      ],
+      "summary": "SearchInject añade una compuerta de admisión antes del contexto que combina relevancia, señales de abuso de búsqueda, probabilidad de instrucción e interacciones. Calibra el umbral bajo una restricción de cuarentena falsa sobre candidatos limpios.",
+      "what_changed": "Ataca la exposición de la página portadora en la capa de retrieval, antes de pedir al modelo generador que resista una instrucción maliciosa ya incluida en su contexto.",
+      "why_it_matters": "Separa seguridad de recuperación y seguridad de generación, permitiendo observar y bloquear documentos riesgosos con un presupuesto explícito de pérdida de relevancia.",
+      "evidence": [
+        "En 300 consultas SciFact y 1,200 resultados consulta-familia por retriever, reduce la exposición top-10 entre 83.2% y 83.7% para BM25, híbrido normalizado y LSA.",
+        "La mayor variación absoluta de nDCG@10 limpio es 0.0018.",
+        "La tasa de falsa cuarentena en test limpio fue 0.59% a 0.65%, ligeramente superior al límite empírico de calibración de 0.5%."
+      ],
+      "limitations": [
+        "Las categorías de payload en test pertenecen a cuatro familias ya representadas durante desarrollo.",
+        "El seguimiento generativo de 104 casos no observó secuestros confirmados y no permite estimar reducción de éxito del ataque.",
+        "El beneficio de las interacciones del score a costo limpio equivalente queda sin resolver."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "retrieval",
+        "safety",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.01930",
+      "title": "RECEIPT: Measuring and Repairing the Return Assumption of LLM Agents in Web Service Operations",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-01",
+      "updated_at": null,
+      "authors": [
+        "Boyang Yang",
+        "Ziyao Yang",
+        "Yu Zhang",
+        "Duo Chai",
+        "Xiaoming Chen",
+        "Haoye Tian"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.01930",
+      "external_ids": {
+        "arxiv": "2611.01930"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "llm_production",
+        "evaluation",
+        "observability"
+      ],
+      "summary": "RECEIPT estudia comandos que preguntan antes de actuar. El harness puede cerrar stdin y recibir éxito aparente sin efecto, o mantenerlo abierto hasta timeout. La propuesta observa syscalls y devuelve al agente el estado de espera mediante un protocolo verificado.",
+      "what_changed": "Define y mide la suposición de retorno como propiedad del harness, no del modelo, y aporta Litmus, Tripwire y telemetría de proceso para distinguir terminación, espera y efecto real.",
+      "why_it_matters": "Los agentes de operaciones pueden afirmar éxito basándose en exit code 0 aunque el cambio nunca ocurriera. La corrección requiere contratos de herramienta que expongan estado y postcondiciones, no sólo stdout y código de salida.",
+      "evidence": [
+        "Analiza 91,469 llamadas de producción y 89,047 trayectorias públicas, además de ocho harnesses.",
+        "En Litmus, cerrar stdin hace que 11.5% de 158 invocaciones termine con código 0 sin realizar la acción; siete de ocho harnesses cierran stdin sin terminal.",
+        "Una pregunta no contestada multiplica por 2.9 el uso de tokens.",
+        "En cinco LLMs, RECEIPT reduce 73.5% las afirmaciones falsas de éxito y completa las 25 tareas protegidas en un segundo harness."
+      ],
+      "limitations": [
+        "La técnica se centra en procesos y comandos con interacción por terminal.",
+        "Leer syscalls y mantener stdin abierto añade complejidad de aislamiento y portabilidad.",
+        "Completar Tripwire no prueba seguridad para operaciones irreversibles o servicios externos."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "agents",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.01718",
+      "title": "Delivered, Not Used: Evaluating Agent Memory at Its Point of Use",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-01",
+      "updated_at": null,
+      "authors": [
+        "Changran Xu",
+        "Zeju Li",
+        "Qiang Xu"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.01718",
+      "external_ids": {
+        "arxiv": "2611.01718"
+      },
+      "topics": [
+        "agents",
+        "memory",
+        "evaluation",
+        "observability"
+      ],
+      "summary": "MemUse evalúa cada entrega de memoria dentro de una trayectoria según relevancia, precisión, novedad, influencia y efecto observado, comparando además con lo que el agente ya podía ver.",
+      "what_changed": "Pasa de medir recuperación o éxito final a atribuir uso y consecuencias en el punto de consumo. Distingue memoria pertinente, redundante, ignorada, beneficiosa y dañina aunque el episodio termine igual.",
+      "why_it_matters": "Permite decidir si una capa de memoria justifica costo y riesgo, y localizar si el problema está en escribir, recuperar, presentar o usar la memoria.",
+      "evidence": [
+        "Evalúa 8,000 episodios SWE-bench Verified de tres sistemas de memoria.",
+        "Las tasas de resolución quedan a 0.4 puntos o menos de la línea base sin memoria.",
+        "La mayoría de las entradas entregadas fue irrelevante; la mayoría de las relevantes no se usó y dos sistemas repitieron mayoritariamente contenido aún visible.",
+        "23.2% de los episodios con uso beneficioso aun falló, mientras cinco de 16 episodios con uso dañino terminaron con éxito."
+      ],
+      "limitations": [
+        "El análisis depende de un agente juez y de reglas de agregación diseñadas por los autores.",
+        "La evidencia procede de SWE-bench Verified y tres sistemas, no de dominios conversacionales o empresariales.",
+        "La atribución de influencia a partir de trayectorias observadas no equivale a una intervención causal."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "agents",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.00652",
+      "title": "Inference First, Training Underneath: Layer-Granular LoRA Co-Serving with LayerLoom",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-10-31",
+      "updated_at": null,
+      "authors": [
+        "Zongpu Zhang",
+        "Yishu Yin",
+        "Xuehai Qian"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.00652",
+      "external_ids": {
+        "arxiv": "2611.00652"
+      },
+      "topics": [
+        "serving",
+        "inference",
+        "llm_production",
+        "architecture"
+      ],
+      "summary": "LayerLoom comparte GPU entre inferencia y fine-tuning LoRA, pero agenda el backward por capa y según la holgura de latencia de solicitudes en vuelo. Mantiene microbatches escalonados y fusiona GEMMs de forward y backward sobre una sola lectura de pesos.",
+      "what_changed": "Reemplaza el presupuesto fijo de backward por iteración, que bloquea solicitudes durante picos, con tareas por capa que sólo se ejecutan cuando el SLO deja margen.",
+      "why_it_matters": "Hace más viable aprovechar capacidad ociosa para adaptación continua sin convertir el fine-tuning en una cola impredecible para inferencia.",
+      "evidence": [
+        "En RTX 4090 con Llama-3.1-8B y una traza productiva con ráfagas, eleva el cumplimiento conjunto de SLO entre 13.5 y 21.8 puntos frente a trabajos previos.",
+        "El throughput de fine-tuning es comparable o hasta 12% superior.",
+        "Alcanza las mismas pérdidas de entrenamiento que las líneas base."
+      ],
+      "limitations": [
+        "La evaluación principal usa una sola GPU de consumo y un modelo de 8B.",
+        "El offload y prefetch a host dependen de memoria y ancho de banda disponibles.",
+        "No establece comportamiento en clústeres, modelos grandes o mezclas de adaptadores múltiples."
+      ],
+      "practical_applications": [
+        "design",
+        "deployment",
+        "serving"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Trata el harness y los contratos de herramientas como parte del agente: registra stdin, espera, postcondiciones y efecto verificado, no sólo texto y exit code.",
+      "Coloca una compuerta observable entre retrieval y contexto, con señales de relevancia y riesgo calibradas por separado de la defensa generativa.",
+      "Diseña memoria con identificadores de entrega y trazabilidad hasta acciones posteriores para distinguir recuperar, leer, usar e impactar.",
+      "Para decisiones de alto impacto, considera generador-selector por turno con un presupuesto N adaptativo en lugar de aplicarlo a toda la trayectoria."
+    ],
+    "evaluation": [
+      "Añade métricas de proceso: acción ejecutada, estado persistente, rutas cubiertas, memoria novedosa/usada y documentos puestos en cuarentena.",
+      "Desglosa prompt injection por dimensiones del threat model; no uses una sola tasa agregada como evidencia de cobertura.",
+      "Valida tareas agentic con replay desde estado inicial y aserciones deterministas; usa jueces LLM como apoyo, no como único oráculo.",
+      "Evalúa optimizaciones de serving con tráfico multivuelta, dependencias de sesión, costo y SLO, y reserva una medición real para los candidatos finales."
+    ],
+    "deployment": [
+      "Exige postcondiciones para operaciones mutantes y trata éxito de proceso sin efecto comprobado como estado indeterminado.",
+      "Instrumenta cuarentena, falsa cuarentena y degradación de calidad de retrieval como métricas operacionales separadas.",
+      "Usa simulación y listas cortas para explorar configuraciones, pero verifica la elegida sobre el hardware, engine y carga de producción.",
+      "Si co-localizas inferencia y adaptación, prioriza el SLO por capa o tarea preemptible y limita explícitamente memoria de activaciones y transferencia host-GPU."
+    ]
+  }
+}
