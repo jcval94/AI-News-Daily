@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "experiment": "notebook_story_flow",
+  "episode_date": "2026-11-06",
+  "publishable": false,
+  "status": "failure",
+  "notebook_sha256": "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16",
+  "started_at_utc": "2026-11-06T20:42:10.725954+00:00",
+  "model": "gpt-5.4-nano",
+  "max_logical_calls": 12,
+  "max_attempts_per_call": 3,
+  "words_per_minute": 150,
+  "experiment_code_sha": "01a42840bb59c7fed0e17d8c5d5904a71fe182ac",
+  "control_workflow_run_id": "42290061571",
+  "control_code_sha": "01a42840bb59c7fed0e17d8c5d5904a71fe182ac",
+  "news_snapshot_sha256": "170995bf37de6d1a4d8274786104fd31310ffb62aab1ab13ec3d3304337045a2",
+  "profile_hashes": {
+    "voice": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+    "discourse": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375"
+  },
+  "error_type": "ValueError",
+  "reason": "Epic candidates must be unique retrieved memory IDs",
+  "finished_at_utc": "2026-11-06T20:42:41.181887+00:00",
+  "attempted_calls": 2,
+  "emitted_usage": {
+    "prompt_tokens": 46702,
+    "output_tokens": 4013,
+    "reasoning_tokens": 0,
+    "total_tokens": 50715
+  }
+}

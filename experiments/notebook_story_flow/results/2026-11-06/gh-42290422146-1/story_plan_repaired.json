@@ -1,0 +1,116 @@
+{
+  "central_question": "Cuando los agentes de IA aceleran el ciclo de seguridad (hallar vulnerabilidades, proponer acciones, validar efectos) ¿por qué a veces la organización termina con más riesgo o más daño aunque la intención sea mejorar la defensa?",
+  "provisional_thesis": "La falla no está sólo en que la IA sea “más capaz”. Está en el equilibrio organizacional: al acelerar decisiones y delegarlas a sistemas, cambian los incentivos, aparecen atajos de cumplimiento y se correlacionan errores. El resultado puede ser peor que el estado previo: menos tiempo para coordinar y verificar, y más superficie para uso no autorizado. La defensa efectiva requiere rediseñar responsabilidad y gates, no sólo “tener más IA”.",
+  "evolved_thesis": "Cuando la seguridad se vuelve un proceso más “industrializado” por IA, el peligro principal suele ser que la organización deje de conservar barreras independientes y mecanismos de verificación fuera del software/flujo acelerado. La velocidad vuelve más probable que los fallos (y las omisiones) se vuelvan sistémicos: un solo punto opaco puede dominar el ciclo y, si el aprendizaje organizacional llega tarde, el daño se repite en la siguiente vuelta del proceso.",
+  "core_ideas": [
+    "La automatización acelera el ciclo, pero reconfigura dónde vive la responsabilidad y qué partes quedan sin defensas independientes.",
+    "El riesgo no proviene sólo de capacidad técnica: proviene de cómo se coordinan verificación, cambios y aprendizaje a partir de incidentes dentro de la organización.",
+    "Cuando una salvaguarda se “absorbe” en software o en un flujo automatizado difícil de observar, los errores dejan de ser locales y se vuelven repetibles o escalables."
+  ],
+  "motif": "la luz verde de “ya quedó”",
+  "pillars": [
+    "Gates de responsabilidad: quién autoriza y qué evidencia cuenta.",
+    "Defensa en profundidad real: múltiples barreras independientes, no sólo una barrera lógica dentro del mismo flujo.",
+    "Feedback y aprendizaje: detectar fallos, romper el ciclo y corregir rutas informales antes de que el daño se replique."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "therac-25-software-single-point-safety",
+      "epicity": 9.4,
+      "relevance": 9.6,
+      "reason": "El Therac-25 desplaza barreras de seguridad hacia software y reduce defensas físicas independientes, convirtiendo fallos y problemas organizativos en exposiciones masivas; encaja con “punto opaco” y “correlación de errores” cuando el ciclo se acelera."
+    },
+    {
+      "memory_id": "tokaimura-bucket-workaround-geometry-bypass",
+      "epicity": 9.1,
+      "relevance": 8.7,
+      "reason": "Muestra cómo un trabajo “rápido” puede rodear la barrera integrada en el camino normal (geométrica/recipiente seguro); conecta con atajos de cumplimiento y rutas informales en gobernanza."
+    },
+    {
+      "memory_id": "windscale-cockcroft-filter-precaution",
+      "epicity": 7.8,
+      "relevance": 7.9,
+      "reason": "Ejemplifica redundancia costosa que parece innecesaria hasta que ocurre el evento extremo; útil como contraste sobre qué se mantiene fuera del “modo eficiente”."
+    },
+    {
+      "memory_id": "exchequer-tally-sticks-retirement-fire",
+      "epicity": 8.0,
+      "relevance": 7.2,
+      "reason": "El riesgo aparece al retirar/invalidar controles y tratar el desmantelamiento como tarea trivial; útil para hablar de ciclo de vida de salvaguardas, aunque menos directo para ‘acelerar el ciclo de seguridad’."
+    },
+    {
+      "memory_id": "therac-25-software-single-point-safety",
+      "epicity": 8.7,
+      "relevance": 8.1,
+      "reason": "Candidato duplicado como refuerzo conceptual (no se seleccionará adicionalmente)."
+    }
+  ],
+  "selected_memory_id": "therac-25-software-single-point-safety",
+  "protagonist": "Personal técnico y de operaciones responsable de ejecutar el flujo de seguridad del sistema médico Therac-25 (sin asumir administradores modernos hipotéticos).",
+  "opposing_force": "La combinación de (a) funciones de seguridad movidas hacia software sin duplicar todos los interlocks físicos existentes y (b) prácticas organizativas que no prevenían/gestionaban bien el riesgo ni el feedback de incidentes.",
+  "conflict": "Durante el uso del Therac-25, la seguridad queda demasiado concentrada en un componente basado en software y en una estructura reutilizada. Cuando algo falla o no se evalúa adecuadamente, el sistema puede escalar el daño porque faltan barreras independientes y el aprendizaje organizacional no corta el ciclo a tiempo.",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4,
+    5
+  ],
+  "unresolved_question": "Si los agentes de IA vuelven más rápido el ciclo (hallar→proponer→validar), ¿qué parte del proceso debe permanecer ‘fuera del software acelerado’ para que no aparezca un punto opaco organizacional?",
+  "bridge_to_present": "El paralelo no es ‘IA = peligro’ sino estructura: cuando una organización delega seguridad a un flujo automatizado y elimina barreras independientes, el riesgo se concentra en lo menos observable y más difícil de corregir durante la urgencia. Esto es compatible con la preocupación del NCSC por uso no autorizado y con la idea de un ciclo técnico industrializable (descubrir→producir propuestas/cambios) que pueden volver más corto el tiempo disponible para coordinación y verificación.",
+  "analogy_limits": "El Therac-25 controlaba un haz físico con consecuencias inmediatas y el caso no prueba que todo sistema de IA sea igual de inseguro. Además, el episodio no implica que conservar todo control manual sea siempre mejor ni que un solo bug explique accidentes complejos: la investigación identificó factores técnicos, humanos y organizativos. La analogía sólo apunta a la posibilidad de ‘erosión de defensa en profundidad’ y ‘punto opaco’ cuando una salvaguarda se vuelve software/flujo sin verificación independiente.",
+  "ledger": [
+    {
+      "evidence_id": "ncsc-ai-threat-probabilities",
+      "news_id": "n_e5e61589c8171ed1",
+      "supported_facts": [
+        "El NCSC británico publicó tres estimaciones relacionadas con IA y ciberamenazas: mejora de búsqueda de vulnerabilidades y operaciones de acceso por IA de frontera, aumento de exposición por uso de IA no autorizada por empleados, y uso de malware asistido por IA en ataques de ransomware contra infraestructura crítica del Reino Unido.",
+        "El NCSC presenta esas estimaciones como juicios de inteligencia con niveles de probabilidad, no como un registro de incidentes ya atribuidos ni como demostración de capacidades inevitables."
+      ],
+      "allowed_interpretations": [
+        "El mayor riesgo organizacional puede provenir de fallas de gobernanza interna (por ejemplo, uso no autorizado) además de la evolución de técnicas externas."
+      ],
+      "hypotheses": [
+        "La aceleración y la facilidad de usar IA puede aumentar la probabilidad de rutas informales de riesgo dentro de una organización."
+      ],
+      "uncertainties": [
+        "No se cuantifica cuántos incidentes provienen de uso no autorizado ni en qué proporción frente a otras fuentes de riesgo.",
+        "La estimación no prueba causalidad específica; solo establece plausibilidad probabilística."
+      ],
+      "prohibited_claims": [
+        "Que el NCSC haya observado o atribuido incidentes concretos a ‘IA no autorizada’ en casos específicos.",
+        "Que el aumento de ransomware se deba exclusivamente a IA sin intervención de otros factores."
+      ],
+      "source_limitations": [
+        "Es un artículo de revisión/estimaciones del NCSC; no aporta datos de incidentes atribuidos ni métricas públicas de impacto directo."
+      ]
+    },
+    {
+      "evidence_id": "openai-local-escalation-pipeline",
+      "news_id": "n_4ccec7bfbd467640",
+      "supported_facts": [
+        "OpenAI informó un prototipo que detectó hallazgos candidatos, reprodujo dinámicamente vulnerabilidades y produjo exploits distintos de escalada local junto con parches candidatos, con revisión humana antes del reporte.",
+        "OpenAI indicó que los números provienen de su empresa y de un entorno controlado, y que no equivalen a que todos los parches hayan sido aceptados ni desplegados."
+      ],
+      "allowed_interpretations": [
+        "La automatización puede convertir partes del ciclo de descubrimiento/validación/corrección en un proceso más industrializado y rápido."
+      ],
+      "hypotheses": [
+        "Si el ciclo se automatiza, puede reducir el tiempo entre hallazgo y disponibilidad de propuestas accionables, cambiando la ventana defensiva y aumentando presión de coordinación."
+      ],
+      "uncertainties": [
+        "No está claro cuán generalizable es el prototipo a otros entornos reales ni cuál es el rendimiento fuera del caso controlado.",
+        "No se mide el impacto sobre tiempos reales de parcheo en el ecosistema, ni la tasa de aceptación de los parches candidatos."
+      ],
+      "prohibited_claims": [
+        "Que la tecnología haya sido desplegada ampliamente para generar exploits en entornos reales.",
+        "Que este pipeline por sí mismo incremente el riesgo; solo muestra capacidad/posibilidad reportada."
+      ],
+      "source_limitations": [
+        "La fuente es la propia publicación de OpenAI; los resultados no son auditoría independiente ni demuestran adopción masiva."
+      ]
+    }
+  ]
+}
