@@ -1,0 +1,109 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 14.297,
+    "usage": {
+      "prompt_tokens": 22846,
+      "output_tokens": 1863,
+      "total_tokens": 24709
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 4.092,
+    "usage": {
+      "prompt_tokens": 2668,
+      "output_tokens": 571,
+      "total_tokens": 3239
+    }
+  },
+  {
+    "step": "development",
+    "agent": "notebook_development",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 15.188,
+    "usage": {
+      "prompt_tokens": 11600,
+      "output_tokens": 2692,
+      "total_tokens": 14292
+    }
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 3.829,
+    "usage": {
+      "prompt_tokens": 15202,
+      "output_tokens": 560,
+      "total_tokens": 15762
+    }
+  },
+  {
+    "step": "factual_review",
+    "agent": "notebook_factual_review",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 9.245,
+    "usage": {
+      "prompt_tokens": 9768,
+      "output_tokens": 1590,
+      "total_tokens": 11358
+    }
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "error",
+    "elapsed_seconds": 22.157,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\nsections.0\n  Value error, step9_epica: reserved outcome claims cannot precede story_payoff [type=value_error, input_value={'id': 'step9_epica', 'te... añadir datos extra)']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 2,
+    "status": "error",
+    "elapsed_seconds": 18.032,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\nsections.0\n  Value error, step9_epica: reserved outcome claims cannot precede story_payoff [type=value_error, input_value={'id': 'step9_epica', 'te...eciba la acumulación']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 3,
+    "status": "error",
+    "elapsed_seconds": 20.283,
+    "retryable": true,
+    "schema_repair": true,
+    "permanent_quota_error": false,
+    "error_type": "ValidationError",
+    "error": "1 validation error for ScopedScriptDraft\nsections.0\n  Value error, step9_epica: reserved outcome claims cannot precede story_payoff [type=value_error, input_value={'id': 'step9_epica', 'te... añadir datos extra)']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "usage": {}
+  }
+]

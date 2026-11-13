@@ -1,0 +1,14 @@
+{
+  "text": "30 de septiembre de 1999, Tokaimura, prefectura de Ibaraki, Japón. Ese día, la planta estaba en plena reconversión de uranio enriquecido al 18.8%, y el proceso no era una abstracción: eran manos, recipientes y decisiones rápidas para cumplir un objetivo de producción.\n\nPiensa en el contraste que suele romper la calma de los sistemas complejos: el plan “nominal”, con sus pasos diseñados para controlar masa y geometría, contra la realidad “práctica”, donde la presión por avanzar puede empujar a atajos. En Tokaimura, el movimiento concreto fue disolver el óxido de uranio en recipientes de acero inoxidable y verter cargas sucesivas en el tanque de precipitación. A primera vista, suena a procedimiento; pero la clave estaba en qué se reemplazaba y qué se mantenía.\n\nEl punto sensible —y aquí el detalle importa más que el dramatismo— es que el procedimiento práctico había sustituido pasos y recipientes previstos para asegurar el control de la cantidad y la geometría. Y, sobre esa base, el vertido directo buscaba acelerar el proceso. Suena razonable como “hacerlo más eficiente”… hasta que recordamos que la geometría también es una condición de seguridad.\n\nPorque el tanque de precipitación no contaba con una geometría segura frente a criticidad. Cuando la ruta nominal impone límites por el camino, actúa como un “guardrail” físico e innegociable; cuando la ejecución real sustituye etapas para ir más directo, ese guardrail puede no estar donde debería. En esa brecha entre lo previsto y lo ejecutado es donde una acumulación puede comportarse de una forma que, en el esquema nominal, estaría limitada.\n\nAhora, mira la parte humana del problema: cuando alguien marca “resuelto” en un sistema así, ¿qué evidencia y qué “canales” deberían exigirse para que esa luz verde no sea un atajo de responsabilidad? La pregunta queda abierta, justo cuando toca decidir qué significa, en la práctica, que algo esté “cerrado”.",
+  "memory_claim_indices": [
+    1,
+    2,
+    5,
+    4
+  ],
+  "visual_queries": [
+    "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+    "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+    "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+  ]
+}

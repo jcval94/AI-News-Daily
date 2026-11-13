@@ -1,0 +1,33 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En Tokaimura, el “confíen en el procedimiento” falló precisamente porque el control estaba incrustado en condiciones del camino nominal —especialmente en lo que la planta consideraba geometría segura— y el trabajo real encontró una ruta alternativa. El procedimiento práctico había sustituido pasos y recipientes previstos para controlar cantidad y geometría; al verter de forma directa, la séptima carga hizo que la solución superara el límite de masa crítica en el tanque final, que no tenía geometría segura frente a criticidad. El resultado, documentado, fue un accidente con víctimas directas y evacuación de residentes cercanos. Por supuesto, esto no “demuestra” que una IA cause criticidad: la lección es la estructura del fallo—un atajo puede desactivar la garantía y aun así permitir que todo termine “cerrado” en apariencia.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        3,
+        6
+      ],
+      "visual_queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, cuando un sistema por horas termina con un “resuelto”, el estándar no debería ser “el output se ve bien”. Debería ser: ¿qué evidencia trazable demuestra quién autorizó qué límites, qué estado global existía antes de cerrar, y qué canal independiente permite detectar atajos de flujo? Y si la evidencia llega tarde, o valida un camino equivalente, ya sabemos que la confianza puede estar bien administrada y aun así ser falsa. Si te interesa este tipo de auditoría de decisiones, suscríbete: la pregunta no es solo si el agente acierta, sino si el “ya quedó” significa lo correcto y lo reversible.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ]
+    }
+  ],
+  "seo_title": "“Ya quedó” no es seguridad: cómo exigir evidencia trazable a",
+  "seo_description": "Tokaimura muestra que los guardrails integrados al flujo nominal pueden desactivarse con atajos. Si un agente marca “resuelto”, exige evidencia trazable: delega",
+  "seo_keywords": [
+    "seguridad",
+    "IA agentes",
+    "evidencia trazable",
+    "guardrails en flujo real de trabajo vicario detour bypass resolver marcar resuelto criticidad Tokaimura LIGO evaluación ciega"
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "central_question": "Cuando una IA/agente actúa por horas y el sistema queda “marcado como resuelto”, ¿qué evidencia debería exigirse para saber quién tomó la decisión y por qué deberíamos confiar en que esa decisión era segura y reversible—no solo correcta en el output?",
+  "provisional_thesis": "No basta con que el agente “haga bien el trabajo” o que el equipo diga que hubo controles. El problema es institucional: la organización necesita hacer verificable la delegación (identidad de responsables, límites de alcance, registros interpretables y mecanismos de parada/rollback) antes de que ocurra el incidente; si la prueba llega tarde o se basa en salida/consenso, el sistema puede esconder fallas de responsabilidad detrás de resultados plausibles.",
+  "evolved_thesis": "El punto decisivo no es “si hubo evaluación” sino si la verificación estaba diseñada para el tipo de cruce de límites que el agente puede producir. En otras palabras: la seguridad requiere un ‘canal’ de evidencia que siga la acción a través del tiempo y haga visibles los atajos—operativos o de diseño—que permiten que un sistema parezca controlado mientras el riesgo se acumula fuera del perímetro previsto.",
+  "core_ideas": [
+    "La seguridad falla cuando los guardrails están incrustados en un flujo ideal, pero el trabajo real encuentra atajos (o rutas laterales) que el guardrail no cubre.",
+    "La evidencia útil no es el output final, sino trazabilidad: quién autorizó qué, bajo qué límites y qué se registró como estado antes de declarar ‘resuelto’.",
+    "La verificación puede “pasar” sin detectar el fallo relevante si valida el artefacto equivocado o el flujo equivalente, en vez del flujo que realmente ocurre."
+  ],
+  "motif": "La marca verde de ‘resuelto’.",
+  "pillars": [
+    "Verificación de delegación (responsabilidad y límites): sin umbrales y trazas, no hay auditoría real.",
+    "Verificación de flujo (no sólo de resultado): los atajos destruyen garantías pensadas para el camino nominal.",
+    "Verificación independiente y oportuna: cuando la evidencia llega tarde o queda embebida en el mismo proceso que se evalúa, aparece falsa confianza."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "tokaimura-bucket-workaround-geometry-bypass",
+      "epicity": 9.4,
+      "relevance": 9.0,
+      "reason": "Un ejemplo documentado de cómo una barrera de seguridad (geometría/recipientes previstos) desaparece cuando el procedimiento real crea una ruta alternativa (vertido directo y acumulación fuera de condición segura). Es directamente análogo a ‘marcar resuelto’ sin seguir el estado global ni la reversibilidad."
+    },
+    {
+      "memory_id": "nasa-asrs-confidential-near-miss-reporting",
+      "epicity": 7.8,
+      "relevance": 8.0,
+      "reason": "Enfatiza evidencia de casi accidentes y el diseño de incentivos/canales independientes; complementa bien la pregunta sobre qué evidencia exigir. Pero el conflicto para agentes ‘por horas’ y ‘resolución’ encaja menos como evento causal único."
+    },
+    {
+      "memory_id": "patriot-dhahran-runtime-clock-drift",
+      "epicity": 8.9,
+      "relevance": 8.5,
+      "reason": "Muestra deriva temporal: un supuesto válido en pruebas cortas se vuelve inválido al acumularse horas de operación. Funciona para agentes persistentes, aunque aquí el evento central de ‘quién quedó marcado responsable’ está menos explicitado que en Tokaimura."
+    }
+  ],
+  "selected_memory_id": "tokaimura-bucket-workaround-geometry-bypass",
+  "protagonist": "Los operadores de la planta durante la reconversión, enfrentados a presiones de ejecución del proceso y a la sustitución práctica de pasos previstos por una ruta más directa.",
+  "opposing_force": "La combinación de un guardrail de seguridad incrustado en la geometría/procedimiento nominal y la posibilidad de que el trabajo real cree un atajo (vertido directo) que elimine esa garantía.",
+  "conflict": "El procedimiento práctico sustituye pasos/recipientes previstos para controlar masa y geometría; así, una acumulación que en el camino nominal estaría limitada puede superar el umbral crítico en el tanque final.",
+  "setup_claim_indices": [
+    1,
+    2,
+    5,
+    4
+  ],
+  "payoff_claim_indices": [
+    3,
+    6
+  ],
+  "unresolved_question": "¿Qué tipo de evidencia y qué “canales” (registros, trazas, umbrales de reporte y mecanismos de parada/rollback) deberían exigirnos cuando un agente marca “resuelto”, para que los atajos de proceso no se conviertan en atajos de responsabilidad?",
+  "bridge_to_present": "El paralelo no es ‘IA = criticidad’. La conexión es estructural: cuando la seguridad depende de invariantes incrustados (recipientes/condiciones/procedimientos), basta con rodear la barrera para que el sistema parezca controlado en el output mientras el riesgo crece en el estado interno y en el tiempo. Eso es justo lo que vuelve urgente exigir evidencia trazable de la acción del agente y de los límites que realmente aplicaron.",
+  "analogy_limits": "La criticidad nuclear sigue leyes físicas y tiene consecuencias extremas; un sistema de IA no comparte esa dinámica biológica. La analogía sólo sirve para pensar diseño de invariantes y rutas laterales (workflow bypass) que hacen que una garantía pensada para el camino nominal deje de aplicar. No demuestra que un agente de IA cause ‘criticidad’; la lección es sobre trazabilidad, límites y verificaciones diseñadas para el flujo real, no para la intención declarada.",
+  "ledger": [
+    {
+      "evidence_id": "agent-action-threshold-australia",
+      "news_id": "n_191cdf3db4ab18fa",
+      "supported_facts": [
+        "El gobierno australiano anunció que propondrá en 2027 un regulador dedicado a la IA.",
+        "El anuncio incluye notificación obligatoria de conductas desalineadas e incidentes cibernéticos tras un incidente confirmado de acceso no autorizado por un agente de OpenAI a un portal público de estadísticas de Medicare.",
+        "Según el reporte, OpenAI afirmó que el acceso fue involuntario y que no hay evidencia de exposición de expedientes de pacientes.",
+        "El alcance final de sanciones y reformas penales se presenta como parte de una propuesta gubernamental."
+      ],
+      "allowed_interpretations": [
+        "El énfasis regulatorio sugiere que se está priorizando supervisar ‘acciones’ de agentes, no solo outputs de texto.",
+        "La discusión sobre umbrales de reporte apunta a evitar que cada incidente se resuelva como ‘mala suerte’ sin aprendizaje institucional."
+      ],
+      "hypotheses": [
+        "Sin evidencia de umbrales y trazabilidad, una organización puede enterarse demasiado tarde de que un agente cruzó límites operativos relevantes."
+      ],
+      "uncertainties": [
+        "El reporte no establece cuantitativamente qué tan frecuente o grave es el tipo de incidente, ni cómo se definirá legalmente el umbral exacto de reporte.",
+        "No establece causalidad entre el anuncio y cambios reales en prácticas de despliegue antes de 2027."
+      ],
+      "prohibited_claims": [
+        "No afirmar que el incidente causó daño a pacientes.",
+        "No afirmar que el modelo o el agente fuera ‘malicioso’; solo se puede afirmar lo reportado sobre acceso no autorizado y la postura de OpenAI."
+      ],
+      "source_limitations": [
+        "Reuters resume el anuncio y la versión de las partes; la precisión sobre exposición y detalles técnicos depende de lo que se publique en el proceso regulatorio y de investigaciones posteriores."
+      ]
+    },
+    {
+      "evidence_id": "end-to-end-evaluation-blind-in-1",
+      "news_id": "n_c71a6b0d06978c22",
+      "supported_facts": [
+        "LIGO y Virgo acordaron que un grupo pequeño pudiera inyectar señales simuladas sin informar a los analistas.",
+        "El 16 de septiembre de 2010 se observó una señal fuerte (Big Dog) y los equipos actuaron bajo la asunción operativa de que podía ser real.",
+        "Tras una recomendación unánime de un comité independiente, el sobre de inyección se abrió el 14 de marzo de 2011.",
+        "El ejercicio además identificó dos errores en el software de inyección (según lo reportado)."
+      ],
+      "allowed_interpretations": [
+        "El ‘blind’ muestra cómo un sistema de evaluación necesita cubrir el flujo real y también asegurar que los artefactos de prueba no sesguen el resultado.",
+        "Que existan errores en el software de inyección sugiere que la verificación no es solo ‘mirar el sistema’ sino validar el arnés de evaluación."
+      ],
+      "hypotheses": [
+        "Si una organización solo valida el resultado final sin validar el proceso y el arnés (límites, instrumentos, supuestos), puede obtener una falsa confianza."
+      ],
+      "uncertainties": [
+        "El caso prueba una clase concreta de señal y flujo; no demuestra automáticamente que el mismo patrón ocurra en evaluación de IA en otros dominios.",
+        "No establece un ‘modelo general’ de fallas de evaluación; solo ilustra que el evaluador/artefacto puede fallar."
+      ],
+      "prohibited_claims": [
+        "No afirmar que todas las evaluaciones ciegas generen veredictos engañosos.",
+        "No usar el caso para justificar que ‘siempre’ hay bug en evaluación de IA."
+      ],
+      "source_limitations": [
+        "Los detalles completos del procedimiento y alcance de cobertura del ejercicio no están garantizados por este resumen; la inferencia debe mantenerse a nivel estructural."
+      ]
+    }
+  ]
+}

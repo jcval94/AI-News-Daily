@@ -1,0 +1,1359 @@
+{
+  "clip_seconds": 8,
+  "max_candidates_per_fragment": 3,
+  "slots": [
+    {
+      "slot_id": "step9_epica-001",
+      "section_id": "step9_epica",
+      "start_seconds": 0,
+      "end_seconds": 8,
+      "spoken_excerpt": "30 de septiembre de 1999, Tokaimura, prefectura de Ibaraki, Japón. Ese día, la planta estaba en plena reconversión de uranio",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-002",
+      "section_id": "step9_epica",
+      "start_seconds": 8,
+      "end_seconds": 16,
+      "spoken_excerpt": "enriquecido al 18.8%, y el proceso no era una abstracción: eran manos, recipientes y decisiones rápidas para cumplir un",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-003",
+      "section_id": "step9_epica",
+      "start_seconds": 16,
+      "end_seconds": 24,
+      "spoken_excerpt": "objetivo de producción.\n\nPiensa en el contraste que suele romper la calma de los sistemas complejos: el plan “nominal”, con",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-004",
+      "section_id": "step9_epica",
+      "start_seconds": 24,
+      "end_seconds": 32,
+      "spoken_excerpt": "sus pasos diseñados para controlar masa y geometría, contra la realidad “práctica”, donde la presión por avanzar puede empujar a",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-005",
+      "section_id": "step9_epica",
+      "start_seconds": 32,
+      "end_seconds": 40,
+      "spoken_excerpt": "atajos. En Tokaimura, el movimiento concreto fue disolver el óxido de uranio en recipientes de acero inoxidable y verter cargas",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-006",
+      "section_id": "step9_epica",
+      "start_seconds": 40,
+      "end_seconds": 48,
+      "spoken_excerpt": "sucesivas en el tanque de precipitación. A primera vista, suena a procedimiento; pero la clave estaba en qué se reemplazaba",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-007",
+      "section_id": "step9_epica",
+      "start_seconds": 48,
+      "end_seconds": 56,
+      "spoken_excerpt": "y qué se mantenía.\n\nEl punto sensible —y aquí el detalle importa más que el dramatismo— es que el procedimiento",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-008",
+      "section_id": "step9_epica",
+      "start_seconds": 56,
+      "end_seconds": 64,
+      "spoken_excerpt": "práctico había sustituido pasos y recipientes previstos para asegurar el control de la cantidad y la geometría. Y, sobre esa",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-009",
+      "section_id": "step9_epica",
+      "start_seconds": 64,
+      "end_seconds": 72,
+      "spoken_excerpt": "base, el vertido directo buscaba acelerar el proceso. Suena razonable como “hacerlo más eficiente”… hasta que recordamos que la geometría",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-010",
+      "section_id": "step9_epica",
+      "start_seconds": 72,
+      "end_seconds": 80,
+      "spoken_excerpt": "también es una condición de seguridad.\n\nPorque el tanque de precipitación no contaba con una geometría segura frente a criticidad",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-011",
+      "section_id": "step9_epica",
+      "start_seconds": 80,
+      "end_seconds": 88,
+      "spoken_excerpt": "Cuando la ruta nominal impone límites por el camino, actúa como un “guardrail” físico e innegociable; cuando la ejecución real",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-012",
+      "section_id": "step9_epica",
+      "start_seconds": 88,
+      "end_seconds": 96,
+      "spoken_excerpt": "sustituye etapas para ir más directo, ese guardrail puede no estar donde debería. En esa brecha entre lo previsto y",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-013",
+      "section_id": "step9_epica",
+      "start_seconds": 96,
+      "end_seconds": 104,
+      "spoken_excerpt": "lo ejecutado es donde una acumulación puede comportarse de una forma que, en el esquema nominal, estaría limitada.\n\nAhora, mira",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-014",
+      "section_id": "step9_epica",
+      "start_seconds": 104,
+      "end_seconds": 112,
+      "spoken_excerpt": "la parte humana del problema: cuando alguien marca “resuelto” en un sistema así, ¿qué evidencia y qué “canales” deberían exigirse",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-015",
+      "section_id": "step9_epica",
+      "start_seconds": 112,
+      "end_seconds": 120,
+      "spoken_excerpt": "para que esa luz verde no sea un atajo de responsabilidad? La pregunta queda abierta, justo cuando toca decidir qué",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-016",
+      "section_id": "step9_epica",
+      "start_seconds": 120,
+      "end_seconds": 124,
+      "spoken_excerpt": "significa, en la práctica, que algo esté “cerrado",
+      "queries": [
+        "Mapa de Japón con foco en Tokaimura (Ibaraki) y un recuadro del 30 de septiembre de 1999",
+        "Diagrama simple del flujo: disolución del óxido de uranio en recipientes de acero inoxidable → vertido sucesivo al tanque de precipitación",
+        "Esquema comparativo: procedimiento nominal con “pasos/recipientes” de control vs procedimiento práctico con vertido directo que elimina una garantía de geometría/masa controlada (sin añadir datos extra)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-001",
+      "section_id": "step10_reconexion",
+      "start_seconds": 124,
+      "end_seconds": 132,
+      "spoken_excerpt": "Vale: ya teníamos la escena humana. Ahora regresemos al punto que nos importa (y que no se resuelve solo con",
+      "queries": [
+        "Una interfaz con un semáforo verde que dice “resuelto” mientras, en un segundo plano, cambian parámetros del proceso (sin mostrar el log)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-002",
+      "section_id": "step10_reconexion",
+      "start_seconds": 132,
+      "end_seconds": 140,
+      "spoken_excerpt": "el proceso salió bien”): si un sistema—o un equipo que actúa con IA—marca “resuelto”, ¿qué evidencia tendría que",
+      "queries": [
+        "Una interfaz con un semáforo verde que dice “resuelto” mientras, en un segundo plano, cambian parámetros del proceso (sin mostrar el log)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-003",
+      "section_id": "step10_reconexion",
+      "start_seconds": 140,
+      "end_seconds": 148,
+      "spoken_excerpt": "existir para poder decir: 1) quién tomó la decisión y 2) por qué era segura y reversible? Sin eso, la",
+      "queries": [
+        "Una interfaz con un semáforo verde que dice “resuelto” mientras, en un segundo plano, cambian parámetros del proceso (sin mostrar el log)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-004",
+      "section_id": "step10_reconexion",
+      "start_seconds": 148,
+      "end_seconds": 152,
+      "spoken_excerpt": "luz verde puede estar iluminando el lugar equivocado",
+      "queries": [
+        "Una interfaz con un semáforo verde que dice “resuelto” mientras, en un segundo plano, cambian parámetros del proceso (sin mostrar el log)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-001",
+      "section_id": "hook_problema",
+      "start_seconds": 152,
+      "end_seconds": 160,
+      "spoken_excerpt": "El problema humano es que “verificar” suena a actividad. Pero la pregunta real es otra: ¿la verificación mira el flujo",
+      "queries": [
+        "Diagrama simple: “output” vs “estado interno” vs “decisiones registradas”, y una flecha de ‘resolved’ que solo se conecta con output."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-002",
+      "section_id": "hook_problema",
+      "start_seconds": 160,
+      "end_seconds": 168,
+      "spoken_excerpt": "que realmente ocurre, o solo el resultado que aparece cuando ya pasó? Cuando delegamos trabajo por horas—y alguien termina",
+      "queries": [
+        "Diagrama simple: “output” vs “estado interno” vs “decisiones registradas”, y una flecha de ‘resolved’ que solo se conecta con output."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-003",
+      "section_id": "hook_problema",
+      "start_seconds": 168,
+      "end_seconds": 176,
+      "spoken_excerpt": "con un check “ok”—podemos terminar confiando en evidencia que llegó tarde, o en una evidencia que valida un camino",
+      "queries": [
+        "Diagrama simple: “output” vs “estado interno” vs “decisiones registradas”, y una flecha de ‘resolved’ que solo se conecta con output."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-004",
+      "section_id": "hook_problema",
+      "start_seconds": 176,
+      "end_seconds": 179,
+      "spoken_excerpt": "alterno en vez del camino peligroso",
+      "queries": [
+        "Diagrama simple: “output” vs “estado interno” vs “decisiones registradas”, y una flecha de ‘resolved’ que solo se conecta con output."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-001",
+      "section_id": "hook_cita",
+      "start_seconds": 179,
+      "end_seconds": 187,
+      "spoken_excerpt": "Aquí la lección no necesita una cita grandota: basta con entender que una evaluación mal diseñada puede “parecer” completa mientras",
+      "queries": [
+        "Pantalla de control: checklist de verificación que no coincide con el estado real del sistema."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-002",
+      "section_id": "hook_cita",
+      "start_seconds": 187,
+      "end_seconds": 195,
+      "spoken_excerpt": "no cubre lo que importa. En otras palabras: no es que falte cuidado; es que el cuidado se aplicó donde",
+      "queries": [
+        "Pantalla de control: checklist de verificación que no coincide con el estado real del sistema."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-003",
+      "section_id": "hook_cita",
+      "start_seconds": 195,
+      "end_seconds": 197,
+      "spoken_excerpt": "no detecta el riesgo",
+      "queries": [
+        "Pantalla de control: checklist de verificación que no coincide con el estado real del sistema."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-001",
+      "section_id": "idea_A",
+      "start_seconds": 197,
+      "end_seconds": 205,
+      "spoken_excerpt": "Primer pilar: la seguridad falla cuando los guardrails están incrustados en un flujo ideal… y la operación real encuentra atajos",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-002",
+      "section_id": "idea_A",
+      "start_seconds": 205,
+      "end_seconds": 213,
+      "spoken_excerpt": "o rutas laterales) que el guardrail no cubre. En Tokaimura, el guion de seguridad no era “mágico”; descansaba en condiciones",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-003",
+      "section_id": "idea_A",
+      "start_seconds": 213,
+      "end_seconds": 221,
+      "spoken_excerpt": "físicas: recipientes, cantidades y geometrías. La ejecución práctica sustituyó pasos y recipientes previstos para controlar masa y geometría, y esa",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-004",
+      "section_id": "idea_A",
+      "start_seconds": 221,
+      "end_seconds": 229,
+      "spoken_excerpt": "sustitución abrió una brecha: el tanque “no contaba con una geometría segura frente a criticidad”. \n\nLo interesante para nuestro tema",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-005",
+      "section_id": "idea_A",
+      "start_seconds": 229,
+      "end_seconds": 237,
+      "spoken_excerpt": "IA que actúa por horas y luego queda “marcado resuelto”—es que el atajo no siempre es un acto malicioso",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-006",
+      "section_id": "idea_A",
+      "start_seconds": 237,
+      "end_seconds": 245,
+      "spoken_excerpt": "A veces es la forma más rápida y tentadora de terminar el trabajo: cambiar el instrumento “equivalente”, saltar un paso",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-007",
+      "section_id": "idea_A",
+      "start_seconds": 245,
+      "end_seconds": 253,
+      "spoken_excerpt": "de menor costo, reutilizar una plantilla. Si tu sistema (o tu organización) define “guardrail” como algo que aplica al camino",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-008",
+      "section_id": "idea_A",
+      "start_seconds": 253,
+      "end_seconds": 261,
+      "spoken_excerpt": "nominal, entonces cualquiera que ejecute el flujo real con sustituciones puede cruzar el umbral relevante sin que el semáforo lo",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-009",
+      "section_id": "idea_A",
+      "start_seconds": 261,
+      "end_seconds": 269,
+      "spoken_excerpt": "note.\n\nY aquí entra el punto institucional: cuando “resuelto” se vuelve un estado final, la organización corre el riesgo de",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-010",
+      "section_id": "idea_A",
+      "start_seconds": 269,
+      "end_seconds": 277,
+      "spoken_excerpt": "tratar la evidencia como un sello, no como una ruta trazable. La verificación debe responder preguntas tipo auditoría, no solo",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-011",
+      "section_id": "idea_A",
+      "start_seconds": 277,
+      "end_seconds": 285,
+      "spoken_excerpt": "tipo confirmación: \n\n- ¿Quién decidió cambiar qué parte del procedimiento (o del alcance) cuando la presión aparecía?\n- ¿Qué límites se asumieron",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-012",
+      "section_id": "idea_A",
+      "start_seconds": 285,
+      "end_seconds": 293,
+      "spoken_excerpt": "como vigentes en ese momento?\n- ¿Qué se registró como estado antes de declarar que ya estaba controlado?\n\nSi esa trazabilidad",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-013",
+      "section_id": "idea_A",
+      "start_seconds": 293,
+      "end_seconds": 301,
+      "spoken_excerpt": "no existe, el sistema puede producir algo que “se ve correcto” y aun así esconder la realidad del proceso: dónde",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-014",
+      "section_id": "idea_A",
+      "start_seconds": 301,
+      "end_seconds": 307,
+      "spoken_excerpt": "se saltó el paso crítico, o dónde el guardrail físico/operativo dejó de aplicar",
+      "queries": [
+        "Reconstrucción visual del flujo nominal vs el flujo real: mismos objetivos, pero cambio de recipientes/pasos; el guardrail físico solo está en una de las rutas."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-001",
+      "section_id": "dato_1",
+      "start_seconds": 307,
+      "end_seconds": 315,
+      "spoken_excerpt": "Un análogo técnico (y sorprendentemente educativo) aparece en cómo se evalúa la ciencia en LIGO/Virgo: acordaron un grupo pequeño",
+      "queries": [
+        "Línea de tiempo: inyección simulada → trabajo de analistas bajo asunción → recomendación de comité → abrir sobre → detectar errores del arnés."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-002",
+      "section_id": "dato_1",
+      "start_seconds": 315,
+      "end_seconds": 323,
+      "spoken_excerpt": "para inyectar señales simuladas sin informar a los analistas; luego, el sobre de la inyección se abrió tras una recomendación",
+      "queries": [
+        "Línea de tiempo: inyección simulada → trabajo de analistas bajo asunción → recomendación de comité → abrir sobre → detectar errores del arnés."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-003",
+      "section_id": "dato_1",
+      "start_seconds": 323,
+      "end_seconds": 331,
+      "spoken_excerpt": "unánime de un comité independiente, y el ejercicio además reportó dos errores en el software de inyección. El punto no",
+      "queries": [
+        "Línea de tiempo: inyección simulada → trabajo de analistas bajo asunción → recomendación de comité → abrir sobre → detectar errores del arnés."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-004",
+      "section_id": "dato_1",
+      "start_seconds": 331,
+      "end_seconds": 339,
+      "spoken_excerpt": "es “IA = física”, sino que la evaluación también tiene “arnés”: si el arnés falla o no representa el flujo real",
+      "queries": [
+        "Línea de tiempo: inyección simulada → trabajo de analistas bajo asunción → recomendación de comité → abrir sobre → detectar errores del arnés."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-005",
+      "section_id": "dato_1",
+      "start_seconds": 339,
+      "end_seconds": 343,
+      "spoken_excerpt": "puedes obtener confianza sin detectar el fallo que importa",
+      "queries": [
+        "Línea de tiempo: inyección simulada → trabajo de analistas bajo asunción → recomendación de comité → abrir sobre → detectar errores del arnés."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-001",
+      "section_id": "idea_B_explica",
+      "start_seconds": 343,
+      "end_seconds": 351,
+      "spoken_excerpt": "Segundo pilar: la verificación puede “pasar” sin detectar el fallo relevante si valida el artefacto equivocado o el flujo equivalente",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-002",
+      "section_id": "idea_B_explica",
+      "start_seconds": 351,
+      "end_seconds": 359,
+      "spoken_excerpt": "Traducción a humano: evaluas lo que es fácil medir, no lo que es decisivo para la seguridad.\n\nEn nuestro tipo",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-003",
+      "section_id": "idea_B_explica",
+      "start_seconds": 359,
+      "end_seconds": 367,
+      "spoken_excerpt": "de sistemas—agentes que trabajan durante horas—esto se vuelve especialmente peligroso porque el “resuelto” llega al final, cuando ya",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-004",
+      "section_id": "idea_B_explica",
+      "start_seconds": 367,
+      "end_seconds": 375,
+      "spoken_excerpt": "pasaron muchas decisiones pequeñas. Si tu verificación es principalmente posterior y se basa en el resultado final, puedes perder justamente",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-005",
+      "section_id": "idea_B_explica",
+      "start_seconds": 375,
+      "end_seconds": 383,
+      "spoken_excerpt": "el lugar donde se acumula el riesgo: entre el estado inicial y el estado declarado, en los cambios de límites",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-006",
+      "section_id": "idea_B_explica",
+      "start_seconds": 383,
+      "end_seconds": 391,
+      "spoken_excerpt": "en los atajos de proceso, en cómo se interpretó “estaba dentro” en un momento.\n\nMira el matiz: no estoy diciendo",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-007",
+      "section_id": "idea_B_explica",
+      "start_seconds": 391,
+      "end_seconds": 399,
+      "spoken_excerpt": "que la verificación sea inútil. Al contrario: puede ser buena… pero incompleta para el tipo de historia que realmente ocurrió",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-008",
+      "section_id": "idea_B_explica",
+      "start_seconds": 399,
+      "end_seconds": 407,
+      "spoken_excerpt": "Por eso el “canal de evidencia” importa tanto. Un canal es un sistema de registros, umbrales de reporte y mecanismos",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-009",
+      "section_id": "idea_B_explica",
+      "start_seconds": 407,
+      "end_seconds": 415,
+      "spoken_excerpt": "de parada/rollback que corre paralelo a la ejecución, no que aparece solo para el informe final.\n\nY cuando falta",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-010",
+      "section_id": "idea_B_explica",
+      "start_seconds": 415,
+      "end_seconds": 423,
+      "spoken_excerpt": "ese canal, la institución tiende a resolver la incertidumbre con consenso interno o con artefactos que parecen pruebas (por ejemplo",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-011",
+      "section_id": "idea_B_explica",
+      "start_seconds": 423,
+      "end_seconds": 431,
+      "spoken_excerpt": "el agente dijo que estaba bien”, o “el test pasó una sola vez”, o “nadie reportó problemas”). Esa forma de",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-012",
+      "section_id": "idea_B_explica",
+      "start_seconds": 431,
+      "end_seconds": 439,
+      "spoken_excerpt": "pensar crea una ilusión: que como el output no grita alarma, entonces no hubo cruce de límites—cuando el cruce",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-013",
+      "section_id": "idea_B_explica",
+      "start_seconds": 439,
+      "end_seconds": 447,
+      "spoken_excerpt": "puede estar escondido en decisiones anteriores o en supuestos que solo aplicaban al camino nominal.\n\nAsí, la pregunta que debemos",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-014",
+      "section_id": "idea_B_explica",
+      "start_seconds": 447,
+      "end_seconds": 455,
+      "spoken_excerpt": "exigirle a cualquier sistema marcado “resuelto” no es “¿salió bien?”, sino “¿hubo evidencia trazable, oportuna e independiente que siga la",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-015",
+      "section_id": "idea_B_explica",
+      "start_seconds": 455,
+      "end_seconds": 458,
+      "spoken_excerpt": "acción relevante a través del tiempo",
+      "queries": [
+        "Mapa conceptual de ‘canal de evidencia’: registros en tiempo real, umbrales de reporte, verificación independiente, y rollback."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-001",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 458,
+      "end_seconds": 466,
+      "spoken_excerpt": "Mini-desafío (para comprobar que no estamos hablando en abstracto): imagina que evalúas un agente y al final apruebas. Ahora cambia",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-002",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 466,
+      "end_seconds": 474,
+      "spoken_excerpt": "una sola cosa: la verificación está diseñada para el escenario perfecto, pero durante la ejecución real aparece un “equivalente operativo",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-003",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 474,
+      "end_seconds": 482,
+      "spoken_excerpt": "que evita el guardrail. \n\n¿Qué evidencia te convence para decir “no pasó nada importante”? Si tu evidencia consiste solo en",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-004",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 482,
+      "end_seconds": 490,
+      "spoken_excerpt": "el informe final estaba bien”, “la salida fue convincente” o “en el equipo dijeron que todo estaba bajo control”, entonces",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-005",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 490,
+      "end_seconds": 498,
+      "spoken_excerpt": "estás validando un artefacto que puede no corresponder al flujo real.\n\nLo que necesitas, en vez de eso, es evidencia",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-006",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 498,
+      "end_seconds": 506,
+      "spoken_excerpt": "que haga preguntas sobre el cruce de límites y la reversibilidad: qué decisión se tomó, quién la autorizó, con qué",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-007",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 506,
+      "end_seconds": 514,
+      "spoken_excerpt": "umbral, qué se registró como estado, y qué habría ocurrido si el umbral se hubiera cruzado de verdad. Si ese",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-008",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 514,
+      "end_seconds": 522,
+      "spoken_excerpt": "tipo de evidencia no existe, la evaluación puede pasar… y aun así la seguridad fallar de forma institucional",
+      "queries": [
+        "Escena hipotética: dos trayectorias, una segura y otra atajo; el test solo cubre la segura, pero ‘resuelto’ se marca por salida agregada."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-001",
+      "section_id": "dato_2",
+      "start_seconds": 522,
+      "end_seconds": 530,
+      "spoken_excerpt": "Un ejemplo de por qué importan umbrales y canales de reporte: en Australia se anunció proponer en 2027 un regulador",
+      "queries": [
+        "Titular simplificado: ‘notificación obligatoria’ → diagrama de umbral → flujo de reporte → evidencia independiente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-002",
+      "section_id": "dato_2",
+      "start_seconds": 530,
+      "end_seconds": 538,
+      "spoken_excerpt": "dedicado a la IA, incluyendo notificación obligatoria de conductas desalineadas e incidentes cibernéticos tras un incidente confirmado de acceso no",
+      "queries": [
+        "Titular simplificado: ‘notificación obligatoria’ → diagrama de umbral → flujo de reporte → evidencia independiente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-003",
+      "section_id": "dato_2",
+      "start_seconds": 538,
+      "end_seconds": 546,
+      "spoken_excerpt": "autorizado por un agente de OpenAI a un portal público de estadísticas de Medicare. El reporte agrega que OpenAI afirmó",
+      "queries": [
+        "Titular simplificado: ‘notificación obligatoria’ → diagrama de umbral → flujo de reporte → evidencia independiente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-004",
+      "section_id": "dato_2",
+      "start_seconds": 546,
+      "end_seconds": 554,
+      "spoken_excerpt": "que el acceso fue involuntario y que no hay evidencia de exposición de expedientes de pacientes. Lo relevante aquí es",
+      "queries": [
+        "Titular simplificado: ‘notificación obligatoria’ → diagrama de umbral → flujo de reporte → evidencia independiente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-005",
+      "section_id": "dato_2",
+      "start_seconds": 554,
+      "end_seconds": 562,
+      "spoken_excerpt": "estructural: hablar de “acciones” y exigir notificación obliga a diseñar canales para que los incidentes no se pierdan en relatos",
+      "queries": [
+        "Titular simplificado: ‘notificación obligatoria’ → diagrama de umbral → flujo de reporte → evidencia independiente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-006",
+      "section_id": "dato_2",
+      "start_seconds": 562,
+      "end_seconds": 564,
+      "spoken_excerpt": "internos o en reportes tardíos",
+      "queries": [
+        "Titular simplificado: ‘notificación obligatoria’ → diagrama de umbral → flujo de reporte → evidencia independiente."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-001",
+      "section_id": "idea_C",
+      "start_seconds": 564,
+      "end_seconds": 572,
+      "spoken_excerpt": "Tercer pilar: verificación independiente y oportuna. O sea: evidencia que no sea solo un producto del mismo proceso que podría",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-002",
+      "section_id": "idea_C",
+      "start_seconds": 572,
+      "end_seconds": 580,
+      "spoken_excerpt": "estar equivocado.\n\nEn Tokaimura, la brecha no era un “detalle de procedimiento”; era el tipo de invariantes que, si se",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-003",
+      "section_id": "idea_C",
+      "start_seconds": 580,
+      "end_seconds": 588,
+      "spoken_excerpt": "rompen, cambian el comportamiento del sistema. Por eso el motivo de “ya quedó” (el check de “resuelto”) es tan engañoso",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-004",
+      "section_id": "idea_C",
+      "start_seconds": 588,
+      "end_seconds": 596,
+      "spoken_excerpt": "cuando el peligro depende de estado interno, tiempo y geometría, el semáforo final no te dice si el guardrail siguió",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-005",
+      "section_id": "idea_C",
+      "start_seconds": 596,
+      "end_seconds": 604,
+      "spoken_excerpt": "aplicando donde debía.\n\nEn términos de evidencia para agentes “por horas”, el mínimo razonable que deberíamos exigir para que “resuelto",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-006",
+      "section_id": "idea_C",
+      "start_seconds": 604,
+      "end_seconds": 612,
+      "spoken_excerpt": "signifique seguridad (no solo corrección estética) incluye:\n\n1) **Rastreabilidad de delegación**: identidad de responsables y límites de alcance. No “quién",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-007",
+      "section_id": "idea_C",
+      "start_seconds": 612,
+      "end_seconds": 620,
+      "spoken_excerpt": "aprobó la idea”, sino quién autorizó cambios de límites y bajo qué condición. \n\n2) **Trazas de estado antes de cerrar",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-008",
+      "section_id": "idea_C",
+      "start_seconds": 620,
+      "end_seconds": 628,
+      "spoken_excerpt": "registros que capturen el estado global (lo que sería equivalente a “geometría/recipiente” en nuestro paralelo) y que permitan reconstruir",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-009",
+      "section_id": "idea_C",
+      "start_seconds": 628,
+      "end_seconds": 636,
+      "spoken_excerpt": "si el guardrail aplicaba o no aplicaba.\n\n3) **Evidencia independiente del canal de ejecución**: no solo el mismo sistema opinando",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-010",
+      "section_id": "idea_C",
+      "start_seconds": 636,
+      "end_seconds": 644,
+      "spoken_excerpt": "sobre sí mismo, ni el mismo equipo que ejecuta produciendo su propia prueba. En el caso de evaluación ciega en",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-011",
+      "section_id": "idea_C",
+      "start_seconds": 644,
+      "end_seconds": 652,
+      "spoken_excerpt": "LIGO/Virgo, el punto de “sobre abierto” y la recomendación de un comité independiente muestra cómo se intenta blindar la",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-012",
+      "section_id": "idea_C",
+      "start_seconds": 652,
+      "end_seconds": 660,
+      "spoken_excerpt": "evaluación del sesgo del flujo de trabajo. No estamos copiando el procedimiento; estamos copiando la idea de independencia del arnés",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-013",
+      "section_id": "idea_C",
+      "start_seconds": 660,
+      "end_seconds": 668,
+      "spoken_excerpt": "y del veredicto.\n\n4) **Mecanismos de parada y reversión ensayados**, no declarados. Si una condición se cruza, ¿qué pasa? ¿Se",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-014",
+      "section_id": "idea_C",
+      "start_seconds": 668,
+      "end_seconds": 676,
+      "spoken_excerpt": "corta la acción? ¿Se revierte el estado? Sin eso, “reversible” se convierte en discurso.\n\nAquí cabe una ironía lateral: a",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-015",
+      "section_id": "idea_C",
+      "start_seconds": 676,
+      "end_seconds": 684,
+      "spoken_excerpt": "veces queremos tanta rapidez y automatización que terminamos con un sistema que puede “resolver” el trabajo incluso si, institucionalmente, nadie",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-016",
+      "section_id": "idea_C",
+      "start_seconds": 684,
+      "end_seconds": 692,
+      "spoken_excerpt": "sabe realmente quién cruzó los límites. Eso es exactamente lo que el problema institucional revela: no basta con que el",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-017",
+      "section_id": "idea_C",
+      "start_seconds": 692,
+      "end_seconds": 700,
+      "spoken_excerpt": "agente “haga bien el trabajo”. Lo decisivo es que la verificación esté diseñada para el tipo de cruce de límites",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-018",
+      "section_id": "idea_C",
+      "start_seconds": 700,
+      "end_seconds": 708,
+      "spoken_excerpt": "que el agente puede producir, y que exista un canal que haga visible el atajo.\n\nAsí, mi lectura cambia: al",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-019",
+      "section_id": "idea_C",
+      "start_seconds": 708,
+      "end_seconds": 716,
+      "spoken_excerpt": "inicio yo pensaba que el eje era “evaluación” en general. Ahora creo que el eje es el **diseño del canal",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-020",
+      "section_id": "idea_C",
+      "start_seconds": 716,
+      "end_seconds": 724,
+      "spoken_excerpt": "de evidencia**: si valida el flujo correcto, si llega a tiempo, y si sigue la acción relevante cuando ya pasó",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-021",
+      "section_id": "idea_C",
+      "start_seconds": 724,
+      "end_seconds": 732,
+      "spoken_excerpt": "el momento de corregir. La marca verde “resuelto” solo es una promesa si sabemos qué significó en términos trazables y",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-022",
+      "section_id": "idea_C",
+      "start_seconds": 732,
+      "end_seconds": 733,
+      "spoken_excerpt": "reversibles",
+      "queries": [
+        "Checklist de auditoría para ‘resuelto’: delegación (quién/límites), estado (qué cambió), independencia (quién verifica), reversión (qué haría si falla)."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-001",
+      "section_id": "story_payoff",
+      "start_seconds": 733,
+      "end_seconds": 741,
+      "spoken_excerpt": "En Tokaimura, el “confíen en el procedimiento” falló precisamente porque el control estaba incrustado en condiciones del camino nominal —especialmente",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-002",
+      "section_id": "story_payoff",
+      "start_seconds": 741,
+      "end_seconds": 749,
+      "spoken_excerpt": "en lo que la planta consideraba geometría segura— y el trabajo real encontró una ruta alternativa. El procedimiento práctico había",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-003",
+      "section_id": "story_payoff",
+      "start_seconds": 749,
+      "end_seconds": 757,
+      "spoken_excerpt": "sustituido pasos y recipientes previstos para controlar cantidad y geometría; al verter de forma directa, la séptima carga hizo que",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-004",
+      "section_id": "story_payoff",
+      "start_seconds": 757,
+      "end_seconds": 765,
+      "spoken_excerpt": "la solución superara el límite de masa crítica en el tanque final, que no tenía geometría segura frente a criticidad",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-005",
+      "section_id": "story_payoff",
+      "start_seconds": 765,
+      "end_seconds": 773,
+      "spoken_excerpt": "El resultado, documentado, fue un accidente con víctimas directas y evacuación de residentes cercanos. Por supuesto, esto no “demuestra” que",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-006",
+      "section_id": "story_payoff",
+      "start_seconds": 773,
+      "end_seconds": 781,
+      "spoken_excerpt": "una IA cause criticidad: la lección es la estructura del fallo—un atajo puede desactivar la garantía y aun así",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-007",
+      "section_id": "story_payoff",
+      "start_seconds": 781,
+      "end_seconds": 784,
+      "spoken_excerpt": "permitir que todo termine “cerrado” en apariencia",
+      "queries": [
+        "Reencuadre final: la marca “resuelto” aparece como una luz verde sin conexión a ‘geometría/estado global’; mostrar el momento en que se cruza el umbral."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-001",
+      "section_id": "cierre",
+      "start_seconds": 784,
+      "end_seconds": 792,
+      "spoken_excerpt": "Entonces, cuando un sistema por horas termina con un “resuelto”, el estándar no debería ser “el output se ve bien",
+      "queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-002",
+      "section_id": "cierre",
+      "start_seconds": 792,
+      "end_seconds": 800,
+      "spoken_excerpt": "Debería ser: ¿qué evidencia trazable demuestra quién autorizó qué límites, qué estado global existía antes de cerrar, y qué canal",
+      "queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-003",
+      "section_id": "cierre",
+      "start_seconds": 800,
+      "end_seconds": 808,
+      "spoken_excerpt": "independiente permite detectar atajos de flujo? Y si la evidencia llega tarde, o valida un camino equivalente, ya sabemos que",
+      "queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-004",
+      "section_id": "cierre",
+      "start_seconds": 808,
+      "end_seconds": 816,
+      "spoken_excerpt": "la confianza puede estar bien administrada y aun así ser falsa. Si te interesa este tipo de auditoría de decisiones",
+      "queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-005",
+      "section_id": "cierre",
+      "start_seconds": 816,
+      "end_seconds": 824,
+      "spoken_excerpt": "suscríbete: la pregunta no es solo si el agente acierta, sino si el “ya quedó” significa lo correcto y lo",
+      "queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-006",
+      "section_id": "cierre",
+      "start_seconds": 824,
+      "end_seconds": 825,
+      "spoken_excerpt": "reversible",
+      "queries": [
+        "Pantalla de cierre: tres llaves en una lista ‘quién’, ‘estado’, ‘reversión’; un semáforo verde que solo cambia a ‘seguro’ cuando las tres llaves tienen registro verificable."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    }
+  ],
+  "policy": "Planning only; use repository acquisition/licensing/density gates before downloads."
+}
