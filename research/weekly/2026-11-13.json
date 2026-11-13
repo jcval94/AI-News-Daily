@@ -1,0 +1,531 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-11-13",
+  "window": {
+    "from": "2026-11-07",
+    "to": "2026-11-13"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "Los agentes empiezan a convertirse en workflows deterministas cuando el proceso ya es conocido",
+      "why_it_matters": "ReTrace conserva al agente para descubrir condiciones y reparar fallos, pero compila la operación repetitiva a código, reduciendo latencia y costo sin exigir un LLM en cada paso."
+    },
+    {
+      "summary": "La experiencia reutilizable se mueve a planos de control pequeños y explícitos",
+      "why_it_matters": "Synapse-Control reemplaza diagnósticos generativos repetidos por reglas, microcontratos y un clasificador de 1.7B que decide qué consejo mostrar y cuándo."
+    },
+    {
+      "summary": "El serving agentic necesita señales del agente, no sólo métricas de tokens",
+      "why_it_matters": "Evolving Infra usa composición de carga y gestión de contexto para reasignar prefill/decode y conservar KV reutilizable; Together Compiler lleva agentes de optimización a un loop continuo de producción."
+    },
+    {
+      "summary": "En memoria persistente, recuperar ya no es el principal cuello de botella",
+      "why_it_matters": "DISCERN encuentra que retención y actualidad están casi saturadas; la diferencia práctica está en resolver entidades, tiempo, procedencia y abstención sin destruir historial al escribir."
+    },
+    {
+      "summary": "RAG requiere controles de ciclo de vida y extracción además de calidad de respuesta",
+      "why_it_matters": "Lightfoot demuestra borrado exacto y sin modelo en GraphRAG, mientras SNAPRAG muestra que una base privada puede extraerse con perturbaciones baratas y presupuesto de consultas configurable."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2611.14925",
+      "title": "ToolTurns: Benchmarking LLM Agents in Multi-Turn Dialogue",
+      "type": "benchmark",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-11",
+      "updated_at": null,
+      "authors": [
+        "Milad Gholami",
+        "Brendan King",
+        "Jeffrey Flanigan"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.14925",
+      "external_ids": {
+        "arxiv": "2611.14925"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation"
+      ],
+      "summary": "ToolTurns evalúa agentes conversacionales con 2,620 problemas, 1,827 herramientas y 11,004 endpoints. Cada diálogo empieza subespecificado y continúa con dos solicitudes dependientes del contexto, obligando a aclarar, usar herramientas y conservar estado conversacional.",
+      "what_changed": "Frente a benchmarks de llamadas aisladas, mide el éxito acumulado de un diálogo y separa calidad conversacional de cumplimiento real de la tarea.",
+      "why_it_matters": "Un agente puede parecer competente por turno y aun fallar el flujo completo. Para producción conviene evaluar clarificación, continuidad y éxito end-to-end como métricas distintas.",
+      "evidence": [
+        "Cubre 47 categorías y evalúa nueve modelos.",
+        "El mejor agente resuelve 69.6% de solicitudes individuales, pero sólo 39.8% de diálogos completos.",
+        "Todos los modelos obtienen menor éxito en follow-ups que en la solicitud inicial.",
+        "La evaluación humana prefiere los turnos corregidos por el pipeline checker-fixer."
+      ],
+      "limitations": [
+        "El usuario es simulado y no representa toda la variabilidad de conversaciones reales.",
+        "Tres turnos no cubren sesiones empresariales extensas.",
+        "La cobertura de APIs no prueba seguridad ni fiabilidad ante efectos irreversibles."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "agents",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.14492",
+      "title": "ReTrace: Distilling Tool-Using Agents into Planner-Free Workflows",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-10",
+      "updated_at": null,
+      "authors": [
+        "Kaiyuan Hou",
+        "Yang Ping Kuo",
+        "Indranil Bhattacharya",
+        "Rohith Nama",
+        "Arushi Gupta",
+        "Carlos D. Castillo",
+        "Prathap Ramachandra",
+        "Xiaofan Jiang",
+        "Francesco Carbone"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.14492",
+      "external_ids": {
+        "arxiv": "2611.14492"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "llm_production",
+        "architecture",
+        "evaluation"
+      ],
+      "summary": "ReTrace toma un SOP y unas pocas ejecuciones registradas de un agente, extrae las condiciones que motivaron cada acción, las fusiona en reglas compactas y genera un workflow donde código determinista elige el siguiente paso.",
+      "what_changed": "Propone una transición explícita de exploración agentic a automatización compilada: el razonamiento del agente se usa como datos para descubrir reglas, no como dependencia permanente de cada ejecución.",
+      "why_it_matters": "Es un patrón directo para reducir costo y latencia en procesos repetitivos conservando al agente como mecanismo de descubrimiento y reparación.",
+      "evidence": [
+        "En 79 procedimientos productivos alcanza 93.8% de finalización frente a 96.8% del agente, con 24% menor costo por tarea.",
+        "En tau2-Bench logra 75.8% frente a 80.6% del agente y ejecuta en 1.3 segundos frente a 170 segundos.",
+        "Tres rondas de reparación elevan workflows k=2 de 66.7% a 81.2%.",
+        "En SOP-Bench, la reparación eleva éxito a 87.8% en 0.40 segundos, frente a 85.5% en 46.6 segundos para el agente."
+      ],
+      "limitations": [
+        "Necesita SOPs relativamente estables y trazas representativas.",
+        "Las reglas pueden quedar obsoletas cuando cambian herramientas, datos o políticas.",
+        "La pequeña pérdida frente al agente puede ser inaceptable en tareas de alto riesgo."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.13615",
+      "title": "Synapse-Control: Making Agent Experience Actionable with Lightweight Runtime Control",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-10",
+      "updated_at": null,
+      "authors": [
+        "Zhiyuan Huang",
+        "Shengan Zheng",
+        "Chenghu Yang",
+        "Song Zhang",
+        "Lingyun Li",
+        "Chen Yu",
+        "Weiquan Huang",
+        "Linpeng Huang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.13615",
+      "external_ids": {
+        "arxiv": "2611.13615"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "memory",
+        "llm_production",
+        "observability",
+        "architecture"
+      ],
+      "summary": "Synapse-Control implementa un plano de control ligero que selecciona experiencia previa y decide cuándo entregarla al agente. Combina reglas, un clasificador de 1.7B, microcontratos de interfaz y una tabla de valor para limitar consejos repetidos.",
+      "what_changed": "Evita generar un diagnóstico LLM antes de cada recuperación de experiencia; sustituye esa etapa por clasificación, cooldown y presupuesto de tokens.",
+      "why_it_matters": "La memoria de agentes puede ganar valor sin añadir otra llamada grande por paso. Los microcontratos también ofrecen checks reutilizables sin imponer programas completos.",
+      "evidence": [
+        "Compara 1,308 intentos por método en AppWorld y WebShop.",
+        "Obtiene 270 éxitos, 29.8% más que la línea base.",
+        "Sustituye 4,987 llamadas generativas de diagnóstico.",
+        "Reduce el tiempo del control auxiliar frente a Sentry en 50.2% y 51.0% en los dos entornos."
+      ],
+      "limitations": [
+        "El clasificador depende de etiquetas de un modelo profesor.",
+        "Los resultados se limitan a dos benchmarks de herramientas.",
+        "Reglas de cooldown o presupuesto mal calibradas pueden ocultar una advertencia útil."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "agents",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.12304",
+      "title": "Evolving Infra: Agent-Adaptive LLM Serving at Scale",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-09",
+      "updated_at": null,
+      "authors": [
+        "Hao Kang",
+        "Weili Xu",
+        "Ziyang Li",
+        "Zheng Du",
+        "Hanchen Li",
+        "Tian Xia",
+        "Song Bian",
+        "Tushar Krishna",
+        "Huizi Mao",
+        "Ion Stoica",
+        "Song Han"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.12304",
+      "external_ids": {
+        "arxiv": "2611.12304"
+      },
+      "topics": [
+        "agents",
+        "serving",
+        "inference",
+        "llm_production",
+        "architecture"
+      ],
+      "summary": "Evolving Infra desacopla asignación de cómputo y gestión de KV cache en serving prefill-decode. Un planner ajusta el reparto PD según la mezcla de carga, mientras un gestor distribuido usa señales de la gestión de contexto del agente para evicción y transferencia.",
+      "what_changed": "Introduce señales del runtime agentic en decisiones que normalmente dependen de métricas agregadas del servidor, y permite que los nodos cambien eficientemente entre prefill y decode.",
+      "why_it_matters": "Las sesiones de agentes reutilizan prefijos y cambian de fase. Tratar esa estructura como señal de infraestructura puede reducir desbalance y evitar expulsar contexto que será reutilizado.",
+      "evidence": [
+        "Evalúa tareas de código, matemáticas y computer use con GLM-5.2 y Kimi K2.6.",
+        "Las pruebas escalan hasta 256 GPUs GB300.",
+        "Reduce hasta 4.1 veces la latencia end-to-end media y hasta 14 veces el P95 TTFT frente a NVIDIA Dynamo.",
+        "La implementación se publica como código abierto."
+      ],
+      "limitations": [
+        "Los máximos reportados no describen el beneficio promedio de todas las cargas.",
+        "Requiere integrar señales del agente con el plano de serving.",
+        "La evaluación se concentra en dos familias de modelos y hardware de gran escala."
+      ],
+      "practical_applications": [
+        "design",
+        "deployment",
+        "agents",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.15729",
+      "title": "DISCERN: Preserve at Write, Resolve at Read for Persistent LLM-Agent Memory",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-11",
+      "updated_at": null,
+      "authors": [
+        "Chirag Ahuja",
+        "Vladislav Tanov",
+        "Ramcharan Kakarla",
+        "Jonathan Taws"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.15729",
+      "external_ids": {
+        "arxiv": "2611.15729"
+      },
+      "topics": [
+        "agents",
+        "memory",
+        "retrieval",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "DISCERN conserva hechos, versiones y entidades en un grafo bitemporal estrictamente aditivo. Al leer, un loop agentic usa herramientas sin LLM para resolver entidad, estado temporal y si debe responder o abstenerse.",
+      "what_changed": "Replantea la memoria persistente como problema de resolución y calibración, no de recall: no fusiona entidades confusas ni elimina valores reemplazados durante la escritura.",
+      "why_it_matters": "En agentes empresariales, sobrescribir o fusionar temprano destruye procedencia. Separar conservación y resolución facilita auditoría, correcciones y respuestas sobre estados históricos.",
+      "evidence": [
+        "En ENT-310, sistemas competentes ya alcanzan aproximadamente 0.93 a 0.98 en retención y actualidad.",
+        "DISCERN logra F1 0.924 en abstención frente a un máximo de 0.802 entre ocho baselines.",
+        "Alcanza 0.861 de corrección macro frente a 0.806, impulsado por 0.800 en resolución de entidades donde ningún baseline supera 0.40.",
+        "Sin ajuste en LoCoMo, lidera corrección macro con 0.663 frente a 0.638."
+      ],
+      "limitations": [
+        "ENT-310 es sintético y el segundo corpus es conversacional, no un despliegue empresarial real.",
+        "La evaluación usa un consejo de cuatro jueces LLM.",
+        "Mantener historial aditivo puede elevar almacenamiento y complejidad de consultas."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "retrieval",
+        "agents",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.16425",
+      "title": "RMIT-ADM+S at TREC RAG 2026: Research Agents, Retriever Ablations, and Open-Weight Replication",
+      "type": "report",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-12",
+      "updated_at": null,
+      "authors": [
+        "Oleg Zendel",
+        "Kun Ran",
+        "Chenglong Ma",
+        "Nguyen Khoi Vo",
+        "Shuai Wang"
+      ],
+      "organization": "RMIT University",
+      "url": "https://arxiv.org/abs/2611.16425",
+      "external_ids": {
+        "arxiv": "2611.16425"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "agents",
+        "evaluation"
+      ],
+      "summary": "El informe documenta siete configuraciones de research agents en TREC RAG 2026, combinando modelos propietarios y open-weight, estrategias de retrieval, modelos escritores y workflows agentic.",
+      "what_changed": "Aporta una comparación oficial con evaluación NIST y ablations previas que aíslan selección del writer y expansión de chunks adyacentes como factores principales.",
+      "why_it_matters": "Muestra que cobertura automatizada y preferencia humana pueden ordenar sistemas de forma distinta, y que un modelo open-weight de menor costo puede ganar en preferencia aunque no lidere cobertura.",
+      "evidence": [
+        "Seis de siete runs superan la mediana del track en las tres colecciones de rúbricas y nuggets.",
+        "brief-hybrid empata el máximo del track con 0.892 en cobertura vital del Batch 1.",
+        "owa-glm5 open-weight lidera preferencia humana en Batch 1, mientras sol-research-first lidera Batch 2.",
+        "Las ablations identifican writer y expansión de chunks adyacentes como los factores de mayor impacto."
+      ],
+      "limitations": [
+        "Es un informe de participación de un equipo, no una comparación exhaustiva de todos los sistemas.",
+        "Las preferencias humanas cambian entre batches.",
+        "Los resultados dependen del corpus ClimbMix y del protocolo TREC 2026."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "retrieval",
+        "agents"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.12241",
+      "title": "SNAPRAG: Cost-Efficient Knowledge Extraction Attack on RAG Systems via Adversarial Perturbations",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-09",
+      "updated_at": null,
+      "authors": [
+        "Melih Coşğun",
+        "Mehmet Emre Gürsoy",
+        "Alptekin Küpçü",
+        "Sinem Sav"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.12241",
+      "external_ids": {
+        "arxiv": "2611.12241"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "safety",
+        "guardrails",
+        "evaluation"
+      ],
+      "summary": "SNAPRAG extrae una base RAG privada mediante mutaciones discretas de tokens y calibración adaptativa de disimilitud. Opera en caja negra, sin LLM externo, y permite fijar estrictamente el presupuesto de consultas.",
+      "what_changed": "Reduce la dependencia de generación adversarial costosa y dirige consultas hacia regiones semánticas aún no exploradas del índice.",
+      "why_it_matters": "Los controles de acceso al endpoint no bastan si respuestas acumuladas permiten reconstruir el corpus. La evaluación de RAG debe incluir tasa de extracción por consulta y comportamiento bajo defensas activas.",
+      "evidence": [
+        "Para extraer la mitad de una base necesita hasta 6.77 veces menos consultas que ataques previos.",
+        "Con presupuesto fijo recupera hasta 96.9%, entre 7.7 y 19.9 puntos por encima del competidor más cercano.",
+        "Ante defensas activas lidera en cuatro de cinco targets defendidos con tasas de extracción de 50.7% a 96.3%."
+      ],
+      "limitations": [
+        "La transferencia a índices empresariales muy heterogéneos no queda establecida.",
+        "El resumen no cuantifica utilidad retenida por las defensas más fuertes.",
+        "Presupuestos, rate limits y políticas reales pueden alterar el costo del ataque."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "retrieval",
+        "safety",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.14681",
+      "title": "Together Compiler: Continual Compilation for AI Inference",
+      "type": "report",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-10",
+      "updated_at": null,
+      "authors": [
+        "Reyna Abhyankar",
+        "Dylan Lim",
+        "Drew Wadsworth",
+        "Venkata Hasith Vattikuti",
+        "YuTong Julia Zhang",
+        "Jung Hwan Heo",
+        "Taeksang Kim",
+        "Kesavan Ramakrishnan",
+        "Evangelene Stanley",
+        "Xinyu Fang",
+        "Daniel Y. Fu",
+        "Simran Arora"
+      ],
+      "organization": "Together AI",
+      "url": "https://arxiv.org/abs/2611.14681",
+      "external_ids": {
+        "arxiv": "2611.14681"
+      },
+      "topics": [
+        "agents",
+        "llm_production",
+        "serving",
+        "inference",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Together Compiler mantiene un loop agentic continuo para optimizar forward passes bajo modelos, hardware y tráfico cambiantes. Un motor persistente separa el costo de lanzamiento del cómputo medido y un modelo de costo elige configuraciones iniciales de paralelismo.",
+      "what_changed": "Busca combinar fidelidad end-to-end con suficiente throughput experimental para recompilar continuamente, en vez de optimizar kernels aislados o relanzar engines completos en cada candidato.",
+      "why_it_matters": "Convierte optimización de inferencia en un proceso operativo permanente y aporta evidencia de producción a escala de trillones de tokens.",
+      "evidence": [
+        "Supera Megakernels escritos a mano hasta 1.7 veces en Llama 1B.",
+        "Alcanza hasta 2.6 veces más TPS que los mejores engines open-source evaluados en modelos frontier y distintas plataformas.",
+        "Reporta 1,111 TPS en MiniMax M3.1 Flash y 1,205 TPS en DeepSeek v4.1 Flash con batch size 1.",
+        "El sistema sirve trillones de tokens en la flota productiva de Together AI."
+      ],
+      "limitations": [
+        "Los resultados proceden del proveedor del sistema.",
+        "Los máximos de TPS dependen de modelos y hardware concretos.",
+        "Un loop de optimización continua necesita gates estrictos contra regresiones de corrección y SLO."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "serving",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.11010",
+      "title": "Lightfoot: Graph Retrieval-Augmented Generation with Exact, Model-Free Document Deletion",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-07",
+      "updated_at": null,
+      "authors": [
+        "Uday Allu"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.11010",
+      "external_ids": {
+        "arxiv": "2611.11010"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "llm_production",
+        "architecture",
+        "evaluation"
+      ],
+      "summary": "Lightfoot construye GraphRAG como función determinista de extracciones por pasaje con procedencia a nivel de chunk. La indexación usa una llamada LLM por pasaje; recuperación y borrado no llaman al modelo.",
+      "what_changed": "Incluye costo de construcción y borrado exacto como propiedades de primer nivel, y demuestra que eliminar documentos produce el mismo grafo que reindexar desde cero los supervivientes.",
+      "why_it_matters": "El borrado verificable es necesario para correcciones, expiración y cumplimiento. Vincular cada arista con su procedencia evita reconstrucciones costosas y estados residuales.",
+      "evidence": [
+        "Tras borrar 10% de 11,402 pasajes de MuSiQue, el grafo coincide exactamente con un índice fresco.",
+        "Construye el índice más barato en tres datasets: 26 a 31% menos que HippoRAG 2 y entre 3 y 6 veces menos que LightRAG y fast-graphrag.",
+        "Mejora frente a HippoRAG 2 en MuSiQue retrieval y HotpotQA, pero empeora significativamente en 2WikiMultiHopQA.",
+        "Borrar los mismos documentos requirió 2,187 llamadas de modelo y 3.7 horas en LightRAG; fast-graphrag no ofrece ruta de borrado."
+      ],
+      "limitations": [
+        "La calidad no domina en todos los datasets.",
+        "Un solo autor y un manuscrito corto requieren replicación independiente.",
+        "La extracción inicial sigue dependiendo de un LLM y de la calidad de procedencia capturada."
+      ],
+      "practical_applications": [
+        "design",
+        "evaluation",
+        "deployment",
+        "retrieval",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Separa fases de descubrimiento y explotación: usa agentes para aprender condiciones, luego compila procesos estables a workflows deterministas con una ruta explícita de reparación.",
+      "Diseña la memoria como log bitemporal aditivo con procedencia; resuelve entidad, tiempo y abstención al leer en lugar de fusionar o sobrescribir al escribir.",
+      "Expón señales de gestión de contexto del agente al serving para que KV cache, prefill y decode sigan la estructura real de la sesión.",
+      "En GraphRAG, conserva procedencia por chunk y haz del borrado exacto una operación verificable del modelo de datos."
+    ],
+    "evaluation": [
+      "Mide éxito de diálogo completo además de éxito por turno, y separa calidad conversacional de cumplimiento de tarea.",
+      "Compara métricas automatizadas de cobertura con preferencia humana; pueden invertir el ranking de research agents.",
+      "Añade extracción por consulta, cobertura recuperada y resistencia bajo defensas al threat model de cualquier RAG privado.",
+      "Para memoria, evalúa resolución de entidad, actualidad, falsa premisa y abstención; recall alto por sí solo ya discrimina poco."
+    ],
+    "deployment": [
+      "Versiona SOPs, reglas compiladas y microcontratos junto con las herramientas; invalídalos cuando cambien schemas, políticas o efectos.",
+      "Mantén un plano de control barato con cooldown y presupuesto de tokens para experiencia, pero registra consejos omitidos y recuperaciones fallidas.",
+      "Somete compilación y serving adaptativo a gates de corrección, replay y SLO antes de promover una optimización.",
+      "Protege RAG con rate limits por identidad, detección de exploración semántica, minimización de respuesta y monitoreo acumulado de extracción."
+    ]
+  }
+}
