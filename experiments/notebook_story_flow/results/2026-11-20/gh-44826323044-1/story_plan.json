@@ -1,0 +1,105 @@
+{
+  "central_question": "Cuando delegamos tareas a agentes (o sistemas) que actúan mientras no estamos mirando, ¿qué parte del problema es técnica y cuál es de evidencia/incentivos—y cómo aseguramos que podamos atribuir decisiones y corregirlas sin depender de que el “usuario” lo vea venir?",
+  "provisional_thesis": "Delegar a agentes no vuelve la responsabilidad automática: crea un “vacío de atribución”. Si no diseñamos medición y canales de reporte que distingan uso consciente de decisiones embebidas, y si no tratamos la abstención (cuándo no actuar) como un comportamiento crítico, terminamos con sistemas que parecen funcionando y organizaciones que sólo descubren fallos cuando ya son daños.",
+  "evolved_thesis": "El problema no es sólo si un agente “acierta”, sino si el sistema puede (1) registrar qué ocurrió y bajo qué condiciones, y (2) mantener una política verificable de cuándo abstenerse. Sin esas dos columnas—evidencia útil y control de iniciación—la confianza por rendimiento se vuelve frágil: la medición puede capturar lo equivocado y el agente puede fallar justo donde nadie estaba esperando que tomara control.",
+  "core_ideas": [
+    "Delegar crea un vacío de atribución: lo que la gente declara no coincide necesariamente con lo que el sistema decidió por ella.",
+    "La abstención (cuándo iniciar una acción y cuándo no) es un comportamiento de seguridad, no un detalle de implementación.",
+    "“Medir uso” no equivale a medir exposición efectiva, sustitución de tareas o efectos laborales: la evidencia puede sesgar la gobernanza hacia lo visible y lo declarable."
+  ],
+  "motif": "la pregunta “¿quién comprobó esto?”",
+  "pillars": [
+    "Evidencia/incentivos: cómo se mide (o no) la influencia real de la IA en actividades concretas.",
+    "Control de iniciación y abstención: el punto donde el agente decide actuar sin instrucción.",
+    "Atribución y corrección: canales para rastrear decisiones y corregir sin depender de que el usuario lo anticipe."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "midway-af-water-test",
+      "epicity": 9.6,
+      "relevance": 9.3,
+      "reason": "Es un caso de “convertir observación pasiva en prueba informativa” mediante una señal falsa que discrimina hipótesis; encaja con cómo generar evidencia útil sobre sistemas opacos. Además, es histórico y tiene desenlace documentado, ideal para reencuadre."
+    },
+    {
+      "memory_id": "apollo-11-priority-scheduling-overload",
+      "epicity": 9.4,
+      "relevance": 8.8,
+      "reason": "Expone una crisis de sobrecarga donde el sistema conserva lo esencial y descarta trabajo no crítico; sirve como paralelo para abstención y prioridades bajo presión. Pero es menos directo para el problema de medición/atribución."
+    },
+    {
+      "memory_id": "braess-paradox-more-road-worse-traffic",
+      "epicity": 8.7,
+      "relevance": 7.9,
+      "reason": "Ilustra cómo una mejora local puede empeorar el equilibrio global; útil para explicar incentivos y efectos no intencionales. Sin embargo, no aporta tan claramente la idea de evidencia útil o abstención como comportamiento crítico."
+    }
+  ],
+  "selected_memory_id": "midway-af-water-test",
+  "protagonist": "La guarnición/operación en Midway y los criptanalistas que empujan una identificación que estaba en disputa.",
+  "opposing_force": "La incertidumbre deliberada y la opacidad del adversario: la ambigüedad del código «AF» y la dificultad de discriminar hipótesis sólo con observación.",
+  "conflict": "Elegir qué hipótesis es correcta sobre el objetivo japonés cuando el sistema de señales no lo deja claro; forzar una señal que discrimine sin que el adversario “aprenda” demasiado tarde la prueba.",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4
+  ],
+  "unresolved_question": "Si la evidencia pública no capta decisiones embebidas y si la abstención no está diseñada/mejor validada, ¿cómo hacemos gobernanza que funcione antes del daño—y no después, cuando ya es tarde para atribuir responsabilidades?",
+  "bridge_to_present": "La comparación es directa: en Midway se busca evidencia que distinga hipótesis; en agentes modernos, si sólo preguntamos por uso consciente o por resultados promedios, podemos fallar justo en el tramo donde el sistema decide por nosotros (o se equivoca al abstenerse/iniciar).",
+  "analogy_limits": "Midway fue una maniobra de engaño en guerra y su validez depende de contexto adversarial, capacidad de interceptación y dinámica de comunicación específica; no equivale automáticamente a diseñar “pruebas” sobre sistemas modernos. En IA/agents, además, la medición puede cambiar el comportamiento del sistema evaluado y la ética/seguridad del experimento no se cubre con la analogía. Por eso la analogía sólo respalda la idea de “diseñar pruebas informativas para discriminar hipótesis”, no una estrategia operativa equivalente.",
+  "ledger": [
+    {
+      "evidence_id": "atus-ia-module",
+      "news_id": "n_c04fa9e2bbf65091",
+      "supported_facts": [
+        "El Departamento de Trabajo sometió a revisión de la Oficina de Administración y Presupuesto un módulo de preguntas sobre IA para la American Time Use Survey, y abrió comentarios hasta el 18 de diciembre.",
+        "La solicitud estima 7.672 participantes y 256 horas anuales de carga agregada.",
+        "El aviso confirma el trámite y el tamaño previsto, pero no aporta resultados ni evidencia de que las preguntas capten uso indirecto, intensidad, sustitución de tareas o efectos laborales."
+      ],
+      "allowed_interpretations": [
+        "Es razonable sospechar que, si el cuestionario se centra en uso consciente, puede subestimar sistemas donde la IA decide o influye sin ser percibida por la persona."
+      ],
+      "hypotheses": [
+        "El módulo final, si se diseña sólo para uso autodeclarado, podría medir mejor exposición declarada que decisiones embebidas que afectan actividades concretas."
+      ],
+      "uncertainties": [
+        "No se conoce el cuestionario final ni cómo se formularán preguntas específicas.",
+        "No hay datos reportados todavía sobre cómo se relacionan las respuestas con sustitución de tareas o efectos laborales."
+      ],
+      "prohibited_claims": [
+        "No afirmar que la encuesta ya demostró sesgo o que la medición definitiva será incorrecta.",
+        "No afirmar que el módulo necesariamente fallará: sólo que el aviso no muestra evidencia de que capture lo relevante."
+      ],
+      "source_limitations": [
+        "La fuente describe el trámite y la carga estimada; no provee resultados ni validación del instrumento."
+      ]
+    },
+    {
+      "evidence_id": "greenhouse-abstention",
+      "news_id": "n_4af9bfc016d72dc4",
+      "supported_facts": [
+        "Un estudio evaluó cuatro modelos cuantizados de 3 a 14 mil millones de parámetros sobre control de un invernadero conectado a un ESP32, con 12.000 ejecuciones en dos entornos reproducibles.",
+        "Los modelos ejecutaron entre 65% y 100% de órdenes conversacionales, pero su desempeño al iniciar acciones sin instrucción cayó a entre 0,4% y 64,6%.",
+        "El estudio informa que un controlador basado en reglas igualó al segundo mejor modelo y mostró la mejor conducta de rechazo, mientras que las reglas conservaron el piso crítico de seguridad durante la operación de campo."
+      ],
+      "allowed_interpretations": [
+        "Es razonable interpretar que el comportamiento de abstención (cuándo no actuar) es un componente crítico del desempeño de agentes físicos, y puede fallar aunque el agente ejecute bien cuando se le instruye."
+      ],
+      "hypotheses": [
+        "En agentes que controlan sistemas físicos o acceso a acciones, la tasa de errores vinculada a iniciar acciones sin instrucción probablemente determina riesgos más que el rendimiento en tareas conversacionales condicionadas."
+      ],
+      "uncertainties": [
+        "El estudio no demuestra automáticamente generalización a otros entornos, sensores o dominios.",
+        "No aporta, en el resumen, tasas de incidentes ni evaluación comparativa clínica/operativa más allá del experimento descrito."
+      ],
+      "prohibited_claims": [
+        "No afirmar que estos resultados cuantifican riesgos reales en todos los agentes del mundo.",
+        "No extrapolar que los controladores basados en reglas siempre serán superiores en entornos distintos."
+      ],
+      "source_limitations": [
+        "La evidencia proviene de un estudio de entorno controlado; el resumen no detalla metodología completa, métricas de seguridad ni pruebas de largo plazo."
+      ]
+    }
+  ]
+}

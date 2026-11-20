@@ -1,0 +1,29 @@
+{
+  "approved": false,
+  "risk": "medium",
+  "historical_grounding": 8.6,
+  "invented_details": [
+    "[step9_epica | “Imagina estar del otro lado del papel: no tienes acceso al plan completo del adversario”] Escena imaginada: introduce una situación psicologizada (no atribuida a fuentes) para generalizar la incertidumbre; no es un hecho verificable del episodio tal como está escrito.",
+    "[step9_epica | “Eso no fue un detalle propagandístico: fue una prueba”] Interpretación/atribución causal no respaldada en el texto: el guion afirma que el mensaje falso “fue una prueba” sin que el texto dado muestre evidencia textual directa de ese propósito (más allá de la reconstrucción).",
+    "[step9_epica | “cualquier certeza prematura podía costar la calma… o la vida.”] Generalización dramática: no es un hecho concreto ni rastreable; usa una consecuencia implícita no documentada en las verified_claims.",
+    "[hook_cita | “Mi lectura de este dilema es…” y “la medición… tiene que ser también…”] Interpretación del narrador: correcta como opinión, pero el guion formula como si estableciera un requisito normativo factual (“tiene que ser”) en lugar de dejarlo claramente como propuesta.",
+    "[step10_reconexion | “nadie está seguro de quién decidió qué”] Hipótesis general sobre “nadie”: no apoyada por evidencia específica; está formulada como descripción general, no como posibilidad."
+  ],
+  "source_issues": [
+    "[step9_epica | evidence_ids vacío] La sección usa claims históricos (1-3) pero no enlaza evidence_ids con el ledger/memoria en el objeto de la sección; falta trazabilidad interna en el formato.",
+    "[story_payoff | claims de “FRUMEL difundió” y “la controversia se cerró”] Usa memory_claim_indices [4], pero no hay evidence_ids en la sección; además “se cerró la controversia” es una formulación más fuerte que “confirmó/dispuso evidencia útil” y no queda delimitada como reconstrucción."
+  ],
+  "unsupported_claims": [
+    "[story_payoff | “Al forzar una respuesta del adversario… la inteligencia japonesa terminó publicando un vínculo… y la estación FRUMEL difundió esa traducción.”] Riesgo de exceso causal: el guion sugiere efecto por “forzar una respuesta”, aunque en verified_claims se habla de una traducción publicada y de que la identificación se confirmó con el mensaje interceptado; la relación causal “forzó” no está respaldada como hecho.",
+    "[step9_epica | “No eliminó todas las dudas del mundo”] No verificable: el grado de dudas no está cuantificado ni documentado en las verified_claims aportadas.",
+    "[idea_A | “una encuesta pública… puede volverse muy buena para medir ‘quién dijo que usó’… y muy mala para medir ‘quién delegó’…”] Es una generalización no probada: aunque es coherente con el ledger, el guion lo presenta como afirmación casi operativa sobre cómo “puede” funcionar la encuesta, sin que la evidencia del módulo lo demuestre.",
+    "[idea_B_explica | “la evidencia sugiere otra cosa”] La frase implica síntesis basada en evidencia adicional; el guion luego usa greenhouse-abstention para sustentar parte, pero no deja claro que la “otra cosa” proviene de esa fuente específica y del experimento concreto."
+  ],
+  "repair_instructions": [
+    "Añade trazabilidad factual por sección: en cada sección que use claims históricos o de noticias (p.ej., step9_epica usando memory_claim_indices [1,2,3]; step9_epica/story_payoff usando el episodio Midway; step10_reconexion y hooks usando atus-ia-module/greenhouse-abstention), incluir evidence_ids correspondientes del ledger o, si el formato exige, al menos completar evidence_ids con los IDs del ledger que sustentan esos enunciados.",
+    "Debilita afirmaciones causales no respaldadas: en story_payoff, cambia “Al forzar una respuesta del adversario” por una formulación inequívoca de reconstrucción basada en evidencia (p.ej., “la señal diseñada se asocia con que el adversario emitiera/relacionara X” o “la evidencia interceptada y la publicación posterior apoyan que…”), sin afirmar intención-causal directa si no está en verified_claims.",
+    "Elimina o marca como no factuales las generalizaciones dramáticas o no verificables: reemplaza “costar la calma… o la vida” por una frase que exprese el punto sin afirmar consecuencias específicas (“la decisión tenía alto riesgo”) o decláralo como recurso retórico explícitamente (analogía/escena).",
+    "Ajusta formulaciones normativas a propuesta/hipótesis: en hook_cita, cambiar “tiene que ser” por “propongo/mi tesis es que” o “como criterio”, manteniendo el resto como interpretación del narrador, no como obligación factual.",
+    "En step10_reconexion, cambia “nadie está seguro…” por una hipótesis acotada (p.ej., “puede ocurrir” / “es fácil que ocurra”) y mantén el foco en lo que el guion pretende demostrar: el “vacío de atribución” como argumento, no como descripción universal."
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "sections": [
+    {
+      "id": "step9_epica",
+      "text": "Mayo–junio de 1942. Midway, Hawái, y las estaciones de inteligencia aliadas del Pacífico: un lugar donde cada decisión depende de piezas de información que nunca se presentan con toda su letra.\n\nA comienzos de ese año, criptanalistas de la Marina estadounidense habían descifrado suficiente tráfico JN-25 como para anticipar una gran operación japonesa, aunque el objetivo aparecía como «AF». Y ahí empieza el problema que me parece más humano de todo: no era un “descifrar” único y limpio, sino empujar una identificación que estaba en disputa.\n\nImagina estar del otro lado del papel: no tienes acceso al plan completo del adversario, solo señales, patrones y traducciones que pueden ser incompletas o engañosas. La incertidumbre no llega de la nada; viene embebida en el sistema de señales. En Pearl Harbor se hizo que Midway transmitiera en claro un mensaje falso sobre una escasez de agua. Eso no fue un detalle propagandístico: fue una prueba para ver si el adversario, al reaccionar, terminaría dejando pistas.\n\nPero las pistas no siempre caen donde uno quiere. El 22 de mayo de 1942, la estación FRUMEL publicó la traducción de un mensaje japonés que relacionaba «AF» con el reporte de agua y confirmó la identificación de Midway. La frase clave es esa: “confirmó”. No eliminó todas las dudas del mundo, pero cerró una grieta específica en la hipótesis sobre el objetivo.\n\nY aquí viene la pregunta incómoda —la que deja huella incluso cuando uno ya no está en 1942—: cuando la evidencia disponible no capta decisiones embebidas y el margen de error puede ser catastrófico, ¿cómo gobernamos el criterio antes del daño, y no después, cuando ya no hay forma seria de asignar responsabilidades?\n\nLo fascinante es que el sistema no solo trataba de “saber”; trataba de discriminar sin que el adversario aprendiera demasiado tarde. Y en ese filo, cualquier certeza prematura podía costar la calma… o la vida.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1,
+        2,
+        3
+      ],
+      "visual_queries": [
+        "Mapa del Pacífico con Midway resaltada (1942) y rutas generales de operaciones navales",
+        "Imagen/ilustración de una estación de inteligencia aliada (1942): mesa de trabajo, papeles, cifrados, operadores",
+        "Diagrama conceptual de señales con una etiqueta ambigua «AF» y una variable de agua, mostrando una prueba por contraste"
+      ]
+    },
+    {
+      "id": "step10_reconexion",
+      "text": "Entonces, regresemos a lo que nos preocupa: no es sólo que un agente “tome decisiones”, sino si esas decisiones quedan registradas de forma útil y si existe una política verificable de cuándo debe abstenerse. Porque cuando no estamos mirando, la brecha entre “lo que parece” y “lo que ocurrió” se vuelve un vacío de atribución: nadie está seguro de quién decidió qué, ni cuándo fue seguro que no decidiera.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Midway: mesa con mapas y fichas; contraste con una pantalla moderna de paneles de control; un cursor que se mueve sin que nadie lo confirme en tiempo real."
+      ]
+    },
+    {
+      "id": "hook_problema",
+      "text": "Pensemos en una situación cotidiana: tú delegas una tarea —en el trabajo, en un hogar inteligente, en un sistema que controla algo físico— y el sistema actúa mientras tú estás ocupado. Después viene la pregunta simple, casi infantil: “¿Quién comprobó esto?”. Y la respuesta real suele ser incómoda: lo comprobó el sistema… o lo promedió un reporte… o lo supuso una política que nadie revisó a tiempo.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Persona frente a un panel ‘aprobado’; aparece el texto: “¿Quién comprobó esto?” como subtítulo recurrente."
+      ]
+    },
+    {
+      "id": "hook_cita",
+      "text": "Mi lectura de este dilema es: la medición no puede ser sólo “si el modelo hizo algo”; tiene que ser también “si el sistema eligió el momento correcto de no intervenir”. Si no medimos eso, la confianza se vuelve frágil: mide el lugar equivocado.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Una balanza con dos platillos: ‘medir rendimiento’ vs ‘medir abstención’; el platillo de abstención está vacío o tachado."
+      ]
+    },
+    {
+      "id": "idea_A",
+      "text": "El primer pilar es el vacío de atribución: delegar crea un desajuste entre lo que la gente declara y lo que el sistema efectivamente hizo. Y ese desajuste no es una rareza filosófica; aparece cuando el mundo real no se deja describir sólo con “uso consciente”.\n\nEn Midway, el problema no era solamente descifrar un mensaje. Era empujar una identificación que estaba en disputa con señales parciales. El sistema de evidencia no era un sensor perfecto: era un conjunto de traducciones, contexto y apuestas sobre qué significaba cada fragmento. Eso obliga a algo que hoy suena técnico pero es humano: discriminar hipótesis con la menor “cámara de eco” posible. Si tus señales no distinguen entre alternativas relevantes, terminas creyendo en la historia que mejor encaja, no necesariamente en la verdadera.\n\nTrasladado a sistemas modernos, el equivalente es una pregunta de gobernanza: cuando evaluamos “uso de IA”, ¿estamos midiendo lo que importa para decisiones concretas? Porque una encuesta pública, por ejemplo, puede volverse muy buena para medir “quién dijo que usó” una herramienta, y muy mala para medir “quién delegó” una parte de la decisión donde la IA intervenía sin que la persona lo percibiera.\n\nO sea: medir exposición y medir sustitución de tareas o efectos laborales no siempre coinciden. Y cuando no coinciden, la política pública —y también las políticas internas en empresas— se construye sobre una evidencia que no discrimina lo embebido. El resultado es un tipo particular de ceguera: lo declarable parece más importante que lo decisional.",
+      "evidence_ids": [
+        "atus-ia-module"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Gráfico: ‘declarado’ vs ‘decidido’, con intersección parcial; estilo de mapa de señales (tipo constelación) que no cubre todo el espacio de hipótesis."
+      ]
+    },
+    {
+      "id": "dato_1",
+      "text": "Dato con límite: en Estados Unidos se preparó un módulo de preguntas sobre IA para la American Time Use Survey, con comentarios abiertos y una estimación de carga; pero el trámite descrito todavía no aporta resultados ni muestra evidencia de que el cuestionario capture uso indirecto, intensidad, sustitución de tareas o efectos laborales.",
+      "evidence_ids": [
+        "atus-ia-module"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pantalla con formulario ‘módulo de IA’; debajo, un recuadro gris: ‘no hay resultados aún’ y ‘no se valida que capture uso indirecto’."
+      ]
+    },
+    {
+      "id": "idea_B_explica",
+      "text": "El segundo pilar es el control de iniciación: la abstención como comportamiento crítico. Ojo con esto: casi siempre nos obsesiona “qué tan bien responde el modelo”, pero en agentes —especialmente en ambientes con efectos físicos, acceso a herramientas o decisiones que cambian el estado del mundo— el punto no es sólo acertar. Es decidir cuándo no actuar.\n\nHasta aquí, mi intuición era: si el sistema es bueno, va a equivocarse poco. Pero la evidencia sugiere otra cosa: el desempeño “cuando hay instrucción” puede esconder fallas justo donde nadie quiere que falle: cuando el agente interpreta que ya puede actuar por su cuenta. Esa diferencia es el borde donde la confianza se rompe.\n\nEn términos de atribución, la abstención también importa. Si no hay un canal claro para registrar “cuándo decidió intervenir” y “cuándo eligió rechazar o esperar”, luego el humano sólo ve una secuencia de acciones ya consumadas, no el criterio. Entonces el debate se vuelve post-mortem, parecido a discutir qué sospecha tenías cuando el daño ya ocurrió.\n\nY aquí entra el tipo de evidencia que necesitamos: evidencia que distinga conducta bajo instrucción vs conducta sin instrucción, y que trate la seguridad como parte del comportamiento, no como un apéndice. Si el sistema aprende o infiere cuándo actuar, esa política debe poder verificarse con métricas que penalicen el inicio equivocado, no sólo el resultado final en tareas cómodas.",
+      "evidence_ids": [
+        "greenhouse-abstention"
+      ],
+      "memory_claim_indices": [
+        2
+      ],
+      "visual_queries": [
+        "Invernadero conectado a un ESP32 como diagrama; dos modos: ‘con instrucción’ y ‘sin instrucción’; una tasa de ‘rechazo’ destacada."
+      ]
+    },
+    {
+      "id": "idea_B_desafio",
+      "text": "Microdesafío: muchos marcos de evaluación se quedan con lo conversacional o con el éxito cuando alguien “le dice” qué hacer. Pero en seguridad, lo relevante suele ser el momento de arranque. Si el sistema inicia acciones sin instrucción con demasiada frecuencia, entonces el riesgo puede dominar el resto del rendimiento.",
+      "evidence_ids": [
+        "greenhouse-abstention"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Semáforo: ‘actuar’ parpadea; ‘abstenerse’ está en verde y debería tener prioridad."
+      ]
+    },
+    {
+      "id": "dato_2",
+      "text": "Dato con límite: un estudio sobre modelos cuantizados controlando un invernadero reportó que, aunque ejecutaban entre 65% y 100% de órdenes conversacionales, su desempeño al iniciar acciones sin instrucción cayó a un rango mucho más bajo (entre 0,4% y 64,6%). Además, un controlador basado en reglas igualó al segundo mejor modelo y mostró la mejor conducta de rechazo, manteniendo un piso crítico de seguridad durante la operación de campo.",
+      "evidence_ids": [
+        "greenhouse-abstention"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Comparación de barras: ‘órdenes conversacionales’ alto vs ‘inicio sin instrucción’ bajo; icono de ‘rechazo’ como escudo."
+      ]
+    },
+    {
+      "id": "idea_C",
+      "text": "Tercer pilar: cómo se transforma esto en gobernanza real. Porque si juntamos los dos anteriores —evidencia de uso que no distingue lo embebido, y abstención que no está medida como prioridad— obtenemos el mismo patrón que parece repetirse: sistemas que “se ven bien” y, aun así, pueden fallar en el tramo decisional.\n\nEn Midway, la maniobra era convertir una observación ambigua en una señal más discriminante, sin presumir que la incertidumbre desaparecía. Pero lo interesante no es el engaño en sí: es la disciplina de diseñar evidencia que cierre grietas específicas. En agentes modernos, diseñar evidencia útil significa algo parecido, aunque con ética y seguridad: probar con condiciones que revelen cuándo el sistema está tomando decisiones embebidas, y cuándo intenta actuar sin que exista autorización inequívoca.\n\nAquí la tesis evoluciona: no basta con preguntar “¿acertó?”. La pregunta operativa para atribución y corrección es doble: (1) ¿se puede registrar qué ocurrió y bajo qué condiciones, de forma que esa evidencia sea informativa para corregir? y (2) ¿existe una política verificable de cuándo abstenerse, medida como comportamiento, no como manual de instrucciones?\n\nPorque la medición, si se hace mal, puede sesgar la gobernanza hacia lo visible y lo declarable. El sistema reporta “lo que le pediste mirar”, y la organización decide sobre eso. Mientras tanto, el tramo peligroso queda fuera de cuadro: decisiones embebidas, inicio de acciones sin instrucción, y los momentos en que nadie estaba mirando porque “todo parecía bajo control”.\n\nLa consecuencia humana es menos dramática de lo que imaginamos, pero más seria: se vuelve normal corregir demasiado tarde. No es que falten reglas; es que las reglas se evalúan con indicadores que no discriminaron el tipo de falla relevante.\n\nY aquí aparece una paradoja ligeramente irónica: muchas evaluaciones buscan “promedios” porque son fáciles. Pero la seguridad suele ser fraccional. El problema no es el promedio de aciertos; es la cola de errores: los casos raros, cuando el agente toma control donde tú no esperabas que lo tomara, o cuando “rechazar” habría sido la acción correcta y no ocurrió.\n\nAsí que, si te quedas con una sola idea, que sea esta: la confianza por rendimiento necesita evidencia útil y control de iniciación medidos juntos. Si sólo tienes una columna —rendimiento— sin la otra —abstención registrable y verificable— el “¿quién comprobó esto?” se contesta con fe, no con trazabilidad.",
+      "evidence_ids": [
+        "atus-ia-module",
+        "greenhouse-abstention"
+      ],
+      "memory_claim_indices": [
+        3
+      ],
+      "visual_queries": [
+        "Tabla de dos columnas: ‘evidencia útil (decisión/condición)’ y ‘política de abstención (cuándo no actuar)’; ambas con casillas que se tapan o quedan vacías."
+      ]
+    },
+    {
+      "id": "story_payoff",
+      "text": "Volvamos a Midway con otra luz. La maniobra de la “avería de agua” no resolvió la batalla por arte de magia: resolvió una grieta específica en la evidencia. La correlación entre «AF» y Midway ya existía, pero seguía la disputa sobre cuál hipótesis terminaría siendo la correcta. Al forzar una respuesta del adversario sobre la escasez, la inteligencia japonesa terminó publicando un vínculo con el reporte de agua, y la estación FRUMEL difundió esa traducción. En otras palabras: la controversia se cerró porque la señal diseñada para discriminar hipótesis produjo una confirmación utilizable.\n\nY ojo: esto no prueba que “hacer experimentos” siempre funcione en agentes modernos; su valor como analogía es estructural, no operativo.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        4
+      ],
+      "visual_queries": [
+        "Mapa con dos hipótesis tachadas; una flecha que dice “se confirma con la señal”; recorte de texto: “confirmó”"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Lo que se queda, para gobernanza de agentes, es menos heroico y más exigente: no basta con medir si “la IA acierta”. Necesitamos evidencia que registre la decisión bajo condiciones reales (incluida la parte embebida) y métricas que traten la abstención —cuándo no iniciar— como un comportamiento de seguridad. Si no, el “¿quién comprobó esto?” se contesta tarde y con culpa repartida.\n\nSi te interesa este tipo de pensamiento para evaluar sistemas antes del daño, sígueme y suscríbete. ¿Qué indicador te gustaría ver siempre: rendimiento promedio, o trazabilidad de cuándo el sistema tomó (o no tomó) el control?",
+      "evidence_ids": [
+        "atus-ia-module",
+        "greenhouse-abstention"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pregunta en pantalla: “¿Quién comprobó esto?”; dos columnas: ‘evidencia útil’ vs ‘abstención verificable’"
+      ]
+    }
+  ],
+  "opening_last_sentence": "Y en ese filo, cualquier certeza prematura podía costar la calma… o la vida.",
+  "seo_title": "Gobernanza de agentes y evidencia útil: por qué importa la “",
+  "seo_description": "Cierre del episodio: Midway muestra cómo una señal diseñada puede discriminar hipótesis; aplicado a agentes, la confianza requiere evidencia trazable de lo que/",
+  "seo_keywords": [
+    "gobernanza de IA",
+    "agentes autónomos",
+    "abstención",
+    "atribución de decisiones de IA"
+  ]
+}

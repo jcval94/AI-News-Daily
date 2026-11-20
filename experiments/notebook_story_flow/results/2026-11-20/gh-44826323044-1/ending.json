@@ -1,0 +1,35 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "Volvamos a Midway con otra luz. La maniobra de la “avería de agua” no resolvió la batalla por arte de magia: resolvió una grieta específica en la evidencia. La correlación entre «AF» y Midway ya existía, pero seguía la disputa sobre cuál hipótesis terminaría siendo la correcta. Al forzar una respuesta del adversario sobre la escasez, la inteligencia japonesa terminó publicando un vínculo con el reporte de agua, y la estación FRUMEL difundió esa traducción. En otras palabras: la controversia se cerró porque la señal diseñada para discriminar hipótesis produjo una confirmación utilizable.\n\nY ojo: esto no prueba que “hacer experimentos” siempre funcione en agentes modernos; su valor como analogía es estructural, no operativo.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        4
+      ],
+      "visual_queries": [
+        "Mapa con dos hipótesis tachadas; una flecha que dice “se confirma con la señal”; recorte de texto: “confirmó”"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Lo que se queda, para gobernanza de agentes, es menos heroico y más exigente: no basta con medir si “la IA acierta”. Necesitamos evidencia que registre la decisión bajo condiciones reales (incluida la parte embebida) y métricas que traten la abstención —cuándo no iniciar— como un comportamiento de seguridad. Si no, el “¿quién comprobó esto?” se contesta tarde y con culpa repartida.\n\nSi te interesa este tipo de pensamiento para evaluar sistemas antes del daño, sígueme y suscríbete. ¿Qué indicador te gustaría ver siempre: rendimiento promedio, o trazabilidad de cuándo el sistema tomó (o no tomó) el control?",
+      "evidence_ids": [
+        "atus-ia-module",
+        "greenhouse-abstention"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Pregunta en pantalla: “¿Quién comprobó esto?”; dos columnas: ‘evidencia útil’ vs ‘abstención verificable’"
+      ]
+    }
+  ],
+  "seo_title": "Gobernanza de agentes y evidencia útil: por qué importa la “",
+  "seo_description": "Cierre del episodio: Midway muestra cómo una señal diseñada puede discriminar hipótesis; aplicado a agentes, la confianza requiere evidencia trazable de lo que/",
+  "seo_keywords": [
+    "gobernanza de IA",
+    "agentes autónomos",
+    "abstención",
+    "atribución de decisiones de IA"
+  ]
+}

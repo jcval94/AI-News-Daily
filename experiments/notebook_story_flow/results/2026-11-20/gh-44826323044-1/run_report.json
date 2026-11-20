@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "experiment": "notebook_story_flow",
+  "episode_date": "2026-11-20",
+  "publishable": false,
+  "status": "rejected_factual",
+  "notebook_sha256": "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16",
+  "started_at_utc": "2026-11-20T22:08:59.424578+00:00",
+  "model": "gpt-5.4-nano",
+  "max_logical_calls": 12,
+  "max_attempts_per_call": 3,
+  "words_per_minute": 150,
+  "experiment_code_sha": "55414eb6a62fab9b41515e84e7f2c7c0f1b73956",
+  "control_workflow_run_id": "44825431706",
+  "control_code_sha": "55414eb6a62fab9b41515e84e7f2c7c0f1b73956",
+  "news_snapshot_sha256": "0f9f10a2203654ab89d9291a3db6081e0ad9b2a0bf7b88127e16b29101872882",
+  "profile_hashes": {
+    "voice": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+    "discourse": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375"
+  },
+  "script_sha256": "6dacfd382a327a435affd086e19e72a23ba6ad0c2e011fbf2ebf0102a02eed83",
+  "word_count": 1594,
+  "estimated_duration_seconds": 642,
+  "opening_seconds": 129,
+  "first_current_evidence_seconds": 202,
+  "historical_payoff_seconds": 556,
+  "media_slot_count": 86,
+  "reason": "Factual review did not pass",
+  "finished_at_utc": "2026-11-20T22:10:40.884691+00:00",
+  "attempted_calls": 8,
+  "emitted_usage": {
+    "prompt_tokens": 80251,
+    "output_tokens": 10616,
+    "reasoning_tokens": 0,
+    "total_tokens": 90867
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 7.2,
+  "invented_details": [
+    "En el guion se dice: “Imagina estar del otro lado...” y “La incertidumbre no llega de la nada; viene embebida en el sistema de señales.” (exceso de dramatización/encuadre psicológico no respaldado por las verified_claims y además introduce premisa interpretativa adicional sobre “incertidumbre” como propiedad del sistema).",
+    "En el guion se dice: “Entonces, la pregunta incómoda —la que sigue viva...— es cómo diseñar evidencia para que discrimine...” y “Lo fascinante es que el sistema no solo trataba de ‘saber’; trataba de discriminar.” (interpretación editorial convertida en caracterización conductual del sistema; no es verificable con las verified_claims).",
+    "En el guion se afirma: “Los registros conservados que se reportan en las reconstrucciones también indican que la correlación entre «AF» y Midway ya existía antes de la maniobra...” (las verified_claims hablan de correlación previa y de que la señal resolvió controversia, pero el guion lo presenta como una propiedad de “los registros conservados” sin recalcar la incertidumbre documental que el propio dossier señala: no se conserva la orden original)."
+  ],
+  "source_issues": [
+    "Memoria seleccionada: hay una incertidumbre declarada en verified_claims (no se conserva la orden original que instruyó la emisión del mensaje; la reconstrucción depende de interceptos y testimonios). El guion no preserva ese límite y presenta el episodio como si el mecanismo/causalidad quedara totalmente cerrado (“hizo que... transmitiera en claro” + conclusiones sin recordatorio del límite documental).",
+    "El guion usa la memoria como antecedente analógico para gobernanza moderna, pero no siempre distingue con claridad qué parte es analogía (respalda “diseñar pruebas informativas”) y qué parte se presenta como transferencia directa de estrategia operativa; el riesgo está en que algunas frases suenan a inferencia más fuerte que la permitida por el propio analogy_limits.",
+    "Para actualidad (dos noticias) el guion hace una correspondencia razonable con los ledger: “trámite y carga estimada sin resultados” y “tasa de caída al actuar sin instrucción, mejor rechazo con reglas”. No obstante, parte del lenguaje del guion puede ampliarse como si concluyera generalización (“lo relevante suele ser el momento de arranque”, “entonces el riesgo puede dominar...”) y eso excede lo que el resumen del estudio demuestra (no generaliza)."
+  ],
+  "unsupported_claims": [
+    "“Imagina estar del otro lado...” y “La incertidumbre no llega de la nada; viene embebida en el sistema de señales.” (no es un hecho de las verified_claims; es interpretación/escena).",
+    "“Y ahí empieza el problema que me parece más humano de todo: no era un ‘descifrar’ único y limpio, sino empujar una identificación que estaba en disputa.” (valoración/interpretación del “problema”; no es verificable como caracterización factual).",
+    "“Entonces, la pregunta... es cómo diseñar evidencia para que discrimine...” (prescriptivo: no es hecho; además se formula como “pregunta incómoda” ligada a continuidad histórica sin respaldo).",
+    "“Lo fascinante es que el sistema no solo trataba de ‘saber’; trataba de discriminar...” (interpretación de intención/función del sistema no respaldada por las verified_claims).",
+    "“Los registros conservados que se reportan en las reconstrucciones también indican que...” (usa el peso de “registros conservados” sin incorporar el límite explícito de que la orden original no se conserva).",
+    "“Si el sistema inicia acciones sin instrucción con demasiada frecuencia, entonces el riesgo puede dominar el resto del rendimiento.” (hipótesis no respaldada como regla general por el estudio; requiere al menos presentarlo como posibilidad, no como consecuencia casi directa).",
+    "“La consecuencia humana... suele ser que la corrección llega tarde...” (generalización sobre consecuencias; el ledger no cubre esto como hecho).",
+    "“Si te quedas con una sola idea... la confianza por rendimiento necesita evidencia útil y control de iniciación medidos juntos.” (prescriptivo general; no es hecho y el guion no lo marca como hipótesis)."
+  ],
+  "repair_instructions": [
+    "Para el tramo histórico (Midway): mantener las verified_claims pero incorporar explícitamente la incertidumbre del dossier: mencionar que no se conserva la orden original y que la reconstrucción depende de interceptos y fuentes posteriores (sin afirmar causalidad cerrada).",
+    "Separar lenguaje analógico de inferencias: cuando uses Midway como paralelo, redactar frases como hipótesis/metáfora de diseño (“ilustra cómo...”) y evitar formulaciones que atribuyan intencionalidad operativa (“trataba de discriminar”).",
+    "Limitar las generalizaciones modernas: donde el guion convierte hallazgos de laboratorio (abstención vs instrucción) en regla casi general (“entonces el riesgo puede dominar...”, “suele ser... corrección llega tarde”), reformular como hipótesis razonable o como “podría” dentro de uncertainty/allowed_interpretations, sin convertirlo en consecuencia demostrada.",
+    "Preservar los límites ya incluidos en analogy_limits: no presentar “replicar el engaño” como transferencia; ya se menciona, pero reforzar con redacción que confirme que no es protocolo operativo equivalente y que el objetivo del paralelo es solo el concepto de “evidencia diseñada para discriminar hipótesis”.",
+    "En el tramo de noticias/ledger: asegurar que cualquier afirmación adicional sobre lo que “podría” o “probablemente” implican los datos está explícitamente en términos de interpretación/hipótesis (y no como hecho)."
+  ]
+}
