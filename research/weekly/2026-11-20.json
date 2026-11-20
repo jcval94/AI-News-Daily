@@ -1,0 +1,518 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-11-20",
+  "window": {
+    "from": "2026-11-14",
+    "to": "2026-11-20"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "La verificación útil debe consultar evidencia independiente, no la misma evidencia que consumió el generador",
+      "why_it_matters": "FinVeriQA muestra que un validador puede aprobar respuestas internamente coherentes pero atribuidas a la empresa equivocada; contrastar con la fuente original detecta muchos más errores que revisar el contexto compartido."
+    },
+    {
+      "summary": "La memoria compleja deja de ser una apuesta por defecto",
+      "why_it_matters": "BRIDGE alcanza o supera baselines complejos con notas encadenadas, recuperación híbrida y orden cronológico, pero sus nuevas pruebas revelan que ninguna representación gana en todas las tareas de aplicación de reglas y patrones."
+    },
+    {
+      "summary": "La seguridad de agentes se desplaza a identidades, capacidades y trazas verificables",
+      "why_it_matters": "Los experimentos sobre frameworks y sistemas descentralizados encuentran invocaciones no autorizadas, envenenamiento de memoria y delegación maliciosa; las defensas eficaces preservan límites de autorización y evidencia a través de cada salto."
+    },
+    {
+      "summary": "Servir más rápido exige decisiones dependientes de hardware, carga y estructura del contexto",
+      "why_it_matters": "SpecSearch evita configuraciones especulativas que empeoran bajo alta concurrencia, mientras SkimPrefill selecciona unidades completas antes del prefill y reduce drásticamente el trabajo sobre contextos multimodales largos."
+    },
+    {
+      "summary": "La observabilidad agentic empieza a apoyarse en checkpoints interrogables y auditoría causal",
+      "why_it_matters": "DiscoveryAgent conserva estados reproducibles para que auditores y expertos rastreen afirmaciones y errores; CyberGym demuestra que un pass superficial puede confundir el fallo objetivo con otro defecto."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2611.25071",
+      "title": "FinVeriQA: Financial Research Agents for Question Answering: Routing, Retrieval, MCP Tool Use, and Provenance-Aware Evidence Verification",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-18",
+      "updated_at": null,
+      "authors": [
+        "Meenakshi Rajpurohit",
+        "Anna Phan",
+        "Ravikumar Komandur Narayanan",
+        "Gunanidhi Ramakrishnan",
+        "Nathan Howland"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.25071",
+      "external_ids": {
+        "arxiv": "2611.25071"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "agents",
+        "tool_use",
+        "evaluation",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Prototipo abierto de investigación financiera que asigna a componentes distintos el ruteo, el cálculo, la recuperación, la redacción citada y la validación. Expone el flujo mediante MCP y estudia cuándo la verificación comparte demasiado contexto con el generador.",
+      "what_changed": "Convierte el debate genérico sobre agentes verificadores en una comparación controlada de ruteadores, cálculo con LLM frente a Python y verificadores con evidencia compartida frente a evidencia original.",
+      "why_it_matters": "En producción, coherencia y citas existentes no bastan: un error de identidad o una fuente corrupta puede propagarse por todo el pipeline y superar validadores que sólo releen las mismas notas.",
+      "evidence": [
+        "El ruteador compacto Laya supera a Mistral-7B en decisión de ruta (0.85 frente a 0.52).",
+        "Python acierta 100% de 100 cálculos financieros frente a 29% de Mistral-7B.",
+        "La recuperación híbrida logra 76% Hit@5 en 50 preguntas sobre filings.",
+        "Ante una cifra corrupta, contrastar con el pasaje original detecta 77% de errores frente a 35% con evidencia compartida."
+      ],
+      "limitations": [
+        "El dominio financiero y las muestras de evaluación son relativamente pequeños.",
+        "El caso AMD/NVIDIA/Alphabet demuestra que el propio prototipo aún puede aprobar atribuciones incorrectas.",
+        "Los resultados con datos de mercado vivos pueden variar al repetirse."
+      ],
+      "practical_applications": [
+        "retrieval",
+        "agents",
+        "evaluation",
+        "safety"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.22179",
+      "title": "RAG in a Trenchcoat: When Minimal Memory Is Enough for Agentic Systems, and When It Isn't",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-17",
+      "updated_at": null,
+      "authors": [
+        "Jingyu Liu",
+        "Zongze Li",
+        "Zach Xu",
+        "Zhanhui Zhou",
+        "Tahseen Rabbani",
+        "Dawn Song",
+        "Ce Zhang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.22179",
+      "external_ids": {
+        "arxiv": "2611.22179"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "agents",
+        "evaluation",
+        "memory"
+      ],
+      "summary": "BRIDGE combina notas de observación encadenadas, recuperación híbrida BM25-coseno y renderizado cronológico con una sola llamada de LLM por ingestión o consulta. Igualar baselines complejos sirve para aislar qué complejidad aporta valor.",
+      "what_changed": "Además de comparar memoria por recuperación, introduce pruebas donde la respuesta exige aplicar una regla o patrón recordado que la consulta no menciona, evaluando memoria en el punto de acción.",
+      "why_it_matters": "Antes de añadir grafos, reflexión o supersesión, los equipos deberían demostrar una ganancia sobre un baseline mínimo y medir si el agente usa la memoria correctamente, no sólo si recupera evidencia relevante.",
+      "evidence": [
+        "Alcanza paridad dentro del intervalo bootstrap con el SOTA previo en LongMemEval-S y BEAM.",
+        "Supera el mejor baseline de memoria en EverMemBench por 5.7–6.3 puntos con el mismo lector.",
+        "Usa aproximadamente 5–7K tokens de prompt del lector por consulta.",
+        "En cinco pruebas adversariales por 20 escenarios, los extractores atómicos ganan aplicación de reglas y BRIDGE gana inducción de patrones."
+      ],
+      "limitations": [
+        "Los benchmarks estándar pueden favorecer tareas de recuperación sobre acciones reales.",
+        "Las nuevas pruebas adversariales contienen sólo 100 escenarios.",
+        "Ninguna arquitectura gana universalmente y los resultados dependen de cómo se presenta la regla al lector."
+      ],
+      "practical_applications": [
+        "retrieval",
+        "agents",
+        "evaluation",
+        "design"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.25056",
+      "title": "Attacks and Defenses in Decentralized Multi-Agent Systems with Hop-by-Hop Task Decomposition and Delegation",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-18",
+      "updated_at": null,
+      "authors": [
+        "Matthew D. Laws",
+        "Maria Lazou",
+        "Alina Oprea",
+        "Cristina Nita-Rotaru"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.25056",
+      "external_ids": {
+        "arxiv": "2611.25056"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "safety",
+        "guardrails",
+        "observability",
+        "architecture"
+      ],
+      "summary": "Modelo de amenazas y protocolo de trazas verificables para agentes administrados por entidades distintas que descomponen y delegan tareas salto a salto.",
+      "what_changed": "Mide ataques de integridad, disponibilidad y confidencialidad en colaboración descentralizada y añade atribución criptográfica de cada acción, no sólo filtros de contenido o instrucciones de sistema.",
+      "why_it_matters": "Cuando ningún operador ve la trayectoria completa, una traza firmada y auditable puede ser el único mecanismo común para investigar costos inflados, exfiltración o sabotaje y asignar responsabilidad.",
+      "evidence": [
+        "Un solo agente malicioso causa hasta 100% de fallos de tarea.",
+        "Los ataques elevan tokens hasta 7.7 veces y tiempo hasta 3.2 veces.",
+        "Se exfiltra hasta 94% de tareas previas relevantes de agentes benignos.",
+        "El auditor detecta y atribuye 98% de ataques en HiddenBench con sobrecosto de latencia descrito como despreciable."
+      ],
+      "limitations": [
+        "HiddenBench y dos familias de modelos no representan todos los despliegues interorganizacionales.",
+        "Las trazas verificables no impiden por sí mismas acciones maliciosas.",
+        "La protección depende de que todos los participantes adopten y conserven el protocolo."
+      ],
+      "practical_applications": [
+        "safety",
+        "observability",
+        "agents",
+        "design"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.21259",
+      "title": "Evaluating Authorization and Trust Boundaries in Agentic Orchestration Frameworks",
+      "type": "analysis",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-16",
+      "updated_at": null,
+      "authors": [
+        "Sahaya Jestus Lazer",
+        "Kshitiz Aryal",
+        "Maanak Gupta",
+        "Elisa Bertino"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.21259",
+      "external_ids": {
+        "arxiv": "2611.21259"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "memory",
+        "safety",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Doce experimentos comparables sobre LangChain, LangGraph, AutoGen y OpenClaw examinan inyección, acceso y ejecución no autorizados, memoria envenenada y ataques de confianza o identidad entre agentes.",
+      "what_changed": "Evalúa explícitamente los límites de orquestación con el mismo modelo y mapea los casos al OWASP Top 10 para aplicaciones agentic, separando riesgos de autorización de riesgos de información no confiable.",
+      "why_it_matters": "Elegir un framework no sustituye una política de capacidades. La autorización debe acompañar identidad, herramienta, estado persistente y delegación en cada transición.",
+      "evidence": [
+        "Entradas adversarias inducen invocaciones de herramientas no autorizadas.",
+        "Encadenamiento de herramientas, validación obsoleta del filesystem e instrucciones codificadas exponen límites débiles.",
+        "La memoria envenenada altera respuestas incluso cuando no existe una violación clásica de control de acceso.",
+        "Autorización explícita, capacidades controladas, contención del filesystem y salvaguardas de ejecución bloquean operaciones específicas en configuraciones protegidas."
+      ],
+      "limitations": [
+        "Doce experimentos y un solo modelo base limitan la generalización.",
+        "No cuantifica tasas agregadas de éxito ni costos de las defensas en el resumen.",
+        "Los frameworks evolucionan rápido y las configuraciones futuras pueden diferir."
+      ],
+      "practical_applications": [
+        "safety",
+        "agents",
+        "design"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.22296",
+      "title": "SpecSearch: Towards Hardware-Aware Efficient Speculative Decoding",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-17",
+      "updated_at": null,
+      "authors": [
+        "Selin Yildirim",
+        "Ali Zeyrek",
+        "Deming Chen"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.22296",
+      "external_ids": {
+        "arxiv": "2611.22296"
+      },
+      "topics": [
+        "serving",
+        "inference",
+        "llm_production",
+        "evaluation"
+      ],
+      "summary": "Motor de búsqueda de configuración que elige estrategia de decodificación, longitud de borrador y precisión según carga, GPU y memoria; un predictor entrenado con calibraciones de otros equipos evita calibrar cada GPU destino.",
+      "what_changed": "Trata speculative decoding como un problema de configuración por combinación workload-hardware y demuestra que una técnica rápida a baja concurrencia puede ser peor que autoregresión bajo otra carga.",
+      "why_it_matters": "Activar speculative decoding globalmente puede reducir throughput. El serving necesita políticas condicionadas por concurrencia, longitud de salida y hardware, con fallback explícito a decodificación autoregresiva.",
+      "evidence": [
+        "En RTX 5090, DFlash pasa de 3.50 veces el throughput autoregresivo a baja concurrencia a 0.76 veces a alta concurrencia con salidas cortas.",
+        "Con calibración completa, SpecSearch promedia 2.01 veces AR y 1.36 veces SD en RTX 5090, H100, L40 y MI300X sobre vLLM.",
+        "El predictor sin calibración de la GPU destino mejora 1.30 veces sobre SD.",
+        "El predictor conserva 97.36% del throughput de la búsqueda con calibración completa."
+      ],
+      "limitations": [
+        "Los resultados se concentran en cuatro GPUs y vLLM.",
+        "El predictor depende de calibraciones representativas y de un modelo Qwen3-4B adaptado.",
+        "Cambios de kernel, modelo o distribución de carga pueden invalidar la selección."
+      ],
+      "practical_applications": [
+        "serving",
+        "deployment",
+        "evaluation"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.24431",
+      "title": "Let a Small Model Read First: Faster Prefill for Long Interleaved Image-Text Inputs",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-18",
+      "updated_at": null,
+      "authors": [
+        "Xiaolin Lin",
+        "Kai-Chiang Wu",
+        "Bing Li",
+        "Grace Li Zhang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.24431",
+      "external_ids": {
+        "arxiv": "2611.24431"
+      },
+      "topics": [
+        "retrieval",
+        "serving",
+        "inference",
+        "llm_production",
+        "architecture"
+      ],
+      "summary": "SkimPrefill usa una capa temprana y una cabeza de atención de un modelo híbrido pequeño para puntuar imágenes o párrafos completos, conservando sólo las unidades relevantes antes de ejecutar el prefill del modelo objetivo.",
+      "what_changed": "Evita que el selector genere una respuesta o recorra todas sus capas y reutiliza un selector no entrenado para modelos objetivo de familias distintas.",
+      "why_it_matters": "En asistentes sobre documentos multimodales muy largos, seleccionar unidades antes del modelo grande reduce TTFT y costo sin requerir modificaciones del modelo servido.",
+      "evidence": [
+        "Evalúa 128K tokens en 19 datasets y cinco tipos de tarea de MMLongBench.",
+        "Conservando 10% de tokens, acelera prefill 3.7 veces en Qwen3.5-9B, 11.6 veces en Gemma-4-12B y 8.2 veces en Qwen3-VL-32B.",
+        "Mantiene la precisión promedio reportada.",
+        "El mismo selector sirve a objetivos de diferentes familias."
+      ],
+      "limitations": [
+        "La evidencia se limita a entradas intercaladas imagen-texto y MMLongBench.",
+        "Podría perder información distribuida entre muchas unidades.",
+        "Las ganancias dependen de que la evidencia esté concentrada en pocas imágenes o párrafos."
+      ],
+      "practical_applications": [
+        "retrieval",
+        "serving",
+        "deployment",
+        "design"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.25855",
+      "title": "HabitusMem: Belief Memory over Evolving User Preferences for LLM Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-19",
+      "updated_at": null,
+      "authors": [
+        "Yifan Lu",
+        "Gaoyang Guo",
+        "Wen Chen",
+        "Ziyun Zou",
+        "Jian Wu",
+        "Han Zhu",
+        "Imran Razzak"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.25855",
+      "external_ids": {
+        "arxiv": "2611.25855"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "memory",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Reformula la memoria personalizada como creencias revisables sobre preferencias, cada una con evidencia, alcance y estado, en lugar de fragmentos históricos que el agente debe reconciliar al responder.",
+      "what_changed": "Un writer entrenado condiciona la escritura y selección de creencias por la solicitud actual, distinguiendo vigencia y ámbito de una preferencia para un agente congelado.",
+      "why_it_matters": "La personalización fiable requiere representar incertidumbre, alcance y obsolescencia; recuperar una preferencia antigua semánticamente similar puede producir acciones incorrectas.",
+      "evidence": [
+        "Obtiene el mejor resultado entre sistemas comparados en PersonaMem-v2 y VitaBench 2.0.",
+        "La mejora se reproduce en dos familias de agentes.",
+        "Los análisis controlados atribuyen la ganancia de respuesta al condicionamiento por la solicitud.",
+        "Tareas auxiliares de entrenamiento mejoran uso de herramientas."
+      ],
+      "limitations": [
+        "El resumen no informa magnitudes absolutas de mejora.",
+        "La escritura entrenada añade costo y dependencia de los benchmarks de preferencias.",
+        "Creencias inferidas sobre usuarios plantean riesgos de privacidad y corrección que el trabajo resumido no cuantifica."
+      ],
+      "practical_applications": [
+        "agents",
+        "evaluation",
+        "design"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.21950",
+      "title": "DiscoveryAgent: A Framework for Scientist-centric Agentic AI",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-16",
+      "updated_at": null,
+      "authors": [
+        "Owen Queen",
+        "Ioana Ciuca",
+        "Emma Dann",
+        "Jean Somalwar",
+        "Carine You",
+        "Steven Dillmann",
+        "Viraj Manwadkar",
+        "Evan Gorrell",
+        "Harrison G Zhang",
+        "Jonathan K Pritchard",
+        "Risa H Wechsler",
+        "James Zou"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.21950",
+      "external_ids": {
+        "arxiv": "2611.21950"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "observability",
+        "architecture"
+      ],
+      "summary": "Framework de investigación por rondas donde científicos pueden seleccionar o reemplazar hipótesis y agentes auditores interrogan checkpoints para rastrear afirmaciones, reproducir análisis y orientar la siguiente iteración.",
+      "what_changed": "Hace del checkpoint un objeto de auditoría navegable y combina autonomía con puntos explícitos de steering humano, en vez de revisar sólo el reporte final de un agente científico.",
+      "why_it_matters": "Los workflows agentic de alto riesgo necesitan estados reproducibles, trazabilidad de decisiones y momentos claros para intervención; una conversación final no ofrece suficiente evidencia para auditar.",
+      "evidence": [
+        "Produce el mejor clasificador de estrellas variables entre los baselines evaluados.",
+        "Con steering humano, el predictor de variantes de proteína sólo es superado por uno de 106 baselines ProteinGym.",
+        "Científicos con agentes auditores identifican 14 veces más errores válidos que con revisión manual.",
+        "Tres casos de estudio cubren ciencias físicas, sociales y de vida."
+      ],
+      "limitations": [
+        "Los resultados dependen de dominios y expertos específicos.",
+        "La métrica de errores identificados no equivale a prevención de errores antes de actuar.",
+        "El costo operativo de checkpoints y auditoría no aparece cuantificado en el resumen."
+      ],
+      "practical_applications": [
+        "agents",
+        "observability",
+        "evaluation",
+        "design"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.25790",
+      "title": "On the Reliability of CyberGym Evaluation: Task Material Consistency and Reference-Target Identity",
+      "type": "analysis",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-19",
+      "updated_at": null,
+      "authors": [
+        "Yule Ding",
+        "Hongzhen Wu"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.25790",
+      "external_ids": {
+        "arxiv": "2611.25790"
+      },
+      "topics": [
+        "agents",
+        "evaluation",
+        "observability",
+        "safety"
+      ],
+      "summary": "Auditoría de materiales y de identidad causal en CyberGym: distingue que un PoC produzca un crash diferencial de que reproduzca realmente la vulnerabilidad objetivo.",
+      "what_changed": "Añade verificación de consistencia del benchmark y de identidad del defecto mediante ejecución, firmas de crash y revisión de causa raíz, mostrando cuánto infla el pass binario la capacidad atribuida al agente.",
+      "why_it_matters": "En evaluaciones ejecutables, éxito observable no siempre prueba la causa correcta. Los pipelines deben verificar identidad del objetivo, versión de materiales y causa raíz antes de usar el score para decisiones de despliegue.",
+      "evidence": [
+        "Audita los 1,507 tasks de CyberGym y etiqueta 338 (22.4%) con inconsistencias.",
+        "Entre 1,286 passes diferenciales encuentra 89 no objetivo y 10 con evidencia insuficiente.",
+        "Exigir impacto en el objetivo reduce el pass rate de 85.3% a 78.8%.",
+        "Aun sin inconsistencias detectadas, 39 de 1,052 passes (3.7%) reciben veredicto no objetivo."
+      ],
+      "limitations": [
+        "El análisis de identidad usa una sola corrida completa Level-1 de GLM-5.3.",
+        "Los veredictos asistidos por LLM requieren validación independiente adicional.",
+        "El hallazgo es específico a reproducción de vulnerabilidades, aunque el patrón causal es más general."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "observability",
+        "agents"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Asigna ruteo, cálculo determinista, recuperación, redacción y verificación a componentes con contratos distintos; el verificador debe poder consultar la fuente original de forma independiente.",
+      "Representa memoria con vigencia, alcance, evidencia y estado, pero exige que toda complejidad supere un baseline de RAG mínimo con el mismo lector.",
+      "Propaga identidad y capacidades mínimas en cada llamada y delegación; registra trazas verificables que sobrevivan fronteras entre operadores.",
+      "Para contextos muy largos, selecciona unidades semánticas completas antes del modelo grande y conserva una ruta de recuperación cuando la evidencia sea distribuida."
+    ],
+    "evaluation": [
+      "Mide utilización de memoria en el punto de acción, no sólo recall de fragmentos.",
+      "Separa éxito observable de identidad causal: un crash, tool call o cita válida debe corresponder al objetivo correcto.",
+      "Audita materiales, versiones, entidades y procedencia; reporta intervalos y fallos por categoría, no sólo un score agregado.",
+      "Incluye agentes maliciosos, memoria envenenada, delegación, alta concurrencia y cambios de distribución en las pruebas."
+    ],
+    "deployment": [
+      "Perfila speculative decoding por GPU, concurrencia y longitud; permite volver a autoregresión cuando la configuración especulativa pierde throughput.",
+      "Checkpointa estados reproducibles y expone consultas de auditoría antes de acciones costosas o irreversibles.",
+      "Alerta sobre crecimiento anómalo de tokens y latencia por trayectoria, además de tasa de éxito y seguridad del contenido.",
+      "Mantén la autorización fuera del prompt: capabilities, contención de filesystem, validación de argumentos y ejecución protegida deben aplicarse en runtime."
+    ]
+  }
+}
