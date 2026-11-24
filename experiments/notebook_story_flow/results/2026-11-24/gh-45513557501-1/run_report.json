@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "experiment": "notebook_story_flow",
+  "episode_date": "2026-11-24",
+  "publishable": false,
+  "status": "failure",
+  "notebook_sha256": "9c9205c2a99e1b99284e0311e2140df8d9ff18715245554484e961fc707aba16",
+  "started_at_utc": "2026-11-24T23:53:33.751779+00:00",
+  "model": "gpt-5.4-nano",
+  "max_logical_calls": 12,
+  "max_attempts_per_call": 3,
+  "words_per_minute": 150,
+  "experiment_code_sha": "03c017eab94a1d8e76497d5cf9b6c6cfb81f3a3f",
+  "control_workflow_run_id": "45512867645",
+  "control_code_sha": "03c017eab94a1d8e76497d5cf9b6c6cfb81f3a3f",
+  "news_snapshot_sha256": "a4fd9ced70f97002afbce5c3dd6aae9d6b2b9d229ba22dabb1afda66d9d995e7",
+  "profile_hashes": {
+    "voice": "5b93b162228d1dd9f0b7d1886cabfcb183dc7c0ea9895b98b485237458bea521",
+    "discourse": "0f7b2743207365c4f648dbf70de24a133cf51be2ed9e569516b307f1ed380375"
+  },
+  "error_type": "ValidationError",
+  "finished_at_utc": "2026-11-24T23:55:30.152894+00:00",
+  "attempted_calls": 7,
+  "emitted_usage": {
+    "prompt_tokens": 51642,
+    "output_tokens": 5938,
+    "reasoning_tokens": 0,
+    "total_tokens": 57580
+  }
+}

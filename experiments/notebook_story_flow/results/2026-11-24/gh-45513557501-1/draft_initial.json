@@ -1,0 +1,146 @@
+{
+  "sections": [
+    {
+      "id": "step9_epica",
+      "text": "Santa Fe, Nuevo México, Estados Unidos, mediados de los noventa: un lugar inspirado para pensar un problema simple de decisión colectiva—ir o no ir a un bar.\n\nImagina que hay un grupo de personas que, cada vez que se plantea la noche, intenta acertar cuánta gente habrá. No están eligiendo por gusto únicamente; están optimizando su propia comodidad. Si el bar se llena demasiado, la experiencia empeora. Si hay espacio, se disfruta. En el fondo, el conflicto nace de una frase que suena inocente: “yo solo estoy usando un pronóstico”.\n\nEl modelo “El Farol” convierte esa intuición en mecanismo. Aquí la idea clave es que existe un número fijo de agentes—cien—y que el criterio de “comodidad” se traduce en un umbral: menos de sesenta asistentes es lo deseable (y a partir de ahí, la noche deja de valer la pena para quien busca tranquilidad). Además, la decisión se toma con información histórica “disponible” y sin comunicación previa entre los agentes: nadie pregunta al vecino qué piensa hacer; todos miran lo mismo y actúan.\n\nY entonces viene lo raro.\n\nSi todos creen que habrá poca gente, todos van—porque el pronóstico prometía que el umbral se cumpliría. Pero cuando demasiados confían en la misma señal, la consecuencia es la saturación que querían evitar. Al revés, si todos creen que habrá demasiada gente, nadie va; y la baja afluencia rompe la predicción. En ambos extremos, el sistema invalida su propio pronóstico.\n\nLo que me inquieta de este tipo de formulaciones no es solo la paradoja en sí, sino el patrón que sugiere: una predicción que se vuelve conducta deja de ser solo predicción. En vez de describir el futuro, lo fabrica.\n\nY aquí aparece la pregunta que no se despeja con facilidad: en un sistema real—con recompensas, con generación de candidatos y con muchas fuentes compitiendo por “evidencia”—¿cómo se diseñan rutas de verificación para que el volumen de señales no convierta la confirmación en un juego donde el error se escala en vez de corregirse, mientras todos miran el mismo tipo de candidato?",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1,
+        2,
+        3
+      ],
+      "visual_queries": [
+        "Mapa o ilustración abstracta de Santa Fe (sin mostrar gente específica), ambiente de mediados de los 90 como inspiración cultural.",
+        "Diagrama simple de umbral: barra de asistencia con línea divisoria alrededor de 60 y un marcador que indique “comodidad”.",
+        "Esquema de decisión simultánea: nodos (100 agentes) que reciben una misma señal histórica y eligen “ir” o “no ir” sin comunicación previa."
+      ]
+    },
+    {
+      "id": "step10_reconexion",
+      "text": "Vale: en El Farol la predicción se vuelve acción y, justo por usarse, se vuelve inestable. Ahora aterrizo eso al presente: cuando una IA no solo predice, sino que genera “candidatos” y propone qué hacer, el problema cambia de lugar. Ya no basta con acertar; hay que poder demostrar que la decisión fue correcta aun cuando el sistema esté amplificando señales y atención experta, no sólo datos.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Un diagrama simple: ‘pronóstico → candidatos → decisión → verificación’ con un cuello de botella en verificación/atención."
+      ]
+    },
+    {
+      "id": "hook_problema",
+      "text": "Si tú vienes con el instinto de “solo hay que evaluar mejor”, te tengo una incomodidad: muchas organizaciones terminan evaluando tarde, con evidencia mezclada con incentivos. Y cuando eso pasa, la carga de refutar el error se la pasan—con buena intención—al humano equivocado: a quien revisa el candidato al final, o al que tiene que justificar por qué no era tan convincente. ¿Cómo se diseña entonces un circuito para que la verificación no sea una extensión del optimizador?",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Primer plano de una luz verde tipo ‘aprobado’ frente a una pila de ‘candidatos’ con etiquetas ambiguas."
+      ]
+    },
+    {
+      "id": "hook_cita",
+      "text": "No voy a citar una frase famosa inventada; me quedo con una idea documentada por expertos en IA aplicada: el cuello de botella de laboratorios autónomos no es sólo escribir bien hipótesis, sino convertirlas en acciones bajo restricciones y con un diseño de recompensas que no empuje a engañarse con atajos.",
+      "evidence_ids": [
+        "rewards_actions_lab"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Tarjeta: “Optimizar ≠ verificar” y debajo “recompensas pueden sesgar evidencia”."
+      ]
+    },
+    {
+      "id": "idea_A",
+      "text": "Primer pilar: en sistemas que actúan, la evidencia que importa aparece porque el sistema fue entrenado/dirigido a producirla. Suena obvio, pero la trampa es social: si tú defines la “utilidad” como recompensa, tú defines qué tipo de evidencia será barata, rápida y abundante.\n\nEn un laboratorio autónomo, el artículo revisado por pares que tenemos como base plantea justamente que la autonomía útil requiere algo más que “lenguaje”: hay que maximizar información útil por costo experimental, traducir hipótesis en acciones ejecutables—con restricciones, observables y reglas de decisión—y tratar el diseño de recompensas como cuello de botella central. O sea: no es “si el agente sabe hablar”, sino “si el agente sabe cómo ganar el juego que le estás planteando”.\n\nY aquí aparece el paralelo con El Farol. En el bar, el objetivo era “comodidad”, traducida a un umbral: si es “demasiado lleno” el sistema fallaría para la gente que buscaba tranquilidad. Pero cuando la predicción afecta la conducta colectiva, la señal deja de ser neutra: se vuelve parte del mecanismo físico/social.\n\nEn el presente, el mecanismo equivalente no siempre es la gente entrando al bar; muchas veces es el sistema generando “candidatos” y empujando decisiones. Si la recompensa premia lo que parece prometedor en el corto plazo, el circuito tenderá a producir señales que lucen bien para el evaluador—o para el siguiente paso automatizado—aunque no sean la evidencia más robusta. Y como el sistema lo repite a escala, ese sesgo se vuelve una fábrica de “evidencia presentable”, no necesariamente evidencia definitiva.\n\nPor eso, mi tesis provisional aquí es: la autonomía física no falla por falta de conversación; falla cuando el objetivo que optimiza el agente también define qué cuenta como evidencia, y esa evidencia es justamente la que después se usa para decidir. Si no separas optimizar de verificar, el sistema puede volverse experto en producir lo que “pasa el filtro”, no lo que merece el filtro.",
+      "evidence_ids": [
+        "rewards_actions_lab"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Diagrama: ‘Función objetivo/recompensa’ alimentando ‘qué evidencia se produce’ y luego ‘cómo se decide’."
+      ]
+    },
+    {
+      "id": "dato_1",
+      "text": "En la perspectiva revisada por pares sobre laboratorios autónomos se plantea que la autonomía depende de traducir hipótesis en acciones con restricciones/observables y que el diseño de recompensas es un cuello de botella central (no se presenta además una comparación empírica demostrando superioridad frente a otros diseños).",
+      "evidence_ids": [
+        "rewards_actions_lab"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Cita resumida en pantalla: ‘diseño de recompensas como cuello de botella’."
+      ]
+    },
+    {
+      "id": "idea_B_explica",
+      "text": "Segundo pilar: cuando la IA multiplica candidatos, el cuello de botella se desplaza a la validación y a la asignación de atención experta. Y si esa validación no está diseñada como circuito separado—con trazabilidad, criterios mínimos y límites de reversibilidad—entonces el sistema puede convertir la verificación en un embudo performativo.\n\nMira el caso de astronomía ciudadana con agentes de código. Nature documenta que astrónomos aficionados usan agentes y herramientas públicas para analizar datos de telescopios; en un ejemplo, un especialista sin formación formal dirigió a Claude Code para examinar más de 120.000 estrellas de TESS y reportó dos señales asociadas con TIC 4206066. Ese trabajo no había sido revisado por pares, pero astrónomos de TESS analizaron las señales y las añadieron a una lista oficial de candidatos. Expertos también describen una oleada de manuscritos con candidatos débiles: candidato no equivale a planeta confirmado.\n\n¿Qué me interesa aquí como mecanismo? Que la democratización del análisis no elimina la necesidad de verificación; la cambia. Si tu sistema produce candidaturas en masa, lo que necesitas no es sólo que el modelo “acierte”, sino que el flujo de verificación no se sature ni dependa de que alguien—por humanidad, por tiempo o por contexto—termine aceptando o rechazando con criterios inconsistentes.\n\nY en El Farol, la equivalencia es cruel: el sistema no “decide mal” una vez; se auto-invalida en extremos porque la señal compartida altera el estado que luego se usa para validar la señal. En el presente, la auto-invalidez puede ocurrir de otra forma: por volumen, por ruido, por incentivos reputacionales o por sesgo del propio repositorio de candidatos.\n\nEntonces, la palabra “candidato” importa más de lo que suena. Si “candidato” se trata como casi-confirmación, la organización aprende a operar con evidencia insuficiente. Si “candidato” se trata como algo que debe llegar con evidencia mínima y trazas que permitan refutar rápido, se puede hacer un circuito robusto. Pero eso requiere diseño institucional: capas de validación, criterios públicos o internos consistentes y un registro reproducible de por qué se propuso cada candidato.",
+      "evidence_ids": [
+        "candidates_saturate_validation"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Cadena de flujo: ‘código/IA genera candidatos’ → ‘equipo experto valida’ → ‘lista oficial’. Flecha de saturación hacia ‘atención experta’."
+      ]
+    },
+    {
+      "id": "idea_B_desafio",
+      "text": "Microexperimento (mental, pero operativo): supongamos que tu equipo adopta un sistema que genera 10.000 candidatos al mes. A mitad de camino, nadie sabe cuánto tiempo real queda para validarlos.\n\nPausa. Ahora pregúntate esto: ¿qué pasa con el criterio de aceptación si, por diseño, el sistema también busca recompensarte por “generar más señales” o por “llegar a la lista oficial”? Sin que cambie el modelo, cambia la presión: la validación se vuelve un recurso escaso y la organización termina aceptando atajos.\n\nPara hacerlo verificable, tendrías que medir explícitamente: (a) cuántos candidatos se validan de verdad con el estándar esperado, (b) qué proporción llega con trazas que permiten refutar, y (c) cuánta evidencia “faltante” queda absorbida por revisores humanos. Si esos números no existen, tu organización no puede demostrar que la decisión fue correcta; sólo puede decir que “parecía”.",
+      "evidence_ids": [
+        "candidates_saturate_validation"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Tabla imaginaria en pantalla: ‘candidatos generados’ vs ‘validaciones con estándar’ vs ‘revisión humana por falta de evidencia’."
+      ]
+    },
+    {
+      "id": "dato_2",
+      "text": "En el caso documentado por Nature, expertos describen que hay una oleada de manuscritos con candidatos débiles y recalcan que candidato no equivale a planeta confirmado; además, el ejemplo con Claude Code muestra que el trabajo no estaba revisado por pares, pero aun así se convirtió en candidatos tras análisis de astrónomos de TESS.",
+      "evidence_ids": [
+        "candidates_saturate_validation"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Tarjeta: ‘candidato ≠ confirmado’ subrayada."
+      ]
+    },
+    {
+      "id": "idea_C",
+      "text": "Tercer pilar (transformación): construir verificación como un circuito que no herede la dinámica del optimizador, para frenar bucles performativos.\n\nAquí es donde vuelvo a la pregunta abierta que guía todo: ¿cómo se diseñan rutas de verificación para que el volumen de señales no convierta la confirmación en un juego donde el error se escala en vez de corregirse?\n\nLa forma más simple de decirlo es separando dos funciones mentales que solemos mezclar: la función que optimiza (produce candidatos, busca atajos, maximiza recompensas) y la función que verifica (intenta refutar, exige evidencia mínima, decide con criterios trazables y define cuándo detener).\n\nEn laboratorios autónomos, la perspectiva sobre recompensas ya insinúa que si no diseñas la recompensa con cuidado, el agente puede orientar su exploración hacia lo que puntúa, no necesariamente hacia lo que es más robusto. En astronomía con agentes, el mismo problema reaparece bajo otra máscara: el sistema y la comunidad producen “señales” y “listas”, pero la validación—humana y técnica—se puede saturar, generando un paisaje donde “candidato” compite por atención como si fuera confirmación.\n\nLa transformación organizacional que propongo es práctica: si el sistema produce candidatos, entonces la organización debe diseñar rutas de verificación que hagan que los fallos no se pierdan en el volumen.\n\nEso implica, como mínimo, tres decisiones de diseño (sin prometer que sean suficientes):\n\n1) Criterios de evidencia mínimos por tipo de candidato, para que la verificación no sea un juicio improvisado. \n2) Trazabilidad: saber de qué observables proviene cada candidato, y qué pasos podrían falsarlo. \n3) Límites reversibles: procedimientos para pausar, des-escalar o re-muestrear cuando la incertidumbre crece; no “seguir porque ya empezamos”.\n\nY aquí entra una ironía lateral que me gusta porque evita autoengaños: mucha gente confía en la verificación como si fuera un filtro pasivo, pero cuando la salida de la IA ya es ejecutable (o ya alimenta a una comunidad que decide), la verificación se vuelve parte del mundo que el sistema está afectando. En otras palabras: no basta con tener un revisor; hay que tener un mecanismo que impida que el revisor sea el amortiguador final de un bucle social.\n\nCon eso, mi tesis evolucionada queda así: la salida “ejecutable” convierte el objetivo en una dinámica social y técnica. Por eso mejorar no es sólo más modelo o mejor lenguaje: requiere separar explícitamente optimizar de verificar, diseñar incentivos para reportar incertidumbre y construir rutas donde la incertidumbre—y los fallos—no se pierdan entre miles de candidatos.",
+      "evidence_ids": [
+        "rewards_actions_lab",
+        "candidates_saturate_validation"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Ilustración: dos carriles paralelos ‘Optimizar’ y ‘Verificar’ con un ‘freno’ y ‘trazabilidad’ en el carril de verificación."
+      ]
+    },
+    {
+      "id": "story_payoff",
+      "text": "En El Farol, el pronóstico “correcto” se vuelve frágil porque cambia el estado que intenta describir: si todos esperan espacio, llenan; si todos esperan saturación, nadie va. En los experimentos, aunque la asistencia media converge al umbral, las creencias activas siguen moviéndose.\n\nLo que resuelve el conflicto abierto del episodio no es “encontrar una mejor predicción”, sino aceptar que, cuando la señal guía decisiones, la verificación tiene que ser un carril separado. En el presente, cuando los agentes producen “candidatos” y la organización depende de revisarlos, el riesgo es que el circuito de confirmación se vuelva un embudo saturable: candidato ≠ hecho. Mi punto queda: sin criterios mínimos, trazabilidad y límites reversibles, el volumen de señales convierte la corrección en una ilusión social. Y claro: El Farol es una analogía; no prueba que toda predicción pública sea autodestructiva.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Recuadro final: ‘Predicción cambia el estado’ → ‘Verificación separada’ → ‘candidato ≠ confirmación’."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Así que la pregunta evoluciona: no sólo “¿cuánto acierta el sistema?”, sino “¿qué evidencia logra que sobreviva cuando hay escala y presión?”. El optimizador puede ser brillante, pero si la organización mezcla optimizar con verificar, acaba delegando la refutación en el humano equivocado… o en el filtro equivocado.\n\nSi te resuena esta idea, vale la pena seguirle la pista: revisa no sólo modelos, sino incentivos, trazas y criterios de parada. Y si te gustó el enfoque, suscríbete para el próximo ensayo: cada semana intentamos convertir intuiciones sobre IA en preguntas comprobables.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "CTA visual: ‘optimizar ≠ verificar’ en grande y abajo ‘suscríbete’ (sin enlaces)."
+      ]
+    }
+  ],
+  "opening_last_sentence": "Y aquí aparece la pregunta que no se despeja con facilidad: en un sistema real—con recompensas, con generación de candidatos y con muchas fuentes compitiendo por “evidencia”—¿cómo se diseñan rutas de verificación para que el volumen de señales no convierta la confirmación en un juego donde el error se escala en vez de corregirse, mientras todos miran el mismo tipo de candidato?",
+  "seo_title": "IA que genera candidatos: cómo separar optimizar de verficar",
+  "seo_description": "Cierre del episodio: en sistemas que actúan, el pronóstico puede cambiar el resultado. La clave es diseñar verificación como circuito separado con criterios, tr",
+  "seo_keywords": [
+    "IA agentes",
+    "candidatos",
+    "verificación",
+    "optimizar vs verificar"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "En El Farol, el pronóstico “correcto” se vuelve frágil porque cambia el estado que intenta describir: si todos esperan espacio, llenan; si todos esperan saturación, nadie va. En los experimentos, aunque la asistencia media converge al umbral, las creencias activas siguen moviéndose.\n\nLo que resuelve el conflicto abierto del episodio no es “encontrar una mejor predicción”, sino aceptar que, cuando la señal guía decisiones, la verificación tiene que ser un carril separado. En el presente, cuando los agentes producen “candidatos” y la organización depende de revisarlos, el riesgo es que el circuito de confirmación se vuelva un embudo saturable: candidato ≠ hecho. Mi punto queda: sin criterios mínimos, trazabilidad y límites reversibles, el volumen de señales convierte la corrección en una ilusión social. Y claro: El Farol es una analogía; no prueba que toda predicción pública sea autodestructiva.",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Recuadro final: ‘Predicción cambia el estado’ → ‘Verificación separada’ → ‘candidato ≠ confirmación’."
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Así que la pregunta evoluciona: no sólo “¿cuánto acierta el sistema?”, sino “¿qué evidencia logra que sobreviva cuando hay escala y presión?”. El optimizador puede ser brillante, pero si la organización mezcla optimizar con verificar, acaba delegando la refutación en el humano equivocado… o en el filtro equivocado.\n\nSi te resuena esta idea, vale la pena seguirle la pista: revisa no sólo modelos, sino incentivos, trazas y criterios de parada. Y si te gustó el enfoque, suscríbete para el próximo ensayo: cada semana intentamos convertir intuiciones sobre IA en preguntas comprobables.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "CTA visual: ‘optimizar ≠ verificar’ en grande y abajo ‘suscríbete’ (sin enlaces)."
+      ]
+    }
+  ],
+  "seo_title": "IA que genera candidatos: cómo separar optimizar de verficar",
+  "seo_description": "Cierre del episodio: en sistemas que actúan, el pronóstico puede cambiar el resultado. La clave es diseñar verificación como circuito separado con criterios, tr",
+  "seo_keywords": [
+    "IA agentes",
+    "candidatos",
+    "verificación",
+    "optimizar vs verificar"
+  ]
+}

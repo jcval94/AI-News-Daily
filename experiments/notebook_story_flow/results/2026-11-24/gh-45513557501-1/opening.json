@@ -1,0 +1,13 @@
+{
+  "text": "Santa Fe, Nuevo México, Estados Unidos, mediados de los noventa: un lugar inspirado para pensar un problema simple de decisión colectiva—ir o no ir a un bar.\n\nImagina que hay un grupo de personas que, cada vez que se plantea la noche, intenta acertar cuánta gente habrá. No están eligiendo por gusto únicamente; están optimizando su propia comodidad. Si el bar se llena demasiado, la experiencia empeora. Si hay espacio, se disfruta. En el fondo, el conflicto nace de una frase que suena inocente: “yo solo estoy usando un pronóstico”.\n\nEl modelo “El Farol” convierte esa intuición en mecanismo. Aquí la idea clave es que existe un número fijo de agentes—cien—y que el criterio de “comodidad” se traduce en un umbral: menos de sesenta asistentes es lo deseable (y a partir de ahí, la noche deja de valer la pena para quien busca tranquilidad). Además, la decisión se toma con información histórica “disponible” y sin comunicación previa entre los agentes: nadie pregunta al vecino qué piensa hacer; todos miran lo mismo y actúan.\n\nY entonces viene lo raro.\n\nSi todos creen que habrá poca gente, todos van—porque el pronóstico prometía que el umbral se cumpliría. Pero cuando demasiados confían en la misma señal, la consecuencia es la saturación que querían evitar. Al revés, si todos creen que habrá demasiada gente, nadie va; y la baja afluencia rompe la predicción. En ambos extremos, el sistema invalida su propio pronóstico.\n\nLo que me inquieta de este tipo de formulaciones no es solo la paradoja en sí, sino el patrón que sugiere: una predicción que se vuelve conducta deja de ser solo predicción. En vez de describir el futuro, lo fabrica.\n\nY aquí aparece la pregunta que no se despeja con facilidad: en un sistema real—con recompensas, con generación de candidatos y con muchas fuentes compitiendo por “evidencia”—¿cómo se diseñan rutas de verificación para que el volumen de señales no convierta la confirmación en un juego donde el error se escala en vez de corregirse, mientras todos miran el mismo tipo de candidato?",
+  "memory_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "visual_queries": [
+    "Mapa o ilustración abstracta de Santa Fe (sin mostrar gente específica), ambiente de mediados de los 90 como inspiración cultural.",
+    "Diagrama simple de umbral: barra de asistencia con línea divisoria alrededor de 60 y un marcador que indique “comodidad”.",
+    "Esquema de decisión simultánea: nodos (100 agentes) que reciben una misma señal histórica y eligen “ir” o “no ir” sin comunicación previa."
+  ]
+}

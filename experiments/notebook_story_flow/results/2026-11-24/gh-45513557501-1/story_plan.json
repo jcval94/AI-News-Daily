@@ -1,0 +1,110 @@
+{
+  "central_question": "Cuando una IA no solo predice, sino que inicia acciones y produce “candidatos” o resultados, ¿qué debe cambiar para que la organización pueda probar que la decisión fue correcta (y no solo convincente) sin trasladar la carga de refutarla a las personas equivocadas?",
+  "provisional_thesis": "La autonomía útil no falla por falta de lenguaje o por incapacidad técnica: falla por diseño institucional de la prueba. Si el sistema optimiza recompensas y genera salidas “evaluables” (candidatos, rondas, señales) sin un circuito de validación con evidencia, trazabilidad y límites reversibles, la organización termina confiando en métricas o en confianza social; entonces la carga de demostrar el error recae en el ser humano o en el siguiente filtro, y el sistema escala el daño.",
+  "evolved_thesis": "La salida “ejecutable” convierte el objetivo en una dinámica social y técnica: lo que cuenta como éxito (recompensa) y lo que se considera evidencia (candidatos) se realimentan. Por eso, la mejora no puede ser sólo más modelo o más lenguaje: requiere separar explícitamente el optimizar de lo verificar, diseñar incentivos para reportar y frenar, y construir rutas donde los fallos—y la incertidumbre—no se pierdan en el volumen de candidatos.",
+  "core_ideas": [
+    "Autonomía física: convertir hipótesis en acciones exige un diseño de función objetivo (recompensas) y un circuito de decisión bajo restricciones.",
+    "Validación bajo escala: cuando la IA multiplica “candidatos”, el cuello de botella se desplaza a confirmación y asignación de atención experta.",
+    "Riesgo de bucles performativos: cuando el pronóstico o el candidato cambia la conducta colectiva, el sistema puede volver inestable la idea de “predicción correcta”."
+  ],
+  "motif": "la palabra “candidato”",
+  "pillars": [
+    "Traducción a acciones y recompensas: lo que optimizas define qué evidencia producirás y qué errores te conviene ocultar.",
+    "Separación de optimizar vs. verificar: un pipeline requiere un circuito de prueba que no descargue el costo del error en personas.",
+    "Diseño contra la autodestrucción por realimentación: la expectativa compartida o el volumen de señales puede degradar el resultado colectivo si la validación no acompaña."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "el-farol-prediction-changes-outcome",
+      "epicity": 10.0,
+      "relevance": 9.0,
+      "reason": "Ejemplifica la performatividad: una predicción difundida entre muchos actores altera el resultado que pretendía anticipar. Funciona como marco para pensar por qué “candidatos” y recompensas pueden crear dinámicas que invalidan la intuición de la predicción."
+    },
+    {
+      "memory_id": "ligo-big-dog-blind-injection",
+      "epicity": 9.6,
+      "relevance": 8.5,
+      "reason": "Se centra en validar el sistema completo con un caso de prueba ciego y muestra que incluso el artefacto de prueba puede contener errores. Es excelente para el “circuito de prueba”, pero es menos directo para el aspecto de realimentación colectiva."
+    },
+    {
+      "memory_id": "y2k-prevention-success-erases-counterfactual",
+      "epicity": 8.8,
+      "relevance": 7.8,
+      "reason": "Aclara el problema de medir contrafactuales: la prevención exitosa reduce el daño observable. Complementa la tesis sobre evidencia insuficiente, aunque no encarna tan bien la dinámica de predicción/acción realimentada."
+    }
+  ],
+  "selected_memory_id": "el-farol-prediction-changes-outcome",
+  "protagonist": "Los agentes que deciden “ir o no ir” al bar (el mecanismo del modelo El Farol).",
+  "opposing_force": "La realimentación: la predicción compartida y su uso modifican la asistencia futura, volviendo auto-contradictoria la expectativa inicial.",
+  "conflict": "El sistema intenta usar un buen pronóstico como guía, pero el pronóstico —al ser usado por muchos— cambia el resultado que busca anticipar; cuando todos esperan saturación, todos se quedan, y cuando todos esperan espacio, todos van.",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4
+  ],
+  "unresolved_question": "¿Cómo se diseñan, en un sistema real con recompensas y generación de candidatos, las rutas de verificación para que el volumen de señales no convierta la confirmación en un juego de “definir evidencia” donde el sistema escala el error?",
+  "bridge_to_present": "En ciencia con agentes, exoplanetas o laboratorios autónomos, el sistema genera “candidatos” y decide qué medir/seguir. Como en El Farol, cuando muchos actores (incluidos módulos del propio sistema) usan esas señales para tomar decisiones, la evidencia disponible y la atención experta pueden moverse en maneras que rompen la estabilidad de lo que creemos que era una “buena predicción”. La pregunta es si la organización está instrumentando la verificación como un circuito separado del optimizador.",
+  "analogy_limits": "El Farol es un modelo estilizado: no incluye redes sociales, incentivos desiguales, comunicaciones adicionales ni aprendizaje complejo. No prueba que toda predicción pública sea autodestructiva ni que la heterogeneidad garantice un resultado preferible; muestra una estructura posible de realimentación donde una expectativa cambia el estado que intenta anticipar.",
+  "ledger": [
+    {
+      "evidence_id": "rewards_actions_lab",
+      "news_id": "n_22f51726e899e259",
+      "supported_facts": [
+        "Una perspectiva revisada por pares propone que los laboratorios autónomos maximicen información útil por costo experimental.",
+        "La perspectiva propone traducir hipótesis en acciones, restricciones, observables y reglas de decisión.",
+        "Plantea que el diseño de recompensas es un cuello de botella central para laboratorios autónomos.",
+        "El artículo ofrece un marco conceptual para conectar planificación lingüística con instrumentos y experimentos de larga duración.",
+        "El resumen provisto indica que el artículo no presenta un ensayo comparativo que demuestre mejoras frente a otros diseños en descubrimiento, seguridad o costo."
+      ],
+      "allowed_interpretations": [
+        "Interpretación: si la utilidad depende de una recompensa definida, la exploración puede sesgarse hacia lo que puntúa bien aunque no sea lo más científico o robusto.",
+        "Interpretación: una recompensa explícita vuelve ejecutable el objetivo, pero puede comprimir la curiosidad en una métrica."
+      ],
+      "hypotheses": [
+        "Hipótesis: en despliegues reales, el cuello de botella de seguridad y calidad puede emerger más en el ‘diseño de la función objetivo’ y el circuito de decisión que en la capacidad verbal del agente."
+      ],
+      "uncertainties": [
+        "No hay evidencia comparativa en el material resumido sobre si los tres principios (información/costo, traducción a acciones, recompensas) mejoran resultados frente a diseños alternativos.",
+        "No se cuantifica el impacto sobre fallos fuera de distribución, costo por información decisiva o capacidad de detener experimentos."
+      ],
+      "prohibited_claims": [
+        "No afirmar que este marco ya demostró mejoras empíricas en laboratorios autónomos.",
+        "No afirmar que las recompensas siempre reducen la calidad científica; solo que pueden hacerlo según cómo se definan."
+      ],
+      "source_limitations": [
+        "El insumo disponible es un resumen con afirmaciones de por qué importa y qué falta; no incluye detalles del experimento (si lo hubo) ni métricas comparativas."
+      ]
+    },
+    {
+      "evidence_id": "candidates_saturate_validation",
+      "news_id": "n_92b8a8474c3fcea8",
+      "supported_facts": [
+        "Nature documenta cómo astrónomos aficionados usan agentes de código y herramientas públicas para analizar datos de telescopios.",
+        "El caso descrito incluye a un especialista sin formación formal que dirigió a Claude Code sobre más de 120.000 estrellas de TESS y reportó dos señales en TIC 4206066.",
+        "El trabajo no ha sido revisado por pares, aunque astrónomos de TESS analizaron las señales y las añadieron a una lista oficial de candidatos.",
+        "Expertos describen una oleada de manuscritos con candidatos débiles, y señalan que candidato no equivale a planeta confirmado."
+      ],
+      "allowed_interpretations": [
+        "Interpretación: democratizar análisis puede aumentar descubrimientos potenciales, pero también aumenta el volumen de resultados a validar por humanos.",
+        "Interpretación: el cuello de botella se desplaza de ‘buscar señales’ a ‘comprobarlas’ y asignar atención experta."
+      ],
+      "hypotheses": [
+        "Hipótesis: sin capas públicas de validación automatizada y trazas reproducibles, la participación ampliada puede saturar el proceso de confirmación."
+      ],
+      "uncertainties": [
+        "No se proveen tasas de confirmación, tasa de falsos positivos atribuibles a herramientas, ni datos cuantitativos de saturación en el material resumido.",
+        "No se determina causalmente cuánto del aumento de manuscritos proviene de agentes vs. otras tendencias."
+      ],
+      "prohibited_claims": [
+        "No afirmar que el caso causó directamente un aumento medible de errores o carga; solo que ilustra un fenómeno reportado por expertos.",
+        "No afirmar que los candidatos añadidos sean falsos; solo que candidato no equivale a confirmación."
+      ],
+      "source_limitations": [
+        "El material disponible es un resumen periodístico que menciona ejemplos y percepciones de expertos; no incluye metodología de medición."
+      ]
+    }
+  ]
+}
