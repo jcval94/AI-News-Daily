@@ -18,6 +18,15 @@ class EditorialReviewHardeningTests(unittest.TestCase):
         self.assertIn("why_it_matters", HARDENED_REVIEWER_INSTRUCTION)
         self.assertIn("MUST NOT be treated as factual proof", HARDENED_REVIEWER_INSTRUCTION)
 
+    def test_production_reviewer_receives_exact_selected_memory_and_publisher_excerpts(self) -> None:
+        prompt = HARDENED_REVIEWER_INSTRUCTION
+        self.assertIn("<SELECTED_NARRATIVE_MEMORY>\n{selected_narrative_memory}\n</SELECTED_NARRATIVE_MEMORY>", prompt)
+        self.assertIn("<PUBLISHER_EXCERPTS>\n{source_evidence}\n</PUBLISHER_EXCERPTS>", prompt)
+        self.assertIn("verified_claims", prompt)
+        self.assertIn("uncertainties and analogy_limits", prompt)
+        self.assertIn("Missing excerpts are not disproof", prompt)
+        self.assertIn("require low factuality risk", prompt)
+
     def test_install_replaces_only_reviewer_reference(self) -> None:
         original = object()
         base = SimpleNamespace(reviewer_agent=original, another_agent=original)

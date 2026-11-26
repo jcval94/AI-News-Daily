@@ -340,6 +340,13 @@ def scoped_schema(schema: Any, context: dict[str, Any]) -> Any:
             missing = sorted(set(evidence) - used)
             if missing:
                 raise ValueError("Include a grounded fact from every required current evidence: " + ", ".join(missing))
+        if schema is EndingDraft:
+            if tuple(row.id for row in value.sections) != SECTION_IDS[10:]:
+                raise ValueError("Ending must contain story_payoff, cierre in that order")
+            missing = sorted(reserved - set(value.sections[0].memory_claim_indices))
+            if missing:
+                raise ValueError("story_payoff must narrate and cite every reserved historical claim index: "
+                                 + ", ".join(map(str, missing)))
         if schema is ScriptDraft:
             value.opening_last_sentence = split_sentences(value.sections[0].text)[-1]
             issues = validate_draft(value, StoryPlan.model_validate(context["plan"]), context["selected_memory"])
@@ -382,6 +389,10 @@ async def generate_flow(backend: Any, context: dict[str, Any], plan: StoryPlan,
     development = await backend.call("development", prompts.DEVELOPMENT, DevelopmentDraft, middle_context, trace)
     write_json(out / "development.json", development.model_dump())
     ending_context = {**context, "opening": opening.text, "development": development.model_dump(),
+                      "required_payoff_claims": [
+                          {"index": i, "text": memory["verified_claims"][i - 1]}
+                          for i in plan.payoff_claim_indices
+                      ],
                       "allowed_memory_indices": list(range(1, len(memory["verified_claims"]) + 1)),
                       "allowed_evidence_ids": [row.evidence_id for row in plan.ledger]}
     ending = await backend.call("ending", prompts.ENDING, EndingDraft, ending_context, trace)

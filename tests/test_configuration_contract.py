@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
-from pipeline.core import PIPELINE_ENV_DEFAULTS
+from pipeline.core import PIPELINE_ENV_DEFAULTS, PipelineConfig
 
 
 class ConfigurationContractTests(unittest.TestCase):
@@ -87,6 +87,12 @@ class ConfigurationContractTests(unittest.TestCase):
             workflow = path.read_text(encoding="utf-8")
             if "actions/setup-python@" in workflow and "python-version:" in workflow:
                 self.assertNotIn('python-version: "3.11"', workflow, path.name)
+
+    def test_source_evidence_mode_is_explicit_and_validated(self) -> None:
+        self.assertEqual(PipelineConfig().source_evidence_mode, "off")
+        self.assertEqual(PipelineConfig(source_evidence_mode="retrieve").validated().source_evidence_mode, "retrieve")
+        with self.assertRaisesRegex(ValueError, "SOURCE_EVIDENCE_MODE"):
+            PipelineConfig(source_evidence_mode="unknown").validated()
 
     def test_every_pipeline_env_is_exposed_to_build_and_report(self) -> None:
         workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")

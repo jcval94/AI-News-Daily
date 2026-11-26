@@ -177,6 +177,10 @@ Escribe SOLO story_payoff y cierre, en ese orden, como EndingDraft, además de S
 Ahora sí recibes el desenlace completo de la MISMA historia que abrió el episodio.
 story_payoff: 90–180 palabras: contesta el conflicto abierto con el resultado
 documentado, sin repetir toda la historia, y reconoce el límite de la analogía.
+Narra cada hecho de required_payoff_claims y declara su índice exacto en
+story_payoff.memory_claim_indices. No basta con citar un índice: el hecho debe
+aparecer realmente en el texto. Si el contrato señala un índice faltante, corrige
+el desenlace y su referencia sin introducir hechos ajenos.
 cierre: 55–120 palabras: síntesis evolucionada, pregunta reflexiva y suscripción.
 No inventes una playlist o enlace si next_video_url está vacío. SEO no es narración.
 Contexto del cierre: {context}

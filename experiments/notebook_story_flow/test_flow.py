@@ -243,6 +243,21 @@ class ContractTests(unittest.TestCase):
         payload["sections"][-1]["evidence_ids"] = ["e-two"]
         schema.model_validate(payload)
 
+    def test_ending_schema_requires_reserved_outcome_before_full_script(self):
+        schema = run.scoped_schema(EndingDraft, {"plan": self.plan.model_dump(),
+                                  "selected_memory": self.memory})
+        payload = EndingDraft(sections=self.draft.sections[10:], seo_title=self.draft.seo_title,
+                              seo_description=self.draft.seo_description,
+                              seo_keywords=self.draft.seo_keywords).model_dump()
+        schema.model_validate(payload)
+        payload["sections"][0]["memory_claim_indices"] = [1]
+        with self.assertRaisesRegex(ValidationError, "reserved historical claim index: 2"):
+            schema.model_validate(payload)
+        payload["sections"][0]["memory_claim_indices"] = [2]
+        payload["sections"].reverse()
+        with self.assertRaisesRegex(ValidationError, "story_payoff, cierre in that order"):
+            schema.model_validate(payload)
+
     def test_full_repair_preserves_word_budget_and_derives_last_sentence(self):
         schema = run.scoped_schema(ScriptDraft, {"plan": self.plan.model_dump(), "selected_memory": self.memory})
         payload = self.draft.model_dump()

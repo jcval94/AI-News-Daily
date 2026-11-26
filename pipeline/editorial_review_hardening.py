@@ -20,6 +20,14 @@ SCRIPT block is non-empty.
 {{selected_news}}
 </SELECTED_CURRENT_NEWS>
 
+<PUBLISHER_EXCERPTS>
+{{source_evidence}}
+</PUBLISHER_EXCERPTS>
+
+<SELECTED_NARRATIVE_MEMORY>
+{{selected_narrative_memory}}
+</SELECTED_NARRATIVE_MEMORY>
+
 <EPISODE_PLAN_AND_CLAIM_LEDGER>
 {{episode_plan}}
 </EPISODE_PLAN_AND_CLAIM_LEDGER>
@@ -37,9 +45,16 @@ CURRENT-EVENT EVIDENCE POLICY:
 - The claim ledger is the first audit index, but it never overrides the selected source summaries.
 - A generic or missing URL weakens traceability and must never be treated as article-specific evidence.
 - Do not demand evidence from unselected stories merely because they existed in the original daily window.
+- PUBLISHER_EXCERPTS are bounded and optional, tied to news IDs. They can corroborate or flag a conflict,
+  but aren't full articles or a verification verdict. Missing excerpts are not disproof. If a current claim
+  contradicts a retrieved excerpt, require it to be omitted or explicitly unresolved.
+- SELECTED_NARRATIVE_MEMORY is an allowed factual source ONLY for its verified_claims. Check its
+  uncertainties and analogy_limits explicitly. Do not penalize a supported historical claim just because
+  it is absent from current news or the discourse profile. Verify the plan's primary memory is meaningfully
+  developed at its prescribed placement and its analogy performs the intended argumentative work.
 
 CLAIM POLICY:
-- FACT must be directly supported by selected current-news summaries or the allowed historical context.
+- FACT must be directly supported by selected current-news summaries, selected memory verified_claims, or the allowed curated historical context.
 - INTERPRETATION is acceptable when clearly framed as the narrator's reading.
 - HYPOTHESIS must remain a possibility rather than a reported result.
 - UNCERTAINTY must remain unresolved when the evidence is unresolved.
@@ -61,6 +76,12 @@ Set approved=true ONLY when score >= {CONFIG.script_quality_threshold}, factuali
 script preserves uncertainty instead of turning speculation into fact.
 
 Do not rewrite the script. Base every criticism on text that actually appears inside <SCRIPT>.
+For an actual unsupported factual claim, cite the exact short offending phrase and explain which source
+boundary it violates and the smallest safe correction. A clearly signaled hypothetical scene, opinion or
+analogy is not an invented factual event; score conceptual weaknesses separately from factuality risk.
+Do not demand that narration include technical source IDs, internal labels, or a citation for an explicitly
+conditional reasoning step that makes no factual assertion. This is not permission to accept false facts.
+Preserve the same approval threshold and require low factuality risk.
 """
 
 

@@ -44,6 +44,13 @@ The canonical GitHub workflow is:
 
 The filename is historical; despite the old `probe` name, this workflow is the production consumer.
 
+After a verified move to `processed/`, the consumer re-inspects the daily inbox and may
+wake one exact next handoff, using the existing reconciliation cooldown and attempt budget.
+It records `daily-post-ack.json` (queue depth, oldest age, dispatch decision); dispatch is not
+publication. Each consumer still processes at most one file and must independently pass all
+validation and readback gates. This drains backlogs without waiting for a second scheduled
+poll when GitHub Actions can start the newly queued run. It does not guarantee cron punctuality.
+
 ## Responsibility boundary
 
 ### ChatGPT scheduled task owns

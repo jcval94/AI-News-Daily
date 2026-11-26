@@ -63,6 +63,68 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(got["lanes"]["daily"]["status"], "inspection_or_dispatch_failed")
         github.dispatch.assert_not_called()
 
+    def test_post_ack_wakes_exact_next_daily_handoff_and_no_other_lane(self):
+        drive, github = Mock(), Mock()
+        drive.list_inbox.return_value = [
+            {"id": "next", "name": "__bridge_inbox_AI-News-Daily__2026-10-03_103640",
+             "mimeType": SHEET_MIME, "createdTime": "2026-10-04T14:37:20Z"},
+            {"id": "weekly", "name": "__bridge_inbox_AI-News-Daily__research-weekly__2026-10-04_083640",
+             "mimeType": SHEET_MIME, "createdTime": "2026-10-04T14:00:00Z"},
+        ]
+        github.runs.return_value = [{**run(age=1, status="in_progress"), "id": 42}]
+        github.dispatch.return_value = 123
+        got = reconcile(drive, github, "inbox", now=NOW, only_lane="daily",
+                        after_ack_run_id=42, ack_file_id="previous")
+        self.assertEqual(set(got["lanes"]), {"daily"})
+        self.assertEqual(got["lanes"]["daily"]["oldest_file_age_seconds"], 4960)
+        self.assertEqual(got["lanes"]["daily"]["status"], "dispatched")
+        github.dispatch.assert_called_once_with(LANES["daily"].workflow, "next")
+
+    def test_post_ack_stale_or_other_active_consumer_never_dispatches(self):
+        drive, github = Mock(), Mock()
+        drive.list_inbox.return_value = [
+            {"id": "previous", "name": "__bridge_inbox_AI-News-Daily__2026-10-04_083640",
+             "mimeType": SHEET_MIME, "createdTime": "2026-10-04T14:37:20Z"}
+        ]
+        opts = dict(now=NOW, only_lane="daily", after_ack_run_id=42, ack_file_id="previous")
+        got = reconcile(drive, github, "inbox", **opts)
+        self.assertEqual(got["lanes"]["daily"]["status"], "acknowledgement_not_visible")
+        github.runs.assert_not_called()
+        drive.list_inbox.return_value[0]["id"] = "next"
+        github.runs.return_value = [
+            {**run(age=1, status="in_progress"), "id": 42},
+            {**run(age=1, status="queued", file_id="next"), "id": 43},
+        ]
+        got = reconcile(drive, github, "inbox", **opts)
+        self.assertEqual(got["lanes"]["daily"]["status"], "active")
+        github.dispatch.assert_not_called()
+
+    def test_post_ack_budget_still_applies_to_next_file(self):
+        drive, github = Mock(), Mock()
+        drive.list_inbox.return_value = [
+            {"id": "next", "name": "__bridge_inbox_AI-News-Daily__2026-10-04_083640",
+             "mimeType": SHEET_MIME, "createdTime": "2026-10-04T14:37:20Z"}
+        ]
+        github.runs.return_value = [
+            {**run(age=1, status="in_progress"), "id": 42},
+            *[run(age=age, file_id="next") for age in (11, 30, 70)],
+        ]
+        got = reconcile(drive, github, "inbox", now=NOW, only_lane="daily",
+                        after_ack_run_id=42, ack_file_id="previous")
+        self.assertEqual(got["lanes"]["daily"]["status"], "blocked_attempt_budget")
+        github.dispatch.assert_not_called()
+
+    def test_workflow_only_wakes_after_verified_move(self):
+        root = Path(__file__).resolve().parents[1]
+        workflow = yaml.load((root/".github/workflows/gdrive-raw-bridge-probe.yml").read_text(), Loader=yaml.BaseLoader)
+        steps = workflow["jobs"]["consume"]["steps"]
+        ack = next(i for i,s in enumerate(steps) if s.get("id") == "processed")
+        wake = next(i for i,s in enumerate(steps) if s.get("name", "").startswith("Wake next queued"))
+        self.assertGreater(wake, ack)
+        self.assertEqual(steps[wake]["if"], "steps.processed.outcome == 'success'")
+        self.assertIn("--lane daily", steps[wake]["run"])
+        self.assertIn('--ack-file-id "$ACK_FILE_ID"', steps[wake]["run"])
+
     def test_timeout_is_not_retried_or_marked_published(self):
         session = Mock()
         session.post.side_effect = requests.Timeout()

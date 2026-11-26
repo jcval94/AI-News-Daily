@@ -62,6 +62,7 @@ from pipeline.narrative_memory import (
     resolve_selected_memory,
 )
 from pipeline.news import NewsItem, parse_news_file
+from pipeline.source_evidence import collect_evidence, context_json, manifest as source_evidence_manifest
 from pipeline.script_sections import (
     SectionAlignmentError,
     materialize_writer_draft,
@@ -829,6 +830,13 @@ async def build(
             return episode_scripts_dir
 
         selected_json = json.dumps(selection, ensure_ascii=False)
+        # Optional supplementary publisher excerpts; never mutate the accepted digest
+        # or claim that a successful HTTP response independently verifies it.
+        source_rows = collect_evidence(
+            selection["items"], enabled=CONFIG.source_evidence_mode == "retrieve"
+        )
+        write_json(episode_scripts_dir / "source_evidence.json", source_evidence_manifest(source_rows))
+        source_evidence_json = context_json(source_rows)
 
         memory_items, memory_issues = load_memory(editorial_dir / "narrative_memory.jsonl")
         validation_warnings.extend(memory_issues)
@@ -883,6 +891,7 @@ async def build(
                         "news_text": news_text,
                         "selected_news": selected_json,
                         "selected_news_count": str(selected_count),
+                        "source_evidence": source_evidence_json,
                         "voice_profile": voice_profile,
                         "discourse_profile": discourse_profile,
                         "previous_essays": previous_essays_json,
@@ -1035,6 +1044,8 @@ async def build(
         )
         write_json(episode_scripts_dir / "episode_plan.json", episode_plan)
         episode_plan_json = json.dumps(episode_plan, ensure_ascii=False)
+        planned_source_indices = {entry["selected_news_index"] for entry in episode_plan["evidence"]}
+        planned_source_evidence = context_json(source_rows, planned_source_indices)
 
         # The writer needs only the selected source bodies. Unselected discovery items
         # remain useful upstream, but carrying them into narration increases context noise
@@ -1042,6 +1053,7 @@ async def build(
         writer_context = {
             "news_text": selected_json,
             "selected_news": selected_json,
+            "source_evidence": planned_source_evidence,
             "episode_plan": episode_plan_json,
             "voice_profile": voice_profile,
             "discourse_profile": discourse_profile,
@@ -1146,7 +1158,7 @@ async def build(
             }
             editorial_state = await run_agent(
                 reviewer_agent,
-                review_base,
+                {**review_base, "source_evidence": planned_source_evidence},
                 "Evaluate factuality, conceptual rigor, and editorial quality.",
                 step="editorial_judge",
                 trace=agent_trace,
@@ -1248,6 +1260,7 @@ async def build(
                 refiner_state_input = {
                     "sectioned_draft_script": sectioned_draft_script,
                     "review": json.dumps(editorial_result, ensure_ascii=False),
+                    "source_evidence": planned_source_evidence,
                     "selected_news": selected_json,
                     "news_text": news_text,
                     "episode_plan": episode_plan_json,

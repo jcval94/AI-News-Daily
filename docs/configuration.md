@@ -5,3 +5,11 @@
 Repository variables may override defaults in Actions. `NEWS_SOURCE_MODE` and `NEWS_LOOKBACK_DAYS` are resolved from manual/scheduled workflow inputs; all remaining values use the repository variable or the code default.
 
 Do not introduce a new PipelineConfig environment variable without adding it to `PIPELINE_ENV_DEFAULTS` and exposing it in `.github/workflows/build-video-kit.yml`.
+
+## Supplementary publisher evidence
+
+`SOURCE_EVIDENCE_MODE` accepts `off` (local/default, no HTTP access) or `retrieve`
+(production workflow default; explicitly overridable through a repository variable).
+The mode is reported with runtime configuration. In retrieve mode only selected
+article URLs matching the explicit publisher/path allowlist are fetched. Retrieval
+never changes digest coverage, claim-ledger constraints, or the approval gate.

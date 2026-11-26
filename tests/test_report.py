@@ -73,6 +73,10 @@ class ReportTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
+            (episode_dir / "source_evidence.json").write_text(json.dumps({
+                "selected_count": 2, "status_counts": {"excerpt_retrieved": 1, "retrieval_unavailable": 1},
+                "retrieval_is_not_fact_verification": True,
+            }), encoding="utf-8")
             report = build_report(
                 date(2026, 8, 21),
                 news,
@@ -88,6 +92,10 @@ class ReportTests(unittest.TestCase):
             )
             self.assertTrue(report["source_window"]["available_files"][0]["sha256"])
             self.assertTrue(report["artifacts"]["run_state"]["sha256"])
+            self.assertTrue(report["artifacts"]["source_evidence"]["sha256"])
+            self.assertTrue(report["source_evidence"]["recorded"])
+            self.assertEqual(report["source_evidence"]["status_counts"],
+                             {"excerpt_retrieved": 1, "retrieval_unavailable": 1})
             self.assertEqual(report["schema_version"], 11)
             self.assertEqual(report["artifacts"]["run_state"]["path"], "scripts/2026-08-21/run_state.json")
             self.assertNotIn(".pipeline-runs", report["artifacts"]["run_state"]["path"])
