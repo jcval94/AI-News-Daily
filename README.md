@@ -110,6 +110,15 @@ A company announcement, model launch, paper, benchmark, or product should not no
 
 There is **no LLM quality-gate agent** and no LLM-controlled refinement loop. Python decides which refiner, if any, runs next.
 
+## Supplementary publisher evidence
+
+Production optionally fetches short article/abstract excerpts for at most eight selected news
+items. `source_evidence.json` and the run report distinguish retrieval outcomes from source-window
+coverage; they do not label retrieval as independent fact verification. The director and factual
+pipeline receive these excerpts as untrusted, supplemental evidence, while unavailable or
+unsupported URLs fall back to the accepted digest. No raw publisher excerpts are preserved
+in the manifest. See [`docs/editorial_recovery_2026-11-26.md`](docs/editorial_recovery_2026-11-26.md).
+
 ## Claim Ledger
 
 Every planned evidence item has exactly one Claim Ledger entry created before the writer. The ledger separates:

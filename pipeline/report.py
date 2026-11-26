@@ -182,6 +182,7 @@ def build_report(
     multimedia_dir = multimedia_root / episode
 
     selected = read_json(scripts_dir / "selected_news.json", {})
+    source_evidence = read_json(scripts_dir / "source_evidence.json", {})
     episode_plan = read_json(scripts_dir / "episode_plan.json", {})
     novelty_check = read_json(scripts_dir / "novelty_check.json", {})
     reviews = read_json(scripts_dir / "reviews.json", {})
@@ -244,6 +245,7 @@ def build_report(
         "run_state": artifact_record(scripts_dir / "run_state.json", f"scripts/{episode}/run_state.json"),
         "execution_trace": artifact_record(scripts_dir / "execution_trace.json", f"scripts/{episode}/execution_trace.json"),
         "selected_news": artifact_record(scripts_dir / "selected_news.json", f"scripts/{episode}/selected_news.json"),
+        "source_evidence": artifact_record(scripts_dir / "source_evidence.json", f"scripts/{episode}/source_evidence.json"),
         "episode_plan": artifact_record(scripts_dir / "episode_plan.json", f"scripts/{episode}/episode_plan.json"),
         "novelty_check": artifact_record(scripts_dir / "novelty_check.json", f"scripts/{episode}/novelty_check.json"),
         "reviews": artifact_record(scripts_dir / "reviews.json", f"scripts/{episode}/reviews.json"),
@@ -294,6 +296,12 @@ def build_report(
         "build_outcome": build_outcome,
         "state": run_state,
         "source_window": sources,
+        "source_evidence": {
+            "recorded": bool(source_evidence),
+            "selected_count": source_evidence.get("selected_count") if isinstance(source_evidence, dict) else None,
+            "status_counts": source_evidence.get("status_counts") if isinstance(source_evidence, dict) else None,
+            "scope": "bounded excerpt retrieval, not independent fact verification",
+        },
         "configuration": CONFIG.as_report_dict(),
         "selection": {
             "selected_count": len(selected_items),

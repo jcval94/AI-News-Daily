@@ -216,6 +216,7 @@ jobs:
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
+          SOURCE_EVIDENCE_MODE: ${{ vars.SOURCE_EVIDENCE_MODE || 'retrieve' }}
           DOWNLOAD_MULTIMEDIA: "false"
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
@@ -531,6 +532,7 @@ jobs:
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: "8"
+          SOURCE_EVIDENCE_MODE: ${{ vars.SOURCE_EVIDENCE_MODE || 'retrieve' }}
           MAX_MEDIA_DOWNLOADS: ${{ vars.MAX_MEDIA_DOWNLOADS || '54' }}
           DOWNLOAD_MULTIMEDIA: ${{ steps.runtime_options.outputs.download_multimedia }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
@@ -653,7 +655,7 @@ jobs:
           echo "Run artifacts were preserved; nothing non-approved was promoted."
           {
             echo "### Editorial outcome"
-            echo "- Status: `${{ steps.episode_outcome.outputs.status }}`"
+            printf -- '- Status: `%s`\n' "${{ steps.episode_outcome.outputs.status }}"
             echo "- Published: no"
             echo "- Classification: controlled editorial outcome, not a system failure"
           } >> "$GITHUB_STEP_SUMMARY"

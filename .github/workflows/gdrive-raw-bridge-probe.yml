@@ -15,6 +15,8 @@ on:
     branches: [main]
     paths:
       - "pipeline/gdrive_bridge_io.py"
+      - "pipeline/gdrive_bridge_reconcile.py"
+      - "tests/test_gdrive_bridge_reconcile.py"
       - "tests/test_gdrive_bridge_io.py"
       - ".github/workflows/gdrive-raw-bridge-probe.yml"
       - "pipeline/gdrive_news_bridge.py"
@@ -275,6 +277,7 @@ jobs:
         run: python -m pipeline.news_ingestion_followup --date "$DIGEST_DATE" --repo "$GITHUB_REPOSITORY"
 
       - name: Move consumed handoff to processed
+        id: processed
         if: >-
           steps.select.outputs.file_id != '' &&
           steps.validate.outcome == 'success' &&
@@ -289,6 +292,25 @@ jobs:
           FILE_ID: ${{ steps.select.outputs.file_id }}
           FILE_NAME: ${{ steps.select.outputs.file_name }}
         run: python -m pipeline.gdrive_bridge_io move --outcome processed
+
+      - name: Wake next queued daily handoff after verified acknowledgement
+        if: steps.processed.outcome == 'success'
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GH_TOKEN: ${{ github.token }}
+          ACK_FILE_ID: ${{ steps.select.outputs.file_id }}
+        run: |
+          python -m pipeline.gdrive_bridge_reconcile --repo "$GITHUB_REPOSITORY" --lane daily \
+            --after-ack-run-id "$GITHUB_RUN_ID" --ack-file-id "$ACK_FILE_ID" --output daily-post-ack.json
+
+      - name: Preserve post-ack wake evidence
+        if: always() && steps.processed.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-post-ack-${{ github.run_id }}
+          path: daily-post-ack.json
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Idle
         if: steps.select.outputs.file_id == ''

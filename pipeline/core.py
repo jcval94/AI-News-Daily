@@ -20,6 +20,7 @@ PIPELINE_ENV_DEFAULTS: dict[str, str] = {
     "VOICE_THRESHOLD": "8.7",
     "MAX_REFINEMENT_ITERATIONS": "5",
     "MAX_SELECTED_NEWS": "8",
+    "SOURCE_EVIDENCE_MODE": "off",
     "MAX_MEDIA_DOWNLOADS": "12",
     "SELECTION_HISTORY_DAYS": "30",
     "ESSAY_HISTORY_DAYS": "120",
@@ -51,6 +52,7 @@ class PipelineConfig:
     voice_threshold: float = 8.7
     max_refinement_iterations: int = 5
     max_selected_news: int = 8
+    source_evidence_mode: str = "off"
     max_media_downloads: int = 12
     selection_history_days: int = 30
     essay_history_days: int = 120
@@ -79,6 +81,7 @@ class PipelineConfig:
             voice_threshold=float(_config_env("VOICE_THRESHOLD")),
             max_refinement_iterations=int(_config_env("MAX_REFINEMENT_ITERATIONS")),
             max_selected_news=int(_config_env("MAX_SELECTED_NEWS")),
+            source_evidence_mode=_config_env("SOURCE_EVIDENCE_MODE").strip().lower(),
             max_media_downloads=int(_config_env("MAX_MEDIA_DOWNLOADS")),
             selection_history_days=int(_config_env("SELECTION_HISTORY_DAYS")),
             essay_history_days=int(_config_env("ESSAY_HISTORY_DAYS")),
@@ -109,6 +112,8 @@ class PipelineConfig:
             raise ValueError("MAX_REFINEMENT_ITERATIONS must be >= 1")
         if not (1 <= self.max_selected_news <= 8):
             raise ValueError("MAX_SELECTED_NEWS must be between 1 and 8")
+        if self.source_evidence_mode not in {"off", "retrieve"}:
+            raise ValueError("SOURCE_EVIDENCE_MODE must be off or retrieve")
         if self.max_media_downloads < 0:
             raise ValueError("MAX_MEDIA_DOWNLOADS must be >= 0")
         if self.selection_history_days < 1:
