@@ -94,6 +94,12 @@ class ConfigurationContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "SOURCE_EVIDENCE_MODE"):
             PipelineConfig(source_evidence_mode="unknown").validated()
 
+    def test_live_regression_uses_same_source_mode_and_records_retrieval(self) -> None:
+        workflow = Path(".github/workflows/editorial-regression.yml").read_text(encoding="utf-8")
+        self.assertEqual(workflow.count("SOURCE_EVIDENCE_MODE: ${{ vars.SOURCE_EVIDENCE_MODE || 'retrieve' }}"), 2)
+        self.assertIn('"pipeline/source_evidence.py"', workflow)
+        self.assertIn("source_evidence.json", workflow)
+
     def test_every_pipeline_env_is_exposed_to_build_and_report(self) -> None:
         workflow = Path(".github/workflows/build-video-kit.yml").read_text(encoding="utf-8")
         for name in PIPELINE_ENV_DEFAULTS:

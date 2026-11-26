@@ -26,6 +26,8 @@ on:
       - "pipeline/news.py"
       - "pipeline/script_sections.py"
       - "pipeline/source_coverage.py"
+      - "pipeline/source_evidence.py"
+      - "pipeline/editorial_review_hardening.py"
       - "pipeline/source_naming.py"
       - "pipeline/news_resolution.py"
       - "pipeline/editorial_regression.py"
@@ -44,6 +46,8 @@ on:
       - "pipeline/news.py"
       - "pipeline/script_sections.py"
       - "pipeline/source_coverage.py"
+      - "pipeline/source_evidence.py"
+      - "pipeline/editorial_review_hardening.py"
       - "pipeline/source_naming.py"
       - "pipeline/news_resolution.py"
       - "pipeline/editorial_regression.py"
@@ -127,6 +131,7 @@ jobs:
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: ${{ vars.MAX_REFINEMENT_ITERATIONS || '5' }}
           MAX_SELECTED_NEWS: ${{ vars.MAX_SELECTED_NEWS || '8' }}
+          SOURCE_EVIDENCE_MODE: ${{ vars.SOURCE_EVIDENCE_MODE || 'retrieve' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
           MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
@@ -164,6 +169,7 @@ jobs:
           VOICE_THRESHOLD: ${{ vars.VOICE_THRESHOLD || '8.7' }}
           MAX_REFINEMENT_ITERATIONS: "1"
           MAX_SELECTED_NEWS: ${{ vars.MAX_SELECTED_NEWS || '8' }}
+          SOURCE_EVIDENCE_MODE: ${{ vars.SOURCE_EVIDENCE_MODE || 'retrieve' }}
           SELECTION_HISTORY_DAYS: ${{ vars.SELECTION_HISTORY_DAYS || '30' }}
           ESSAY_HISTORY_DAYS: ${{ vars.ESSAY_HISTORY_DAYS || '120' }}
           MAX_RECENT_ESSAYS: ${{ vars.MAX_RECENT_ESSAYS || '12' }}
@@ -237,7 +243,7 @@ jobs:
           TARGET_DATE: ${{ steps.scenario.outputs.target_date }}
           RUN_ROOT: ${{ steps.scenario.outputs.run_root }}
         run: |
-          for file in episode_plan.json script_sections.json reviews.json run_state.json execution_trace.json script.txt; do
+          for file in episode_plan.json script_sections.json reviews.json run_state.json execution_trace.json source_evidence.json script.txt; do
             path="$RUN_ROOT/scripts/$TARGET_DATE/$file"
             if [ -f "$path" ]; then
               echo "===== $file ====="
