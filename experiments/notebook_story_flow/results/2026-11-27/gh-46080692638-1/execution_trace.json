@@ -1,0 +1,106 @@
+[
+  {
+    "step": "plan",
+    "agent": "notebook_plan",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 12.915,
+    "usage": {
+      "prompt_tokens": 22422,
+      "output_tokens": 1742,
+      "total_tokens": 24164
+    }
+  },
+  {
+    "step": "plan_repair",
+    "agent": "notebook_plan_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 10.233,
+    "usage": {
+      "prompt_tokens": 24239,
+      "output_tokens": 1786,
+      "total_tokens": 26025
+    }
+  },
+  {
+    "step": "opening",
+    "agent": "notebook_opening",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 3.962,
+    "usage": {
+      "prompt_tokens": 2611,
+      "output_tokens": 605,
+      "total_tokens": 3216
+    }
+  },
+  {
+    "step": "development",
+    "agent": "notebook_development",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 12.628,
+    "usage": {
+      "prompt_tokens": 11180,
+      "output_tokens": 2262,
+      "total_tokens": 13442
+    }
+  },
+  {
+    "step": "ending",
+    "agent": "notebook_ending",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 3.724,
+    "usage": {
+      "prompt_tokens": 14398,
+      "output_tokens": 575,
+      "total_tokens": 14973
+    }
+  },
+  {
+    "step": "factual_review",
+    "agent": "notebook_factual_review",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 5.572,
+    "usage": {
+      "prompt_tokens": 9030,
+      "output_tokens": 958,
+      "total_tokens": 9988
+    }
+  },
+  {
+    "step": "factual_repair",
+    "agent": "notebook_factual_repair",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 16.18,
+    "usage": {
+      "prompt_tokens": 10306,
+      "output_tokens": 3013,
+      "total_tokens": 13319
+    }
+  },
+  {
+    "step": "factual_recheck",
+    "agent": "notebook_factual_recheck",
+    "iteration": null,
+    "attempt": 1,
+    "status": "success",
+    "elapsed_seconds": 7.737,
+    "usage": {
+      "prompt_tokens": 8518,
+      "output_tokens": 1443,
+      "total_tokens": 9961
+    }
+  }
+]

@@ -1,0 +1,110 @@
+{
+  "sections": [
+    {
+      "id": "step10_reconexion",
+      "text": "Piensa en “ya quedó” como una luz verde que nos convence a primera vista. Pero en la vida real, esa luz puede encenderse sobre una reorganización silenciosa: el camino por el que viaja la incertidumbre hacia la decisión cambia, aunque el valor central siga luciendo razonable. ¿Cómo lo detectamos cuando no nos muestran la pista completa?",
+      "evidence_ids": [],
+      "memory_claim_indices": [
+        2
+      ],
+      "visual_queries": [
+        "Foto o esquema simple: cambio de “varilla continua” a “dos tramos” y flechas de flujo de carga redibujadas",
+        "Interfaz conceptual: ‘intervalo declarado’ → ‘decisión’ como tubería con un codo que cambia de lugar"
+      ]
+    },
+    {
+      "id": "hook_problema",
+      "text": "En IA, mucha gente busca el número correcto: “¿acertó el promedio?”. Pero el peligro más fino suele ser otro: que la herramienta parezca correcta en promedio y aun así comunique el riesgo de forma descalibrada. Y cuando el riesgo viaja mal —porque se resume de manera bonita, porque el rango sale demasiado estrecho o porque la fuente se quedó congelada— la decisión humana puede volverse imprudente sin que nadie “haya mentido” explícitamente.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Esquema: pronóstico con un punto medio ‘bien’ y un intervalo ‘demasiado estrecho’ que falla en cobertura",
+        "Motivo de luz verde: checkmark que tapa un subtexto de incertidumbre"
+      ]
+    },
+    {
+      "id": "hook_cita",
+      "text": "Una idea que se repite en la evaluación moderna es que no basta con acertar el valor central si los intervalos declarados no se corresponden con lo observado. En otras palabras: la cobertura (qué tanto cae dentro del rango) importa tanto como el punto.",
+      "evidence_ids": [
+        "central_accuracy_wrong_intervals"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Gráfico tipo calibración: eje X ‘probabilidad declarada’ vs eje Y ‘cobertura observada’"
+      ]
+    },
+    {
+      "id": "idea_A",
+      "text": "Primer pilar: un sistema puede “tener razón” en promedio y, aun así, fallar en cómo representa la incertidumbre. La calibración no es un adorno; es parte del mecanismo de decisión. Si el intervalo que se comunica no coincide con el intervalo que realmente cubre, el usuario recibe una historia incompleta.\n\nY aquí entra algo que me parece peligrosamente cotidiano: cuando una salida viene con tono de certeza, la incertidumbre deja de ser una variable y se vuelve una sombra. Se negocia menos de lo que creemos. La gente ajusta planes, presupuestos o tiempos con esa sombra.\n\nEn el mundo de los modelos, esa “sombra” puede aparecer por varias vías: el sistema puede comprimir matices al resumir evidencia; puede declarar cobertura con una regla que no se cumple en el uso real; o puede estar trabajando con datos que ya no representan el presente. El resultado es una especie de ilusión de estabilidad: “no parece grave” porque el número central cae cerca, pero lo que importa para la seguridad es el rango, la cola, lo que no sabemos.\n\nAhora, regresemos a la analogía que ya viste: una conexión que cambia su camino de carga puede seguir “luciendo” igual. Es decir: puede conservar apariencia sin conservar el régimen que gobierna el esfuerzo. En IA, la “apariencia” es la interfaz y el formato de salida: punto + intervalo + explicación corta. Cambias un detalle y, sin necesidad de que el promedio falle, cambia lo que el usuario cree que está cubierto.",
+      "evidence_ids": [
+        "central_accuracy_wrong_intervals"
+      ],
+      "memory_claim_indices": [
+        1
+      ],
+      "visual_queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de carga vs flechas de confianza)"
+      ]
+    },
+    {
+      "id": "dato_1",
+      "text": "En un estudio sobre pronósticos hechos con seis productos LLM de consumo, se reportó que Gemini combinó errores puntuales competitivos con solo 29.7% de cobertura para intervalos declarados al 90%. Eso sugiere descalibración entre lo que se promete como rango y lo que realmente ocurre.",
+      "evidence_ids": [
+        "central_accuracy_wrong_intervals"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Tabla mini: intervalo declarado 90% vs cobertura observada 29.7%"
+      ]
+    },
+    {
+      "id": "idea_B_explica",
+      "text": "Segundo pilar: la comunicación de incertidumbre no se vuelve segura solo porque el modelo sea “razonable”. También depende de cómo se resume evidencia y cómo se traduce riesgo a palabras.\n\nEn consulta clínica o en decisiones operativas, muchas veces el usuario no evalúa explícitamente intervalos; evalúa tono. Una respuesta puede sonar prudente, pero aun así omitir lo más importante: qué falta, qué suposición está escondida, o qué parte del rango no es realmente creíble. Y cuando el sistema “habla bien”, la gente tiende a tratarlo como si hubiera hecho el trabajo completo de evaluación.\n\nLa evidencia que nos ayuda aquí no es “se equivocó”; es “faltó lo que haría el riesgo verificable”. En un estudio transversal, se comparó ChatGPT, Gemini y DeepSeek con 11 revisiones Cochrane y los autores reportaron omisiones y sobreestimación de certeza o de efecto en las respuestas. O sea: en lugar de conservar incertidumbre condicional, la respuesta puede reorganizarla hacia una conclusión más contundente.\n\nEsto conecta con nuestra tesis en construcción: el peligro no es solo la falsedad, sino la reconfiguración del camino entre evidencia y acción. En algunos casos, el camino ya venía con deficiencias; en otros, el cambio es menor, pero la interfaz hace que lo condicional se parezca a regla.\n\nPor eso el punto no es “usa intervalos”. El punto es: ¿la incertidumbre que debería sobrevivir al traslado a una decisión realmente sobrevive, o se convierte en un adorno lingüístico?",
+      "evidence_ids": [
+        "dental_uncertainty_mismatch"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ]
+    },
+    {
+      "id": "idea_B_desafio",
+      "text": "Ok, pero aquí viene el microdesafío: incluso si el modelo produce un rango, ¿cómo sabemos que ese rango está bien calibrado *en tu contexto*? Cambia población, prevalencia, condiciones de uso… y también cambia la interfaz: lo que se pregunta, lo que se resume y el nivel de detalle que se muestra.",
+      "evidence_ids": [],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Diagrama: mismo modelo, tres contextos (A/B/C) con calibración que varía",
+        "Interfaz: pregunta del usuario recorta el contexto disponible"
+      ]
+    },
+    {
+      "id": "dato_2",
+      "text": "En ese estudio transversal comparando ChatGPT, Gemini y DeepSeek con conclusiones de 11 revisiones Cochrane usando 99 interacciones, se observó acuerdo completo de 45.5% para ChatGPT y Gemini, y 27.3% para DeepSeek, además de omisiones y sobreestimación de certeza o efecto. Los autores advierten que la muestra es pequeña y que no mide resultados clínicos.",
+      "evidence_ids": [
+        "dental_uncertainty_mismatch"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Barra: acuerdo completo por modelo + etiqueta ‘muestra pequeña, sin outcomes clínicos’"
+      ]
+    },
+    {
+      "id": "idea_C",
+      "text": "Tercer pilar: verificación end-to-end ante cambios de interfaz. Es decir: no basta con mirar si “el valor central está bien”; hay que comprobar qué parte de la incertidumbre llega a la acción cuando cambias el formato de salida, el “corte” de evidencia o la forma en que el sistema declara su cobertura.\n\nAquí es donde mi incomodidad con la historia estructural se vuelve útil, no porque sea idéntica a la IA, sino porque enseña la forma del problema. En el caso de la conexión, el detalle en obra sustituyó una varilla continua por dos tramos: a simple vista, la pieza seguía siendo “la misma historia hecha metal”. Pero cambió el camino de carga y, además, el cambio elevó la carga de diseño transferida por conexión relevante.\n\nEn IA pasa algo análogo aunque no físicamente igual: una interfaz puede “conservar el aspecto” (el usuario ve un mismo tipo de salida) y aun así cambiar el camino operativo por el que la incertidumbre se convierte en regla. Por ejemplo: si un sistema muestra un intervalo con cobertura prometida, pero en el uso real ese intervalo se vuelve demasiado estrecho, la decisión ya no está bajo el mismo nivel de protección.\n\nLo mismo ocurre si la explicación recorta condiciones: puedes tener un número aceptable y una recomendación verbal que “absorbe” la incertidumbre condicional. Entonces la interfaz hace el trabajo de un puente falso: lo que era un rango incierto se traduce en una acción parecida a una instrucción.\n\nEntonces, ¿qué controles imaginaria que no negocian la incertidumbre?\n\n- Metrías de calibración verificables, no solo precisiones: cobertura observada vs declarada en el tipo de tareas que vas a usar.\n- Protocolo de frescura de datos: si la fuente se queda atrás, el rango debe cambiar, no el relato.\n- Un chequeo end-to-end “antes de liberar”: pruebas que simulen el flujo real evidencia→síntesis→presentación→decisión.\n\nY algo más, un requisito humano: si la salida viene con luz verde, debería existir un mecanismo visible para verificar de qué luz verde se trata. “Ya quedó” debería ir acompañado de “ya quedó *qué*”, y en qué condiciones.\n\nNo estoy diciendo que todos los problemas se resuelvan con intervalos ni que una calibración perfecta sea trivial. Estoy diciendo que el sistema puede fallar en el punto exacto que más importa: el traslado de lo incierto hacia lo accionable. Y esa falla puede ser difícil de detectar si solo miras el promedio o confías en un tono convincente.",
+      "evidence_ids": [
+        "central_accuracy_wrong_intervals",
+        "dental_uncertainty_mismatch"
+      ],
+      "memory_claim_indices": [
+        3,
+        2
+      ],
+      "visual_queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó y qué no’"
+      ]
+    }
+  ]
+}

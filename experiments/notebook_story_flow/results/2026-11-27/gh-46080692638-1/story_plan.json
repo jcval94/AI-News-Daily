@@ -1,0 +1,97 @@
+{
+  "central_question": "Si una IA responde con seguridad y hasta produce un ‘buen promedio’, ¿cómo sabemos que también está calibrada para comunicar incertidumbre—y para que nuestra decisión no se vuelva imprudente?",
+  "provisional_thesis": "La principal falla de muchos sistemas no es inventar datos, sino traducir evidencia y riesgo de forma descalibrada: comprimen matices y sustituyen incertidumbre condicional por una recomendación aparente. Cuando las personas toman decisiones a partir de esa confianza, el peligro aparece incluso si el “valor central” parece acertar.",
+  "evolved_thesis": "El peligro más difícil de detectar no es la falsedad obvia, sino la reconfiguración del “camino de carga” entre evidencia y acción: un cambio pequeño (interfaz, agregación, cómo se declara la cobertura o cómo se presenta un rango) puede convertir lo condicional en regla. Entonces la pregunta clave ya no es “¿acierta el número?”, sino “¿qué parte de la incertidumbre sobrevive el traslado hasta la decisión?”.",
+  "core_ideas": [
+    "Un sistema puede parecer correcto en promedio y aun así fallar en la representación del riesgo.",
+    "La comunicación de incertidumbre no es un adorno: es parte del mecanismo de decisión (lo que se cree y lo que se ignora).",
+    "Pequeños cambios en la “interfaz” entre evidencia y acción pueden alterar el régimen del sistema y volver peligrosa una salida que antes no lo era."
+  ],
+  "motif": "La luz verde de aprobación: “ya quedó” no significa “ya es seguro”.",
+  "pillars": [
+    "Calibración de incertidumbre: cobertura declarada vs. cobertura observada.",
+    "Representación de matices en síntesis: omisiones de certeza/efecto y sobreconfianza en el tono.",
+    "Verificación end-to-end ante cambios de interfaz: cómo un detalle local puede reconfigurar la decisión global."
+  ],
+  "epic_candidates": [
+    {
+      "memory_id": "hyatt-walkway-hanger-change-doubled-load",
+      "epicity": 9.6,
+      "relevance": 0.93,
+      "reason": "Cambio aparentemente local en obra (varilla continua → dos tramos) que conserva la forma “vista”, pero altera el camino de cargas y muestra un fallo ya existente: un buen paralelo para la idea de interfaz que reconfigura evidencia→decisión."
+    }
+  ],
+  "selected_memory_id": "hyatt-walkway-hanger-change-doubled-load",
+  "protagonist": "Una conexión estructural asociada al cuarto nivel que “paga” el nuevo camino de carga durante el cambio de diseño en las pasarelas del proyecto.",
+  "opposing_force": "El cambio de detalle durante la construcción que sustituyó una varilla continua por dos tramos, reasignando cargas sin exigir una recalibración completa del sistema.",
+  "conflict": "El componente que estaba destinado a resistir cierta carga termina obligado a sostener una carga mayor por un cambio local que conserva la apariencia del ensamblaje; además, el diseño original ya tenía una capacidad insuficiente, lo que agrava la situación.",
+  "setup_claim_indices": [
+    1,
+    2,
+    3
+  ],
+  "payoff_claim_indices": [
+    4,
+    5
+  ],
+  "unresolved_question": "¿Qué controles (métricas, interfaces obligatorias o protocolos de verificación) nos harían detectar que la incertidumbre se “descalibró” justo en el traslado desde evidencia hasta la acción—aunque el valor central parezca bien?",
+  "bridge_to_present": "En salud y en pronósticos, el problema moderno se parece a un cambio de “varillas”: no necesariamente se rompe la idea central, pero se altera el camino por el que la incertidumbre viaja hasta la decisión. En evidencia reciente, los estudios apuntan a desajustes entre lo declarado y lo observado (cobertura de intervalos) y a omisiones/sobreconfianza al resumir evidencia; eso vuelve frágil la “luz verde” si no se recalcula el sistema completo.",
+  "analogy_limits": "Una carga estructural es física y cuantificable; las dependencias en IA (datos, interfaz, formulación de la consulta, y cómo se comunica un rango) pueden ser probabilísticas y cambiar con el uso. Además, el caso del Hyatt no debe reducirse al cambio de varillas: el diseño original ya era deficiente. Por tanto, la analogía sirve para enseñar “recalcular end-to-end ante cambios de interfaz”, no para afirmar una equivalencia causal exacta con IA.",
+  "ledger": [
+    {
+      "evidence_id": "dental_uncertainty_mismatch",
+      "news_id": "n_1a6a077a98cfc51d",
+      "supported_facts": [
+        "Un estudio transversal comparó ChatGPT, Gemini y DeepSeek con las conclusiones de 11 revisiones Cochrane usando 99 interacciones.",
+        "El acuerdo completo reportado fue 45.5% para ChatGPT y Gemini, y 27.3% para DeepSeek.",
+        "Los autores observaron omisiones y sobreestimación de certeza o efecto en las respuestas.",
+        "Los autores señalan que la muestra es pequeña, usa versiones específicas y no mide resultados clínicos, por lo que no demuestra rendimiento general en atención sanitaria."
+      ],
+      "allowed_interpretations": [
+        "Las omisiones y la sobreestimación de certeza sugieren un problema de representación de incertidumbre al resumir evidencia."
+      ],
+      "hypotheses": [
+        "La respuesta más fluida puede comprimir cautelas y hacer que la incertidumbre condicional se parezca más a una recomendación aparente."
+      ],
+      "uncertainties": [
+        "No establece que todos los modelos fallen de la misma manera en todos los contextos clínicos.",
+        "No mide directamente cómo cambia una decisión real en pacientes o profesionales."
+      ],
+      "prohibited_claims": [
+        "No afirmar que el estudio demuestre daño clínico real por uso de chatbots.",
+        "No asegurar que el problema sea causado específicamente por el modelo base sin más análisis. "
+      ],
+      "source_limitations": [
+        "Es transversal, con muestra pequeña y versiones específicas de modelos; el estudio no incluye outcomes clínicos."
+      ]
+    },
+    {
+      "evidence_id": "central_accuracy_wrong_intervals",
+      "news_id": "n_c78d6cc817e4925a",
+      "supported_facts": [
+        "Investigadores evaluaron seis productos LLM de consumo en 142 sesiones con pronósticos financieros, meteorológicos, deportivos y de criptomonedas.",
+        "El estudio reportó que Gemini combinó errores puntuales competitivos con solo 29.7% de cobertura para intervalos declarados al 90%.",
+        "Otros productos mostraron posibles fallos de datos desactualizados.",
+        "Los autores indican que el estudio es descriptivo, usó pocas observaciones por celda, mezcló niveles de acceso y no identifica los modelos o mecanismos internos servidos por cada aplicación."
+      ],
+      "allowed_interpretations": [
+        "El desajuste entre cobertura declarada y observada sugiere descalibración en cómo se comunican intervalos de incertidumbre.",
+        "La confianza comunicada puede no reflejar el riesgo real incluso si el valor central no es extremadamente incorrecto."
+      ],
+      "hypotheses": [
+        "En productos conversacionales, la interfaz que “habla seguro” puede ocultar que los intervalos están demasiado estrechos."
+      ],
+      "uncertainties": [
+        "No prueba causalmente que la descalibración venga de una sola fuente (modelo vs datos vs interfaz).",
+        "No mide resultados de decisiones humanas ni impactos en seguridad."
+      ],
+      "prohibited_claims": [
+        "No afirmar que todos los LLM tienen el mismo nivel de falla en intervalos fuera del conjunto estudiado.",
+        "No extrapolar que ‘acertar el promedio’ sea necesariamente irrelevante; solo mostrar que no basta."
+      ],
+      "source_limitations": [
+        "Limitaciones de diseño (descriptivo, celdas con pocas observaciones) y falta de trazabilidad exacta a mecanismos internos."
+      ]
+    }
+  ]
+}

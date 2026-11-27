@@ -1,0 +1,26 @@
+{
+  "approved": false,
+  "risk": "medium",
+  "historical_grounding": 8.9,
+  "invented_details": [
+    "\"A mí me inquieta, porque esto suena a un patrón que no es exclusivo de la ingeniería: la luz verde de aprobación (“ya quedó”) no equivale a “ya es seguro”.\" — La frase es un juicio/analogía, pero el guion la presenta como conclusión general; no hay en el material verificado (Hyatt/NBS) evidencia directa de que el patrón sea extrapolable tal cual a IA más allá de la analogía.",
+    "\"En IA, esa “sombra” puede aparecer por varias vías: el sistema puede comprimir matices al resumir evidencia; puede declarar cobertura con una regla que no se cumple en el uso real; o puede estar trabajando con datos que ya no representan el presente.\" — Son mecanismos plausibles, pero en el ledger solo se respalda descalibración/omisiones observadas; no se documenta que esas “vías” sean las causas específicas en los productos concretos ni en general."
+  ],
+  "source_issues": [
+    "El guion anota evidencia_ids que no necesariamente corresponden a un enunciado específico: por ejemplo, evidence_ids=[\"dental_uncertainty_mismatch\"] aparece en varios segmentos donde el texto también propone mecanismos (“comprima matices”, “datos congelados”), que el ledger no establece como mecanismo causante.",
+    "El guion usa la memoria Hyatt como analogía extendida. Aunque los hechos del caso están verificados, el guion sugiere analogía funcional (interfaz/evidencia->decisión) sin que el material confirme equivalencias estructurales con IA; debe quedar explícitamente como “sirve para enseñar” (limitada).",
+    "No se detectan errores de numeración de claims de la memoria (1,2,3,4,5), pero hay lenguaje adicional (p.ej., “dos tramos” y “reasignación local” como narrativa) que debe mantenerse como descripción del mecanismo del colapso, no como prueba directa para IA."
+  ],
+  "unsupported_claims": [
+    "\"En consulta clínica o en decisiones operativas, muchas veces el usuario no evalúa explícitamente intervalos; evalúa tono.\" — No está respaldado por el ledger ni por las noticias proporcionadas.",
+    "\"Entonces, la pregunta clave ya no es “¿acierta el número?”, sino “¿qué parte de la incertidumbre sobrevive el traslado hasta la decisión?”.\" — Es una tesis interpretativa. El ledger sugiere desajustes cobertura/certeza, pero no justifica que “sea la pregunta clave” en términos prescriptivos universales.",
+    "\"La evidencia reciente apunta a fallas de calibración y a respuestas que pueden sonar completas sin reflejar la cobertura real;\" — El ledger respalda descalibración/omisiones y sobreestimación de certeza/efecto en esos estudios, pero el guion lo formula como “evidencia reciente” general y aplicable sin límites."
+  ],
+  "repair_instructions": [
+    "Mantén las partes de analogía como no-causales: reformula para que quede inequívocamente como “ilustra cómo un cambio local puede reconfigurar el efecto”, sin afirmar equivalencias con IA más allá de la lección abstracta (cargas ↔ incertidumbre→decisión).",
+    "Elimina o acota mecanismos no respaldados como causas (“comprender matices al resumir evidencia”, “datos congelados”, “regla que no se cumple en uso real”) y reemplázalos por enunciados apoyados por el ledger: “se observaron desajustes entre cobertura declarada y observada / omisiones y sobreestimación de certeza o efecto en evaluaciones realizadas”.",
+    "Ajusta afirmaciones prescriptivas no probadas: donde el texto dice que “la pregunta clave ya no es…”, conviértela en hipótesis/lectura editorial (p.ej., “una forma útil de preguntarlo es…”), sin presentarlo como conclusión demostrada por los estudios.",
+    "Para el segmento clínico (“muchas veces el usuario no evalúa… evalúa tono”), elimina esa generalización o declárala como conjetura no respaldada explícitamente (y preferir apoyarla con datos si existieran en verified_claims/ledger).",
+    "Revisa evidence_ids: asigna cada evidencia_id solo a frases que realmente correspondan al claim soportado (p.ej., cobertura 29.7% al 90% o omisiones/ sobreestimación reportadas). Evita que evidence_ids “cubra” mecanismos que no aparecen en los supported_facts."
+  ]
+}

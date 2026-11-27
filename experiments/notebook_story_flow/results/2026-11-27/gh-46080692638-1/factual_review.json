@@ -1,0 +1,31 @@
+{
+  "approved": false,
+  "risk": "high",
+  "historical_grounding": 6.9,
+  "invented_details": [
+    "“Kansas City, Missouri, Estados Unidos: en el tramo que conecta la cubierta con las pasarelas de los niveles cuarto y segundo, los planos contractuales no dejaban mucho margen a la interpretación; mostraban varillas continuas que ‘viajaban’ de un lugar a otro sin cortes (1).” → El guion añade una caracterización (“no dejaban mucho margen…”, “sin cortes”) y una interpretación narrativa (“viajaban”) que no está respaldada explícitamente por las verified_claims (solo se afirma que los planos mostraban varillas continuas).",
+    "“Y aquí es donde la intuición se nos quiere adelantar…” y varios segmentos (“la aprobación aparente…”, “mecanismo del caso… termina ‘pagando’…”, etc.) → No son verificaciones factuales del expediente; son interpretación/escena didáctica. No son un problema por sí mismos, pero elevan el riesgo si el texto se lee como causalidad/observación adicional más allá del mecanismo descrito por las verified_claims.",
+    "“En IA… la historia estructural sirve como advertencia visual, no como prueba de equivalencia” aparece después de usar el caso para ilustrar una causalidad análoga; aunque se limita la equivalencia, el guion sigue presentando el caso como soporte implícito para una regla de IA (“reconfigurar por completo el camino…”, “si una interfaz conserva el aspecto puede alterar el camino…”) sin evidencia directa de IA en las news_items."
+  ],
+  "source_issues": [
+    "No hay trazabilidad en el guion: las referencias numéricas (1)-(5) no se enlazan a ninguna lista de evidence_ids dentro del contrato de auditoría; el bloque memory_claim_indices existe, pero “evidence_ids” está vacío en todas las secciones.",
+    "“story_payoff” atribuye la evidencia a “(4,5)” pero el guion en esa sección no conserva una formulación estrictamente equivalente a las verified_claims: mezcla (i) inicio más probable en una conexión viga-caja–varilla del cuarto nivel (4) con (ii) afirmación de insuficiencia del diseño original (5) y (iii) “la modificación agravó esa debilidad” (que podría estar en las verified_claims como parte del mecanismo, pero el guion lo formula como conclusión causal directa sin expresar el grado de reconstrucción posterior/limitación)."
+  ],
+  "unsupported_claims": [
+    "“los planos contractuales… mostraban varillas continuas que ‘viajaban’… sin cortes” (añade “sin cortes” y metáfora de “viajaban” como precisión/observación).",
+    "“la conexión estructural asociada al cuarto nivel… queda atrapada en una discrepancia… ” (lee el resultado como una “discrepancia” específica del componente “asociado”, más allá de la formulación de “inicio más probable de la falla” y sin detallar límites del informe).",
+    "“la modificación construida… no fue solo una diferencia de detalle” y “el cambio elevó… la carga de diseño…” (la elevación está respaldada, pero la frase “no fue solo…” es valoración narrativa sin respaldo documental explícito en las verified_claims).",
+    "“En IA, ese ‘camino’ es la traducción de evidencia y riesgo (y, sobre todo, la calibración de lo incierto) hacia una decisión.” (definición/interpretación; además se presenta como equiparación funcional al caso físico, lo que requiere cuidado: las sources de news_items hablan de calibración/cobertura y omisiones, pero no demuestran que exista un análogo directo del “camino” en sistemas concretos).",
+    "“la investigación del NBS… concluyó que el diseño original ya era insuficiente; la modificación agravó esa debilidad” (parcialmente respaldado por (5) y por el resumen de memoria, pero el guion no conserva el nivel de incertidumbre de la reconstrucción post-colapso señalado en uncertainties).",
+    "“el problema moderno se parece a un cambio de ‘varillas’… (no necesariamente se rompe la idea central…)” y otras formulaciones causales/transferibles (aunque se incluye analogy_limits en memoria, el guion usa el caso como sustento persuasivo de “regla” sin cuantificar o restringir lo suficiente)."
+  ],
+  "repair_instructions": [
+    "(1) Sustituir metáforas “precisas” por formulaciones verificables: eliminar o reescribir “no dejaban mucho margen…”, “sin cortes”, “viajaban” para que queden como “los planos mostraban varillas continuas…” (verified_claim 1).",
+    "(2) Mantener el límite de reconstrucción: donde se diga “investigación concluyó inicio más probable” o conclusiones causales, añadir verbalmente el matiz de reconstrucción posterior (p.ej., “reconstruyó el inicio más probable a partir de evidencia posterior”) para reflejar uncertainties.",
+    "(3) Enlazar numeración (1)-(5) a una estructura auditorizable: o bien añadir en cada sección el mapeo explícito “(1)=claim_catalog index 1” o retirar los números y parafrasear directamente cada verified_claim con el mismo grado de precisión.",
+    "(4) Separar con más claridad hechos vs analogía: en el puente a IA, reescribir frases como “puede”/“ilustra” y evitar formulaciones normativas del tipo “si la interfaz… entonces…”. Mantener la analogía como herramienta didáctica, no como inferencia sobre mecanismos de IA.",
+    "(5) Revisar el uso de “(4,5)” en story_payoff para que la redacción sea equivalente y conservadora: conservar “inicio más probable en conexión viga-caja–varilla del cuarto nivel” y “diseño original también insuficiente”, y expresar “agravó” como “el cambio aumentó la carga de diseño transferida” (ya está en (3)) en vez de como conclusión causal completa sin matiz.",
+    "(6) En “hook_cita/idea_A”: mantener que lo que se reporta es cobertura observada vs declarada (noticia n_c78d6cc817e4925a) y evitar implicar causalidad directa entre “Gemini” y “interfaz” salvo que se declare hipótesis explícita (por ejemplo, “esto sugiere…/podría…”).",
+    "(7) Asegurar consistencia de evidencia: en sections donde se cita “evidence_ids”, actualmente está vacío; o bien completar evidencia_id o eliminar esos campos en el contrato del guion. Aunque la auditoría no exige bibliografía, sí exige que las referencias internas sean comprobables contra los catálogos provistos."
+  ]
+}

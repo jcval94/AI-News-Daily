@@ -1,0 +1,39 @@
+{
+  "sections": [
+    {
+      "id": "story_payoff",
+      "text": "Volvamos al “ya quedó”. En las pasarelas del Hyatt Regency, la modificación construida sustituyó una varilla continua por dos tramos y eso no fue solo una diferencia de detalle: el cambio elevó aproximadamente de 20.3 a 40.7 kips la carga de diseño transferida por cada conexión relevante del cuarto nivel. Además, la investigación del NBS señaló el inicio más probable de la falla en una conexión del cuarto nivel, y concluyó que el diseño original ya era insuficiente; el cambio agravó una debilidad existente. \n\nLa ganancia para nuestra historia de IA no es que “sea lo mismo” que una varilla: es que una interfaz que parece equivalente puede mover el camino por el que viaja el riesgo. En IA, ese “camino” es la traducción de evidencia e incertidumbre hacia una decisión.",
+      "evidence_ids": [
+        "dental_uncertainty_mismatch"
+      ],
+      "memory_claim_indices": [
+        2,
+        4,
+        5
+      ],
+      "visual_queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ]
+    },
+    {
+      "id": "cierre",
+      "text": "Entonces, el verdadero conflicto no era si el sistema acierta el número: era si el sistema conserva —o distorsiona— la incertidumbre cuando esa información cruza la frontera hacia una acción. Las evidencias recientes apuntan a fallas de calibración y a respuestas que pueden sonar completas sin reflejar la cobertura real; y eso vuelve frágil la “luz verde” si nadie recalcula end-to-end.\n\nLa pregunta que me quedo es simple: cuando algo se declara “seguro”, ¿qué parte exacta de la incertidumbre sobrevivió hasta tu decisión?\n\nSi te sirvió esta forma de mirar, suscríbete: aquí nos interesa más la gente que el modelo, y más el ensayo que el titular.",
+      "evidence_ids": [
+        "central_accuracy_wrong_intervals",
+        "dental_uncertainty_mismatch"
+      ],
+      "memory_claim_indices": [],
+      "visual_queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ]
+    }
+  ],
+  "seo_title": "Calibración de incertidumbre en IA: por qué acertar el valor",
+  "seo_description": "Acertar el valor central no garantiza intervalos confiables. Analizamos fallas de calibración y el riesgo de que una interfaz “parezca equivalente” pero cambie:",
+  "seo_keywords": [
+    "calibración de incertidumbre",
+    "intervalos de confianza",
+    "IA y riesgo",
+    "evidencia a decisión end-to-end"
+  ]
+}

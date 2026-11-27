@@ -1,0 +1,1024 @@
+{
+  "clip_seconds": 8,
+  "max_candidates_per_fragment": 3,
+  "slots": [
+    {
+      "slot_id": "step9_epica-001",
+      "section_id": "step9_epica",
+      "start_seconds": 0,
+      "end_seconds": 8,
+      "spoken_excerpt": "Kansas City, Missouri, Estados Unidos: en el tramo que conecta la cubierta con las pasarelas de los niveles cuarto y",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-002",
+      "section_id": "step9_epica",
+      "start_seconds": 8,
+      "end_seconds": 16,
+      "spoken_excerpt": "segundo, los planos contractuales no dejaban mucho margen a la interpretación; mostraban varillas continuas que “viajaban” de un lugar a",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-003",
+      "section_id": "step9_epica",
+      "start_seconds": 16,
+      "end_seconds": 24,
+      "spoken_excerpt": "otro sin cortes (1).\n\nPiensa en lo que eso significa cuando el trabajo todavía está por moverse: la estructura parece",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-004",
+      "section_id": "step9_epica",
+      "start_seconds": 24,
+      "end_seconds": 32,
+      "spoken_excerpt": "una sola idea hecha metal. Pero durante el cambio de detalle en obra, la historia cambia de tono. En vez",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-005",
+      "section_id": "step9_epica",
+      "start_seconds": 32,
+      "end_seconds": 40,
+      "spoken_excerpt": "de una varilla continua, se sustituyó por dos tramos, una reasignación local que a simple vista puede conservar la apariencia",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-006",
+      "section_id": "step9_epica",
+      "start_seconds": 40,
+      "end_seconds": 48,
+      "spoken_excerpt": "del ensamblaje (2).\n\nY aquí es donde la intuición se nos quiere adelantar: si el aspecto “se ve bien”, entonces",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-007",
+      "section_id": "step9_epica",
+      "start_seconds": 48,
+      "end_seconds": 56,
+      "spoken_excerpt": "tal vez el sistema también “queda bien”. El problema es que lo que se ve no siempre coincide con lo",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-008",
+      "section_id": "step9_epica",
+      "start_seconds": 56,
+      "end_seconds": 64,
+      "spoken_excerpt": "que se carga. El cambio elevó de aproximadamente 20.3 a 40.7 kips la carga de diseño transferida por",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-009",
+      "section_id": "step9_epica",
+      "start_seconds": 64,
+      "end_seconds": 72,
+      "spoken_excerpt": "cada conexión relevante del cuarto nivel (3). No es un ajuste cosmético; es un salto que reescribe, en el papel",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-010",
+      "section_id": "step9_epica",
+      "start_seconds": 72,
+      "end_seconds": 80,
+      "spoken_excerpt": "cuánto trabajo está obligado a pagar el componente.\n\nLa conexión estructural asociada al cuarto nivel —esa que, en el mecanismo",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-011",
+      "section_id": "step9_epica",
+      "start_seconds": 80,
+      "end_seconds": 88,
+      "spoken_excerpt": "del caso, termina “pagando” el nuevo camino de carga cuando se modifica el detalle— queda atrapada en una discrepancia entre",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-012",
+      "section_id": "step9_epica",
+      "start_seconds": 88,
+      "end_seconds": 96,
+      "spoken_excerpt": "lo que debía resistir y lo que, por el cambio local, termina transfiriendo el sistema. Y además, la investigación de",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-013",
+      "section_id": "step9_epica",
+      "start_seconds": 96,
+      "end_seconds": 104,
+      "spoken_excerpt": "NBS señaló que el diseño original ya tenía una capacidad insuficiente; la modificación no fue la única deficiencia (5). \n\nA",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-014",
+      "section_id": "step9_epica",
+      "start_seconds": 104,
+      "end_seconds": 112,
+      "spoken_excerpt": "mí me inquieta porque esta clase de historias tiene una moraleja que no es exclusiva de la ingeniería: la aprobación",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-015",
+      "section_id": "step9_epica",
+      "start_seconds": 112,
+      "end_seconds": 120,
+      "spoken_excerpt": "aparente (“ya quedó”) no garantiza que el “camino” que importa haya quedado igual. En el caso del Hyatt, la aparente",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-016",
+      "section_id": "step9_epica",
+      "start_seconds": 120,
+      "end_seconds": 128,
+      "spoken_excerpt": "continuidad del ensamblaje convivió con una redistribución que cambió el régimen de cargas.\n\nEntonces, antes de que miremos hacia la",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-017",
+      "section_id": "step9_epica",
+      "start_seconds": 128,
+      "end_seconds": 136,
+      "spoken_excerpt": "IA, déjame preguntarte algo en términos más generales: si un sistema traduce evidencia en acción a través de interfaces (formatos",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-018",
+      "section_id": "step9_epica",
+      "start_seconds": 136,
+      "end_seconds": 144,
+      "spoken_excerpt": "rangos declarados, resúmenes), ¿qué control nos obligaría a verificar que el traslado de incertidumbre no fue alterado por un cambio",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-019",
+      "section_id": "step9_epica",
+      "start_seconds": 144,
+      "end_seconds": 152,
+      "spoken_excerpt": "pequeño” que conserva el aspecto?\n\nCuando la evidencia se ve razonable, ¿qué parte exacta del riesgo llega —sin perderse— hasta",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step9_epica-020",
+      "section_id": "step9_epica",
+      "start_seconds": 152,
+      "end_seconds": 157,
+      "spoken_excerpt": "la decisión, especialmente cuando todos están listos para pasar al siguiente paso",
+      "queries": [
+        "Planos contractuales con detalle de varillas continuas entre cubierta y pasarelas de los niveles cuarto y segundo.",
+        "Diagrama o sección estructural mostrando dos variantes: varilla continua vs. dos tramos (con pasarela del segundo nivel suspendida de la del cuarto).",
+        "Gráfico comparativo de cargas de diseño: 20.3 kips vs. 40.7 kips por conexión relevante del cuarto nivel."
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-001",
+      "section_id": "step10_reconexion",
+      "start_seconds": 157,
+      "end_seconds": 165,
+      "spoken_excerpt": "Piensa en “ya quedó” como una luz verde que nos convence a primera vista. Pero en sistemas reales, esa luz",
+      "queries": [
+        "Foto o esquema simple: cambio de “varilla continua” a “dos tramos” y flechas de flujo de carga redibujadas",
+        "Interfaz conceptual: ‘intervalo declarado’ → ‘decisión’ como tubería con un codo que cambia de lugar"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-002",
+      "section_id": "step10_reconexion",
+      "start_seconds": 165,
+      "end_seconds": 173,
+      "spoken_excerpt": "puede encenderse sobre una reorganización silenciosa: el camino por el que viaja la incertidumbre hacia la decisión cambia, aunque el",
+      "queries": [
+        "Foto o esquema simple: cambio de “varilla continua” a “dos tramos” y flechas de flujo de carga redibujadas",
+        "Interfaz conceptual: ‘intervalo declarado’ → ‘decisión’ como tubería con un codo que cambia de lugar"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "step10_reconexion-003",
+      "section_id": "step10_reconexion",
+      "start_seconds": 173,
+      "end_seconds": 179,
+      "spoken_excerpt": "valor central siga luciendo razonable. ¿Cómo lo detectamos cuando no nos muestran la pista completa",
+      "queries": [
+        "Foto o esquema simple: cambio de “varilla continua” a “dos tramos” y flechas de flujo de carga redibujadas",
+        "Interfaz conceptual: ‘intervalo declarado’ → ‘decisión’ como tubería con un codo que cambia de lugar"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-001",
+      "section_id": "hook_problema",
+      "start_seconds": 179,
+      "end_seconds": 187,
+      "spoken_excerpt": "En IA, mucha gente busca el número correcto: “¿acertó el promedio?”. Pero el peligro más fino suele ser otro: que",
+      "queries": [
+        "Esquema: pronóstico con un punto medio ‘bien’ y un intervalo ‘demasiado estrecho’ que falla en cobertura",
+        "Motivo de luz verde: checkmark que tapa un subtexto de incertidumbre"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-002",
+      "section_id": "hook_problema",
+      "start_seconds": 187,
+      "end_seconds": 195,
+      "spoken_excerpt": "una salida parezca bien en promedio y, aun así, comunique el riesgo de forma desajustada. Y cuando el riesgo viaja",
+      "queries": [
+        "Esquema: pronóstico con un punto medio ‘bien’ y un intervalo ‘demasiado estrecho’ que falla en cobertura",
+        "Motivo de luz verde: checkmark que tapa un subtexto de incertidumbre"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-003",
+      "section_id": "hook_problema",
+      "start_seconds": 195,
+      "end_seconds": 203,
+      "spoken_excerpt": "mal —porque el intervalo prometido no coincide con lo observado, o porque el resumen se queda corto— la decisión humana",
+      "queries": [
+        "Esquema: pronóstico con un punto medio ‘bien’ y un intervalo ‘demasiado estrecho’ que falla en cobertura",
+        "Motivo de luz verde: checkmark que tapa un subtexto de incertidumbre"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_problema-004",
+      "section_id": "hook_problema",
+      "start_seconds": 203,
+      "end_seconds": 207,
+      "spoken_excerpt": "puede volverse imprudente sin que parezca haber un “error” evidente",
+      "queries": [
+        "Esquema: pronóstico con un punto medio ‘bien’ y un intervalo ‘demasiado estrecho’ que falla en cobertura",
+        "Motivo de luz verde: checkmark que tapa un subtexto de incertidumbre"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-001",
+      "section_id": "hook_cita",
+      "start_seconds": 207,
+      "end_seconds": 215,
+      "spoken_excerpt": "Una idea repetida en la evaluación moderna es que no basta con acertar el valor central si los intervalos declarados",
+      "queries": [
+        "Gráfico tipo calibración: eje X ‘probabilidad declarada’ vs eje Y ‘cobertura observada’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "hook_cita-002",
+      "section_id": "hook_cita",
+      "start_seconds": 215,
+      "end_seconds": 222,
+      "spoken_excerpt": "no se corresponden con lo observado. En otras palabras: la cobertura importa tanto como el punto",
+      "queries": [
+        "Gráfico tipo calibración: eje X ‘probabilidad declarada’ vs eje Y ‘cobertura observada’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-001",
+      "section_id": "idea_A",
+      "start_seconds": 222,
+      "end_seconds": 230,
+      "spoken_excerpt": "Primer pilar: un sistema puede “tener razón” en promedio y, aun así, fallar en la representación cuantitativa de la incertidumbre",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-002",
+      "section_id": "idea_A",
+      "start_seconds": 230,
+      "end_seconds": 238,
+      "spoken_excerpt": "La calibración no es un adorno: es parte del mecanismo de decisión. Si el intervalo que se comunica no coincide",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-003",
+      "section_id": "idea_A",
+      "start_seconds": 238,
+      "end_seconds": 246,
+      "spoken_excerpt": "con el intervalo que realmente cubre, el usuario recibe una historia incompleta.\n\nLo cotidiano aquí es la tentación de tratar",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-004",
+      "section_id": "idea_A",
+      "start_seconds": 246,
+      "end_seconds": 254,
+      "spoken_excerpt": "una salida confiable como si fuera una garantía. Pero, en pronósticos y evaluaciones, lo importante no es solo el punto",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-005",
+      "section_id": "idea_A",
+      "start_seconds": 254,
+      "end_seconds": 262,
+      "spoken_excerpt": "medio: es si el rango declarado tiene el nivel de cobertura prometido.\n\nEn otras palabras: incluso cuando no vemos una",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-006",
+      "section_id": "idea_A",
+      "start_seconds": 262,
+      "end_seconds": 270,
+      "spoken_excerpt": "alucinación”, puede haber un desajuste entre lo que el sistema afirma como incertidumbre y lo que la incertidumbre termina produciendo",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_A-007",
+      "section_id": "idea_A",
+      "start_seconds": 270,
+      "end_seconds": 276,
+      "spoken_excerpt": "en la práctica. Y eso cambia el tipo de riesgo que sobrevive hasta la acción",
+      "queries": [
+        "Dibujo: tres capas ‘evidencia’, ‘síntesis’, ‘decisión’ y el intervalo cae en el segundo canal",
+        "Analogía: misma forma visual pero distinta ruta interna (flechas de cargas ↔ flechas de confianza)"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-001",
+      "section_id": "dato_1",
+      "start_seconds": 276,
+      "end_seconds": 284,
+      "spoken_excerpt": "En un estudio sobre pronósticos hechos con seis productos LLM de consumo, se reportó que Gemini combinó errores puntuales competitivos",
+      "queries": [
+        "Tabla mini: intervalo declarado 90% vs cobertura observada 29.7%"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-002",
+      "section_id": "dato_1",
+      "start_seconds": 284,
+      "end_seconds": 292,
+      "spoken_excerpt": "con solo 29.7% de cobertura para intervalos declarados al 90%. Eso apunta a un desajuste entre lo prometido como",
+      "queries": [
+        "Tabla mini: intervalo declarado 90% vs cobertura observada 29.7%"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_1-003",
+      "section_id": "dato_1",
+      "start_seconds": 292,
+      "end_seconds": 294,
+      "spoken_excerpt": "rango y lo observado",
+      "queries": [
+        "Tabla mini: intervalo declarado 90% vs cobertura observada 29.7%"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-001",
+      "section_id": "idea_B_explica",
+      "start_seconds": 294,
+      "end_seconds": 302,
+      "spoken_excerpt": "Segundo pilar: la comunicación de incertidumbre no se vuelve confiable solo porque el sistema suene “completo” o razonable. También depende",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-002",
+      "section_id": "idea_B_explica",
+      "start_seconds": 302,
+      "end_seconds": 310,
+      "spoken_excerpt": "de si lo que se declara como rango (o como nivel de certeza) mantiene su correspondencia cuando lo confrontas con",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-003",
+      "section_id": "idea_B_explica",
+      "start_seconds": 310,
+      "end_seconds": 318,
+      "spoken_excerpt": "el desempeño real.\n\nEn ese sentido, una forma útil de mirar el problema es distinguir entre “qué tan bien lo",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-004",
+      "section_id": "idea_B_explica",
+      "start_seconds": 318,
+      "end_seconds": 326,
+      "spoken_excerpt": "central encaja” y “qué tan bien se cumple la promesa del intervalo”. El primero puede mejorar mientras el segundo se",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-005",
+      "section_id": "idea_B_explica",
+      "start_seconds": 326,
+      "end_seconds": 334,
+      "spoken_excerpt": "deteriora. Y cuando el intervalo está mal calibrado, la gente puede terminar tomando decisiones bajo una cobertura que no existe",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-006",
+      "section_id": "idea_B_explica",
+      "start_seconds": 334,
+      "end_seconds": 342,
+      "spoken_excerpt": "en la práctica.\n\nPor eso el puente entre evidencia y acción importa tanto: si el traslado de incertidumbre se altera",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-007",
+      "section_id": "idea_B_explica",
+      "start_seconds": 342,
+      "end_seconds": 350,
+      "spoken_excerpt": "en la interfaz (cómo se resume, cómo se declara el rango, qué se incluye o excluye), la seguridad percibida puede",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_explica-008",
+      "section_id": "idea_B_explica",
+      "start_seconds": 350,
+      "end_seconds": 352,
+      "spoken_excerpt": "no corresponder al riesgo real",
+      "queries": [
+        "Captura conceptual: ‘recomendación aparente’ vs ‘riesgo condicional’ con un color distinto para lo omitido"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-001",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 352,
+      "end_seconds": 360,
+      "spoken_excerpt": "Ok, microdesafío: incluso si una herramienta produce intervalos, ¿cómo sabemos que están calibrados para tu contexto? Cambia la población, cambia",
+      "queries": [
+        "Diagrama: mismo modelo, tres contextos (A/B/C) con calibración que varía",
+        "Interfaz: pregunta del usuario recorta el contexto disponible"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-002",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 360,
+      "end_seconds": 368,
+      "spoken_excerpt": "la prevalencia, cambian las condiciones de uso… y también cambia la interfaz: qué preguntas se hacen, qué se resume y",
+      "queries": [
+        "Diagrama: mismo modelo, tres contextos (A/B/C) con calibración que varía",
+        "Interfaz: pregunta del usuario recorta el contexto disponible"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_B_desafio-003",
+      "section_id": "idea_B_desafio",
+      "start_seconds": 368,
+      "end_seconds": 371,
+      "spoken_excerpt": "cuánto detalle viaja hasta el usuario",
+      "queries": [
+        "Diagrama: mismo modelo, tres contextos (A/B/C) con calibración que varía",
+        "Interfaz: pregunta del usuario recorta el contexto disponible"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-001",
+      "section_id": "dato_2",
+      "start_seconds": 371,
+      "end_seconds": 379,
+      "spoken_excerpt": "En otro trabajo, se observó que al comparar ChatGPT, Gemini y DeepSeek con 11 revisiones Cochrane (usando 99 interacciones), los",
+      "queries": [
+        "Barra: acuerdo/criterios reportados por modelo + etiqueta ‘muestra pequeña, sin outcomes clínicos’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-002",
+      "section_id": "dato_2",
+      "start_seconds": 379,
+      "end_seconds": 387,
+      "spoken_excerpt": "autores reportaron omisiones y sobreestimación de certeza o de efecto en las respuestas, y señalaron limitaciones de muestra y de",
+      "queries": [
+        "Barra: acuerdo/criterios reportados por modelo + etiqueta ‘muestra pequeña, sin outcomes clínicos’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "dato_2-003",
+      "section_id": "dato_2",
+      "start_seconds": 387,
+      "end_seconds": 390,
+      "spoken_excerpt": "que no se midieron resultados clínicos",
+      "queries": [
+        "Barra: acuerdo/criterios reportados por modelo + etiqueta ‘muestra pequeña, sin outcomes clínicos’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-001",
+      "section_id": "idea_C",
+      "start_seconds": 390,
+      "end_seconds": 398,
+      "spoken_excerpt": "Tercer pilar: verificación end-to-end ante cambios de interfaz. No basta con mirar si el valor central es “correcto”; hay que",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-002",
+      "section_id": "idea_C",
+      "start_seconds": 398,
+      "end_seconds": 406,
+      "spoken_excerpt": "comprobar qué parte de la incertidumbre llega a la acción cuando cambia el formato de salida, el resumen, o cómo",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-003",
+      "section_id": "idea_C",
+      "start_seconds": 406,
+      "end_seconds": 414,
+      "spoken_excerpt": "se declara la cobertura.\n\nAquí la historia estructural sirve como advertencia visual, no como prueba de equivalencia: una modificación local",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-004",
+      "section_id": "idea_C",
+      "start_seconds": 414,
+      "end_seconds": 422,
+      "spoken_excerpt": "puede conservar el aspecto del ensamblaje y, aun así, cambiar la ruta por la que se distribuye la carga. Traducido",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-005",
+      "section_id": "idea_C",
+      "start_seconds": 422,
+      "end_seconds": 430,
+      "spoken_excerpt": "a IA: una interfaz puede conservar la forma externa de la respuesta y alterar el “camino” por el que la",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-006",
+      "section_id": "idea_C",
+      "start_seconds": 430,
+      "end_seconds": 438,
+      "spoken_excerpt": "incertidumbre se transforma en decisión.\n\nEntonces, si tu objetivo es seguridad, la pregunta operativa deja de ser solo “¿acierta el",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-007",
+      "section_id": "idea_C",
+      "start_seconds": 438,
+      "end_seconds": 446,
+      "spoken_excerpt": "número?” y se convierte en otra más verificable: ¿cómo demostrarías que la cobertura declarada (o la incertidumbre comunicada) se mantiene",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-008",
+      "section_id": "idea_C",
+      "start_seconds": 446,
+      "end_seconds": 454,
+      "spoken_excerpt": "consistente con lo observado en el uso real de tu contexto?\n\nControles posibles —en términos generales— que obligan a esa",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-009",
+      "section_id": "idea_C",
+      "start_seconds": 454,
+      "end_seconds": 462,
+      "spoken_excerpt": "verificación:\n\n- Métricas de calibración (cobertura observada vs declarada) sobre el tipo de tareas que vas a ejecutar.\n- Revisión de consistencia",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-010",
+      "section_id": "idea_C",
+      "start_seconds": 462,
+      "end_seconds": 470,
+      "spoken_excerpt": "cuando cambia el “pipeline” (entrada → extracción → síntesis → presentación → decisión).\n- Pruebas prospectivas del flujo real evidencia→síntesis→interfaz→acción.\n\nY, en",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-011",
+      "section_id": "idea_C",
+      "start_seconds": 470,
+      "end_seconds": 478,
+      "spoken_excerpt": "lenguaje humano: si una salida viene con luz verde, debería existir un mecanismo visible para saber qué parte del riesgo",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "idea_C-012",
+      "section_id": "idea_C",
+      "start_seconds": 478,
+      "end_seconds": 481,
+      "spoken_excerpt": "fue evaluada y bajo qué condiciones",
+      "queries": [
+        "Diagrama end-to-end: evidencia→síntesis→interfaz→decisión con ‘verificación’ en cada borde",
+        "Motivo recurrente: luz verde con subtexto ‘qué quedó cubierto realmente’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-001",
+      "section_id": "story_payoff",
+      "start_seconds": 481,
+      "end_seconds": 489,
+      "spoken_excerpt": "Volvamos al “ya quedó”. En las pasarelas del Hyatt Regency, la modificación construida sustituyó una varilla continua por dos tramos",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-002",
+      "section_id": "story_payoff",
+      "start_seconds": 489,
+      "end_seconds": 497,
+      "spoken_excerpt": "y eso no fue solo una diferencia de detalle: el cambio elevó aproximadamente de 20.3 a 40.7 kips",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-003",
+      "section_id": "story_payoff",
+      "start_seconds": 497,
+      "end_seconds": 505,
+      "spoken_excerpt": "la carga de diseño transferida por cada conexión relevante del cuarto nivel. Además, la investigación del NBS situó el inicio",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-004",
+      "section_id": "story_payoff",
+      "start_seconds": 505,
+      "end_seconds": 513,
+      "spoken_excerpt": "más probable de la falla en una conexión del cuarto nivel y concluyó que el diseño original ya era insuficiente",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-005",
+      "section_id": "story_payoff",
+      "start_seconds": 513,
+      "end_seconds": 521,
+      "spoken_excerpt": "la modificación agravó esa debilidad (4,5). \n\nLa ganancia para nuestra historia de IA no es que “sea lo mismo",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-006",
+      "section_id": "story_payoff",
+      "start_seconds": 521,
+      "end_seconds": 529,
+      "spoken_excerpt": "que una varilla: es que un cambio que conserva el aspecto puede reconfigurar por completo el camino por el que",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-007",
+      "section_id": "story_payoff",
+      "start_seconds": 529,
+      "end_seconds": 537,
+      "spoken_excerpt": "viaja lo importante. En IA, ese “camino” es la traducción de evidencia y riesgo (y, sobre todo, la calibración de",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "story_payoff-008",
+      "section_id": "story_payoff",
+      "start_seconds": 537,
+      "end_seconds": 539,
+      "spoken_excerpt": "lo incierto) hacia una decisión",
+      "queries": [
+        "Recuadro final: ‘lo que se veía igual’ (formato/ensamble) vs ‘lo que cambió’ (carga/pago del componente) con flechas en contraste"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-001",
+      "section_id": "cierre",
+      "start_seconds": 539,
+      "end_seconds": 547,
+      "spoken_excerpt": "Entonces, el verdadero conflicto no era si el sistema acierta el número: era si el sistema conserva —o distorsiona— la",
+      "queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-002",
+      "section_id": "cierre",
+      "start_seconds": 547,
+      "end_seconds": 555,
+      "spoken_excerpt": "incertidumbre cuando esa información cruza la frontera hacia una acción. Las evidencias recientes apuntan a desajustes entre lo declarado y",
+      "queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-003",
+      "section_id": "cierre",
+      "start_seconds": 555,
+      "end_seconds": 563,
+      "spoken_excerpt": "lo observado en intervalos (cobertura) y también a respuestas que pueden omitir o sobreestimar certeza o efecto frente a evaluaciones",
+      "queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-004",
+      "section_id": "cierre",
+      "start_seconds": 563,
+      "end_seconds": 571,
+      "spoken_excerpt": "basadas en revisiones.\n\nLa pregunta que me quedo es simple: cuando algo se declara “seguro”, ¿qué parte exacta de la",
+      "queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-005",
+      "section_id": "cierre",
+      "start_seconds": 571,
+      "end_seconds": 579,
+      "spoken_excerpt": "incertidumbre sobrevivió hasta tu decisión?\n\nSi te sirvió esta forma de mirar, suscríbete: aquí nos interesa más la gente que",
+      "queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    },
+    {
+      "slot_id": "cierre-006",
+      "section_id": "cierre",
+      "start_seconds": 579,
+      "end_seconds": 583,
+      "spoken_excerpt": "el modelo, y más el ensayo que el titular",
+      "queries": [
+        "Motivo recurrente al final: un semáforo con ‘ya quedó’ y debajo un checklist: ‘¿qué quedó cubierto realmente?’"
+      ],
+      "downloaded": false,
+      "provenance": "model_proposal_not_verified_asset"
+    }
+  ],
+  "policy": "Planning only; use repository acquisition/licensing/density gates before downloads."
+}
