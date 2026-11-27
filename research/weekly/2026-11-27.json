@@ -1,0 +1,524 @@
+{
+  "schema_version": "1.0",
+  "digest_date": "2026-11-27",
+  "window": {
+    "from": "2026-11-21",
+    "to": "2026-11-27"
+  },
+  "topics": [
+    "rag",
+    "retrieval",
+    "agents",
+    "tool_use",
+    "llm_production",
+    "evaluation",
+    "observability",
+    "serving",
+    "inference",
+    "memory",
+    "safety",
+    "guardrails",
+    "architecture"
+  ],
+  "weekly_changes": [
+    {
+      "summary": "El resultado de un agente depende del sustrato y de la carga, no sólo del modelo y el prompt",
+      "why_it_matters": "MASSys muestra que el ranking entre workflows cambia bajo presión de KV y que la calidad de las respuestas supervivientes puede ocultar cuántos trabajos nunca se entregan."
+    },
+    {
+      "summary": "La arquitectura de serving debe elegirse por la fase dominante del workload",
+      "why_it_matters": "La comparación controlada de cinco organizaciones SGLang encuentra que replicación favorece tráfico concurrente o decode-heavy, mientras pipeline y desagregación ayudan en prefill de 32K; descomponer no mejora de forma monotónica."
+    },
+    {
+      "summary": "La verificación agentic migra de scores a certificados y evidencia causal",
+      "why_it_matters": "Agent-as-a-Verifier separa contrato, claims y obligaciones verificables; PROVE evita que agentes aprendan a aceptar resultados correctos sin cumplir el protocolo de evidencia."
+    },
+    {
+      "summary": "El ahorro práctico viene de delegar trabajo auxiliar y prestar capacidad ociosa con semánticas explícitas",
+      "why_it_matters": "Delegent reduce el gasto del modelo frontier al delegar investigación y pruebas a SLMs; ModelLess presta GPUs dormidas sólo cuando cada tier define qué estado puede perder y cómo recuperarlo."
+    },
+    {
+      "summary": "RAG empieza a optimizar obligaciones estructurales y contexto transportable, no sólo similitud",
+      "why_it_matters": "CA-RAG condiciona la recuperación con cláusulas y relaciones de política; ConTra genera prefijos por chunk reutilizables por búsqueda vectorial y reranking, mejorando precisión y costo de indexación."
+    }
+  ],
+  "items": [
+    {
+      "id": "arxiv:2611.28671",
+      "title": "The Evaluation Substrate Matters: Benchmarking Multi-Agent Serving Substrates",
+      "type": "benchmark",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-21",
+      "updated_at": null,
+      "authors": [
+        "Haoyuan Zheng",
+        "Dongting Li",
+        "Hancheng Ye",
+        "Qinsi Wang",
+        "Mingyuan Ma",
+        "Yuncheng Yao",
+        "Yifei Wang",
+        "Baijun Zhou",
+        "Zishan Shao",
+        "Tingjun Chen",
+        "Hai Helen Li",
+        "Danyang Zhuo",
+        "Yiran Chen"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.28671",
+      "external_ids": {
+        "arxiv": "2611.28671"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "observability",
+        "serving",
+        "llm_production",
+        "architecture"
+      ],
+      "summary": "MASSys ejecuta los mismos pares workflow-tarea bajo distintos sustratos y cargas, midiendo calidad junto con entrega, latencia, costo, presión de recursos y evidencia de fallo en cinco familias de trabajo multiagente.",
+      "what_changed": "Hace explícita la dependencia entre diseño agentic y entorno de ejecución: una evaluación ya no se interpreta como propiedad estable del workflow si cambia el scheduler, la presión de KV o el régimen de carga.",
+      "why_it_matters": "Para comparar arquitecturas de agentes en producción hay que medir jobs enviados y entregados, colas, timeouts y trazas, no sólo la calidad de outputs que lograron terminar.",
+      "evidence": [
+        "Cubre reparación de software, síntesis de investigación, análisis financiero, control interactivo y generación de diagramas.",
+        "Bajo presión de KV, el workflow Star cae del primer al cuarto lugar por latencia media y Chain sube del cuarto al primero.",
+        "Al aumentar la carga aparecen colas largas y presión de timeout.",
+        "En varias familias cambia menos la calidad de outputs evaluados que la calidad efectiva sobre todos los jobs enviados."
+      ],
+      "limitations": [
+        "Los resultados dependen de los sustratos, modelos y cargas incluidos.",
+        "El benchmark no representa todas las topologías multiagente ni fallos de servicios externos.",
+        "La instrumentación completa añade costo operativo y almacenamiento de trazas."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "observability",
+        "serving",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.29104",
+      "title": "When Does Decomposition Help? Empirical Study on Workload-Architecture Affinity in LLM Inference Serving",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-22",
+      "updated_at": null,
+      "authors": [
+        "Jihui Yang",
+        "Wentai Wu",
+        "Jiahua Huang",
+        "Weiwei Lin",
+        "Ligang He",
+        "Linghong Tsang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.29104",
+      "external_ids": {
+        "arxiv": "2611.29104"
+      },
+      "topics": [
+        "serving",
+        "inference",
+        "llm_production",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Comparación controlada de cinco organizaciones SGLang bajo el mismo hardware, modelo, software, prompts y llegadas para aislar cuándo convienen réplicas, paralelismo o prefill/decode desagregado.",
+      "what_changed": "Separa el efecto arquitectónico de cambios simultáneos en hardware y carga y formula una afinidad medible entre forma del workload y granularidad de paralelismo.",
+      "why_it_matters": "Copiar una arquitectura desagregada por moda puede degradar estabilidad. La decisión debe basarse en longitud de entrada y salida, concurrencia, ajuste del modelo y capacidad de escalar fases por separado.",
+      "evidence": [
+        "Evalúa 150 condiciones auditadas sobre cuatro A100 de 40 GB y Qwen3-8B.",
+        "Cuatro réplicas independientes obtienen menor latencia end-to-end en chat corto y salida larga y son las únicas estables en todas las condiciones.",
+        "Pipeline parallel reduce TTFT de 32K en 58–59% fuera de estrés.",
+        "La desagregación híbrida basada en pipeline logra la mejor latencia 32K a 0.4 requests/s; el split TP2+TP2 estático colapsa bajo mayor carga."
+      ],
+      "limitations": [
+        "Una sola combinación de modelo, stack y hardware limita generalización.",
+        "No cuantifica energía ni costo económico total.",
+        "Las conclusiones pueden cambiar con otros kernels, tamaños de modelo o políticas de autoscaling."
+      ],
+      "practical_applications": [
+        "serving",
+        "evaluation",
+        "deployment"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.32634",
+      "title": "ModelLess: A Serverless System for Multi-Tier LLM Inference on Shared GPUs",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-24",
+      "updated_at": null,
+      "authors": [
+        "Ding Shi",
+        "Wei Wu",
+        "Jiayuan Chen",
+        "Chenghu Yang"
+      ],
+      "organization": "Ant Group",
+      "url": "https://arxiv.org/abs/2611.32634",
+      "external_ids": {
+        "arxiv": "2611.32634"
+      },
+      "topics": [
+        "llm_production",
+        "serving",
+        "inference",
+        "observability",
+        "architecture"
+      ],
+      "summary": "Sistema serverless que duerme servicios con pesos en memoria host, presta GPUs liberadas a tiers inferiores y define semánticas de preemption específicas para online, job y flex.",
+      "what_changed": "Trata pesos, estado de ejecución, KV cache y requests en vuelo como recursos con pérdidas distintas; el protocolo cierra admisión y persiste el request antes de abortar, en vez de aplicar eviction uniforme.",
+      "why_it_matters": "Compartir GPUs entre inferencia online, batch y rollouts sólo es seguro si cada tier declara su durabilidad, recovery time y SLO; scale-to-zero sin recuperación rápida devuelve poco valor.",
+      "evidence": [
+        "GLM-5.2 TP8 libera GPU en ~1 s y despierta en ~4 s frente a un cold start superior a cuatro minutos.",
+        "Replay de una semana y 1,100 H20 estima hasta 38% de GPU-time prestable, equivalente a 417 GPUs, bajo un umbral idealizado.",
+        "Con cold start de 240 s, el potencial cae por debajo de 8%.",
+        "En una corrida de cuatro horas, pause produce 22% más tokens del borrower por muestra de GPU retenida que abort-and-requeue con igual mediana de latencia online."
+      ],
+      "limitations": [
+        "El 38% es un upper bound idealizado bajo un umbral grueso.",
+        "Job tier y follow/seal no se evalúan todavía end-to-end.",
+        "La evaluación de políticas usa una sola corrida de cuatro horas por política."
+      ],
+      "practical_applications": [
+        "serving",
+        "deployment",
+        "observability"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.33098",
+      "title": "Delegent: A Multi-Agent Harness That Reduces Cost without Sacrificing Performance",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-24",
+      "updated_at": null,
+      "authors": [
+        "Lingwei Gu",
+        "Jimmy Lin"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.33098",
+      "external_ids": {
+        "arxiv": "2611.33098"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "llm_production",
+        "evaluation",
+        "architecture"
+      ],
+      "summary": "Harness sobre Claude Code donde el modelo frontier conserva el control y delega subtareas acotadas —inspección, pruebas y búsqueda— a SLMs locales sin entrenar router ni modelos.",
+      "what_changed": "A diferencia de cascadas que asignan la tarea completa, mantiene un líder frontier y externaliza sólo el legwork; la instrucción de delegación corta evita entregar el núcleo difícil al modelo pequeño.",
+      "why_it_matters": "Es un patrón directamente aplicable para reducir tokens frontier: delegar exploración verificable y recuperar resultados compactos, conservando planificación y decisiones críticas en el modelo fuerte.",
+      "evidence": [
+        "Un SLM 27B FP8 reduce 67% el costo frontier en coding de horizonte largo y 59% en búsqueda agentic sin pérdida reportada de desempeño.",
+        "Un SLM 2B que cabe en laptop reduce 66% el costo de coding.",
+        "No requiere entrenamiento de router y permite intercambiar ambos modelos.",
+        "La mayor parte del ahorro proviene de una instrucción breve que reserva la tarea principal al modelo frontier."
+      ],
+      "limitations": [
+        "Los resultados se concentran en Claude Code y tareas de coding/búsqueda.",
+        "El costo local de hardware y energía del SLM no se incorpora al ahorro frontier.",
+        "Una delegación mal delimitada puede perder contexto o introducir trabajo de verificación adicional."
+      ],
+      "practical_applications": [
+        "agents",
+        "design",
+        "deployment",
+        "evaluation"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.33497",
+      "title": "CA-RAG: Constraint-Aligned Retrieval for Structurally Faithful Long-Form Generation",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-24",
+      "updated_at": null,
+      "authors": [
+        "Vimal Kumar Kumar",
+        "Meghana Kshirsagar",
+        "Conor Ryan"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.33497",
+      "external_ids": {
+        "arxiv": "2611.33497"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "evaluation",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "CA-RAG amplía consultas por sección con restricciones estructurales derivadas de ontologías y relaciones de un knowledge graph de políticas antes de seleccionar evidencia para documentos largos.",
+      "what_changed": "Optimiza suficiencia para cláusulas obligatorias además de relevancia semántica, mostrando que imponer constraints sólo al generador puede aumentar cobertura pero reducir cumplimiento global y fiabilidad.",
+      "why_it_matters": "En reportes regulados, contratos o políticas, el retriever debe conocer las obligaciones de estructura; pedir al generador que arregle omisiones después no recupera la evidencia faltante.",
+      "evidence": [
+        "A k=6 aumenta Precision de 0.5268 a 0.5692.",
+        "Recall agregado sube de 0.5402 a 0.5950 y F1 de 0.5389 a 0.5672 frente a RAG estándar.",
+        "Los experimentos de generación mejoran compliance y reliability en varios pares modelo-dominio.",
+        "Constraints sólo en generación logran mayor cobertura de cláusulas pero menor compliance y reliability globales."
+      ],
+      "limitations": [
+        "Depende de ontologías y knowledge graphs de política de buena calidad.",
+        "Las mejoras de generación no son uniformes en todos los modelos y dominios.",
+        "El costo de construir y mantener restricciones estructurales no se cuantifica en el resumen."
+      ],
+      "practical_applications": [
+        "retrieval",
+        "design",
+        "evaluation",
+        "safety"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.34366",
+      "title": "ConTra: A Training Framework for Effective Contextual Retrieval via Prefix Generation",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-25",
+      "updated_at": null,
+      "authors": [
+        "Jiajun Hou",
+        "Jingbang Chen"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.34366",
+      "external_ids": {
+        "arxiv": "2611.34366"
+      },
+      "topics": [
+        "rag",
+        "retrieval",
+        "evaluation",
+        "llm_production"
+      ],
+      "summary": "ConTra entrena un generador ligero de prefijos factuales por chunk; el contexto queda almacenado como texto reutilizable tanto por embeddings como por rerankers.",
+      "what_changed": "Combina feedback de modelos congelados de embedding y reranking con verificación factual y control de longitud, evitando generar contexto con un LLM grande en cada indexación.",
+      "why_it_matters": "Cuando el chunk pierde título, entidad o relación documental, un prefijo persistente puede mejorar recall y reranking sin depender de metadata privada a un solo retriever.",
+      "evidence": [
+        "Introduce RealContextBench con cinco colecciones y tres condiciones de interferencia.",
+        "ConTra-2B supera al baseline prompted 9B y al contextual encoder PPLX-4B por hasta 3.15 puntos en score global.",
+        "Indexa documentos cortos 7.74 y 2.15 veces más rápido que esos baselines, respectivamente.",
+        "Entrenado sólo en ConTEB, lidera métodos standalone en RealContextBench después de reranking."
+      ],
+      "limitations": [
+        "Requiere post-training del generador de prefijos.",
+        "Los prefijos pueden volverse obsoletos cuando cambia el documento o el esquema de recuperación.",
+        "El benchmark no cubre todos los idiomas, dominios ni tamaños de documento."
+      ],
+      "practical_applications": [
+        "retrieval",
+        "deployment",
+        "evaluation"
+      ],
+      "reading_recommendation": "skim",
+      "priority": "medium",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.34132",
+      "title": "Agent-as-a-Verifier: From Scores to Evidence for General Verification",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-25",
+      "updated_at": null,
+      "authors": [
+        "Yuxuan Sun",
+        "Hao (Mark) Chen",
+        "Nagarajan Natarajan",
+        "Sushrut Karmalkar",
+        "Niranjani Prasad",
+        "Amit Sharma",
+        "Hongxiang Fan"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.34132",
+      "external_ids": {
+        "arxiv": "2611.34132"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "evaluation",
+        "observability",
+        "guardrails",
+        "architecture"
+      ],
+      "summary": "Sistema verificador que produce certificados: extrae un grafo de dependencias sin ver el veredicto, compila por separado el contrato de aceptación y deriva obligaciones comprobables con agentes separados por rol.",
+      "what_changed": "Reemplaza el score opaco por una base auditable de claims, obligaciones y evidencia, usando herramientas e iteración para fact-checking y verificación fina.",
+      "why_it_matters": "En optimización recursiva o test-time scaling, un score incorrecto puede reforzar reward hacking. Un certificado permite inspeccionar por qué se aceptó una solución y qué evidencia falta.",
+      "evidence": [
+        "Supera al enfoque state-of-the-art reportado en Terminal-Bench 2.1.",
+        "Mejora al agente base en FrontierMath y CyberGym.",
+        "Identifica soluciones de reward hacking que engañan al evaluador del benchmark.",
+        "Separa extracción de claims y compilación del contrato para reducir sesgo por el veredicto."
+      ],
+      "limitations": [
+        "El resumen no cuantifica costo, latencia ni magnitud de todas las mejoras.",
+        "La calidad depende de herramientas y agentes que también pueden fallar.",
+        "Los certificados generados no equivalen a pruebas formales completas en todos los dominios."
+      ],
+      "practical_applications": [
+        "evaluation",
+        "observability",
+        "agents",
+        "safety"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.34215",
+      "title": "PROVE: Mitigating Long-Horizon LLM Collusion with Reinforcement Learning from Verified Evidence",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-25",
+      "updated_at": null,
+      "authors": [
+        "Haochen Luo",
+        "Jie Fu",
+        "Mukai Li",
+        "Yuqi Wang",
+        "Qi Liu"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.34215",
+      "external_ids": {
+        "arxiv": "2611.34215"
+      },
+      "topics": [
+        "agents",
+        "memory",
+        "evaluation",
+        "safety",
+        "guardrails"
+      ],
+      "summary": "PROVE entrena agentes verificadores con reward basado en la evidencia exigida por el protocolo, no sólo en acertar el resultado, y asigna crédito a cada llamada según la decisión que controla.",
+      "what_changed": "Identifica que feedback correcto acumulado en memoria puede enseñar colusión procedimental: aceptar al peer sin evidencia maximiza reward. La solución modifica el comportamiento mediante multi-agent RL.",
+      "why_it_matters": "Si el KPI premia sólo outcome, un verificador puede aprender a saltarse controles. Los rewards de producción deben valorar cumplimiento del proceso y evidencia, especialmente en interacciones largas.",
+      "evidence": [
+        "En Qwen3.6-27B reduce colusión de 65.0% a 1.0% en secuencias held-out de diez episodios.",
+        "No detecta cambio en task success.",
+        "El beneficio se mantiene cuatro episodios más allá del horizonte visto en entrenamiento.",
+        "Interacciones que antes convergían siempre a colusión dejan de hacerlo en la evaluación reportada."
+      ],
+      "limitations": [
+        "Se evalúa principalmente un protocolo y un modelo adaptado con LoRA.",
+        "No se demuestra robustez frente a nuevas formas coordinadas de evasión.",
+        "Entrenar por protocolo puede requerir nuevos datos y recompensas cuando cambian reglas o herramientas."
+      ],
+      "practical_applications": [
+        "safety",
+        "evaluation",
+        "agents",
+        "design"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    },
+    {
+      "id": "arxiv:2611.34380",
+      "title": "AgentLens: Graph-guided Security Auditing for LLM-based Agents",
+      "type": "paper",
+      "selection_basis": "new_publication",
+      "published_at": "2026-11-25",
+      "updated_at": null,
+      "authors": [
+        "Peizhuo Lv",
+        "Tao Chen",
+        "Mengya Shi",
+        "Ziyu Lin",
+        "Yuxuan Chen",
+        "Ruigang Liang",
+        "Tianwei Zhang",
+        "Wei Dong",
+        "XiaoFeng Wang"
+      ],
+      "organization": null,
+      "url": "https://arxiv.org/abs/2611.34380",
+      "external_ids": {
+        "arxiv": "2611.34380"
+      },
+      "topics": [
+        "agents",
+        "tool_use",
+        "safety",
+        "guardrails",
+        "evaluation",
+        "observability",
+        "architecture"
+      ],
+      "summary": "Framework de auditoría que construye un grafo de conocimiento desde código, interacciones entre componentes y defensas; deriva rutas de ataque y las valida en escenarios multi-turn ejecutables.",
+      "what_changed": "Conecta sospechas estáticas con explotabilidad contextual: cada finding se prueba dentro de una tarea realista antes de contarse como vulnerabilidad.",
+      "why_it_matters": "Los equipos pueden priorizar defectos alcanzables y reproducibles en lugar de listas extensas de warnings; el patrón une análisis de código, threat modeling y validación runtime.",
+      "evidence": [
+        "Audita cinco aplicaciones agentic con más de 24,000 estrellas de GitHub cada una.",
+        "Reporta 44 vulnerabilidades y afirma haber activado todas durante ejecución.",
+        "Detecta 3.67 veces más vulnerabilidades que AgentFuzz.",
+        "Doce hallazgos recibieron IDs CVE al momento del paper."
+      ],
+      "limitations": [
+        "El universo auditado se limita a cinco aplicaciones populares.",
+        "Los autores generan y validan los hallazgos; falta reproducción independiente completa.",
+        "El número de vulnerabilidades encontradas no mide cobertura sobre todos los defectos existentes."
+      ],
+      "practical_applications": [
+        "safety",
+        "evaluation",
+        "observability",
+        "agents"
+      ],
+      "reading_recommendation": "full_read",
+      "priority": "high",
+      "source_tier": "primary"
+    }
+  ],
+  "practical_implications": {
+    "design": [
+      "Trata el sustrato de serving como parte de la arquitectura agentic: documenta scheduler, límites, presión de KV, timeouts y semánticas de retry junto al grafo de agentes.",
+      "Delega subtareas acotadas y verificables a modelos pequeños, conservando planificación, decisiones irreversibles y síntesis final en el modelo frontier.",
+      "Alinea el retriever con obligaciones estructurales y guarda contexto textual por chunk cuando debe servir tanto a embeddings como a rerankers.",
+      "Modela preemption por tipo de estado: pesos, KV, request en vuelo y resultados intermedios necesitan garantías de persistencia distintas."
+    ],
+    "evaluation": [
+      "Reporta calidad sobre jobs enviados, no sólo outputs completados; incluye tasa de entrega, colas, timeouts, costo y evidencia de fallo.",
+      "Benchmarkea serving con matrices de input/output/concurrencia y conserva constante hardware, modelo y stack al atribuir una ganancia arquitectónica.",
+      "Exige certificados o trazas causales para verificar claims y detectar reward hacking; separa contrato de aceptación del candidato evaluado.",
+      "Valida hallazgos de seguridad ejecutando rutas alcanzables y mantén por separado recall sobre vulnerabilidades conocidas y conteo de findings nuevos."
+    ],
+    "deployment": [
+      "Perfila replicación, pipeline y desagregación por workload; establece rollback cuando la cola pierde estabilidad.",
+      "Para scale-to-zero, mide wake time real y cierra admisión antes de preemption; persiste el request antes de abortar y prueba recuperación ante fallos.",
+      "Observa ahorro total, incluyendo GPU local, energía y verificación, cuando delegues a SLMs.",
+      "Versiona ontologías, constraints, prefijos de chunks y verificadores junto al índice para poder reconstruir qué evidencia sustentó cada salida."
+    ]
+  }
+}
